@@ -1,0 +1,391 @@
+/**
+ * Custom Styles for LeetCode Daily Challenge Blog
+ */
+
+/* ===========================
+   CSS Variables for Theming
+   =========================== */
+:root {
+  --primary-color: #007bff;
+  --primary-hover: #0056b3;
+  --easy-color: #00c853;
+  --easy-bg: #d4edda;
+  --medium-color: #ff9800;
+  --medium-bg: #fff3cd;
+  --hard-color: #f44336;
+  --hard-bg: #f8d7da;
+  --bg-color: #ffffff;
+  --text-color: #333333;
+  --card-bg: #f8f9fa;
+  --border-color: #e0e0e0;
+  --code-bg: #f5f5f5;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
+
+/* ===========================
+   Enhanced Typography
+   =========================== */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.7;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  transition: var(--transition);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.3;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+h1 { font-size: 2.5em; }
+h2 { font-size: 2em; }
+h3 { font-size: 1.5em; }
+
+/* ===========================
+   Code Highlighting Improvements
+   =========================== */
+code {
+  background-color: var(--code-bg);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-size: 0.9em;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+pre {
+  background-color: var(--code-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 16px;
+  overflow-x: auto;
+  box-shadow: 0 2px 4px var(--shadow);
+  margin: 1.5em 0;
+}
+
+pre code {
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
+  font-size: 0.95em;
+  line-height: 1.6;
+}
+
+/* Syntax highlighting */
+.highlight {
+  border-radius: 8px;
+
+  .c { color: #6a737d; } /* Comment */
+  .err { color: #f97583; } /* Error */
+  .k { color: #d73a49; font-weight: bold; } /* Keyword */
+  .o { color: #d73a49; } /* Operator */
+  .cm { color: #6a737d; } /* Comment.Multiline */
+  .cp { color: #d73a49; font-weight: bold; } /* Comment.Preproc */
+  .c1 { color: #6a737d; } /* Comment.Single */
+  .cs { color: #6a737d; } /* Comment.Special */
+  .gd { color: #f97583; } /* Generic.Deleted */
+  .ge { font-style: italic; } /* Generic.Emph */
+  .gh { color: #005cc5; font-weight: bold; } /* Generic.Heading */
+  .gi { color: #28a745; } /* Generic.Inserted */
+  .gp { color: #6a737d; font-weight: bold; } /* Generic.Prompt */
+  .gs { font-weight: bold; } /* Generic.Strong */
+  .gu { color: #6f42c1; font-weight: bold; } /* Generic.Subheading */
+  .kc { color: #005cc5; font-weight: bold; } /* Keyword.Constant */
+  .kd { color: #d73a49; font-weight: bold; } /* Keyword.Declaration */
+  .kn { color: #d73a49; font-weight: bold; } /* Keyword.Namespace */
+  .kp { color: #d73a49; font-weight: bold; } /* Keyword.Pseudo */
+  .kr { color: #d73a49; font-weight: bold; } /* Keyword.Reserved */
+  .kt { color: #d73a49; } /* Keyword.Type */
+  .m { color: #005cc5; } /* Literal.Number */
+  .s { color: #032f62; } /* Literal.String */
+  .na { color: #005cc5; } /* Name.Attribute */
+  .nb { color: #005cc5; } /* Name.Builtin */
+  .nc { color: #6f42c1; font-weight: bold; } /* Name.Class */
+  .no { color: #005cc5; } /* Name.Constant */
+  .nd { color: #6f42c1; } /* Name.Decorator */
+  .ni { color: #005cc5; } /* Name.Entity */
+  .ne { color: #6f42c1; font-weight: bold; } /* Name.Exception */
+  .nf { color: #6f42c1; } /* Name.Function */
+  .nl { color: #005cc5; } /* Name.Label */
+  .nn { color: #6f42c1; } /* Name.Namespace */
+  .nt { color: #22863a; } /* Name.Tag */
+  .nv { color: #e36209; } /* Name.Variable */
+  .ow { color: #d73a49; font-weight: bold; } /* Operator.Word */
+  .w { color: #6a737d; } /* Text.Whitespace */
+  .mf { color: #005cc5; } /* Literal.Number.Float */
+  .mh { color: #005cc5; } /* Literal.Number.Hex */
+  .mi { color: #005cc5; } /* Literal.Number.Integer */
+  .mo { color: #005cc5; } /* Literal.Number.Oct */
+  .sb { color: #032f62; } /* Literal.String.Backtick */
+  .sc { color: #032f62; } /* Literal.String.Char */
+  .sd { color: #032f62; } /* Literal.String.Doc */
+  .s2 { color: #032f62; } /* Literal.String.Double */
+  .se { color: #032f62; } /* Literal.String.Escape */
+  .sh { color: #032f62; } /* Literal.String.Heredoc */
+  .si { color: #032f62; } /* Literal.String.Interpol */
+  .sx { color: #032f62; } /* Literal.String.Other */
+  .sr { color: #032f62; } /* Literal.String.Regex */
+  .s1 { color: #032f62; } /* Literal.String.Single */
+  .ss { color: #032f62; } /* Literal.String.Symbol */
+  .bp { color: #005cc5; } /* Name.Builtin.Pseudo */
+  .vc { color: #e36209; } /* Name.Variable.Class */
+  .vg { color: #e36209; } /* Name.Variable.Global */
+  .vi { color: #e36209; } /* Name.Variable.Instance */
+  .il { color: #005cc5; } /* Literal.Number.Integer.Long */
+}
+
+/* ===========================
+   Enhanced Cards and Containers
+   =========================== */
+.post-list li,
+.stat-card,
+.tag-link,
+.quick-link {
+  transition: var(--transition);
+}
+
+.post-list li:hover {
+  transform: translateX(5px);
+  box-shadow: 0 4px 8px var(--shadow);
+}
+
+/* ===========================
+   Difficulty Badges Enhancement
+   =========================== */
+.difficulty {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 11px;
+  box-shadow: 0 1px 3px var(--shadow);
+}
+
+.difficulty-easy {
+  background-color: var(--easy-bg);
+  color: var(--easy-color);
+  border: 1px solid var(--easy-color);
+}
+
+.difficulty-medium {
+  background-color: var(--medium-bg);
+  color: var(--medium-color);
+  border: 1px solid var(--medium-color);
+}
+
+.difficulty-hard {
+  background-color: var(--hard-bg);
+  color: var(--hard-color);
+  border: 1px solid var(--hard-color);
+}
+
+/* ===========================
+   AdSense Container Styling
+   =========================== */
+.adsense-container {
+  margin: 2em 0;
+  text-align: center;
+}
+
+/* ===========================
+   Enhanced Statistics Cards
+   =========================== */
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 20px;
+  margin: 30px 0;
+}
+
+.stat-card {
+  padding: 25px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 6px var(--shadow);
+  transition: var(--transition);
+  border: none;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 12px var(--shadow);
+}
+
+.stat-number {
+  font-size: 42px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-card.easy .stat-number {
+  background: linear-gradient(135deg, var(--easy-color), #00e676);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-card.medium .stat-number {
+  background: linear-gradient(135deg, var(--medium-color), #ffb300);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-card.hard .stat-number {
+  background: linear-gradient(135deg, var(--hard-color), #e53935);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ===========================
+   Responsive Design Enhancements
+   =========================== */
+@media screen and (max-width: 768px) {
+  h1 { font-size: 2em; }
+  h2 { font-size: 1.5em; }
+  h3 { font-size: 1.25em; }
+
+  .stats-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+
+  .stat-card {
+    padding: 20px 15px;
+  }
+
+  .stat-number {
+    font-size: 32px;
+  }
+
+  .quick-links {
+    flex-direction: column;
+  }
+
+  .quick-link {
+    min-width: 100%;
+  }
+
+  pre {
+    padding: 12px;
+    font-size: 0.85em;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .stats-container {
+    grid-template-columns: 1fr;
+  }
+
+  body {
+    font-size: 14px;
+  }
+}
+
+/* ===========================
+   Enhanced Navigation
+   =========================== */
+.site-header {
+  border-top: 5px solid var(--primary-color);
+  box-shadow: 0 2px 4px var(--shadow);
+}
+
+.site-nav .page-link {
+  transition: var(--transition);
+}
+
+.site-nav .page-link:hover {
+  color: var(--primary-color);
+}
+
+/* ===========================
+   Tag Cloud Enhancement
+   =========================== */
+.tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 25px 0;
+  padding: 25px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 10px;
+  box-shadow: 0 4px 6px var(--shadow);
+}
+
+.tag-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 15px;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  color: white !important;
+  text-decoration: none;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: var(--transition);
+  box-shadow: 0 2px 4px var(--shadow);
+}
+
+.tag-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px var(--shadow);
+}
+
+/* ===========================
+   Problem Link Enhancement
+   =========================== */
+.problem-link {
+  margin-top: 2.5em;
+  padding: 1.5em;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-left: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px var(--shadow);
+}
+
+.problem-link a {
+  color: white !important;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.problem-link a::after {
+  content: "→";
+  font-size: 20px;
+  transition: var(--transition);
+}
+
+.problem-link a:hover::after {
+  transform: translateX(5px);
+}
+
+/* ===========================
+   Smooth Scrolling
+   =========================== */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ===========================
+   Selection Color
+   =========================== */
+::selection {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+::-moz-selection {
+  background-color: var(--primary-color);
+  color: white;
+}
