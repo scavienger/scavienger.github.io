@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
 AI Solution Generator for LeetCode Problems
-Supports multiple AI providers with Gemini as default
+Supports Gemini (default) and Groq providers
 """
 
 import json
 import os
 import sys
 from typing import Dict, Optional
-import openai
+import requests
 from google import generativeai as genai
 
 
@@ -21,8 +21,7 @@ class AISolutionGenerator:
 
         # Initialize API clients based on available keys
         self.gemini_model = None
-        self.openai_client = None
-        self.groq_client = None
+        self.groq_api_key = None
 
         # Gemini setup
         gemini_key = os.getenv('GEMINI_API_KEY')
@@ -30,18 +29,8 @@ class AISolutionGenerator:
             genai.configure(api_key=gemini_key)
             self.gemini_model = genai.GenerativeModel('gemini-2.0-flash-exp')
 
-        # OpenAI setup
-        openai_key = os.getenv('OPENAI_API_KEY')
-        if openai_key:
-            self.openai_client = openai.OpenAI(api_key=openai_key)
-
-        # Groq setup (OpenAI-compatible)
-        groq_key = os.getenv('GROQ_API_KEY')
-        if groq_key:
-            self.groq_client = openai.OpenAI(
-                api_key=groq_key,
-                base_url="https://api.groq.com/openai/v1"
-            )
+        # Groq setup
+        self.groq_api_key = os.getenv('GROQ_API_KEY')
 
     def create_prompt(self, problem_data: Dict) -> str:
         """Create a prompt for the AI models"""
@@ -126,46 +115,39 @@ Provide ONLY the JSON response, no additional text."""
             print(f"Error with Gemini: {e}", file=sys.stderr)
             return None
 
-    def solve_with_openai(self, problem_data: Dict) -> Optional[Dict]:
-        """Generate solution using OpenAI GPT-4"""
-        if not self.openai_client:
-            print("OpenAI API key not found", file=sys.stderr)
-            return None
-
-        try:
-            prompt = self.create_prompt(problem_data)
-            response = self.openai_client.chat.completions.create(
-                model="gpt-4o",
-                messages=[
-                    {"role": "system", "content": "You are an expert Python programmer solving LeetCode problems."},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=0.7,
-                max_tokens=4096
-            )
-            return self.parse_json_response(response.choices[0].message.content)
-        except Exception as e:
-            print(f"Error with OpenAI: {e}", file=sys.stderr)
-            return None
-
     def solve_with_groq(self, problem_data: Dict) -> Optional[Dict]:
         """Generate solution using Groq"""
-        if not self.groq_client:
+        if not self.groq_api_key:
             print("Groq API key not found", file=sys.stderr)
             return None
 
         try:
             prompt = self.create_prompt(problem_data)
-            response = self.groq_client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
-                messages=[
-                    {"role": "system", "content": "You are an expert Python programmer solving LeetCode problems."},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=0.7,
-                max_tokens=4096
+
+            # Call Groq API (OpenAI-compatible endpoint)
+            response = requests.post(
+                "https://api.groq.com/openai/v1/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {self.groq_api_key}",
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "model": "llama-3.3-70b-versatile",
+                    "messages": [
+                        {"role": "system", "content": "You are an expert Python programmer solving LeetCode problems."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    "temperature": 0.7,
+                    "max_tokens": 4096
+                },
+                timeout=30
             )
-            return self.parse_json_response(response.choices[0].message.content)
+            response.raise_for_status()
+
+            data = response.json()
+            content = data['choices'][0]['message']['content']
+            return self.parse_json_response(content)
+
         except Exception as e:
             print(f"Error with Groq: {e}", file=sys.stderr)
             return None
@@ -174,12 +156,10 @@ Provide ONLY the JSON response, no additional text."""
         """Generate solution using the configured provider"""
         print(f"Generating solution with {self.provider}...", file=sys.stderr)
 
-        if self.provider == 'gemini':
-            return self.solve_with_gemini(problem_data)
-        elif self.provider == 'groq':
+        if self.provider == 'groq':
             return self.solve_with_groq(problem_data)
-        elif self.provider in ['openai', 'gpt4']:
-            return self.solve_with_openai(problem_data)
+        elif self.provider == 'gemini':
+            return self.solve_with_gemini(problem_data)
         else:
             print(f"Unknown provider: {self.provider}, falling back to Gemini", file=sys.stderr)
             return self.solve_with_gemini(problem_data)

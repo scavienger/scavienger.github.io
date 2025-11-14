@@ -5,8 +5,8 @@ Automated blog that fetches and posts LeetCode Daily Challenge problems every da
 ## Features
 
 - **Automated Daily Posts**: GitHub Actions fetches the daily LeetCode problem and creates a new blog post automatically
-- **AI-Generated Solutions**: Configurable AI provider (Gemini, Groq, GPT-4) generates solutions automatically
-- **Multiple AI Providers**: Choose from Gemini (default), Groq (Llama 3.3), or GPT-4
+- **AI-Generated Solutions**: Free AI providers (Gemini or Groq) generate solutions automatically
+- **Multiple AI Providers**: Choose from Gemini (default) or Groq (Llama 3.3) - both with free tiers
 - **Jekyll-powered**: Clean, fast static site hosted on GitHub Pages
 - **Modern UI**: Beautiful, responsive design with dark mode support
 - **Navigation**: Archive, difficulty, and topic-based browsing
@@ -61,11 +61,12 @@ To enable AI-generated solutions, configure your preferred AI provider:
 
 #### Choose Your AI Provider
 
-| Provider | Model | Secret Name | Get API Key | Cost |
-|----------|-------|-------------|-------------|------|
-| **Gemini** (Default) | gemini-2.0-flash-exp | `GEMINI_API_KEY` | [Get Key](https://aistudio.google.com/app/apikey) | Free tier available |
-| **Groq** | llama-3.3-70b-versatile | `GROQ_API_KEY` | [Get Key](https://console.groq.com/keys) | Free tier available |
-| **OpenAI** | gpt-4o | `OPENAI_API_KEY` | [Get Key](https://platform.openai.com/api-keys) | Paid only |
+Both providers offer free tiers!
+
+| Provider | Model | Secret Name | Get API Key |
+|----------|-------|-------------|-------------|
+| **Gemini** (Default) ✨ | gemini-2.0-flash-exp | `GEMINI_API_KEY` | [Get Key](https://aistudio.google.com/app/apikey) |
+| **Groq** ⚡ | llama-3.3-70b-versatile | `GROQ_API_KEY` | [Get Key](https://console.groq.com/keys) |
 
 #### Setup Instructions
 
@@ -74,16 +75,14 @@ To enable AI-generated solutions, configure your preferred AI provider:
 3. Add your chosen provider's API key:
    - For **Gemini** (default): Add `GEMINI_API_KEY`
    - For **Groq**: Add `GROQ_API_KEY` and `AI_PROVIDER` = `groq`
-   - For **OpenAI**: Add `OPENAI_API_KEY` and `AI_PROVIDER` = `openai`
 
 4. (Optional) To change the default provider, add secret `AI_PROVIDER` with value:
    - `gemini` (default)
    - `groq`
-   - `openai` or `gpt4`
 
 **Notes:**
 - Default provider is Gemini if `AI_PROVIDER` is not set
-- Gemini and Groq offer free tiers, making them cost-effective choices
+- Both providers offer generous free tiers
 - Without any API key, posts will only have problem descriptions without solutions
 - API keys are stored securely and never exposed in logs or code
 

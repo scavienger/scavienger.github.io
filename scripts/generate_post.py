@@ -135,9 +135,7 @@ leetcode_url: {leetcode_url}
             # Provider emoji mapping
             provider_emojis = {
                 'GEMINI': '✨',
-                'GROQ': '⚡',
-                'OPENAI': '🧠',
-                'GPT4': '🧠'
+                'GROQ': '⚡'
             }
             emoji = provider_emojis.get(provider, '🤖')
 
