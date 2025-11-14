@@ -24,6 +24,12 @@ collections:
   posts:
     output: true
 
+# Header navigation
+header_pages:
+  - archive.md
+  - difficulties.md
+  - tags.md
+
 # Defaults
 defaults:
   - scope:
