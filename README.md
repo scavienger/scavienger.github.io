@@ -60,12 +60,28 @@ You can manually trigger the workflow to test:
 
 ### 4. Configure AdSense (Optional)
 
-After your site is approved for AdSense:
+#### Step 1: Add Site Verification Code
 
-1. Open `_layouts/post.html`
-2. Uncomment the AdSense code blocks
-3. Replace `ca-pub-XXXXXXXXXX` with your publisher ID
-4. Replace `YYYYYYYYYY` with your ad slot IDs
+When you first add your site to AdSense, you'll receive a verification code like:
+
+```html
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXX"
+     crossorigin="anonymous"></script>
+```
+
+1. Open `_includes/custom-head.html`
+2. Replace the comment with your actual AdSense verification code
+3. Commit and push the changes
+4. Wait for AdSense approval (can take a few days to weeks)
+
+#### Step 2: Add Ad Units (After Approval)
+
+After your site is approved:
+
+1. Create ad units in AdSense console
+2. Copy the complete ad code snippet (includes `<ins>` tags)
+3. Open `_layouts/post.html`
+4. Replace the commented placeholders with your actual ad code
 5. Commit and push the changes
 
 ## Local Development
