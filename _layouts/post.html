@@ -1,0 +1,115 @@
+---
+layout: default
+---
+<article class="post">
+  <header class="post-header">
+    <h1 class="post-title">{{ page.title }}</h1>
+    <p class="post-meta">
+      <time datetime="{{ page.date | date_to_xmlschema }}">
+        {{ page.date | date: "%B %d, %Y" }}
+      </time>
+      {% if page.difficulty %}
+        <span class="difficulty difficulty-{{ page.difficulty | downcase }}">{{ page.difficulty }}</span>
+      {% endif %}
+    </p>
+  </header>
+
+  <!-- AdSense Top Ad - Add your AdSense code here after approval -->
+  <div class="adsense-container top-ad">
+    <!--
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXX"
+         crossorigin="anonymous"></script>
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-XXXXXXXXXX"
+         data-ad-slot="YYYYYYYYYY"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    -->
+  </div>
+
+  <div class="post-content">
+    {{ content }}
+  </div>
+
+  <!-- AdSense Bottom Ad - Add your AdSense code here after approval -->
+  <div class="adsense-container bottom-ad">
+    <!--
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXX"
+         crossorigin="anonymous"></script>
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-XXXXXXXXXX"
+         data-ad-slot="YYYYYYYYYY"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    -->
+  </div>
+
+  {% if page.leetcode_url %}
+  <div class="problem-link">
+    <a href="{{ page.leetcode_url }}" target="_blank" rel="noopener noreferrer">
+      View on LeetCode →
+    </a>
+  </div>
+  {% endif %}
+</article>
+
+<style>
+  .post-meta {
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 1.5em;
+  }
+
+  .difficulty {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: bold;
+    margin-left: 10px;
+  }
+
+  .difficulty-easy {
+    background-color: #d4edda;
+    color: #155724;
+  }
+
+  .difficulty-medium {
+    background-color: #fff3cd;
+    color: #856404;
+  }
+
+  .difficulty-hard {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+
+  .adsense-container {
+    margin: 2em 0;
+    text-align: center;
+  }
+
+  .problem-link {
+    margin-top: 2em;
+    padding: 1em;
+    background-color: #f8f9fa;
+    border-left: 4px solid #007bff;
+  }
+
+  .problem-link a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .problem-link a:hover {
+    text-decoration: underline;
+  }
+</style>

@@ -1,0 +1,79 @@
+name: LeetCode Daily Challenge
+
+on:
+  # Run daily at 9:00 AM KST (00:00 UTC)
+  schedule:
+    - cron: '0 0 * * *'
+
+  # Allow manual trigger
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch-and-post:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Python dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+
+      - name: Fetch LeetCode daily question
+        id: fetch
+        run: |
+          python scripts/fetch_leetcode.py > question_data.json
+          if [ $? -ne 0 ]; then
+            echo "Failed to fetch question"
+            exit 1
+          fi
+          echo "Question data fetched successfully"
+          cat question_data.json
+
+      - name: Generate Jekyll post
+        run: |
+          python scripts/generate_post.py < question_data.json
+          if [ $? -ne 0 ]; then
+            echo "Failed to generate post"
+            exit 1
+          fi
+
+      - name: Configure Git
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+      - name: Commit and push changes
+        run: |
+          git add _posts/
+
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No new post to commit (may already exist)"
+            exit 0
+          fi
+
+          # Get the post title from the question data
+          TITLE=$(python -c "import json; data=json.load(open('question_data.json')); print(data['title'])")
+          DATE=$(date -u +"%Y-%m-%d")
+
+          git commit -m "Add LeetCode daily challenge: $TITLE ($DATE)"
+          git push
+
+      - name: Clean up
+        if: always()
+        run: |
+          rm -f question_data.json
