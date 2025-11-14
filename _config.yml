@@ -13,6 +13,14 @@ plugins:
   - jekyll-feed
   - jekyll-seo-tag
 
+# Syntax highlighting
+highlighter: rouge
+kramdown:
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    block:
+      line_numbers: true
+
 # Timezone
 timezone: Asia/Seoul
 

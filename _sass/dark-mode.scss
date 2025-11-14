@@ -1,0 +1,248 @@
+/**
+ * Dark Mode Styles
+ * Automatically applies based on system preference
+ */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #1a1a1a;
+    --text-color: #e0e0e0;
+    --card-bg: #2d2d2d;
+    --border-color: #404040;
+    --code-bg: #2d2d2d;
+    --shadow: rgba(0, 0, 0, 0.3);
+  }
+
+  body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+  }
+
+  /* Header */
+  .site-header {
+    background-color: #2d2d2d;
+    border-top-color: var(--primary-color);
+  }
+
+  .site-title,
+  .site-title:visited {
+    color: var(--text-color);
+  }
+
+  .site-nav .page-link {
+    color: var(--text-color);
+  }
+
+  /* Cards */
+  .stat-card {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+  }
+
+  .stat-card.easy {
+    background-color: rgba(0, 200, 83, 0.15);
+    border-color: var(--easy-color);
+  }
+
+  .stat-card.medium {
+    background-color: rgba(255, 152, 0, 0.15);
+    border-color: var(--medium-color);
+  }
+
+  .stat-card.hard {
+    background-color: rgba(244, 67, 54, 0.15);
+    border-color: var(--hard-color);
+  }
+
+  /* Post lists */
+  .post-list li {
+    background-color: var(--card-bg);
+    border-left-color: var(--primary-color);
+  }
+
+  /* Code blocks */
+  pre,
+  code {
+    background-color: var(--code-bg);
+    border-color: var(--border-color);
+  }
+
+  .highlight {
+    background-color: var(--code-bg);
+  }
+
+  /* Syntax highlighting for dark mode */
+  .highlight {
+    .c { color: #8b949e; } /* Comment */
+    .err { color: #ff7b72; } /* Error */
+    .k { color: #ff7b72; font-weight: bold; } /* Keyword */
+    .o { color: #ff7b72; } /* Operator */
+    .cm { color: #8b949e; } /* Comment.Multiline */
+    .cp { color: #ff7b72; font-weight: bold; } /* Comment.Preproc */
+    .c1 { color: #8b949e; } /* Comment.Single */
+    .cs { color: #8b949e; } /* Comment.Special */
+    .gd { color: #ffa198; } /* Generic.Deleted */
+    .gh { color: #79c0ff; font-weight: bold; } /* Generic.Heading */
+    .gi { color: #56d364; } /* Generic.Inserted */
+    .gp { color: #8b949e; font-weight: bold; } /* Generic.Prompt */
+    .gu { color: #d2a8ff; font-weight: bold; } /* Generic.Subheading */
+    .kc { color: #79c0ff; font-weight: bold; } /* Keyword.Constant */
+    .kd { color: #ff7b72; font-weight: bold; } /* Keyword.Declaration */
+    .kn { color: #ff7b72; font-weight: bold; } /* Keyword.Namespace */
+    .kp { color: #ff7b72; font-weight: bold; } /* Keyword.Pseudo */
+    .kr { color: #ff7b72; font-weight: bold; } /* Keyword.Reserved */
+    .kt { color: #ff7b72; } /* Keyword.Type */
+    .m { color: #79c0ff; } /* Literal.Number */
+    .s { color: #a5d6ff; } /* Literal.String */
+    .na { color: #79c0ff; } /* Name.Attribute */
+    .nb { color: #79c0ff; } /* Name.Builtin */
+    .nc { color: #d2a8ff; font-weight: bold; } /* Name.Class */
+    .no { color: #79c0ff; } /* Name.Constant */
+    .nd { color: #d2a8ff; } /* Name.Decorator */
+    .ni { color: #79c0ff; } /* Name.Entity */
+    .ne { color: #d2a8ff; font-weight: bold; } /* Name.Exception */
+    .nf { color: #d2a8ff; } /* Name.Function */
+    .nl { color: #79c0ff; } /* Name.Label */
+    .nn { color: #d2a8ff; } /* Name.Namespace */
+    .nt { color: #7ee787; } /* Name.Tag */
+    .nv { color: #ffa657; } /* Name.Variable */
+    .ow { color: #ff7b72; font-weight: bold; } /* Operator.Word */
+    .w { color: #8b949e; } /* Text.Whitespace */
+    .mf { color: #79c0ff; } /* Literal.Number.Float */
+    .mh { color: #79c0ff; } /* Literal.Number.Hex */
+    .mi { color: #79c0ff; } /* Literal.Number.Integer */
+    .mo { color: #79c0ff; } /* Literal.Number.Oct */
+    .sb { color: #a5d6ff; } /* Literal.String.Backtick */
+    .sc { color: #a5d6ff; } /* Literal.String.Char */
+    .sd { color: #a5d6ff; } /* Literal.String.Doc */
+    .s2 { color: #a5d6ff; } /* Literal.String.Double */
+    .se { color: #a5d6ff; } /* Literal.String.Escape */
+    .sh { color: #a5d6ff; } /* Literal.String.Heredoc */
+    .si { color: #a5d6ff; } /* Literal.String.Interpol */
+    .sx { color: #a5d6ff; } /* Literal.String.Other */
+    .sr { color: #a5d6ff; } /* Literal.String.Regex */
+    .s1 { color: #a5d6ff; } /* Literal.String.Single */
+    .ss { color: #a5d6ff; } /* Literal.String.Symbol */
+    .bp { color: #79c0ff; } /* Name.Builtin.Pseudo */
+    .vc { color: #ffa657; } /* Name.Variable.Class */
+    .vg { color: #ffa657; } /* Name.Variable.Global */
+    .vi { color: #ffa657; } /* Name.Variable.Instance */
+    .il { color: #79c0ff; } /* Literal.Number.Integer.Long */
+  }
+
+  /* Links */
+  a {
+    color: #58a6ff;
+  }
+
+  a:visited {
+    color: #a371f7;
+  }
+
+  /* Footer */
+  .site-footer {
+    background-color: #2d2d2d;
+    border-top-color: var(--border-color);
+  }
+
+  .footer-heading,
+  .footer-col {
+    color: var(--text-color);
+  }
+
+  /* Tag cloud dark mode */
+  .tag-cloud {
+    background: linear-gradient(135deg, #2d2d2d 0%, #404040 100%);
+  }
+
+  /* Tables */
+  table {
+    border-color: var(--border-color);
+  }
+
+  th,
+  td {
+    border-color: var(--border-color);
+    background-color: var(--card-bg);
+  }
+
+  /* Blockquotes */
+  blockquote {
+    color: #8b949e;
+    border-left-color: var(--border-color);
+  }
+
+  /* Horizontal rules */
+  hr {
+    border-color: var(--border-color);
+  }
+
+  /* Form elements */
+  input,
+  textarea,
+  select {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border-color: var(--border-color);
+  }
+
+  /* Post meta */
+  .post-meta {
+    color: #8b949e;
+  }
+
+  /* Difficulty badges in dark mode */
+  .difficulty-easy {
+    background-color: rgba(0, 200, 83, 0.2);
+    color: #7ee787;
+    border-color: var(--easy-color);
+  }
+
+  .difficulty-medium {
+    background-color: rgba(255, 152, 0, 0.2);
+    color: #ffb86c;
+    border-color: var(--medium-color);
+  }
+
+  .difficulty-hard {
+    background-color: rgba(244, 67, 54, 0.2);
+    color: #ffa198;
+    border-color: var(--hard-color);
+  }
+}
+
+/* Dark mode toggle button (optional manual toggle) */
+.dark-mode-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 8px var(--shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  transition: var(--transition);
+  z-index: 1000;
+}
+
+.dark-mode-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 12px var(--shadow);
+}
+
+@media screen and (max-width: 768px) {
+  .dark-mode-toggle {
+    bottom: 15px;
+    right: 15px;
+    width: 45px;
+    height: 45px;
+    font-size: 20px;
+  }
+}
