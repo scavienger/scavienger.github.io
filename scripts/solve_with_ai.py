@@ -1,42 +1,47 @@
 #!/usr/bin/env python3
 """
 AI Solution Generator for LeetCode Problems
-Uses Claude, GPT-4, and Gemini to generate multiple solutions
+Supports multiple AI providers with Gemini as default
 """
 
 import json
 import os
 import sys
 from typing import Dict, Optional
-import anthropic
 import openai
 from google import generativeai as genai
 
 
 class AISolutionGenerator:
-    """Generates solutions using multiple AI models"""
+    """Generates solutions using AI providers"""
 
     def __init__(self):
-        # Initialize API clients
-        self.anthropic_client = None
-        self.openai_client = None
+        # Get provider from environment (default: gemini)
+        self.provider = os.getenv('AI_PROVIDER', 'gemini').lower()
+
+        # Initialize API clients based on available keys
         self.gemini_model = None
+        self.openai_client = None
+        self.groq_client = None
 
-        # Get API keys from environment
-        anthropic_key = os.getenv('ANTHROPIC_API_KEY')
-        openai_key = os.getenv('OPENAI_API_KEY')
+        # Gemini setup
         gemini_key = os.getenv('GEMINI_API_KEY')
-
-        # Initialize clients if keys are available
-        if anthropic_key:
-            self.anthropic_client = anthropic.Anthropic(api_key=anthropic_key)
-
-        if openai_key:
-            self.openai_client = openai.OpenAI(api_key=openai_key)
-
         if gemini_key:
             genai.configure(api_key=gemini_key)
             self.gemini_model = genai.GenerativeModel('gemini-2.0-flash-exp')
+
+        # OpenAI setup
+        openai_key = os.getenv('OPENAI_API_KEY')
+        if openai_key:
+            self.openai_client = openai.OpenAI(api_key=openai_key)
+
+        # Groq setup (OpenAI-compatible)
+        groq_key = os.getenv('GROQ_API_KEY')
+        if groq_key:
+            self.groq_client = openai.OpenAI(
+                api_key=groq_key,
+                base_url="https://api.groq.com/openai/v1"
+            )
 
     def create_prompt(self, problem_data: Dict) -> str:
         """Create a prompt for the AI models"""
@@ -83,100 +88,29 @@ Provide ONLY the JSON response, no additional text."""
 
         return prompt
 
-    def solve_with_claude(self, problem_data: Dict) -> Optional[Dict]:
-        """Generate solution using Claude"""
-        if not self.anthropic_client:
-            print("Claude API key not found", file=sys.stderr)
-            return None
-
+    def parse_json_response(self, response_text: str) -> Dict:
+        """Extract and parse JSON from AI response"""
         try:
-            prompt = self.create_prompt(problem_data)
-
-            message = self.anthropic_client.messages.create(
-                model="claude-sonnet-4-20250514",
-                max_tokens=4096,
-                messages=[
-                    {"role": "user", "content": prompt}
-                ]
-            )
-
-            response_text = message.content[0].text
-
-            # Try to parse JSON from response
-            try:
-                # Find JSON in the response
-                start = response_text.find('{')
-                end = response_text.rfind('}') + 1
-                if start != -1 and end > start:
-                    json_str = response_text[start:end]
-                    solution = json.loads(json_str)
-                    return solution
-                else:
-                    return {
-                        "approach": "Failed to parse structured response",
-                        "code": response_text,
-                        "time_complexity": "N/A",
-                        "space_complexity": "N/A"
-                    }
-            except json.JSONDecodeError:
+            # Find JSON in the response
+            start = response_text.find('{')
+            end = response_text.rfind('}') + 1
+            if start != -1 and end > start:
+                json_str = response_text[start:end]
+                return json.loads(json_str)
+            else:
                 return {
-                    "approach": "Failed to parse JSON response",
+                    "approach": "Failed to parse structured response",
                     "code": response_text,
                     "time_complexity": "N/A",
                     "space_complexity": "N/A"
                 }
-
-        except Exception as e:
-            print(f"Error with Claude: {e}", file=sys.stderr)
-            return None
-
-    def solve_with_gpt4(self, problem_data: Dict) -> Optional[Dict]:
-        """Generate solution using GPT-4"""
-        if not self.openai_client:
-            print("OpenAI API key not found", file=sys.stderr)
-            return None
-
-        try:
-            prompt = self.create_prompt(problem_data)
-
-            response = self.openai_client.chat.completions.create(
-                model="gpt-4o",
-                messages=[
-                    {"role": "system", "content": "You are an expert Python programmer solving LeetCode problems."},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=0.7,
-                max_tokens=4096
-            )
-
-            response_text = response.choices[0].message.content
-
-            # Try to parse JSON from response
-            try:
-                start = response_text.find('{')
-                end = response_text.rfind('}') + 1
-                if start != -1 and end > start:
-                    json_str = response_text[start:end]
-                    solution = json.loads(json_str)
-                    return solution
-                else:
-                    return {
-                        "approach": "Failed to parse structured response",
-                        "code": response_text,
-                        "time_complexity": "N/A",
-                        "space_complexity": "N/A"
-                    }
-            except json.JSONDecodeError:
-                return {
-                    "approach": "Failed to parse JSON response",
-                    "code": response_text,
-                    "time_complexity": "N/A",
-                    "space_complexity": "N/A"
-                }
-
-        except Exception as e:
-            print(f"Error with GPT-4: {e}", file=sys.stderr)
-            return None
+        except json.JSONDecodeError:
+            return {
+                "approach": "Failed to parse JSON response",
+                "code": response_text,
+                "time_complexity": "N/A",
+                "space_complexity": "N/A"
+            }
 
     def solve_with_gemini(self, problem_data: Dict) -> Optional[Dict]:
         """Generate solution using Gemini"""
@@ -186,57 +120,69 @@ Provide ONLY the JSON response, no additional text."""
 
         try:
             prompt = self.create_prompt(problem_data)
-
             response = self.gemini_model.generate_content(prompt)
-            response_text = response.text
-
-            # Try to parse JSON from response
-            try:
-                start = response_text.find('{')
-                end = response_text.rfind('}') + 1
-                if start != -1 and end > start:
-                    json_str = response_text[start:end]
-                    solution = json.loads(json_str)
-                    return solution
-                else:
-                    return {
-                        "approach": "Failed to parse structured response",
-                        "code": response_text,
-                        "time_complexity": "N/A",
-                        "space_complexity": "N/A"
-                    }
-            except json.JSONDecodeError:
-                return {
-                    "approach": "Failed to parse JSON response",
-                    "code": response_text,
-                    "time_complexity": "N/A",
-                    "space_complexity": "N/A"
-                }
-
+            return self.parse_json_response(response.text)
         except Exception as e:
             print(f"Error with Gemini: {e}", file=sys.stderr)
             return None
 
-    def generate_all_solutions(self, problem_data: Dict) -> Dict:
-        """Generate solutions from all available AI models"""
-        solutions = {}
+    def solve_with_openai(self, problem_data: Dict) -> Optional[Dict]:
+        """Generate solution using OpenAI GPT-4"""
+        if not self.openai_client:
+            print("OpenAI API key not found", file=sys.stderr)
+            return None
 
-        print("Generating solution with Claude...", file=sys.stderr)
-        claude_solution = self.solve_with_claude(problem_data)
-        if claude_solution:
-            solutions['claude'] = claude_solution
+        try:
+            prompt = self.create_prompt(problem_data)
+            response = self.openai_client.chat.completions.create(
+                model="gpt-4o",
+                messages=[
+                    {"role": "system", "content": "You are an expert Python programmer solving LeetCode problems."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.7,
+                max_tokens=4096
+            )
+            return self.parse_json_response(response.choices[0].message.content)
+        except Exception as e:
+            print(f"Error with OpenAI: {e}", file=sys.stderr)
+            return None
 
-        print("Generating solution with GPT-4...", file=sys.stderr)
-        gpt4_solution = self.solve_with_gpt4(problem_data)
-        if gpt4_solution:
-            solutions['gpt4'] = gpt4_solution
+    def solve_with_groq(self, problem_data: Dict) -> Optional[Dict]:
+        """Generate solution using Groq"""
+        if not self.groq_client:
+            print("Groq API key not found", file=sys.stderr)
+            return None
 
-        print("Generating solution with Gemini...", file=sys.stderr)
-        gemini_solution = self.solve_with_gemini(problem_data)
-        if gemini_solution:
-            solutions['gemini'] = gemini_solution
+        try:
+            prompt = self.create_prompt(problem_data)
+            response = self.groq_client.chat.completions.create(
+                model="llama-3.3-70b-versatile",
+                messages=[
+                    {"role": "system", "content": "You are an expert Python programmer solving LeetCode problems."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.7,
+                max_tokens=4096
+            )
+            return self.parse_json_response(response.choices[0].message.content)
+        except Exception as e:
+            print(f"Error with Groq: {e}", file=sys.stderr)
+            return None
 
-        return solutions
+    def generate_solution(self, problem_data: Dict) -> Optional[Dict]:
+        """Generate solution using the configured provider"""
+        print(f"Generating solution with {self.provider}...", file=sys.stderr)
+
+        if self.provider == 'gemini':
+            return self.solve_with_gemini(problem_data)
+        elif self.provider == 'groq':
+            return self.solve_with_groq(problem_data)
+        elif self.provider in ['openai', 'gpt4']:
+            return self.solve_with_openai(problem_data)
+        else:
+            print(f"Unknown provider: {self.provider}, falling back to Gemini", file=sys.stderr)
+            return self.solve_with_gemini(problem_data)
 
 
 def main():
@@ -250,15 +196,21 @@ def main():
         problem_data = json.load(sys.stdin)
 
     generator = AISolutionGenerator()
-    solutions = generator.generate_all_solutions(problem_data)
+    solution = generator.generate_solution(problem_data)
 
-    # Add solutions to problem data
-    problem_data['ai_solutions'] = solutions
+    if solution:
+        # Add solution to problem data
+        problem_data['ai_solution'] = {
+            'provider': generator.provider,
+            **solution
+        }
+    else:
+        print("Failed to generate solution", file=sys.stderr)
 
     # Output enhanced problem data as JSON
     print(json.dumps(problem_data, indent=2, ensure_ascii=False))
 
-    return 0 if solutions else 1
+    return 0 if solution else 1
 
 
 if __name__ == "__main__":

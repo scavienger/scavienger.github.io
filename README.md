@@ -5,8 +5,8 @@ Automated blog that fetches and posts LeetCode Daily Challenge problems every da
 ## Features
 
 - **Automated Daily Posts**: GitHub Actions fetches the daily LeetCode problem and creates a new blog post automatically
-- **AI-Generated Solutions**: Uses Claude, GPT-4, and Gemini to generate multiple solution approaches
-- **Solution Comparison**: Side-by-side comparison of different AI solutions with complexity analysis
+- **AI-Generated Solutions**: Configurable AI provider (Gemini, Groq, GPT-4) generates solutions automatically
+- **Multiple AI Providers**: Choose from Gemini (default), Groq (Llama 3.3), or GPT-4
 - **Jekyll-powered**: Clean, fast static site hosted on GitHub Pages
 - **Modern UI**: Beautiful, responsive design with dark mode support
 - **Navigation**: Archive, difficulty, and topic-based browsing
@@ -55,23 +55,36 @@ scavienger.github.io/
 2. Workflow permissions: Select "Read and write permissions"
 3. Save
 
-### 3. Configure AI API Keys (Optional but Recommended)
+### 3. Configure AI Provider (Optional but Recommended)
 
-To enable AI-generated solutions, add your API keys as GitHub Secrets:
+To enable AI-generated solutions, configure your preferred AI provider:
+
+#### Choose Your AI Provider
+
+| Provider | Model | Secret Name | Get API Key | Cost |
+|----------|-------|-------------|-------------|------|
+| **Gemini** (Default) | gemini-2.0-flash-exp | `GEMINI_API_KEY` | [Get Key](https://aistudio.google.com/app/apikey) | Free tier available |
+| **Groq** | llama-3.3-70b-versatile | `GROQ_API_KEY` | [Get Key](https://console.groq.com/keys) | Free tier available |
+| **OpenAI** | gpt-4o | `OPENAI_API_KEY` | [Get Key](https://platform.openai.com/api-keys) | Paid only |
+
+#### Setup Instructions
 
 1. Go to repository Settings → Secrets and variables → Actions
 2. Click "New repository secret"
-3. Add the following secrets (you can add one, two, or all three):
+3. Add your chosen provider's API key:
+   - For **Gemini** (default): Add `GEMINI_API_KEY`
+   - For **Groq**: Add `GROQ_API_KEY` and `AI_PROVIDER` = `groq`
+   - For **OpenAI**: Add `OPENAI_API_KEY` and `AI_PROVIDER` = `openai`
 
-| Secret Name | Description | Get API Key |
-|------------|-------------|------------|
-| `ANTHROPIC_API_KEY` | Claude API key | [https://console.anthropic.com/](https://console.anthropic.com/) |
-| `OPENAI_API_KEY` | OpenAI API key | [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys) |
-| `GEMINI_API_KEY` | Google Gemini API key | [https://aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey) |
+4. (Optional) To change the default provider, add secret `AI_PROVIDER` with value:
+   - `gemini` (default)
+   - `groq`
+   - `openai` or `gpt4`
 
 **Notes:**
-- The workflow will work without API keys, but posts will only have problem descriptions without solutions
-- You can add just one AI service or all three for solution comparison
+- Default provider is Gemini if `AI_PROVIDER` is not set
+- Gemini and Groq offer free tiers, making them cost-effective choices
+- Without any API key, posts will only have problem descriptions without solutions
 - API keys are stored securely and never exposed in logs or code
 
 ### 4. Test the Workflow

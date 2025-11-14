@@ -126,66 +126,37 @@ leetcode_url: {leetcode_url}
                 cleaned_hint = self._clean_html_content(hint)
                 body_parts.append(f"{i}. {cleaned_hint}\n")
 
-        # AI Solutions section
-        ai_solutions = question_data.get('ai_solutions', {})
+        # AI Solution section
+        ai_solution = question_data.get('ai_solution', {})
 
-        if ai_solutions:
-            body_parts.append("## AI-Generated Solutions\n")
-            body_parts.append("*Multiple AI models were used to generate and compare solutions for this problem.*\n")
+        if ai_solution:
+            provider = ai_solution.get('provider', 'AI').upper()
 
-            # Claude solution
-            if 'claude' in ai_solutions:
-                body_parts.append("### 🤖 Claude Solution\n")
-                claude = ai_solutions['claude']
-                body_parts.append(f"**Approach:**\n{claude.get('approach', 'N/A')}\n")
-                body_parts.append("**Code:**")
-                body_parts.append("```python")
-                body_parts.append(claude.get('code', '# No code provided'))
-                body_parts.append("```\n")
-                body_parts.append("**Complexity Analysis:**")
-                body_parts.append(f"- **Time Complexity:** {claude.get('time_complexity', 'N/A')}")
-                body_parts.append(f"- **Space Complexity:** {claude.get('space_complexity', 'N/A')}\n")
+            # Provider emoji mapping
+            provider_emojis = {
+                'GEMINI': '✨',
+                'GROQ': '⚡',
+                'OPENAI': '🧠',
+                'GPT4': '🧠'
+            }
+            emoji = provider_emojis.get(provider, '🤖')
 
-            # GPT-4 solution
-            if 'gpt4' in ai_solutions:
-                body_parts.append("### 🧠 GPT-4 Solution\n")
-                gpt4 = ai_solutions['gpt4']
-                body_parts.append(f"**Approach:**\n{gpt4.get('approach', 'N/A')}\n")
-                body_parts.append("**Code:**")
-                body_parts.append("```python")
-                body_parts.append(gpt4.get('code', '# No code provided'))
-                body_parts.append("```\n")
-                body_parts.append("**Complexity Analysis:**")
-                body_parts.append(f"- **Time Complexity:** {gpt4.get('time_complexity', 'N/A')}")
-                body_parts.append(f"- **Space Complexity:** {gpt4.get('space_complexity', 'N/A')}\n")
+            body_parts.append(f"## {emoji} AI-Generated Solution ({provider})\n")
 
-            # Gemini solution
-            if 'gemini' in ai_solutions:
-                body_parts.append("### ✨ Gemini Solution\n")
-                gemini = ai_solutions['gemini']
-                body_parts.append(f"**Approach:**\n{gemini.get('approach', 'N/A')}\n")
-                body_parts.append("**Code:**")
-                body_parts.append("```python")
-                body_parts.append(gemini.get('code', '# No code provided'))
-                body_parts.append("```\n")
-                body_parts.append("**Complexity Analysis:**")
-                body_parts.append(f"- **Time Complexity:** {gemini.get('time_complexity', 'N/A')}")
-                body_parts.append(f"- **Space Complexity:** {gemini.get('space_complexity', 'N/A')}\n")
+            # Approach
+            body_parts.append("### Approach\n")
+            body_parts.append(f"{ai_solution.get('approach', 'No approach provided')}\n")
 
-            # Comparison section
-            if len(ai_solutions) > 1:
-                body_parts.append("## Solution Comparison\n")
-                body_parts.append("| AI Model | Time Complexity | Space Complexity |")
-                body_parts.append("|----------|----------------|------------------|")
+            # Code
+            body_parts.append("### Code\n")
+            body_parts.append("```python")
+            body_parts.append(ai_solution.get('code', '# No code provided'))
+            body_parts.append("```\n")
 
-                if 'claude' in ai_solutions:
-                    body_parts.append(f"| Claude | {ai_solutions['claude'].get('time_complexity', 'N/A')} | {ai_solutions['claude'].get('space_complexity', 'N/A')} |")
-                if 'gpt4' in ai_solutions:
-                    body_parts.append(f"| GPT-4 | {ai_solutions['gpt4'].get('time_complexity', 'N/A')} | {ai_solutions['gpt4'].get('space_complexity', 'N/A')} |")
-                if 'gemini' in ai_solutions:
-                    body_parts.append(f"| Gemini | {ai_solutions['gemini'].get('time_complexity', 'N/A')} | {ai_solutions['gemini'].get('space_complexity', 'N/A')} |")
-
-                body_parts.append("")
+            # Complexity Analysis
+            body_parts.append("### Complexity Analysis\n")
+            body_parts.append(f"- **Time Complexity:** {ai_solution.get('time_complexity', 'N/A')}")
+            body_parts.append(f"- **Space Complexity:** {ai_solution.get('space_complexity', 'N/A')}\n")
         else:
             # Fallback: manual solution template
             body_parts.append("## Solution\n")
