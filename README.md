@@ -5,9 +5,12 @@ Automated blog that fetches and posts LeetCode Daily Challenge problems every da
 ## Features
 
 - **Automated Daily Posts**: GitHub Actions fetches the daily LeetCode problem and creates a new blog post automatically
+- **AI-Generated Solutions**: Uses Claude, GPT-4, and Gemini to generate multiple solution approaches
+- **Solution Comparison**: Side-by-side comparison of different AI solutions with complexity analysis
 - **Jekyll-powered**: Clean, fast static site hosted on GitHub Pages
+- **Modern UI**: Beautiful, responsive design with dark mode support
+- **Navigation**: Archive, difficulty, and topic-based browsing
 - **AdSense Ready**: Pre-configured layout with AdSense placeholder slots
-- **Problem Details**: Each post includes problem description, hints, code template, and solution structure
 
 ## Project Structure
 
@@ -25,6 +28,7 @@ scavienger.github.io/
 └── scripts/
     ├── requirements.txt        # Python dependencies
     ├── fetch_leetcode.py       # Fetches daily question from LeetCode
+    ├── solve_with_ai.py        # Generates solutions using AI models
     └── generate_post.py        # Generates Jekyll markdown post
 ```
 
@@ -32,8 +36,9 @@ scavienger.github.io/
 
 1. **Scheduled Trigger**: GitHub Actions runs daily at 9:00 AM KST
 2. **Fetch Question**: `fetch_leetcode.py` queries LeetCode's GraphQL API
-3. **Generate Post**: `generate_post.py` creates a markdown file in `_posts/`
-4. **Auto Deploy**: GitHub Pages automatically builds and deploys the updated site
+3. **AI Solutions**: `solve_with_ai.py` generates solutions using Claude, GPT-4, and Gemini
+4. **Generate Post**: `generate_post.py` creates a markdown file with all solutions in `_posts/`
+5. **Auto Deploy**: GitHub Pages automatically builds and deploys the updated site
 
 ## Setup Instructions
 
@@ -50,7 +55,26 @@ scavienger.github.io/
 2. Workflow permissions: Select "Read and write permissions"
 3. Save
 
-### 3. Test the Workflow
+### 3. Configure AI API Keys (Optional but Recommended)
+
+To enable AI-generated solutions, add your API keys as GitHub Secrets:
+
+1. Go to repository Settings → Secrets and variables → Actions
+2. Click "New repository secret"
+3. Add the following secrets (you can add one, two, or all three):
+
+| Secret Name | Description | Get API Key |
+|------------|-------------|------------|
+| `ANTHROPIC_API_KEY` | Claude API key | [https://console.anthropic.com/](https://console.anthropic.com/) |
+| `OPENAI_API_KEY` | OpenAI API key | [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys) |
+| `GEMINI_API_KEY` | Google Gemini API key | [https://aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey) |
+
+**Notes:**
+- The workflow will work without API keys, but posts will only have problem descriptions without solutions
+- You can add just one AI service or all three for solution comparison
+- API keys are stored securely and never exposed in logs or code
+
+### 4. Test the Workflow
 
 You can manually trigger the workflow to test:
 
@@ -58,7 +82,7 @@ You can manually trigger the workflow to test:
 2. Select "LeetCode Daily Challenge" workflow
 3. Click "Run workflow"
 
-### 4. Configure AdSense (Optional)
+### 5. Configure AdSense (Optional)
 
 #### Step 1: Add Site Verification Code
 

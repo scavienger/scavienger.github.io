@@ -43,6 +43,20 @@ jobs:
           echo "Question data fetched successfully"
           cat question_data.json
 
+      - name: Generate AI solutions
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python scripts/solve_with_ai.py question_data.json > question_with_solutions.json
+          if [ $? -eq 0 ]; then
+            echo "AI solutions generated successfully"
+            mv question_with_solutions.json question_data.json
+          else
+            echo "Warning: Failed to generate AI solutions, continuing with basic post"
+          fi
+
       - name: Generate Jekyll post
         run: |
           python scripts/generate_post.py < question_data.json
