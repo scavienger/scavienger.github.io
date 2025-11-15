@@ -49,8 +49,8 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: |
-          python scripts/solve_with_ai.py question_data.json > question_with_solution.json
-          if [ $? -eq 0 ]; then
+          python scripts/solve_with_ai.py question_data.json > question_with_solution.json || true
+          if [ -f question_with_solution.json ] && [ -s question_with_solution.json ]; then
             echo "AI solution generated successfully"
             mv question_with_solution.json question_data.json
           else
