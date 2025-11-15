@@ -70,21 +70,24 @@ Both providers offer free tiers!
 
 #### Setup Instructions
 
-1. Go to repository Settings → Secrets and variables → Actions
-2. Click "New repository secret"
-3. Add your chosen provider's API key:
-   - For **Gemini** (default): Add `GEMINI_API_KEY`
-   - For **Groq**: Add `GROQ_API_KEY` and `AI_PROVIDER` = `groq`
+1. **Add API Key to GitHub Secrets**
+   - Go to repository Settings → Secrets and variables → Actions
+   - Click "New repository secret"
+   - Add `GEMINI_API_KEY` (for Gemini) or `GROQ_API_KEY` (for Groq)
 
-4. (Optional) To change the default provider, add secret `AI_PROVIDER` with value:
-   - `gemini` (default)
-   - `groq`
+2. **Change Provider (Optional)**
+   - Default provider is **Gemini**
+   - To use **Groq** instead, edit `.github/workflows/leetcode-daily.yml`:
+   ```yaml
+   env:
+     AI_PROVIDER: groq  # Change from 'gemini' to 'groq'
+   ```
 
 **Notes:**
-- Default provider is Gemini if `AI_PROVIDER` is not set
+- Only API keys go in Secrets (sensitive data)
+- Provider selection is in the workflow file (not sensitive)
 - Both providers offer generous free tiers
 - Without any API key, posts will only have problem descriptions without solutions
-- API keys are stored securely and never exposed in logs or code
 
 ### 4. Test the Workflow
 

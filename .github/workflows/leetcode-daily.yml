@@ -45,7 +45,7 @@ jobs:
 
       - name: Generate AI solution
         env:
-          AI_PROVIDER: ${{ secrets.AI_PROVIDER || 'gemini' }}
+          AI_PROVIDER: gemini  # Change to 'groq' if you want to use Groq instead
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: |
