@@ -5,9 +5,12 @@ Automated blog that fetches and posts LeetCode Daily Challenge problems every da
 ## Features
 
 - **Automated Daily Posts**: GitHub Actions fetches the daily LeetCode problem and creates a new blog post automatically
+- **AI-Generated Solutions**: Free AI providers (Gemini or Groq) generate solutions automatically
+- **Multiple AI Providers**: Choose from Gemini (default) or Groq (Llama 3.3) - both with free tiers
 - **Jekyll-powered**: Clean, fast static site hosted on GitHub Pages
+- **Modern UI**: Beautiful, responsive design with dark mode support
+- **Navigation**: Archive, difficulty, and topic-based browsing
 - **AdSense Ready**: Pre-configured layout with AdSense placeholder slots
-- **Problem Details**: Each post includes problem description, hints, code template, and solution structure
 
 ## Project Structure
 
@@ -25,6 +28,7 @@ scavienger.github.io/
 └── scripts/
     ├── requirements.txt        # Python dependencies
     ├── fetch_leetcode.py       # Fetches daily question from LeetCode
+    ├── solve_with_ai.py        # Generates solutions using AI models
     └── generate_post.py        # Generates Jekyll markdown post
 ```
 
@@ -32,8 +36,9 @@ scavienger.github.io/
 
 1. **Scheduled Trigger**: GitHub Actions runs daily at 9:00 AM KST
 2. **Fetch Question**: `fetch_leetcode.py` queries LeetCode's GraphQL API
-3. **Generate Post**: `generate_post.py` creates a markdown file in `_posts/`
-4. **Auto Deploy**: GitHub Pages automatically builds and deploys the updated site
+3. **AI Solutions**: `solve_with_ai.py` generates solutions using Claude, GPT-4, and Gemini
+4. **Generate Post**: `generate_post.py` creates a markdown file with all solutions in `_posts/`
+5. **Auto Deploy**: GitHub Pages automatically builds and deploys the updated site
 
 ## Setup Instructions
 
@@ -50,7 +55,41 @@ scavienger.github.io/
 2. Workflow permissions: Select "Read and write permissions"
 3. Save
 
-### 3. Test the Workflow
+### 3. Configure AI Provider (Optional but Recommended)
+
+To enable AI-generated solutions, configure your preferred AI provider:
+
+#### Choose Your AI Provider
+
+Both providers offer free tiers!
+
+| Provider | Model | Secret Name | Get API Key |
+|----------|-------|-------------|-------------|
+| **Gemini** (Default) ✨ | gemini-2.0-flash-exp | `GEMINI_API_KEY` | [Get Key](https://aistudio.google.com/app/apikey) |
+| **Groq** ⚡ | llama-3.3-70b-versatile | `GROQ_API_KEY` | [Get Key](https://console.groq.com/keys) |
+
+#### Setup Instructions
+
+1. **Add API Key to GitHub Secrets**
+   - Go to repository Settings → Secrets and variables → Actions
+   - Click "New repository secret"
+   - Add `GEMINI_API_KEY` (for Gemini) or `GROQ_API_KEY` (for Groq)
+
+2. **Change Provider (Optional)**
+   - Default provider is **Gemini**
+   - To use **Groq** instead, edit `.github/workflows/leetcode-daily.yml`:
+   ```yaml
+   env:
+     AI_PROVIDER: groq  # Change from 'gemini' to 'groq'
+   ```
+
+**Notes:**
+- Only API keys go in Secrets (sensitive data)
+- Provider selection is in the workflow file (not sensitive)
+- Both providers offer generous free tiers
+- Without any API key, posts will only have problem descriptions without solutions
+
+### 4. Test the Workflow
 
 You can manually trigger the workflow to test:
 
@@ -58,7 +97,7 @@ You can manually trigger the workflow to test:
 2. Select "LeetCode Daily Challenge" workflow
 3. Click "Run workflow"
 
-### 4. Configure AdSense (Optional)
+### 5. Configure AdSense (Optional)
 
 #### Step 1: Add Site Verification Code
 

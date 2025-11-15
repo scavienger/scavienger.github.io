@@ -43,6 +43,20 @@ jobs:
           echo "Question data fetched successfully"
           cat question_data.json
 
+      - name: Generate AI solution
+        env:
+          AI_PROVIDER: gemini  # Change to 'groq' if you want to use Groq instead
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          python scripts/solve_with_ai.py question_data.json > question_with_solution.json || true
+          if [ -f question_with_solution.json ] && [ -s question_with_solution.json ]; then
+            echo "AI solution generated successfully"
+            mv question_with_solution.json question_data.json
+          else
+            echo "Warning: Failed to generate AI solution, continuing with basic post"
+          fi
+
       - name: Generate Jekyll post
         run: |
           python scripts/generate_post.py < question_data.json

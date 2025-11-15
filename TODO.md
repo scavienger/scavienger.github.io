@@ -2,24 +2,24 @@
 
 ## High Priority 🔥
 
-### 1. ✅ Archive & Tag Pages (문제 탐색 기능)
-- [ ] 태그별 페이지 생성 (Array, String, Dynamic Programming 등)
-- [ ] 난이도별 페이지 (Easy, Medium, Hard)
-- [ ] 월별 아카이브 페이지
-- [ ] 전체 문제 목록 페이지
+### 1. ✅ Archive & Tag Pages (문제 탐색 기능) - COMPLETED
+- [x] 태그별 페이지 생성 (Array, String, Dynamic Programming 등)
+- [x] 난이도별 페이지 (Easy, Medium, Hard)
+- [x] 월별 아카이브 페이지
+- [x] 전체 문제 목록 페이지
 
-### 2. 📊 Statistics Dashboard (통계 대시보드)
-- [ ] 홈페이지에 통계 섹션 추가
-- [ ] 총 문제 수 카운터
-- [ ] 난이도별 분포 차트
+### 2. 📊 Statistics Dashboard (통계 대시보드) - PARTIALLY COMPLETED
+- [x] 홈페이지에 통계 섹션 추가
+- [x] 총 문제 수 카운터
+- [x] 난이도별 분포 차트
 - [ ] 주제별 분포 차트
 - [ ] 최근 해결 문제 타임라인
 
-### 3. 🎨 Visual Improvements (시각적 개선)
-- [ ] 커스텀 CSS 스타일
-- [ ] 다크 모드 지원
-- [ ] 코드 하이라이팅 테마 개선
-- [ ] 반응형 디자인 개선
+### 3. ✅ Visual Improvements (시각적 개선) - COMPLETED
+- [x] 커스텀 CSS 스타일
+- [x] 다크 모드 지원
+- [x] 코드 하이라이팅 테마 개선
+- [x] 반응형 디자인 개선
 
 ## Medium Priority 📝
 

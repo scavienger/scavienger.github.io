@@ -126,23 +126,53 @@ leetcode_url: {leetcode_url}
                 cleaned_hint = self._clean_html_content(hint)
                 body_parts.append(f"{i}. {cleaned_hint}\n")
 
-        # Solution section
-        body_parts.append("## Solution\n")
-        body_parts.append("### Approach\n")
-        body_parts.append("TODO: Add solution approach here.\n")
+        # AI Solution section
+        ai_solution = question_data.get('ai_solution', {})
 
-        body_parts.append("### Code\n")
-        body_parts.append("```python")
-        if code_template:
-            body_parts.append(code_template)
+        if ai_solution:
+            provider = ai_solution.get('provider', 'AI').upper()
+
+            # Provider emoji mapping
+            provider_emojis = {
+                'GEMINI': '✨',
+                'GROQ': '⚡'
+            }
+            emoji = provider_emojis.get(provider, '🤖')
+
+            body_parts.append(f"## {emoji} AI-Generated Solution ({provider})\n")
+
+            # Approach
+            body_parts.append("### Approach\n")
+            body_parts.append(f"{ai_solution.get('approach', 'No approach provided')}\n")
+
+            # Code
+            body_parts.append("### Code\n")
+            body_parts.append("```python")
+            body_parts.append(ai_solution.get('code', '# No code provided'))
+            body_parts.append("```\n")
+
+            # Complexity Analysis
+            body_parts.append("### Complexity Analysis\n")
+            body_parts.append(f"- **Time Complexity:** {ai_solution.get('time_complexity', 'N/A')}")
+            body_parts.append(f"- **Space Complexity:** {ai_solution.get('space_complexity', 'N/A')}\n")
         else:
-            body_parts.append("# Solution code here")
-        body_parts.append("```\n")
+            # Fallback: manual solution template
+            body_parts.append("## Solution\n")
+            body_parts.append("### Approach\n")
+            body_parts.append("TODO: Add solution approach here.\n")
 
-        # Complexity analysis
-        body_parts.append("### Complexity Analysis\n")
-        body_parts.append("- **Time Complexity:** O(?)\n")
-        body_parts.append("- **Space Complexity:** O(?)\n")
+            body_parts.append("### Code\n")
+            body_parts.append("```python")
+            if code_template:
+                body_parts.append(code_template)
+            else:
+                body_parts.append("# Solution code here")
+            body_parts.append("```\n")
+
+            # Complexity analysis
+            body_parts.append("### Complexity Analysis\n")
+            body_parts.append("- **Time Complexity:** O(?)\n")
+            body_parts.append("- **Space Complexity:** O(?)\n")
 
         return frontmatter + "\n" + "\n".join(body_parts)
 
