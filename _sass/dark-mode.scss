@@ -209,6 +209,132 @@
     color: #ffa198;
     border-color: var(--hard-color);
   }
+
+  /* Hero section dark mode */
+  .hero-section {
+    background: linear-gradient(135deg, #5568d3 0%, #6a4c93 100%);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  }
+
+  .hero-btn.primary {
+    background: #2d2d2d;
+    color: #58a6ff;
+  }
+
+  .hero-btn.primary:hover {
+    background: #3d3d3d;
+    color: #79c0ff;
+  }
+
+  .hero-btn.secondary {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+
+  .hero-btn.secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  /* Features section dark mode */
+  .features-section {
+    background: linear-gradient(135deg, #2d2d2d 0%, #404040 100%);
+  }
+
+  .feature-card {
+    background: #1a1a1a;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+  }
+
+  .feature-card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
+  }
+
+  /* Post cards dark mode */
+  .post-card {
+    background-color: var(--card-bg);
+    border-left-color: #58a6ff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  }
+
+  .post-card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+  }
+
+  .tag-badge {
+    background: linear-gradient(135deg, rgba(88, 166, 255, 0.2), rgba(167, 113, 247, 0.2));
+    color: #58a6ff;
+    border-color: rgba(88, 166, 255, 0.4);
+  }
+
+  /* View all link dark mode */
+  .view-all-link {
+    background: linear-gradient(135deg, #58a6ff, #a371f7);
+  }
+
+  .view-all-link:hover {
+    box-shadow: 0 6px 12px rgba(88, 166, 255, 0.4);
+  }
+
+  /* Section titles dark mode */
+  .section-title::after {
+    background: linear-gradient(135deg, #58a6ff, #a371f7);
+  }
+
+  /* No posts message dark mode */
+  .no-posts {
+    background-color: var(--card-bg);
+  }
+
+  /* Stat cards dark mode enhancements */
+  .stat-card.total {
+    background: linear-gradient(135deg, #2d2d2d 0%, #404040 100%);
+  }
+
+  /* Post detail page dark mode */
+  .post-header-enhanced {
+    border-bottom-color: var(--border-color);
+  }
+
+  .post-tag {
+    background: linear-gradient(135deg, #58a6ff, #a371f7);
+  }
+
+  .leetcode-button {
+    background: linear-gradient(135deg, #5568d3 0%, #6a4c93 100%);
+  }
+
+  .related-posts-section {
+    background: linear-gradient(135deg, #2d2d2d 0%, #404040 100%);
+  }
+
+  .related-post-card {
+    background: #1a1a1a;
+    border-left-color: #58a6ff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+  }
+
+  .related-post-card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
+  }
+
+  .nav-link {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .nav-link:hover {
+    border-color: #58a6ff;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+  }
+
+  .nav-arrow {
+    color: #58a6ff;
+  }
+
+  .nav-label {
+    color: #58a6ff;
+  }
 }
 
 /* Dark mode toggle button (optional manual toggle) */
