@@ -65,7 +65,7 @@ Both providers offer free tiers!
 
 | Provider | Model | Secret Name | Get API Key |
 |----------|-------|-------------|-------------|
-| **Gemini** (Default) ✨ | gemini-2.0-flash-exp | `GEMINI_API_KEY` | [Get Key](https://aistudio.google.com/app/apikey) |
+| **Gemini** (Default) ✨ | gemini-2.5-flash | `GEMINI_API_KEY` | [Get Key](https://aistudio.google.com/app/apikey) |
 | **Groq** ⚡ | llama-3.3-70b-versatile | `GROQ_API_KEY` | [Get Key](https://console.groq.com/keys) |
 
 #### Setup Instructions

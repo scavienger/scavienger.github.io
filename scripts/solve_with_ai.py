@@ -27,7 +27,7 @@ class AISolutionGenerator:
         gemini_key = os.getenv('GEMINI_API_KEY')
         if gemini_key:
             genai.configure(api_key=gemini_key)
-            self.gemini_model = genai.GenerativeModel('gemini-2.0-flash-exp')
+            self.gemini_model = genai.GenerativeModel('gemini-2.5-flash')
 
         # Groq setup
         self.groq_api_key = os.getenv('GROQ_API_KEY')
