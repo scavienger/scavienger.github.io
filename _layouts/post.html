@@ -2,16 +2,55 @@
 layout: default
 ---
 <article class="post">
-  <header class="post-header">
-    <h1 class="post-title">{{ page.title }}</h1>
-    <p class="post-meta">
-      <time datetime="{{ page.date | date_to_xmlschema }}">
-        {{ page.date | date: "%B %d, %Y" }}
-      </time>
+  <header class="post-header-enhanced">
+    <div class="post-breadcrumb">
+      <a href="{{ '/' | relative_url }}">Home</a>
+      <span class="separator">›</span>
+      <a href="{{ '/archive/' | relative_url }}">Archive</a>
+      <span class="separator">›</span>
+      <span>{{ page.title }}</span>
+    </div>
+
+    <h1 class="post-title-enhanced">{{ page.title }}</h1>
+
+    <div class="post-metadata">
+      <div class="metadata-item">
+        <span class="metadata-icon">📅</span>
+        <time datetime="{{ page.date | date_to_xmlschema }}">
+          {{ page.date | date: "%B %d, %Y" }}
+        </time>
+      </div>
+
       {% if page.difficulty %}
-        <span class="difficulty difficulty-{{ page.difficulty | downcase }}">{{ page.difficulty }}</span>
+      <div class="metadata-item">
+        <span class="metadata-icon">⚡</span>
+        <span class="difficulty difficulty-{{ page.difficulty | downcase }}">
+          {{ page.difficulty }}
+        </span>
+      </div>
       {% endif %}
-    </p>
+
+      {% if page.tags and page.tags.size > 0 %}
+      <div class="metadata-item tags-metadata">
+        <span class="metadata-icon">🏷️</span>
+        <div class="post-tags">
+          {% for tag in page.tags %}
+            <a href="{{ '/tags/' | relative_url }}" class="post-tag">{{ tag }}</a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    {% if page.leetcode_url %}
+    <div class="problem-link-header">
+      <a href="{{ page.leetcode_url }}" target="_blank" rel="noopener noreferrer" class="leetcode-button">
+        <span class="button-icon">🔗</span>
+        View on LeetCode
+        <span class="arrow-icon">→</span>
+      </a>
+    </div>
+    {% endif %}
   </header>
 
   <!-- AdSense Top Ad - Add your AdSense code here after approval -->
@@ -31,7 +70,7 @@ layout: default
     -->
   </div>
 
-  <div class="post-content">
+  <div class="post-content-enhanced">
     {{ content }}
   </div>
 
@@ -52,11 +91,53 @@ layout: default
     -->
   </div>
 
-  {% if page.leetcode_url %}
-  <div class="problem-link">
-    <a href="{{ page.leetcode_url }}" target="_blank" rel="noopener noreferrer">
-      View on LeetCode →
-    </a>
-  </div>
+  <!-- Related Posts Section -->
+  {% assign related_posts = site.posts | where: "difficulty", page.difficulty | limit: 3 %}
+  {% if related_posts.size > 1 %}
+  <section class="related-posts-section">
+    <h2 class="related-title">Related Problems</h2>
+    <div class="related-posts-grid">
+      {% for post in related_posts %}
+        {% if post.url != page.url %}
+        <article class="related-post-card">
+          <div class="related-post-header">
+            <span class="difficulty difficulty-{{ post.difficulty | downcase }}">
+              {{ post.difficulty }}
+            </span>
+          </div>
+          <h3 class="related-post-title">
+            <a href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
+          </h3>
+          <time class="related-post-date" datetime="{{ post.date | date_to_xmlschema }}">
+            {{ post.date | date: "%b %d, %Y" }}
+          </time>
+        </article>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </section>
   {% endif %}
+
+  <!-- Navigation -->
+  <nav class="post-navigation">
+    {% if page.previous.url %}
+    <a href="{{ page.previous.url | relative_url }}" class="nav-link prev-link">
+      <span class="nav-arrow">←</span>
+      <div class="nav-content">
+        <span class="nav-label">Previous</span>
+        <span class="nav-title">{{ page.previous.title }}</span>
+      </div>
+    </a>
+    {% endif %}
+
+    {% if page.next.url %}
+    <a href="{{ page.next.url | relative_url }}" class="nav-link next-link">
+      <div class="nav-content">
+        <span class="nav-label">Next</span>
+        <span class="nav-title">{{ page.next.title }}</span>
+      </div>
+      <span class="nav-arrow">→</span>
+    </a>
+    {% endif %}
+  </nav>
 </article>
