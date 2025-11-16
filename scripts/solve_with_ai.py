@@ -40,7 +40,7 @@ class AISolutionGenerator:
         hints = problem_data.get('hints', [])
         code_template = problem_data.get('code_template', '')
 
-        prompt = f"""You are an expert Python programmer solving LeetCode problems.
+        prompt = f"""You are an expert programmer solving LeetCode problems in multiple languages.
 
 Problem: {title}
 Difficulty: {difficulty}
@@ -57,21 +57,31 @@ Problem Description:
             prompt += "\n"
 
         if code_template:
-            prompt += f"Code Template:\n```python\n{code_template}\n```\n\n"
+            prompt += f"Code Template (Python):\n```python\n{code_template}\n```\n\n"
 
-        prompt += """Please provide:
-1. A clear explanation of your approach
-2. Complete Python solution code
-3. Time complexity analysis
-4. Space complexity analysis
+        prompt += """Please provide solutions in 6 programming languages: Python, Java, C++, JavaScript, TypeScript, and Go.
 
-Format your response as JSON with the following structure:
+For each solution:
+- Provide a clear explanation of your approach (once, shared)
+- Complete, working code for each language
+- Time and space complexity analysis
+
+Format your response as JSON:
 {
-  "approach": "Your explanation here",
-  "code": "Complete Python code here",
-  "time_complexity": "O(...) explanation",
-  "space_complexity": "O(...) explanation"
+  "approach": "Detailed explanation here",
+  "time_complexity": "O(...) with explanation",
+  "space_complexity": "O(...) with explanation",
+  "solutions": {
+    "python": "Complete Python code",
+    "java": "Complete Java code",
+    "cpp": "Complete C++ code",
+    "javascript": "Complete JavaScript code",
+    "typescript": "Complete TypeScript code",
+    "go": "Complete Go code"
+  }
 }
+
+Important: Each code solution must be complete and runnable. Include class/function definitions, imports, and follow language conventions.
 
 Provide ONLY the JSON response, no additional text."""
 
@@ -85,21 +95,38 @@ Provide ONLY the JSON response, no additional text."""
             end = response_text.rfind('}') + 1
             if start != -1 and end > start:
                 json_str = response_text[start:end]
-                return json.loads(json_str)
+                parsed = json.loads(json_str)
+
+                # Validate that we have the expected structure
+                if 'solutions' in parsed and isinstance(parsed['solutions'], dict):
+                    return parsed
+                # Fallback for old format (single language)
+                elif 'code' in parsed:
+                    return {
+                        "approach": parsed.get("approach", "N/A"),
+                        "time_complexity": parsed.get("time_complexity", "N/A"),
+                        "space_complexity": parsed.get("space_complexity", "N/A"),
+                        "solutions": {
+                            "python": parsed.get("code", "")
+                        }
+                    }
+                else:
+                    return self._create_error_response(response_text)
             else:
-                return {
-                    "approach": "Failed to parse structured response",
-                    "code": response_text,
-                    "time_complexity": "N/A",
-                    "space_complexity": "N/A"
-                }
+                return self._create_error_response(response_text)
         except json.JSONDecodeError:
-            return {
-                "approach": "Failed to parse JSON response",
-                "code": response_text,
-                "time_complexity": "N/A",
-                "space_complexity": "N/A"
+            return self._create_error_response(response_text)
+
+    def _create_error_response(self, response_text: str) -> Dict:
+        """Create a fallback response when parsing fails"""
+        return {
+            "approach": "Failed to parse AI response",
+            "time_complexity": "N/A",
+            "space_complexity": "N/A",
+            "solutions": {
+                "python": f"# Failed to parse response\n# Raw output:\n{response_text[:500]}"
             }
+        }
 
     def solve_with_gemini(self, problem_data: Dict) -> Optional[Dict]:
         """Generate solution using Gemini"""

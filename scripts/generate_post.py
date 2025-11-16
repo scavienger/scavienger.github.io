@@ -82,11 +82,55 @@ class PostGenerator:
 
         return content.strip()
 
+    def _generate_code_tabs(self, solutions):
+        """Generate Pure CSS tabs for multi-language code"""
+        # Language configurations: (key, display name, code fence)
+        languages = [
+            ('python', 'Python', 'python'),
+            ('java', 'Java', 'java'),
+            ('cpp', 'C++', 'cpp'),
+            ('javascript', 'JavaScript', 'javascript'),
+            ('typescript', 'TypeScript', 'typescript'),
+            ('go', 'Go', 'go')
+        ]
+
+        # Start the tabs container
+        tabs_html = ['<div class="code-tabs">\n']
+
+        # Create radio inputs (hidden)
+        for i, (lang_key, _, _) in enumerate(languages):
+            if lang_key in solutions:
+                checked = ' checked' if i == 0 else ''
+                tabs_html.append(f'  <input type="radio" name="code-lang" id="lang-{lang_key}"{checked}>\n')
+
+        # Create tab labels
+        tabs_html.append('  <div class="tab-labels">\n')
+        for lang_key, lang_name, _ in languages:
+            if lang_key in solutions:
+                tabs_html.append(f'    <label for="lang-{lang_key}">{lang_name}</label>\n')
+        tabs_html.append('  </div>\n\n')
+
+        # Create tab content panels
+        for lang_key, _, fence in languages:
+            if lang_key in solutions:
+                code = solutions[lang_key].strip()
+                tabs_html.append(f'  <div class="tab-panel" data-lang="{lang_key}">\n\n')
+                tabs_html.append(f'```{fence}\n')
+                tabs_html.append(code + '\n')
+                tabs_html.append('```\n\n')
+                tabs_html.append('  </div>\n\n')
+
+        tabs_html.append('</div>\n')
+
+        return ''.join(tabs_html)
+
     def _generate_content(self, question_data, date_str):
         """Generate the markdown content"""
         title = question_data['title']
         difficulty = question_data['difficulty']
-        content = self._clean_html_content(question_data['content'])
+        # Content is now in markdown format from fetch_leetcode.py
+        content = question_data.get('content', '')
+        images = question_data.get('images', [])
         topics = question_data.get('topics', [])
         hints = question_data.get('hints', [])
         code_template = question_data.get('code_template', '')
@@ -119,6 +163,14 @@ leetcode_url: {leetcode_url}
         body_parts.append("## Problem Description\n")
         body_parts.append(content + "\n")
 
+        # Add images if any
+        if images:
+            body_parts.append("### Illustrations\n")
+            for img in images:
+                src = img.get('src', '')
+                alt = img.get('alt', 'Problem Image')
+                body_parts.append(f"![{alt}]({src})\n")
+
         # Hints section
         if hints:
             body_parts.append("## Hints\n")
@@ -145,11 +197,18 @@ leetcode_url: {leetcode_url}
             body_parts.append("### Approach\n")
             body_parts.append(f"{ai_solution.get('approach', 'No approach provided')}\n")
 
-            # Code
+            # Code with multi-language tabs
             body_parts.append("### Code\n")
-            body_parts.append("```python")
-            body_parts.append(ai_solution.get('code', '# No code provided'))
-            body_parts.append("```\n")
+            solutions = ai_solution.get('solutions', {})
+            if solutions and isinstance(solutions, dict):
+                # Generate Pure CSS tabs for multiple languages
+                body_parts.append(self._generate_code_tabs(solutions))
+            else:
+                # Fallback for old format (single Python code)
+                code = ai_solution.get('code', '# No code provided')
+                body_parts.append("```python")
+                body_parts.append(code)
+                body_parts.append("```\n")
 
             # Complexity Analysis
             body_parts.append("### Complexity Analysis\n")
