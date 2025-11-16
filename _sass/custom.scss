@@ -1173,20 +1173,7 @@ html {
   background-color: rgba(102, 126, 234, 0.1);
 }
 
-/* Active tab label */
-.code-tabs input[type="radio"]:checked + input + input + input + input + input + .tab-labels label:nth-child(6),
-.code-tabs input[type="radio"]:checked + input + input + input + input + .tab-labels label:nth-child(5),
-.code-tabs input[type="radio"]:checked + input + input + input + .tab-labels label:nth-child(4),
-.code-tabs input[type="radio"]:checked + input + input + .tab-labels label:nth-child(3),
-.code-tabs input[type="radio"]:checked + input + .tab-labels label:nth-child(2),
-.code-tabs input[type="radio"]:checked + .tab-labels label:nth-child(1) {
-  opacity: 1;
-  color: white;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
-  border-bottom: 3px solid var(--primary-color);
-}
-
-/* Simpler approach using for attribute matching */
+/* Active tab label - using id and for attribute matching */
 .code-tabs input#lang-python:checked ~ .tab-labels label[for="lang-python"],
 .code-tabs input#lang-java:checked ~ .tab-labels label[for="lang-java"],
 .code-tabs input#lang-cpp:checked ~ .tab-labels label[for="lang-cpp"],
