@@ -8,6 +8,8 @@ import json
 import requests
 import sys
 from datetime import datetime
+import html2text
+from bs4 import BeautifulSoup
 
 
 class LeetCodeFetcher:
@@ -98,19 +100,57 @@ class LeetCodeFetcher:
                 python_code = snippet.get('code', '')
                 break
 
+        # Convert HTML content to Markdown
+        html_content = question.get('content', '')
+        markdown_content, images = self._convert_html_to_markdown(html_content)
+
         return {
             'date': daily_question.get('date'),
             'title': question.get('title', 'Unknown Title'),
             'title_slug': question.get('titleSlug', ''),
             'question_id': question.get('questionFrontendId', ''),
             'difficulty': question.get('difficulty', 'Unknown'),
-            'content': question.get('content', ''),
+            'content': markdown_content,
+            'images': images,
             'link': f"https://leetcode.com{daily_question.get('link', '')}",
             'topics': [tag.get('name') for tag in question.get('topicTags', [])],
             'hints': question.get('hints', []),
             'code_template': python_code,
             'example_testcases': question.get('exampleTestcases', ''),
         }
+
+    def _convert_html_to_markdown(self, html_content):
+        """Convert HTML content to Markdown and extract images"""
+        if not html_content:
+            return "", []
+
+        # Parse HTML with BeautifulSoup
+        soup = BeautifulSoup(html_content, 'html.parser')
+
+        # Extract image URLs
+        images = []
+        for img in soup.find_all('img'):
+            src = img.get('src', '')
+            alt = img.get('alt', 'Problem Image')
+            if src:
+                images.append({'src': src, 'alt': alt})
+
+        # Configure html2text
+        h = html2text.HTML2Text()
+        h.body_width = 0  # Don't wrap lines
+        h.ignore_links = False
+        h.ignore_images = False
+        h.ignore_emphasis = False
+        h.skip_internal_links = False
+
+        # Convert to markdown
+        markdown = h.handle(html_content)
+
+        # Clean up excessive newlines
+        while '\n\n\n' in markdown:
+            markdown = markdown.replace('\n\n\n', '\n\n')
+
+        return markdown.strip(), images
 
 
 def main():

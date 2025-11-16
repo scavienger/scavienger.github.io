@@ -1122,3 +1122,141 @@ html {
     padding: 20px;
   }
 }
+
+/* ===========================
+   Pure CSS Code Tabs
+   =========================== */
+.code-tabs {
+  margin: 30px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--card-bg);
+  box-shadow: 0 4px 6px var(--shadow);
+}
+
+/* Hide radio buttons */
+.code-tabs input[type="radio"] {
+  display: none;
+}
+
+/* Tab labels container */
+.code-tabs .tab-labels {
+  display: flex;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-bottom: 2px solid var(--border-color);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Individual tab label */
+.code-tabs .tab-labels label {
+  flex: 1;
+  min-width: 100px;
+  padding: 15px 20px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-color);
+  opacity: 0.6;
+  cursor: pointer;
+  transition: var(--transition);
+  border-right: 1px solid var(--border-color);
+  user-select: none;
+}
+
+.code-tabs .tab-labels label:last-child {
+  border-right: none;
+}
+
+.code-tabs .tab-labels label:hover {
+  opacity: 0.8;
+  background-color: rgba(102, 126, 234, 0.1);
+}
+
+/* Active tab label */
+.code-tabs input[type="radio"]:checked + input + input + input + input + input + .tab-labels label:nth-child(6),
+.code-tabs input[type="radio"]:checked + input + input + input + input + .tab-labels label:nth-child(5),
+.code-tabs input[type="radio"]:checked + input + input + input + .tab-labels label:nth-child(4),
+.code-tabs input[type="radio"]:checked + input + input + .tab-labels label:nth-child(3),
+.code-tabs input[type="radio"]:checked + input + .tab-labels label:nth-child(2),
+.code-tabs input[type="radio"]:checked + .tab-labels label:nth-child(1) {
+  opacity: 1;
+  color: white;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  border-bottom: 3px solid var(--primary-color);
+}
+
+/* Simpler approach using for attribute matching */
+.code-tabs input#lang-python:checked ~ .tab-labels label[for="lang-python"],
+.code-tabs input#lang-java:checked ~ .tab-labels label[for="lang-java"],
+.code-tabs input#lang-cpp:checked ~ .tab-labels label[for="lang-cpp"],
+.code-tabs input#lang-javascript:checked ~ .tab-labels label[for="lang-javascript"],
+.code-tabs input#lang-typescript:checked ~ .tab-labels label[for="lang-typescript"],
+.code-tabs input#lang-go:checked ~ .tab-labels label[for="lang-go"] {
+  opacity: 1;
+  color: white;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  box-shadow: inset 0 -3px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* Tab panels - hide all by default */
+.code-tabs .tab-panel {
+  display: none;
+  padding: 0;
+  animation: fadeIn 0.3s ease-in;
+}
+
+/* Show active panel */
+.code-tabs input#lang-python:checked ~ .tab-panel[data-lang="python"],
+.code-tabs input#lang-java:checked ~ .tab-panel[data-lang="java"],
+.code-tabs input#lang-cpp:checked ~ .tab-panel[data-lang="cpp"],
+.code-tabs input#lang-javascript:checked ~ .tab-panel[data-lang="javascript"],
+.code-tabs input#lang-typescript:checked ~ .tab-panel[data-lang="typescript"],
+.code-tabs input#lang-go:checked ~ .tab-panel[data-lang="go"] {
+  display: block;
+}
+
+/* Code block styling within tabs */
+.code-tabs .tab-panel pre {
+  margin: 0;
+  border-radius: 0 0 8px 8px;
+  border: none;
+}
+
+.code-tabs .tab-panel .highlight {
+  margin: 0;
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile responsive */
+@media screen and (max-width: 768px) {
+  .code-tabs .tab-labels label {
+    min-width: 80px;
+    padding: 12px 15px;
+    font-size: 13px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .code-tabs .tab-labels {
+    flex-wrap: nowrap;
+    overflow-x: scroll;
+  }
+
+  .code-tabs .tab-labels label {
+    min-width: 70px;
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+}
