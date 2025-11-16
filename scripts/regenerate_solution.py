@@ -244,6 +244,45 @@ class SolutionRegenerator:
 
         return generator.generate_solution(problem_data)
 
+    def generate_problem_section(self, problem_data: Dict) -> str:
+        """Generate the problem description markdown section"""
+        parts = []
+
+        # Problem header
+        question_id = problem_data.get('question_id', '')
+        title = problem_data.get('title', 'Unknown Title')
+        difficulty = problem_data.get('difficulty', 'Unknown')
+        topics = problem_data.get('topics', [])
+        content = problem_data.get('content', '')
+        images = problem_data.get('images', [])
+        hints = problem_data.get('hints', [])
+
+        parts.append(f"## Problem #{question_id}: {title}\n")
+        parts.append(f"**Difficulty:** {difficulty}\n")
+
+        if topics:
+            parts.append(f"**Topics:** {', '.join(topics)}\n")
+
+        # Problem description
+        parts.append("## Problem Description\n")
+        parts.append(content + "\n")
+
+        # Add images if any
+        if images:
+            parts.append("### Illustrations\n")
+            for img in images:
+                src = img.get('src', '')
+                alt = img.get('alt', 'Problem Image')
+                parts.append(f"![{alt}]({src})\n")
+
+        # Hints section
+        if hints:
+            parts.append("## Hints\n")
+            for i, hint in enumerate(hints, 1):
+                parts.append(f"{i}. {hint}\n")
+
+        return '\n'.join(parts)
+
     def generate_solution_section(self, ai_solution: Dict) -> str:
         """Generate the AI solution markdown section"""
         provider = self.provider.upper()
@@ -319,29 +358,28 @@ class SolutionRegenerator:
 
         return ''.join(tabs_html)
 
-    def update_post(self, filepath: str, new_solution_section: str) -> bool:
-        """Update post with new AI solution section"""
+    def update_post(self, filepath: str, new_problem_section: str, new_solution_section: str) -> bool:
+        """Update post with new problem description and AI solution sections"""
         try:
             with open(filepath, 'r', encoding='utf-8') as f:
                 content = f.read()
 
-            # Find and replace AI solution section
-            # Pattern: ## emoji AI-Generated Solution ... until next ## or end
-            pattern = r'##\s*[^\n]*AI-Generated Solution[^\n]*\n.*?(?=\n##\s|\Z)'
+            # Parse frontmatter
+            frontmatter_match = re.match(r'^(---\n.*?\n---\n)', content, re.DOTALL)
+            if not frontmatter_match:
+                print("Failed to parse frontmatter", file=sys.stderr)
+                return False
 
-            if re.search(pattern, content, re.DOTALL):
-                # Replace existing solution
-                new_content = re.sub(pattern, new_solution_section.rstrip(), content, flags=re.DOTALL)
-                print("Replaced existing AI solution section", file=sys.stderr)
-            else:
-                # Append at the end
-                new_content = content.rstrip() + '\n\n' + new_solution_section
-                print("Appended new AI solution section", file=sys.stderr)
+            frontmatter = frontmatter_match.group(1)
+
+            # Reconstruct the post with new sections
+            new_content = frontmatter + '\n' + new_problem_section + '\n' + new_solution_section
 
             # Write back
             with open(filepath, 'w', encoding='utf-8') as f:
                 f.write(new_content)
 
+            print("Updated problem description and AI solution sections", file=sys.stderr)
             return True
 
         except Exception as e:
@@ -404,6 +442,10 @@ def main():
 
     print(f"Problem: {problem_data['title']}", file=sys.stderr)
 
+    # Generate problem section
+    print(f"Generating problem description section...", file=sys.stderr)
+    new_problem_section = regenerator.generate_problem_section(problem_data)
+
     # Generate AI solution
     print(f"Generating AI solution with {provider}...", file=sys.stderr)
     ai_solution = regenerator.generate_ai_solution(problem_data)
@@ -418,7 +460,7 @@ def main():
 
     # Update post
     print(f"Updating post file...", file=sys.stderr)
-    if regenerator.update_post(filepath, new_solution_section):
+    if regenerator.update_post(filepath, new_problem_section, new_solution_section):
         print(f"✅ Successfully updated: {filepath}")
         return 0
     else:
