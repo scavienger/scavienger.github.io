@@ -183,7 +183,13 @@ class SolutionRegenerator:
                 images.append({'src': src, 'alt': alt})
 
         # Convert tables to code blocks
-        for table in soup.find_all('table'):
+        # Process all tables at once to avoid issues with nested tables
+        tables = soup.find_all('table')
+        for table in tables:
+            # Skip if table was already removed (e.g., nested table)
+            if not table.parent:
+                continue
+
             # Extract table content as plain text
             table_lines = []
             for row in table.find_all('tr'):
