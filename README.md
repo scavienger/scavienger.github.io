@@ -5,8 +5,9 @@ Automated blog that fetches and posts LeetCode Daily Challenge problems every da
 ## Features
 
 - **Automated Daily Posts**: GitHub Actions fetches the daily LeetCode problem and creates a new blog post automatically
-- **AI-Generated Solutions**: Free AI providers (Gemini or Groq) generate solutions automatically
+- **AI-Generated Solutions**: Solutions in 6 languages (Python, Java, C++, JavaScript, TypeScript, Go) with Pure CSS tabs
 - **Multiple AI Providers**: Choose from Gemini (default) or Groq (Llama 3.3) - both with free tiers
+- **Manual Regeneration**: Update existing posts with new AI solutions via workflow or command line
 - **Jekyll-powered**: Clean, fast static site hosted on GitHub Pages
 - **Modern UI**: Beautiful, responsive design with dark mode support
 - **Navigation**: Archive, difficulty, and topic-based browsing
@@ -24,21 +25,34 @@ scavienger.github.io/
 ├── _posts/                 # Auto-generated blog posts
 ├── .github/
 │   └── workflows/
-│       └── leetcode-daily.yml  # GitHub Actions workflow
+│       ├── leetcode-daily.yml      # Daily automation workflow
+│       └── regenerate-solution.yml # Manual regeneration workflow
 └── scripts/
-    ├── requirements.txt        # Python dependencies
-    ├── fetch_leetcode.py       # Fetches daily question from LeetCode
-    ├── solve_with_ai.py        # Generates solutions using AI models
-    └── generate_post.py        # Generates Jekyll markdown post
+    ├── requirements.txt            # Python dependencies
+    ├── fetch_leetcode.py           # Fetches daily question from LeetCode
+    ├── solve_with_ai.py            # Generates solutions using AI models
+    ├── generate_post.py            # Generates Jekyll markdown post
+    └── regenerate_solution.py      # Regenerates AI solutions for existing posts
 ```
 
 ## How It Works
 
+### Daily Automation
+
 1. **Scheduled Trigger**: GitHub Actions runs daily at 9:00 AM KST
-2. **Fetch Question**: `fetch_leetcode.py` queries LeetCode's GraphQL API
-3. **AI Solutions**: `solve_with_ai.py` generates solutions using Claude, GPT-4, and Gemini
-4. **Generate Post**: `generate_post.py` creates a markdown file with all solutions in `_posts/`
+2. **Fetch Question**: `fetch_leetcode.py` queries LeetCode's GraphQL API and converts HTML to Markdown
+3. **AI Solutions**: `solve_with_ai.py` generates solutions in 6 languages (Python, Java, C++, JS, TS, Go)
+4. **Generate Post**: `generate_post.py` creates a markdown file with Pure CSS tabs for multi-language code
 5. **Auto Deploy**: GitHub Pages automatically builds and deploys the updated site
+
+### Manual Regeneration
+
+1. **Trigger Workflow**: Run "Regenerate AI Solution for Post" workflow from GitHub Actions
+2. **Input Date**: Specify which post to update (YYYY-MM-DD)
+3. **Fetch Problem**: Get fresh problem details from LeetCode
+4. **Generate Solutions**: Create new AI solutions with selected provider
+5. **Update Post**: Replace the AI solution section in the existing post
+6. **Auto Commit**: Changes are automatically committed and pushed
 
 ## Setup Instructions
 
@@ -142,6 +156,44 @@ bundle exec jekyll serve
 
 # Visit http://localhost:4000
 ```
+
+## Regenerating AI Solutions
+
+You can regenerate AI solutions for existing posts using the manual workflow:
+
+### Via GitHub Actions UI
+
+1. Go to **Actions** → **Regenerate AI Solution for Post**
+2. Click **Run workflow**
+3. Enter the post date (YYYY-MM-DD format, e.g., `2025-11-14`)
+4. Select AI provider (`gemini` or `groq`)
+5. Click **Run workflow**
+
+The workflow will:
+- Find the post for the specified date
+- Fetch the problem details from LeetCode
+- Generate new AI solutions in 6 languages
+- Update the post with the new solutions
+- Commit and push the changes
+
+### Via Command Line
+
+```bash
+# Set up environment
+export GEMINI_API_KEY="your-key-here"
+export GROQ_API_KEY="your-key-here"
+
+# Regenerate solution for a specific date
+python scripts/regenerate_solution.py 2025-11-14 gemini
+
+# Or with Groq
+python scripts/regenerate_solution.py 2025-11-14 groq
+```
+
+This is useful for:
+- Updating old posts with multi-language solutions
+- Trying different AI providers
+- Regenerating solutions with improved prompts
 
 ### Testing the Scripts
 
