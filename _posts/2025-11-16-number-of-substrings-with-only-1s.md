@@ -95,7 +95,7 @@ This approach is efficient as it processes each character once and uses only a f
 
   <div class="tab-panel" data-lang="python">
 
-```python
+{% highlight python %}
 class Solution:
     def numSub(self, s: str) -> int:
         MOD = 10**9 + 7
@@ -110,13 +110,13 @@ class Solution:
                 current_consecutive_ones = 0
         
         return total_substrings
-```
+{% endhighlight %}
 
   </div>
 
   <div class="tab-panel" data-lang="java">
 
-```java
+{% highlight java %}
 class Solution {
     public int numSub(String s) {
         long MOD = 1_000_000_007L; 
@@ -135,13 +135,13 @@ class Solution {
         return (int) totalSubstrings;
     }
 }
-```
+{% endhighlight %}
 
   </div>
 
   <div class="tab-panel" data-lang="cpp">
 
-```cpp
+{% highlight cpp %}
 class Solution {
 public:
     int numSub(string s) {
@@ -161,13 +161,13 @@ public:
         return (int) total_substrings;
     }
 };
-```
+{% endhighlight %}
 
   </div>
 
   <div class="tab-panel" data-lang="javascript">
 
-```javascript
+{% highlight javascript %}
 /**
  * @param {string} s
  * @return {number}
@@ -188,13 +188,13 @@ var numSub = function(s) {
 
     return totalSubstrings;
 };
-```
+{% endhighlight %}
 
   </div>
 
   <div class="tab-panel" data-lang="typescript">
 
-```typescript
+{% highlight typescript %}
 function numSub(s: string): number {
     const MOD = 10**9 + 7;
     let totalSubstrings: number = 0;
@@ -211,13 +211,13 @@ function numSub(s: string): number {
 
     return totalSubstrings;
 }
-```
+{% endhighlight %}
 
   </div>
 
   <div class="tab-panel" data-lang="go">
 
-```go
+{% highlight go %}
 package main
 
 func numSub(s string) int {
@@ -236,7 +236,7 @@ func numSub(s string) int {
 
 	return totalSubstrings
 }
-```
+{% endhighlight %}
 
   </div>
 
