@@ -348,10 +348,10 @@ class SolutionRegenerator:
         for lang_key, _, fence in languages:
             if lang_key in solutions:
                 code = solutions[lang_key].strip()
-                tabs_html.append(f'  <div class="tab-panel" data-lang="{lang_key}" markdown="1">\n\n')
-                tabs_html.append(f'```{fence}\n')
+                tabs_html.append(f'  <div class="tab-panel" data-lang="{lang_key}">\n\n')
+                tabs_html.append('{%% highlight %s %%}\n' % fence)
                 tabs_html.append(code + '\n')
-                tabs_html.append('```\n\n')
+                tabs_html.append('{% endhighlight %}\n\n')
                 tabs_html.append('  </div>\n\n')
 
         tabs_html.append('</div>\n')

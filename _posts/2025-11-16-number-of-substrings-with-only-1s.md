@@ -102,9 +102,9 @@ With this understanding, the algorithm is as follows:
     <label for="lang-go">Go</label>
   </div>
 
-  <div class="tab-panel" data-lang="python" markdown="1">
+  <div class="tab-panel" data-lang="python">
 
-```python
+{% highlight python %}
 import math
 
 class Solution:
@@ -129,13 +129,13 @@ class Solution:
         total_substrings = (total_substrings + contribution) % MOD
         
         return total_substrings
-```
+{% endhighlight %}
 
   </div>
 
-  <div class="tab-panel" data-lang="java" markdown="1">
+  <div class="tab-panel" data-lang="java">
 
-```java
+{% highlight java %}
 class Solution {
     public int numSub(String s) {
         final int MOD = 1_000_000_007; // 10^9 + 7
@@ -164,13 +164,13 @@ class Solution {
         return (int) totalSubstrings; // Result fits in int because of modulo
     }
 }
-```
+{% endhighlight %}
 
   </div>
 
-  <div class="tab-panel" data-lang="cpp" markdown="1">
+  <div class="tab-panel" data-lang="cpp">
 
-```cpp
+{% highlight cpp %}
 #include <string>
 
 class Solution {
@@ -202,13 +202,13 @@ public:
         return static_cast<int>(totalSubstrings); // Result fits in int because of modulo
     }
 };
-```
+{% endhighlight %}
 
   </div>
 
-  <div class="tab-panel" data-lang="javascript" markdown="1">
+  <div class="tab-panel" data-lang="javascript">
 
-```javascript
+{% highlight javascript %}
 class Solution {
     numSub(s) {
         const MOD = 1_000_000_007; // 10^9 + 7
@@ -237,13 +237,13 @@ class Solution {
         return totalSubstrings;
     }
 }
-```
+{% endhighlight %}
 
   </div>
 
-  <div class="tab-panel" data-lang="typescript" markdown="1">
+  <div class="tab-panel" data-lang="typescript">
 
-```typescript
+{% highlight typescript %}
 class Solution {
     numSub(s: string): number {
         const MOD = 1_000_000_007; // 10^9 + 7
@@ -272,13 +272,13 @@ class Solution {
         return totalSubstrings;
     }
 }
-```
+{% endhighlight %}
 
   </div>
 
-  <div class="tab-panel" data-lang="go" markdown="1">
+  <div class="tab-panel" data-lang="go">
 
-```go
+{% highlight go %}
 package main
 
 import "fmt"
@@ -310,7 +310,7 @@ func numSub(s string) int {
     
     return totalSubstrings
 }
-```
+{% endhighlight %}
 
   </div>
 
