@@ -135,6 +135,30 @@ class LeetCodeFetcher:
             if src:
                 images.append({'src': src, 'alt': alt})
 
+        # Convert tables to code blocks
+        for table in soup.find_all('table'):
+            # Extract table content as plain text
+            table_lines = []
+            for row in table.find_all('tr'):
+                cells = [cell.get_text(strip=True) for cell in row.find_all(['td', 'th'])]
+                if cells:
+                    # Format as simple text with spacing
+                    table_lines.append('  '.join(cells))
+
+            # Create a code block to replace the table
+            if table_lines:
+                code_block = soup.new_tag('pre')
+                code_block.string = '\n'.join(table_lines)
+                table.replace_with(code_block)
+
+        # Convert <pre> tags to markdown code blocks (triple backticks)
+        for pre in soup.find_all('pre'):
+            pre_text = pre.get_text()
+            # Replace <pre> with a marker that html2text won't mess up
+            marker = soup.new_tag('p')
+            marker.string = f"\n```\n{pre_text}\n```\n"
+            pre.replace_with(marker)
+
         # Configure html2text
         h = html2text.HTML2Text()
         h.body_width = 0  # Don't wrap lines
@@ -142,9 +166,10 @@ class LeetCodeFetcher:
         h.ignore_images = False
         h.ignore_emphasis = False
         h.skip_internal_links = False
+        h.ignore_tables = True  # We already handled tables manually
 
         # Convert to markdown
-        markdown = h.handle(html_content)
+        markdown = h.handle(str(soup))
 
         # Clean up excessive newlines
         while '\n\n\n' in markdown:
