@@ -105,7 +105,7 @@ By splitting the processing based on the number of zeros and leveraging the `zer
     <label for="lang-go">Go</label>
   </div>
 
-  <div class="tab-panel" data-lang="python">
+  <div class="tab-panel" data-lang="python" markdown="1">
 
 ```python
 import bisect
@@ -179,7 +179,7 @@ class Solution:
 
   </div>
 
-  <div class="tab-panel" data-lang="java">
+  <div class="tab-panel" data-lang="java" markdown="1">
 
 ```java
 import java.util.ArrayList;
@@ -269,7 +269,7 @@ class Solution {
 
   </div>
 
-  <div class="tab-panel" data-lang="cpp">
+  <div class="tab-panel" data-lang="cpp" markdown="1">
 
 ```cpp
 #include <string>
@@ -357,7 +357,7 @@ public:
 
   </div>
 
-  <div class="tab-panel" data-lang="javascript">
+  <div class="tab-panel" data-lang="javascript" markdown="1">
 
 ```javascript
 /**
@@ -454,7 +454,7 @@ var numberOfSubstrings = function(s) {
 
   </div>
 
-  <div class="tab-panel" data-lang="typescript">
+  <div class="tab-panel" data-lang="typescript" markdown="1">
 
 ```typescript
 function numberOfSubstrings(s: string): number {
@@ -547,7 +547,7 @@ function numberOfSubstrings(s: string): number {
 
   </div>
 
-  <div class="tab-panel" data-lang="go">
+  <div class="tab-panel" data-lang="go" markdown="1">
 
 ```go
 package main

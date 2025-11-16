@@ -102,7 +102,7 @@ With this understanding, the algorithm is as follows:
     <label for="lang-go">Go</label>
   </div>
 
-  <div class="tab-panel" data-lang="python">
+  <div class="tab-panel" data-lang="python" markdown="1">
 
 ```python
 import math
@@ -133,7 +133,7 @@ class Solution:
 
   </div>
 
-  <div class="tab-panel" data-lang="java">
+  <div class="tab-panel" data-lang="java" markdown="1">
 
 ```java
 class Solution {
@@ -168,7 +168,7 @@ class Solution {
 
   </div>
 
-  <div class="tab-panel" data-lang="cpp">
+  <div class="tab-panel" data-lang="cpp" markdown="1">
 
 ```cpp
 #include <string>
@@ -206,7 +206,7 @@ public:
 
   </div>
 
-  <div class="tab-panel" data-lang="javascript">
+  <div class="tab-panel" data-lang="javascript" markdown="1">
 
 ```javascript
 class Solution {
@@ -241,7 +241,7 @@ class Solution {
 
   </div>
 
-  <div class="tab-panel" data-lang="typescript">
+  <div class="tab-panel" data-lang="typescript" markdown="1">
 
 ```typescript
 class Solution {
@@ -276,7 +276,7 @@ class Solution {
 
   </div>
 
-  <div class="tab-panel" data-lang="go">
+  <div class="tab-panel" data-lang="go" markdown="1">
 
 ```go
 package main
