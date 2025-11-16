@@ -43,37 +43,40 @@ Given a binary string `s`, return _the number of substrings with all characters_
 
 ### Approach
 
-The problem asks us to count the total number of substrings consisting only of '1's in a given binary string `s`. Since the answer can be very large, we need to return it modulo `10^9 + 7`.
+The problem asks us to count the total number of substrings consisting only of '1's in a given binary string `s`, returning the result modulo `10^9 + 7`. 
 
-The core idea is to iterate through the string and keep track of consecutive '1's. When we encounter a '1', it extends the current sequence of consecutive '1's. Each '1' at the end of a sequence of `k` consecutive '1's (i.e., this '1' is the k-th '1' in the current block) contributes `k` new substrings that *end* at its current position:
-1. The single '1' itself.
-2. The '11' ending at this position (if `k >= 2`).
-3. The '111' ending at this position (if `k >= 3`).
-...and so on, up to the sequence of `k` '1's ending at this position.
+The core insight comes from observing how many '1'-only substrings can be formed from a contiguous block of `n` '1's. For example, if we have a block "111" (where `n=3`):
+- '1' appears 3 times
+- '11' appears 2 times
+- '111' appears 1 time
+The total count is 3 + 2 + 1 = 6.
 
-For example, consider the string `s = "111"`:
-- When we process the first `'1'` (at index 0): `current_consecutive_ones` becomes 1. This '1' forms one substring: "1". We add 1 to `total_substrings`.
-- When we process the second `'1'` (at index 1): `current_consecutive_ones` becomes 2. This '1' forms two substrings ending at index 1: "1" and "11". We add 2 to `total_substrings`.
-- When we process the third `'1'` (at index 2): `current_consecutive_ones` becomes 3. This '1' forms three substrings ending at index 2: "1", "11", and "111". We add 3 to `total_substrings`.
+This is the sum of the first `n` natural numbers, which can be calculated using the formula for triangular numbers: `n * (n + 1) / 2`.
 
-Thus, for "111", the total substrings would be 1 + 2 + 3 = 6. This is equivalent to summing the length of the current consecutive '1's block each time a '1' is encountered.
-
-When we encounter a '0', it breaks any current sequence of '1's, so we reset `current_consecutive_ones` to 0.
+Our approach is to iterate through the string and identify consecutive blocks of '1's. Whenever we encounter a '0' or reach the end of the string, it signifies the end of a block of consecutive '1's. At this point, we calculate the contribution of that block to the total count using the formula `n * (n + 1) / 2`, where `n` is the length of the current block of '1's. We then add this contribution to our running total, applying the modulo operation at each addition to prevent integer overflow.
 
 **Algorithm:**
-1. Initialize `total_substrings` to 0.
-2. Initialize `current_consecutive_ones` to 0.
-3. Define `MOD = 10^9 + 7`.
-4. Iterate through each character `c` in the input string `s`:
-   a. If `c` is `'1'`:
-      i. Increment `current_consecutive_ones`.
-      ii. Add the current `current_consecutive_ones` count to `total_substrings`. Perform modulo `MOD` after each addition to prevent overflow: `total_substrings = (total_substrings + current_consecutive_ones) % MOD`.
-   b. If `c` is `'0'`:
-      i. Reset `current_consecutive_ones` to 0.
-5. After iterating through the entire string, `total_substrings` will hold the final count.
-6. Return `total_substrings`.
+1.  Initialize `total_count = 0` and `current_consecutive_ones = 0`. Set `MOD = 10^9 + 7`.
+2.  Iterate through each character `char` in the input string `s`:
+    a.  If `char` is `'1'`, increment `current_consecutive_ones`.
+    b.  If `char` is `'0'`:
+        i.  This indicates the end of a block of '1's. Calculate its contribution: `contribution = (current_consecutive_ones * (current_consecutive_ones + 1)) / 2`.
+        ii. Add this `contribution` to `total_count`, ensuring to take the result modulo `MOD`: `total_count = (total_count + contribution) % MOD`.
+        iii. Reset `current_consecutive_ones` to 0.
+3.  After the loop finishes, there might be a pending block of '1's if the string ends with '1's (e.g., `s = "011"`). Perform the contribution calculation one last time for any remaining `current_consecutive_ones` and add it to `total_count` modulo `MOD`.
+4.  Return `total_count`.
 
-This approach is efficient as it processes each character once and uses only a few variables.
+**Example: s = "0110111"**
+- Initialize `total_count = 0`, `current_consecutive_ones = 0`.
+- `s[0] = '0'`: `current_consecutive_ones` is 0. No contribution. Reset `current_consecutive_ones = 0`.
+- `s[1] = '1'`: `current_consecutive_ones = 1`.
+- `s[2] = '1'`: `current_consecutive_ones = 2`.
+- `s[3] = '0'`: End of block "11". `n = 2`. Contribution = `(2 * 3) / 2 = 3`. `total_count = (0 + 3) % MOD = 3`. Reset `current_consecutive_ones = 0`.
+- `s[4] = '1'`: `current_consecutive_ones = 1`.
+- `s[5] = '1'`: `current_consecutive_ones = 2`.
+- `s[6] = '1'`: `current_consecutive_ones = 3`.
+- End of string. Remaining block "111". `n = 3`. Contribution = `(3 * 4) / 2 = 6`. `total_count = (3 + 6) % MOD = 9`.
+- Return 9.
 
 ### Code
 
@@ -99,17 +102,23 @@ This approach is efficient as it processes each character once and uses only a f
 class Solution:
     def numSub(self, s: str) -> int:
         MOD = 10**9 + 7
-        total_substrings = 0
+        total_count = 0
         current_consecutive_ones = 0
 
         for char in s:
             if char == '1':
                 current_consecutive_ones += 1
-                total_substrings = (total_substrings + current_consecutive_ones) % MOD
             else:
+                # End of a block of ones, calculate contribution
+                # sum of 1 to n is n * (n + 1) / 2
+                # Python handles large integers automatically, so no explicit casting needed.
+                total_count = (total_count + (current_consecutive_ones * (current_consecutive_ones + 1)) // 2) % MOD
                 current_consecutive_ones = 0
         
-        return total_substrings
+        # After loop, handle any remaining consecutive ones at the end of the string
+        total_count = (total_count + (current_consecutive_ones * (current_consecutive_ones + 1)) // 2) % MOD
+        
+        return total_count
 {% endhighlight %}
 
   </div>
@@ -119,20 +128,28 @@ class Solution:
 {% highlight java %}
 class Solution {
     public int numSub(String s) {
-        long MOD = 1_000_000_007L; 
-        long totalSubstrings = 0;
+        long MOD = 1_000_000_007; // Using long for MOD is good practice though int value fits in int.
+        long totalCount = 0; // Use long to ensure intermediate sums don't overflow before modulo
         int currentConsecutiveOnes = 0;
 
-        for (char c : s.toCharArray()) {
-            if (c == '1') {
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '1') {
                 currentConsecutiveOnes++;
-                totalSubstrings = (totalSubstrings + currentConsecutiveOnes) % MOD;
             } else {
+                // End of a block of ones, calculate contribution
+                // sum of 1 to n is n * (n + 1) / 2
+                // Cast currentConsecutiveOnes to long for multiplication to prevent overflow.
+                long n = currentConsecutiveOnes; 
+                totalCount = (totalCount + (n * (n + 1)) / 2) % MOD;
                 currentConsecutiveOnes = 0;
             }
         }
-
-        return (int) totalSubstrings;
+        
+        // After loop, handle any remaining consecutive ones at the end of the string
+        long n = currentConsecutiveOnes; // Cast currentConsecutiveOnes to long
+        totalCount = (totalCount + (n * (n + 1)) / 2) % MOD;
+        
+        return (int) totalCount; // Cast the final result back to int
     }
 }
 {% endhighlight %}
@@ -142,23 +159,33 @@ class Solution {
   <div class="tab-panel" data-lang="cpp">
 
 {% highlight cpp %}
+#include <string>
+
 class Solution {
 public:
-    int numSub(string s) {
-        long long MOD = 1e9 + 7; 
-        long long total_substrings = 0;
-        int current_consecutive_ones = 0;
+    int numSub(std::string s) {
+        long long MOD = 1000000007LL; // Use LL suffix for long long literal
+        long long totalCount = 0; // Use long long for total count to prevent overflow before modulo
+        int currentConsecutiveOnes = 0;
 
         for (char c : s) {
             if (c == '1') {
-                current_consecutive_ones++;
-                total_substrings = (total_substrings + current_consecutive_ones) % MOD;
+                currentConsecutiveOnes++;
             } else {
-                current_consecutive_ones = 0;
+                // End of a block of ones, calculate contribution
+                // sum of 1 to n is n * (n + 1) / 2
+                // Cast currentConsecutiveOnes to long long for multiplication to prevent overflow.
+                long long n = currentConsecutiveOnes; 
+                totalCount = (totalCount + (n * (n + 1)) / 2) % MOD;
+                currentConsecutiveOnes = 0;
             }
         }
-
-        return (int) total_substrings;
+        
+        // After loop, handle any remaining consecutive ones at the end of the string
+        long long n = currentConsecutiveOnes; // Cast currentConsecutiveOnes to long long
+        totalCount = (totalCount + (n * (n + 1)) / 2) % MOD;
+        
+        return static_cast<int>(totalCount); // Cast the final result back to int
     }
 };
 {% endhighlight %}
@@ -174,19 +201,28 @@ public:
  */
 var numSub = function(s) {
     const MOD = 10**9 + 7;
-    let totalSubstrings = 0;
+    let totalCount = 0;
     let currentConsecutiveOnes = 0;
 
     for (let i = 0; i < s.length; i++) {
         if (s[i] === '1') {
             currentConsecutiveOnes++;
-            totalSubstrings = (totalSubstrings + currentConsecutiveOnes) % MOD;
         } else {
+            // End of a block of ones, calculate contribution
+            // sum of 1 to n is n * (n + 1) / 2
+            // JavaScript numbers handle large integers up to 2^53 - 1 precisely,
+            // which is sufficient for n*(n+1)/2 where n <= 10^5.
+            const n = currentConsecutiveOnes;
+            totalCount = (totalCount + (n * (n + 1)) / 2) % MOD;
             currentConsecutiveOnes = 0;
         }
     }
-
-    return totalSubstrings;
+    
+    // After loop, handle any remaining consecutive ones at the end of the string
+    const n = currentConsecutiveOnes;
+    totalCount = (totalCount + (n * (n + 1)) / 2) % MOD;
+    
+    return totalCount;
 };
 {% endhighlight %}
 
@@ -197,19 +233,28 @@ var numSub = function(s) {
 {% highlight typescript %}
 function numSub(s: string): number {
     const MOD = 10**9 + 7;
-    let totalSubstrings: number = 0;
+    let totalCount: number = 0;
     let currentConsecutiveOnes: number = 0;
 
     for (let i = 0; i < s.length; i++) {
         if (s[i] === '1') {
             currentConsecutiveOnes++;
-            totalSubstrings = (totalSubstrings + currentConsecutiveOnes) % MOD;
         } else {
+            // End of a block of ones, calculate contribution
+            // sum of 1 to n is n * (n + 1) / 2
+            // TypeScript/JavaScript numbers handle large integers up to 2^53 - 1 precisely,
+            // which is sufficient for n*(n+1)/2 where n <= 10^5.
+            const n: number = currentConsecutiveOnes;
+            totalCount = (totalCount + (n * (n + 1)) / 2) % MOD;
             currentConsecutiveOnes = 0;
         }
     }
-
-    return totalSubstrings;
+    
+    // After loop, handle any remaining consecutive ones at the end of the string
+    const n: number = currentConsecutiveOnes;
+    totalCount = (totalCount + (n * (n + 1)) / 2) % MOD;
+    
+    return totalCount;
 }
 {% endhighlight %}
 
@@ -221,20 +266,31 @@ function numSub(s: string): number {
 package main
 
 func numSub(s string) int {
-	MOD := 1_000_000_007
-	totalSubstrings := 0
-	currentConsecutiveOnes := 0
+    var MOD int = 1_000_000_007
+    var totalCount int = 0 // totalCount will not exceed MOD, so int is sufficient after modulo.
+    var currentConsecutiveOnes int = 0
 
-	for _, r := range s {
-		if r == '1' {
-			currentConsecutiveOnes++
-			totalSubstrings = (totalSubstrings + currentConsecutiveOnes) % MOD
-		} else {
-			currentConsecutiveOnes = 0
-		}
-	}
-
-	return totalSubstrings
+    for i := 0; i < len(s); i++ {
+        if s[i] == '1' { // Character comparison is done with byte values in Go strings
+            currentConsecutiveOnes++
+        } else {
+            // End of a block of ones, calculate contribution
+            // sum of 1 to n is n * (n + 1) / 2
+            // Must cast currentConsecutiveOnes to int64 for multiplication
+            // to prevent overflow before division, as n*(n+1) can exceed max int32.
+            n := int64(currentConsecutiveOnes) 
+            contribution := (n * (n + 1)) / 2
+            totalCount = (totalCount + int(contribution)) % MOD // Cast back to int for totalCount
+            currentConsecutiveOnes = 0
+        }
+    }
+    
+    // After loop, handle any remaining consecutive ones at the end of the string
+    n := int64(currentConsecutiveOnes)
+    contribution := (n * (n + 1)) / 2
+    totalCount = (totalCount + int(contribution)) % MOD
+    
+    return totalCount
 }
 {% endhighlight %}
 
@@ -245,6 +301,6 @@ func numSub(s string) int {
 
 ### Complexity Analysis
 
-- **Time Complexity:** O(N), where N is the length of the input string `s`. We iterate through the string exactly once, performing constant time operations for each character.
+- **Time Complexity:** O(N)
 
-- **Space Complexity:** O(1), as we only use a few integer variables to store counts and the modulo constant, regardless of the input string's length.
+- **Space Complexity:** O(1)
