@@ -107,7 +107,7 @@ By splitting the processing based on the number of zeros and leveraging the `zer
 
   <div class="tab-panel" data-lang="python">
 
-```python
+{% highlight python %}
 import bisect
 
 class Solution:
@@ -175,13 +175,13 @@ class Solution:
                     ans += (valid_r_end - valid_r_start + 1)
                     
         return ans
-```
+{% endhighlight %}
 
   </div>
 
   <div class="tab-panel" data-lang="java">
 
-```java
+{% highlight java %}
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -265,13 +265,13 @@ class Solution {
         return ans;
     }
 }
-```
+{% endhighlight %}
 
   </div>
 
   <div class="tab-panel" data-lang="cpp">
 
-```cpp
+{% highlight cpp %}
 #include <string>
 #include <vector>
 #include <cmath>
@@ -353,13 +353,13 @@ public:
         return ans;
     }
 };
-```
+{% endhighlight %}
 
   </div>
 
   <div class="tab-panel" data-lang="javascript">
 
-```javascript
+{% highlight javascript %}
 /**
  * @param {string} s
  * @return {number}
@@ -450,13 +450,13 @@ var numberOfSubstrings = function(s) {
     
     return ans;
 };
-```
+{% endhighlight %}
 
   </div>
 
   <div class="tab-panel" data-lang="typescript">
 
-```typescript
+{% highlight typescript %}
 function numberOfSubstrings(s: string): number {
     const n: number = s.length;
     let ans: number = 0;
@@ -543,13 +543,13 @@ function numberOfSubstrings(s: string): number {
     
     return ans;
 }
-```
+{% endhighlight %}
 
   </div>
 
   <div class="tab-panel" data-lang="go">
 
-```go
+{% highlight go %}
 package main
 
 import (
@@ -632,7 +632,7 @@ func numberOfSubstrings(s string) int64 {
 
 	return ans
 }
-```
+{% endhighlight %}
 
   </div>
 
