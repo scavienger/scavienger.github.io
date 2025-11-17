@@ -59,7 +59,7 @@ Problem Description:
         if code_template:
             prompt += f"Code Template (Python):\n```python\n{code_template}\n```\n\n"
 
-        prompt += """Please provide solutions in 6 programming languages: Python, Java, C++, JavaScript, TypeScript, and Go.
+        prompt += """Please provide solutions in ALL 19 programming languages supported by LeetCode: C++, Java, Python, Python3, C, C#, JavaScript, TypeScript, PHP, Swift, Kotlin, Dart, Go, Ruby, Scala, Rust, Racket, Erlang, and Elixir.
 
 For each solution:
 - Provide a clear explanation of your approach (once, shared)
@@ -72,16 +72,29 @@ Format your response as JSON:
   "time_complexity": "O(...) with explanation",
   "space_complexity": "O(...) with explanation",
   "solutions": {
-    "python": "Complete Python code",
-    "java": "Complete Java code",
     "cpp": "Complete C++ code",
+    "java": "Complete Java code",
+    "python": "Complete Python code",
+    "python3": "Complete Python3 code",
+    "c": "Complete C code",
+    "csharp": "Complete C# code",
     "javascript": "Complete JavaScript code",
     "typescript": "Complete TypeScript code",
-    "go": "Complete Go code"
+    "php": "Complete PHP code",
+    "swift": "Complete Swift code",
+    "kotlin": "Complete Kotlin code",
+    "dart": "Complete Dart code",
+    "go": "Complete Go code",
+    "ruby": "Complete Ruby code",
+    "scala": "Complete Scala code",
+    "rust": "Complete Rust code",
+    "racket": "Complete Racket code",
+    "erlang": "Complete Erlang code",
+    "elixir": "Complete Elixir code"
   }
 }
 
-Important: Each code solution must be complete and runnable. Include class/function definitions, imports, and follow language conventions.
+Important: Each code solution must be complete and runnable. Include class/function definitions, imports, and follow language conventions for each specific language.
 
 Provide ONLY the JSON response, no additional text."""
 

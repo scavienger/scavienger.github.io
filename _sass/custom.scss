@@ -1152,17 +1152,18 @@ html {
 /* Individual tab label */
 .code-tabs .tab-labels label {
   flex: 0 0 auto;
-  min-width: 45px;
-  padding: 8px 12px;
+  min-width: 60px;
+  padding: 10px 14px;
   text-align: center;
   font-weight: 600;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-color);
   opacity: 0.6;
   cursor: pointer;
   transition: var(--transition);
   border-right: 1px solid var(--border-color);
   user-select: none;
+  white-space: nowrap;
 }
 
 .code-tabs .tab-labels label:last-child {
@@ -1175,12 +1176,25 @@ html {
 }
 
 /* Active tab label - using id and for attribute matching */
-.code-tabs input#lang-python:checked ~ .tab-labels label[for="lang-python"],
-.code-tabs input#lang-java:checked ~ .tab-labels label[for="lang-java"],
 .code-tabs input#lang-cpp:checked ~ .tab-labels label[for="lang-cpp"],
+.code-tabs input#lang-java:checked ~ .tab-labels label[for="lang-java"],
+.code-tabs input#lang-python:checked ~ .tab-labels label[for="lang-python"],
+.code-tabs input#lang-python3:checked ~ .tab-labels label[for="lang-python3"],
+.code-tabs input#lang-c:checked ~ .tab-labels label[for="lang-c"],
+.code-tabs input#lang-csharp:checked ~ .tab-labels label[for="lang-csharp"],
 .code-tabs input#lang-javascript:checked ~ .tab-labels label[for="lang-javascript"],
 .code-tabs input#lang-typescript:checked ~ .tab-labels label[for="lang-typescript"],
-.code-tabs input#lang-go:checked ~ .tab-labels label[for="lang-go"] {
+.code-tabs input#lang-php:checked ~ .tab-labels label[for="lang-php"],
+.code-tabs input#lang-swift:checked ~ .tab-labels label[for="lang-swift"],
+.code-tabs input#lang-kotlin:checked ~ .tab-labels label[for="lang-kotlin"],
+.code-tabs input#lang-dart:checked ~ .tab-labels label[for="lang-dart"],
+.code-tabs input#lang-go:checked ~ .tab-labels label[for="lang-go"],
+.code-tabs input#lang-ruby:checked ~ .tab-labels label[for="lang-ruby"],
+.code-tabs input#lang-scala:checked ~ .tab-labels label[for="lang-scala"],
+.code-tabs input#lang-rust:checked ~ .tab-labels label[for="lang-rust"],
+.code-tabs input#lang-racket:checked ~ .tab-labels label[for="lang-racket"],
+.code-tabs input#lang-erlang:checked ~ .tab-labels label[for="lang-erlang"],
+.code-tabs input#lang-elixir:checked ~ .tab-labels label[for="lang-elixir"] {
   opacity: 1;
   color: white;
   background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
@@ -1195,12 +1209,25 @@ html {
 }
 
 /* Show active panel */
-.code-tabs input#lang-python:checked ~ .tab-panel[data-lang="python"],
-.code-tabs input#lang-java:checked ~ .tab-panel[data-lang="java"],
 .code-tabs input#lang-cpp:checked ~ .tab-panel[data-lang="cpp"],
+.code-tabs input#lang-java:checked ~ .tab-panel[data-lang="java"],
+.code-tabs input#lang-python:checked ~ .tab-panel[data-lang="python"],
+.code-tabs input#lang-python3:checked ~ .tab-panel[data-lang="python3"],
+.code-tabs input#lang-c:checked ~ .tab-panel[data-lang="c"],
+.code-tabs input#lang-csharp:checked ~ .tab-panel[data-lang="csharp"],
 .code-tabs input#lang-javascript:checked ~ .tab-panel[data-lang="javascript"],
 .code-tabs input#lang-typescript:checked ~ .tab-panel[data-lang="typescript"],
-.code-tabs input#lang-go:checked ~ .tab-panel[data-lang="go"] {
+.code-tabs input#lang-php:checked ~ .tab-panel[data-lang="php"],
+.code-tabs input#lang-swift:checked ~ .tab-panel[data-lang="swift"],
+.code-tabs input#lang-kotlin:checked ~ .tab-panel[data-lang="kotlin"],
+.code-tabs input#lang-dart:checked ~ .tab-panel[data-lang="dart"],
+.code-tabs input#lang-go:checked ~ .tab-panel[data-lang="go"],
+.code-tabs input#lang-ruby:checked ~ .tab-panel[data-lang="ruby"],
+.code-tabs input#lang-scala:checked ~ .tab-panel[data-lang="scala"],
+.code-tabs input#lang-rust:checked ~ .tab-panel[data-lang="rust"],
+.code-tabs input#lang-racket:checked ~ .tab-panel[data-lang="racket"],
+.code-tabs input#lang-erlang:checked ~ .tab-panel[data-lang="erlang"],
+.code-tabs input#lang-elixir:checked ~ .tab-panel[data-lang="elixir"] {
   display: block;
 }
 

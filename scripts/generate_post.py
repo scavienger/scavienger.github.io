@@ -85,13 +85,27 @@ class PostGenerator:
     def _generate_code_tabs(self, solutions):
         """Generate Pure CSS tabs for multi-language code"""
         # Language configurations: (key, display name, code fence)
+        # All 19 languages supported by LeetCode
         languages = [
-            ('python', 'Python', 'python'),
-            ('java', 'Java', 'java'),
             ('cpp', 'C++', 'cpp'),
-            ('javascript', 'JS', 'javascript'),
-            ('typescript', 'TS', 'typescript'),
-            ('go', 'Go', 'go')
+            ('java', 'Java', 'java'),
+            ('python', 'Python', 'python'),
+            ('python3', 'Python3', 'python'),
+            ('c', 'C', 'c'),
+            ('csharp', 'C#', 'csharp'),
+            ('javascript', 'JavaScript', 'javascript'),
+            ('typescript', 'TypeScript', 'typescript'),
+            ('php', 'PHP', 'php'),
+            ('swift', 'Swift', 'swift'),
+            ('kotlin', 'Kotlin', 'kotlin'),
+            ('dart', 'Dart', 'dart'),
+            ('go', 'Go', 'go'),
+            ('ruby', 'Ruby', 'ruby'),
+            ('scala', 'Scala', 'scala'),
+            ('rust', 'Rust', 'rust'),
+            ('racket', 'Racket', 'racket'),
+            ('erlang', 'Erlang', 'erlang'),
+            ('elixir', 'Elixir', 'elixir')
         ]
 
         # Start the tabs container
