@@ -82,8 +82,13 @@ class PostGenerator:
 
         return content.strip()
 
-    def _generate_code_tabs(self, solutions):
-        """Generate Pure CSS tabs for multi-language code"""
+    def _generate_code_tabs(self, solutions, suffix=''):
+        """Generate Pure CSS tabs for multi-language code
+
+        Args:
+            solutions: Dictionary of language code solutions
+            suffix: Optional suffix for unique IDs when multiple tab sets exist
+        """
         # Language configurations: (key, display name, code fence)
         # All 19 languages supported by LeetCode
         languages = [
@@ -111,17 +116,20 @@ class PostGenerator:
         # Start the tabs container
         tabs_html = ['<div class="code-tabs">\n']
 
-        # Create radio inputs (hidden)
+        # Create radio inputs (hidden) with unique names and IDs
+        radio_name = f"code-lang{suffix}"
+        first_checked = False
         for i, (lang_key, _, _) in enumerate(languages):
             if lang_key in solutions:
-                checked = ' checked' if i == 0 else ''
-                tabs_html.append(f'  <input type="radio" name="code-lang" id="lang-{lang_key}"{checked}>\n')
+                checked = ' checked' if not first_checked else ''
+                first_checked = True
+                tabs_html.append(f'  <input type="radio" name="{radio_name}" id="lang-{lang_key}{suffix}"{checked}>\n')
 
         # Create tab labels
         tabs_html.append('  <div class="tab-labels">\n')
         for lang_key, lang_name, _ in languages:
             if lang_key in solutions:
-                tabs_html.append(f'    <label for="lang-{lang_key}">{lang_name}</label>\n')
+                tabs_html.append(f'    <label for="lang-{lang_key}{suffix}">{lang_name}</label>\n')
         tabs_html.append('  </div>\n\n')
 
         # Create tab content panels
@@ -192,10 +200,58 @@ leetcode_url: {leetcode_url}
                 cleaned_hint = self._clean_html_content(hint)
                 body_parts.append(f"{i}. {cleaned_hint}\n")
 
-        # AI Solution section
+        # AI Solution section - support both single and multiple solutions
         ai_solution = question_data.get('ai_solution', {})
+        ai_solutions = question_data.get('ai_solutions', [])
 
-        if ai_solution:
+        # Handle both old format (single solution) and new format (multiple solutions)
+        if ai_solutions:
+            # New format: multiple AI solutions
+            body_parts.append("## 🤖 AI-Generated Solutions\n")
+            body_parts.append("We've generated solutions using multiple AI models. Click to expand each solution:\n")
+
+            for idx, solution in enumerate(ai_solutions):
+                model_name = solution.get('model', 'AI')
+
+                # Model emoji mapping
+                model_emojis = {
+                    'gemini-2.5-flash': '✨',
+                    'llama-3.3-70b-versatile': '⚡'
+                }
+                emoji = model_emojis.get(model_name, '🤖')
+
+                # Create collapsible section
+                is_first = idx == 0
+                open_attr = ' open' if is_first else ''
+                body_parts.append(f'\n<details{open_attr}>')
+                body_parts.append(f'<summary><strong>{emoji} Solution from {model_name}</strong></summary>\n')
+
+                # Approach
+                body_parts.append("### Approach\n")
+                body_parts.append(f"{solution.get('approach', 'No approach provided')}\n")
+
+                # Code with multi-language tabs
+                body_parts.append("### Code\n")
+                solutions_code = solution.get('solutions', {})
+                if solutions_code and isinstance(solutions_code, dict):
+                    # Use unique ID for each AI model's tabs
+                    body_parts.append(self._generate_code_tabs(solutions_code, suffix=f"-{model_name.replace('.', '-')}"))
+                else:
+                    # Fallback
+                    code = solution.get('code', '# No code provided')
+                    body_parts.append("```python")
+                    body_parts.append(code)
+                    body_parts.append("```\n")
+
+                # Complexity Analysis
+                body_parts.append("### Complexity Analysis\n")
+                body_parts.append(f"- **Time Complexity:** {solution.get('time_complexity', 'N/A')}\n")
+                body_parts.append(f"- **Space Complexity:** {solution.get('space_complexity', 'N/A')}\n")
+
+                body_parts.append('</details>\n')
+
+        elif ai_solution:
+            # Old format: single AI solution
             # Get model name (new format) or fallback to provider (old format)
             model_name = ai_solution.get('model')
             if not model_name:
