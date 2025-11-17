@@ -15,11 +15,6 @@ on:
           - gemini-2.5-flash
           - llama-3.3-70b-versatile
         default: gemini-2.5-flash
-      target_branch:
-        description: 'Target branch for the update'
-        required: false
-        default: 'develop'
-        type: string
 
 jobs:
   regenerate:
@@ -66,4 +61,4 @@ jobs:
           # Commit changes
           git add _posts/
           git commit -m "Regenerate AI solution for ${{ inputs.date }} using ${{ inputs.ai_model }}"
-          git push origin ${{ inputs.target_branch }}
+          git push origin master
