@@ -58,10 +58,10 @@ Failed to parse AI response
 {% highlight python %}
 # Failed to parse response
 # Raw output:
-```
+```json
 {
-  "approach": "To solve this problem, we count the number of consecutive 1's in the binary string and use the formula (n + 1) * n // 2 to calculate the total number of substrings with all characters 1's for each group. We iterate over the string, maintaining a count of consecutive 1's. When a '0' is encountered, we calculate the contribution of the previous group of 1's to the total count and reset the count. We use the modulo operator at each step to prevent overflow.",
-  "time_complexity
+  "approach": "To solve this problem, we can iterate through the string and count the number of consecutive 1s. For each group of consecutive 1s, we calculate the number of substrings using the formula (n + 1) * n // 2, where n is the number of consecutive 1s. We then add this to our total count. We use the modulo operator to prevent overflow and ensure the result is within the range of 10^9 + 7.",
+  "time_complexity": "O(n) where n is the length of the string, because we are scanning
 {% endhighlight %}
 
   </div>
