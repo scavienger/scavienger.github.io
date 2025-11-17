@@ -32,8 +32,10 @@ You are also given a 2D integer array `query`. For each `query[i] = [row1_i, col
 
 ```
 
+{% raw %}
 **Input:** n = 3, queries = [[1,1,2,2],[0,0,1,1]]
 **Output:** [[1,1,0],[1,2,1],[0,1,1]]
+{% endraw %}
 **Explanation:** The diagram above shows the initial matrix, the matrix after the first query, and the matrix after the second query.
 - In the first query, we add 1 to every element in the submatrix with the top left corner (1, 1) and bottom right corner (2, 2).
 - In the second query, we add 1 to every element in the submatrix with the top left corner (0, 0) and bottom right corner (1, 1).
@@ -46,8 +48,10 @@ Example 2:
 
 ```
 
+{% raw %}
 **Input:** n = 2, queries = [[0,0,1,1]]
 **Output:** [[1,1],[1,1]]
+{% endraw %}
 **Explanation:** The diagram above shows the initial matrix and the matrix after the first query.
 - In the first query we add 1 to every element in the matrix.
 
@@ -131,6 +135,7 @@ This calculation needs to be done iteratively for all `x` from `0` to `n-1` and 
 
 ### Code
 
+{% raw %}
 <div class="code-tabs">
   <input type="radio" name="code-lang" id="lang-python" checked>
   <input type="radio" name="code-lang" id="lang-java">
@@ -510,6 +515,7 @@ func rangeAddQueries(n int, queries [][]int) [][]int {
   </div>
 
 </div>
+{% endraw %}
 
 
 ### Complexity Analysis
