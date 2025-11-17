@@ -1,0 +1,61 @@
+name: Generate Post by Date
+
+on:
+  workflow_dispatch:
+    inputs:
+      date:
+        description: 'Post date (YYYY-MM-DD)'
+        required: true
+        type: string
+      models:
+        description: 'AI Models to use (space-separated)'
+        required: false
+        default: 'gemini-2.5-flash llama-3.3-70b-versatile'
+        type: string
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: master
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          cd scripts
+          pip install -r requirements.txt
+
+      - name: Generate post with multiple AI solutions
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          echo "Generating post for date: ${{ inputs.date }}"
+          echo "Using models: ${{ inputs.models }}"
+          python scripts/generate_post_by_date.py ${{ inputs.date }} ${{ inputs.models }}
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Check if there are changes
+          if git diff --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          # Commit changes
+          git add _posts/
+          git commit -m "Generate post for ${{ inputs.date }} with AI solutions"
+          git push origin master

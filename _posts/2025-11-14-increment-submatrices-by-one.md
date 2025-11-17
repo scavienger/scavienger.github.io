@@ -38,10 +38,17 @@ Return _the matrix_ `mat` _after performing every query._
 
 **Constraints:**
 
-  * `1 <= n <= 500`
-  * `1 <= queries.length <= 104`
-  * `0 <= row1i <= row2i < n`
-  * `0 <= col1i <= col2i < n`
+```
+
+{% raw %}
+**Input:** n = 3, queries = [[1,1,2,2],[0,0,1,1]]
+**Output:** [[1,1,0],[1,2,1],[0,1,1]]
+{% endraw %}
+**Explanation:** The diagram above shows the initial matrix, the matrix after the first query, and the matrix after the second query.
+- In the first query, we add 1 to every element in the submatrix with the top left corner (1, 1) and bottom right corner (2, 2).
+- In the second query, we add 1 to every element in the submatrix with the top left corner (0, 0) and bottom right corner (1, 1).
+
+```
 
 ### Illustrations
 
@@ -51,7 +58,12 @@ Return _the matrix_ `mat` _after performing every query._
 
 ## Hints
 
-1. Imagine each row as a separate array. Instead of updating the whole submatrix together, we can use prefix sum to update each row separately.
+{% raw %}
+**Input:** n = 2, queries = [[0,0,1,1]]
+**Output:** [[1,1],[1,1]]
+{% endraw %}
+**Explanation:** The diagram above shows the initial matrix and the matrix after the first query.
+- In the first query we add 1 to every element in the matrix.
 
 2. For each query, iterate over the rows i in the range [row1, row2] and add 1 to prefix sum S[i][col1], and subtract 1 from S[i][col2 + 1].
 
@@ -367,6 +379,21 @@ class Solution {
        }
 {% endhighlight %}
 
+{% raw %}
+<div class="code-tabs">
+  <input type="radio" name="code-lang" id="lang-python" checked>
+  <input type="radio" name="code-lang" id="lang-java">
+  <input type="radio" name="code-lang" id="lang-cpp">
+  <input type="radio" name="code-lang" id="lang-javascript">
+  <input type="radio" name="code-lang" id="lang-typescript">
+  <input type="radio" name="code-lang" id="lang-go">
+  <div class="tab-labels">
+    <label for="lang-python">Python</label>
+    <label for="lang-java">Java</label>
+    <label for="lang-cpp">C++</label>
+    <label for="lang-javascript">JS</label>
+    <label for="lang-typescript">TS</label>
+    <label for="lang-go">Go</label>
   </div>
 
   <div class="tab-panel" data-lang="swift">
@@ -686,6 +713,7 @@ defmodule Solution do
   </div>
 
 </div>
+{% endraw %}
 
 
 ### Complexity Analysis

@@ -1208,26 +1208,45 @@ html {
   animation: fadeIn 0.3s ease-in;
 }
 
-/* Show active panel */
+/* Show active panel - support both exact IDs and suffixed IDs */
 .code-tabs input#lang-cpp:checked ~ .tab-panel[data-lang="cpp"],
+.code-tabs input[id^="lang-cpp-"]:checked ~ .tab-panel[data-lang="cpp"],
 .code-tabs input#lang-java:checked ~ .tab-panel[data-lang="java"],
+.code-tabs input[id^="lang-java-"]:checked ~ .tab-panel[data-lang="java"],
 .code-tabs input#lang-python:checked ~ .tab-panel[data-lang="python"],
+.code-tabs input[id^="lang-python-"]:checked ~ .tab-panel[data-lang="python"],
 .code-tabs input#lang-python3:checked ~ .tab-panel[data-lang="python3"],
+.code-tabs input[id^="lang-python3-"]:checked ~ .tab-panel[data-lang="python3"],
 .code-tabs input#lang-c:checked ~ .tab-panel[data-lang="c"],
+.code-tabs input[id^="lang-c-"]:checked ~ .tab-panel[data-lang="c"],
 .code-tabs input#lang-csharp:checked ~ .tab-panel[data-lang="csharp"],
+.code-tabs input[id^="lang-csharp-"]:checked ~ .tab-panel[data-lang="csharp"],
 .code-tabs input#lang-javascript:checked ~ .tab-panel[data-lang="javascript"],
+.code-tabs input[id^="lang-javascript-"]:checked ~ .tab-panel[data-lang="javascript"],
 .code-tabs input#lang-typescript:checked ~ .tab-panel[data-lang="typescript"],
+.code-tabs input[id^="lang-typescript-"]:checked ~ .tab-panel[data-lang="typescript"],
 .code-tabs input#lang-php:checked ~ .tab-panel[data-lang="php"],
+.code-tabs input[id^="lang-php-"]:checked ~ .tab-panel[data-lang="php"],
 .code-tabs input#lang-swift:checked ~ .tab-panel[data-lang="swift"],
+.code-tabs input[id^="lang-swift-"]:checked ~ .tab-panel[data-lang="swift"],
 .code-tabs input#lang-kotlin:checked ~ .tab-panel[data-lang="kotlin"],
+.code-tabs input[id^="lang-kotlin-"]:checked ~ .tab-panel[data-lang="kotlin"],
 .code-tabs input#lang-dart:checked ~ .tab-panel[data-lang="dart"],
+.code-tabs input[id^="lang-dart-"]:checked ~ .tab-panel[data-lang="dart"],
 .code-tabs input#lang-go:checked ~ .tab-panel[data-lang="go"],
+.code-tabs input[id^="lang-go-"]:checked ~ .tab-panel[data-lang="go"],
 .code-tabs input#lang-ruby:checked ~ .tab-panel[data-lang="ruby"],
+.code-tabs input[id^="lang-ruby-"]:checked ~ .tab-panel[data-lang="ruby"],
 .code-tabs input#lang-scala:checked ~ .tab-panel[data-lang="scala"],
+.code-tabs input[id^="lang-scala-"]:checked ~ .tab-panel[data-lang="scala"],
 .code-tabs input#lang-rust:checked ~ .tab-panel[data-lang="rust"],
+.code-tabs input[id^="lang-rust-"]:checked ~ .tab-panel[data-lang="rust"],
 .code-tabs input#lang-racket:checked ~ .tab-panel[data-lang="racket"],
+.code-tabs input[id^="lang-racket-"]:checked ~ .tab-panel[data-lang="racket"],
 .code-tabs input#lang-erlang:checked ~ .tab-panel[data-lang="erlang"],
-.code-tabs input#lang-elixir:checked ~ .tab-panel[data-lang="elixir"] {
+.code-tabs input[id^="lang-erlang-"]:checked ~ .tab-panel[data-lang="erlang"],
+.code-tabs input#lang-elixir:checked ~ .tab-panel[data-lang="elixir"],
+.code-tabs input[id^="lang-elixir-"]:checked ~ .tab-panel[data-lang="elixir"] {
   display: block;
 }
 
@@ -1273,5 +1292,121 @@ html {
     min-width: 70px;
     padding: 10px 12px;
     font-size: 12px;
+  }
+}
+
+/* ===========================
+   Collapsible AI Solutions
+   =========================== */
+details {
+  margin: 1.5em 0;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--bg-color);
+  box-shadow: 0 2px 4px var(--shadow);
+  transition: var(--transition);
+}
+
+details:hover {
+  box-shadow: 0 4px 8px var(--shadow);
+}
+
+details[open] {
+  border-color: var(--primary-color);
+}
+
+summary {
+  padding: 1em 1.5em;
+  cursor: pointer;
+  font-size: 1.1em;
+  background-color: var(--card-bg);
+  border-bottom: 2px solid transparent;
+  user-select: none;
+  transition: var(--transition);
+  list-style: none; /* Remove default marker */
+  display: flex;
+  align-items: center;
+}
+
+summary::-webkit-details-marker {
+  display: none; /* Hide default marker in WebKit browsers */
+}
+
+summary::before {
+  content: '▶';
+  display: inline-block;
+  margin-right: 0.5em;
+  transition: transform 0.3s ease;
+  color: var(--primary-color);
+  font-size: 0.8em;
+}
+
+details[open] summary::before {
+  transform: rotate(90deg);
+}
+
+summary:hover {
+  background-color: var(--code-bg);
+}
+
+details[open] summary {
+  border-bottom-color: var(--border-color);
+  background-color: var(--primary-color);
+  color: white;
+}
+
+details[open] summary::before {
+  color: white;
+}
+
+details > *:not(summary) {
+  padding: 1.5em;
+}
+
+/* Nested headings within details */
+details h3 {
+  margin-top: 0.5em;
+  color: var(--primary-color);
+}
+
+/* Code tabs within details */
+details .code-tabs {
+  margin: 1em 0;
+}
+
+/* Animation for details opening */
+details[open] > *:not(summary) {
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Dark mode adjustments for details */
+@media (prefers-color-scheme: dark) {
+  details {
+    background-color: var(--dark-bg);
+    border-color: var(--dark-border);
+  }
+
+  summary {
+    background-color: var(--dark-card-bg);
+  }
+
+  summary:hover {
+    background-color: var(--dark-code-bg);
+  }
+
+  details[open] summary {
+    background-color: var(--primary-color);
   }
 }
