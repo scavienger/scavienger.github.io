@@ -50,18 +50,19 @@ Given an binary array `nums` and an integer `k`, return `true` _if all_`1` _'s a
 
 ### Approach
 
-The problem asks us to determine if all '1's in a binary array `nums` are separated by at least `k` zeros. We can solve this by iterating through the array and keeping track of the index of the most recently encountered '1'.
+The problem asks us to verify if all '1's in a binary array `nums` are separated by at least `k` zeros. This means that if we find a '1' at index `i` and the next '1' at index `j`, then the number of elements between them, `j - i - 1`, must be greater than or equal to `k`.
 
-1.  Initialize a variable `last_one_index` to a sentinel value (e.g., -1) to indicate that no '1' has been found yet.
+We can solve this by iterating through the array once. We need to keep track of the index of the most recently encountered '1'. Let's call this `last_one_index`.
+
+1.  Initialize `last_one_index` to `-1`. This special value indicates that no '1' has been encountered yet.
 2.  Iterate through the `nums` array from left to right, using an index `i`.
-3.  If the current element `nums[i]` is a '1':
-    a.  Check if `last_one_index` is not its sentinel value (meaning this is not the first '1' we've encountered).
-    b.  If it's not the first '1', calculate the number of zeros between the current '1' and the `last_one_index`. This distance is `i - last_one_index - 1`. (e.g., if '1' is at index 0 and next '1' is at index 3, `3 - 0 - 1 = 2` zeros in between).
-    c.  If this calculated distance is less than `k`, it means the condition is violated, so we immediately return `false`.
-    d.  After checking (or if it's the first '1'), update `last_one_index` to the current index `i`.
-4.  If the loop completes without returning `false`, it means all pairs of '1's satisfy the `k` distance requirement, so we return `true`.
+3.  If `nums[i]` is a `1`:
+    a.  Check if `last_one_index` is not `-1`. This means we have encountered at least one '1' before the current one.
+    b.  If `last_one_index` is not `-1`, calculate the distance (number of zeros) between the current '1' and the `last_one_index`: `i - last_one_index - 1`. If this distance is less than `k`, it violates the condition, so we immediately return `false`.
+    c.  After the check (or if `last_one_index` was `-1`), update `last_one_index` to the current index `i`.
+4.  If the loop completes without returning `false`, it means all pairs of '1's satisfy the distance requirement. In this case, return `true`.
 
-This approach handles edge cases such as an array with no '1's, only one '1', or `k=0` correctly. For `k=0`, any distance is valid (including zero zeros between ones), and `i - last_one_index - 1 < 0` will never be true because `i - last_one_index - 1` will always be at least 0 if there are two distinct '1's.
+This approach correctly handles cases with no '1's (returns `true`), a single '1' (returns `true`), and `k=0` (any '1's can be adjacent).
 
 ### Code
 
@@ -89,12 +90,11 @@ class Solution:
         last_one_index = -1
         for i in range(len(nums)):
             if nums[i] == 1:
+                # If we've seen a '1' before, check the distance
                 if last_one_index != -1:
-                    # Found a subsequent '1'
-                    # Calculate the number of zeros between the current '1' and the last '1'
-                    # Distance is (current_index - last_one_index) - 1
                     if i - last_one_index - 1 < k:
                         return False
+                # Update the last seen '1's index
                 last_one_index = i
         return True
 {% endhighlight %}
@@ -109,14 +109,13 @@ class Solution {
         int lastOneIndex = -1;
         for (int i = 0; i < nums.length; i++) {
             if (nums[i] == 1) {
+                // If we've seen a '1' before, check the distance
                 if (lastOneIndex != -1) {
-                    // Found a subsequent '1'
-                    // Calculate the number of zeros between the current '1' and the last '1'
-                    // Distance is (current_index - last_one_index) - 1
                     if (i - lastOneIndex - 1 < k) {
                         return false;
                     }
                 }
+                // Update the last seen '1's index
                 lastOneIndex = i;
             }
         }
@@ -138,14 +137,13 @@ public:
         int lastOneIndex = -1;
         for (int i = 0; i < nums.size(); ++i) {
             if (nums[i] == 1) {
+                // If we've seen a '1' before, check the distance
                 if (lastOneIndex != -1) {
-                    // Found a subsequent '1'
-                    // Calculate the number of zeros between the current '1' and the last '1'
-                    // Distance is (current_index - last_one_index) - 1
                     if (i - lastOneIndex - 1 < k) {
                         return false;
                     }
                 }
+                // Update the last seen '1's index
                 lastOneIndex = i;
             }
         }
@@ -168,14 +166,13 @@ var kLengthApart = function(nums, k) {
     let lastOneIndex = -1;
     for (let i = 0; i < nums.length; i++) {
         if (nums[i] === 1) {
+            // If we've seen a '1' before, check the distance
             if (lastOneIndex !== -1) {
-                // Found a subsequent '1'
-                // Calculate the number of zeros between the current '1' and the last '1'
-                // Distance is (current_index - last_one_index) - 1
                 if (i - lastOneIndex - 1 < k) {
                     return false;
                 }
             }
+            // Update the last seen '1's index
             lastOneIndex = i;
         }
     }
@@ -192,14 +189,13 @@ function kLengthApart(nums: number[], k: number): boolean {
     let lastOneIndex: number = -1;
     for (let i = 0; i < nums.length; i++) {
         if (nums[i] === 1) {
+            // If we've seen a '1' before, check the distance
             if (lastOneIndex !== -1) {
-                // Found a subsequent '1'
-                // Calculate the number of zeros between the current '1' and the last '1'
-                // Distance is (current_index - last_one_index) - 1
                 if (i - lastOneIndex - 1 < k) {
                     return false;
                 }
             }
+            // Update the last seen '1's index
             lastOneIndex = i;
         }
     }
@@ -216,14 +212,13 @@ func kLengthApart(nums []int, k int) bool {
     lastOneIndex := -1
     for i := 0; i < len(nums); i++ {
         if nums[i] == 1 {
+            // If we've seen a '1' before, check the distance
             if lastOneIndex != -1 {
-                // Found a subsequent '1'
-                // Calculate the number of zeros between the current '1' and the last '1'
-                // Distance is (current_index - last_one_index) - 1
                 if i - lastOneIndex - 1 < k {
                     return false
                 }
             }
+            // Update the last seen '1's index
             lastOneIndex = i
         }
     }
