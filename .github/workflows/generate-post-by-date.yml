@@ -49,13 +49,15 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Check if there are changes
-          if git diff --quiet; then
+          # Add changes first
+          git add _posts/
+
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
             echo "No changes to commit"
             exit 0
           fi
 
           # Commit changes
-          git add _posts/
           git commit -m "Generate post for ${{ inputs.date }} with AI solutions"
           git push origin master
