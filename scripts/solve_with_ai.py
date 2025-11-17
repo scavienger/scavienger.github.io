@@ -123,6 +123,30 @@ Provide ONLY the JSON response, no additional text."""
 
         return prompt
 
+    def _clean_code(self, code: str) -> str:
+        """Clean code by removing markdown code block markers and normalizing whitespace"""
+        if not code:
+            return code
+
+        # Remove markdown code block markers (```python, ```cpp, etc.)
+        lines = code.split('\n')
+        cleaned_lines = []
+
+        for line in lines:
+            stripped = line.strip()
+            # Skip lines that are just code block markers
+            if stripped.startswith('```') and len(stripped) <= 20:
+                continue
+            cleaned_lines.append(line)
+
+        # Rejoin and clean up
+        cleaned = '\n'.join(cleaned_lines)
+
+        # Remove leading/trailing whitespace
+        cleaned = cleaned.strip()
+
+        return cleaned
+
     def parse_json_response(self, response_text: str) -> Dict:
         """Extract and parse JSON from AI response"""
         try:
@@ -135,6 +159,9 @@ Provide ONLY the JSON response, no additional text."""
 
                 # Validate that we have the expected structure
                 if 'solutions' in parsed and isinstance(parsed['solutions'], dict):
+                    # Clean all code solutions
+                    for lang, code in parsed['solutions'].items():
+                        parsed['solutions'][lang] = self._clean_code(code)
                     return parsed
                 # Fallback for old format (single language)
                 elif 'code' in parsed:
@@ -143,7 +170,7 @@ Provide ONLY the JSON response, no additional text."""
                         "time_complexity": parsed.get("time_complexity", "N/A"),
                         "space_complexity": parsed.get("space_complexity", "N/A"),
                         "solutions": {
-                            "python": parsed.get("code", "")
+                            "python": self._clean_code(parsed.get("code", ""))
                         }
                     }
                 else:
