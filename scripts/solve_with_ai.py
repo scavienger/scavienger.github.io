@@ -142,11 +142,6 @@ Provide ONLY the JSON response, no additional text."""
         if not code:
             return code
 
-        # First, ensure newlines are properly decoded (JSON may escape them)
-        # Replace literal \n with actual newlines if they exist
-        if '\\n' in code:
-            code = code.replace('\\n', '\n')
-
         # Remove markdown code block markers (```python, ```cpp, etc.)
         lines = code.split('\n')
         cleaned_lines = []
