@@ -50,7 +50,7 @@ Given an binary array `nums` and an integer `k`, return `true` _if all_`1` _'s a
 
 ### Approach
 
-The approach is to iterate through the binary array and keep track of the position of the last encountered 1. If a 1 is found and the distance between the current position and the last encountered 1 is less than k, return false. Otherwise, update the position of the last encountered 1. If the iteration completes without finding any 1s that are less than k places apart, return true.
+The approach to solve this problem is to iterate through the given binary array and keep track of the distance between each pair of 1's. If the distance between any two 1's is less than k, return false. Otherwise, return true after checking all pairs of 1's.
 
 ### Code
 
@@ -99,7 +99,22 @@ The approach is to iterate through the binary array and keep track of the positi
   <div class="tab-panel" data-lang="cpp">
 
 {% highlight cpp %}
-class Solution { public: bool kLengthApart(vector<int>& nums, int k) { int last = -k - 1; for (int i = 0; i < nums.size(); i++) { if (nums[i] == 1) { if (i - last <= k) return false; last = i; } } return true; } };
+#include <vector>
+         class Solution {
+         public:
+             bool kLengthApart(std::vector<int>& nums, int k) {
+                 int prev = -1;
+                 for (int i = 0; i < nums.size(); i++) {
+                     if (nums[i] == 1) {
+                         if (prev != -1 && i - prev <= k) {
+                             return false;
+                         }
+                         prev = i;
+                     }
+                 }
+                 return true;
+             }
+         };
 {% endhighlight %}
 
   </div>
@@ -107,7 +122,20 @@ class Solution { public: bool kLengthApart(vector<int>& nums, int k) { int last 
   <div class="tab-panel" data-lang="java">
 
 {% highlight java %}
-class Solution { public boolean kLengthApart(int[] nums, int k) { int last = -k - 1; for (int i = 0; i < nums.length; i++) { if (nums[i] == 1) { if (i - last <= k) return false; last = i; } } return true; } }
+class Solution {
+             public boolean kLengthApart(int[] nums, int k) {
+                 int prev = -1;
+                 for (int i = 0; i < nums.length; i++) {
+                     if (nums[i] == 1) {
+                         if (prev != -1 && i - prev <= k) {
+                             return false;
+                         }
+                         prev = i;
+                     }
+                 }
+                 return true;
+             }
+         }
 {% endhighlight %}
 
   </div>
@@ -115,7 +143,15 @@ class Solution { public boolean kLengthApart(int[] nums, int k) { int last = -k 
   <div class="tab-panel" data-lang="python">
 
 {% highlight python %}
-class Solution: def kLengthApart(self, nums: list[int], k: int) -> bool: last = -k - 1; for i, num in enumerate(nums): if num == 1: if i - last <= k: return False; last = i; return True
+class Solution:
+             def kLengthApart(self, nums: list[int], k: int) -> bool:
+                 prev = -1
+                 for i in range(len(nums)):
+                     if nums[i] == 1:
+                         if prev != -1 and i - prev <= k:
+                             return False
+                         prev = i
+                 return True
 {% endhighlight %}
 
   </div>
@@ -123,7 +159,15 @@ class Solution: def kLengthApart(self, nums: list[int], k: int) -> bool: last = 
   <div class="tab-panel" data-lang="python3">
 
 {% highlight python %}
-class Solution: def kLengthApart(self, nums: list[int], k: int) -> bool: last = -k - 1; for i, num in enumerate(nums): if num == 1: if i - last <= k: return False; last = i; return True
+class Solution:
+             def kLengthApart(self, nums: list[int], k: int) -> bool:
+                 prev = -1
+                 for i in range(len(nums)):
+                     if nums[i] == 1:
+                         if prev != -1 and i - prev <= k:
+                             return False
+                         prev = i
+                 return True
 {% endhighlight %}
 
   </div>
@@ -131,7 +175,19 @@ class Solution: def kLengthApart(self, nums: list[int], k: int) -> bool: last = 
   <div class="tab-panel" data-lang="c">
 
 {% highlight c %}
-bool kLengthApart(int* nums, int numsSize, int k) { int last = -k - 1; for (int i = 0; i < numsSize; i++) { if (nums[i] == 1) { if (i - last <= k) return 0; last = i; } } return 1; }
+#include <stdbool.h>
+         bool kLengthApart(int* nums, int numsSize, int k) {
+             int prev = -1;
+             for (int i = 0; i < numsSize; i++) {
+                 if (nums[i] == 1) {
+                     if (prev != -1 && i - prev <= k) {
+                         return false;
+                     }
+                     prev = i;
+                 }
+             }
+             return true;
+         }
 {% endhighlight %}
 
   </div>
@@ -139,7 +195,20 @@ bool kLengthApart(int* nums, int numsSize, int k) { int last = -k - 1; for (int 
   <div class="tab-panel" data-lang="csharp">
 
 {% highlight csharp %}
-public class Solution { public bool KLengthApart(int[] nums, int k) { int last = -k - 1; for (int i = 0; i < nums.Length; i++) { if (nums[i] == 1) { if (i - last <= k) return false; last = i; } } return true; } }
+public class Solution {
+             public bool KLengthApart(int[] nums, int k) {
+                 int prev = -1;
+                 for (int i = 0; i < nums.Length; i++) {
+                     if (nums[i] == 1) {
+                         if (prev != -1 && i - prev <= k) {
+                             return false;
+                         }
+                         prev = i;
+                     }
+                 }
+                 return true;
+             }
+         }
 {% endhighlight %}
 
   </div>
@@ -147,7 +216,18 @@ public class Solution { public bool KLengthApart(int[] nums, int k) { int last =
   <div class="tab-panel" data-lang="javascript">
 
 {% highlight javascript %}
-var kLengthApart = function(nums, k) { let last = -k - 1; for (let i = 0; i < nums.length; i++) { if (nums[i] == 1) { if (i - last <= k) return false; last = i; } } return true; };
+var kLengthApart = function(nums, k) {
+             let prev = -1;
+             for (let i = 0; i < nums.length; i++) {
+                 if (nums[i] == 1) {
+                     if (prev != -1 && i - prev <= k) {
+                         return false;
+                     }
+                     prev = i;
+                 }
+             }
+             return true;
+         };
 {% endhighlight %}
 
   </div>
@@ -155,7 +235,18 @@ var kLengthApart = function(nums, k) { let last = -k - 1; for (let i = 0; i < nu
   <div class="tab-panel" data-lang="typescript">
 
 {% highlight typescript %}
-function kLengthApart(nums: number[], k: number): boolean { let last: number = -k - 1; for (let i: number = 0; i < nums.length; i++) { if (nums[i] == 1) { if (i - last <= k) return false; last = i; } } return true; }
+function kLengthApart(nums: number[], k: number): boolean {
+             let prev = -1;
+             for (let i = 0; i < nums.length; i++) {
+                 if (nums[i] == 1) {
+                     if (prev != -1 && i - prev <= k) {
+                         return false;
+                     }
+                     prev = i;
+                 }
+             }
+             return true;
+         }
 {% endhighlight %}
 
   </div>
@@ -163,7 +254,20 @@ function kLengthApart(nums: number[], k: number): boolean { let last: number = -
   <div class="tab-panel" data-lang="php">
 
 {% highlight php %}
-class Solution { function kLengthApart($nums, $k) { $last = -$k - 1; for ($i = 0; $i < count($nums); $i++) { if ($nums[$i] == 1) { if ($i - $last <= $k) return false; $last = $i; } } return true; } }
+class Solution {
+             function kLengthApart($nums, $k) {
+                 $prev = -1;
+                 for ($i = 0; $i < count($nums); $i++) {
+                     if ($nums[$i] == 1) {
+                         if ($prev != -1 && $i - $prev <= $k) {
+                             return false;
+                         }
+                         $prev = $i;
+                     }
+                 }
+                 return true;
+             }
+         }
 {% endhighlight %}
 
   </div>
@@ -171,7 +275,20 @@ class Solution { function kLengthApart($nums, $k) { $last = -$k - 1; for ($i = 0
   <div class="tab-panel" data-lang="swift">
 
 {% highlight swift %}
-class Solution { func kLengthApart(_ nums: [Int], _ k: Int) -> Bool { var last: Int = -k - 1; for (i, num) in nums.enumerated() { if num == 1 { if i - last <= k { return false } last = i } } return true } }
+class Solution {
+             func kLengthApart(_ nums: [Int], _ k: Int) -> Bool {
+                 var prev = -1
+                 for (i, num) in nums.enumerated() {
+                     if num == 1 {
+                         if prev != -1 && i - prev <= k {
+                             return false
+                         }
+                         prev = i
+                     }
+                 }
+                 return true
+             }
+         }
 {% endhighlight %}
 
   </div>
@@ -179,7 +296,20 @@ class Solution { func kLengthApart(_ nums: [Int], _ k: Int) -> Bool { var last: 
   <div class="tab-panel" data-lang="kotlin">
 
 {% highlight kotlin %}
-class Solution { fun kLengthApart(nums: IntArray, k: Int): Boolean { var last: Int = -k - 1; for (i in nums.indices) { if (nums[i] == 1) { if (i - last <= k) return false; last = i } } return true } }
+class Solution {
+             fun kLengthApart(nums: IntArray, k: Int): Boolean {
+                 var prev = -1
+                 for (i in nums.indices) {
+                     if (nums[i] == 1) {
+                         if (prev != -1 && i - prev <= k) {
+                             return false
+                         }
+                         prev = i
+                     }
+                 }
+                 return true
+             }
+         }
 {% endhighlight %}
 
   </div>
@@ -187,7 +317,20 @@ class Solution { fun kLengthApart(nums: IntArray, k: Int): Boolean { var last: I
   <div class="tab-panel" data-lang="dart">
 
 {% highlight dart %}
-class Solution { bool kLengthApart(List<int> nums, int k) { int last = -k - 1; for (int i = 0; i < nums.length; i++) { if (nums[i] == 1) { if (i - last <= k) return false; last = i; } } return true; } }
+class Solution {
+             bool kLengthApart(List<int> nums, int k) {
+                 int prev = -1;
+                 for (int i = 0; i < nums.length; i++) {
+                     if (nums[i] == 1) {
+                         if (prev != -1 && i - prev <= k) {
+                             return false;
+                         }
+                         prev = i;
+                     }
+                 }
+                 return true;
+             }
+         }
 {% endhighlight %}
 
   </div>
@@ -195,7 +338,18 @@ class Solution { bool kLengthApart(List<int> nums, int k) { int last = -k - 1; f
   <div class="tab-panel" data-lang="go">
 
 {% highlight go %}
-func kLengthApart(nums []int, k int) bool { last := -k - 1; for i, num := range nums { if num == 1 { if i-last <= k { return false } last = i } } return true }
+func kLengthApart(nums []int, k int) bool {
+             prev := -1
+             for i, num := range nums {
+                 if num == 1 {
+                     if prev != -1 && i-prev <= k {
+                         return false
+                     }
+                     prev = i
+                 }
+             }
+             return true
+         }
 {% endhighlight %}
 
   </div>
@@ -203,7 +357,21 @@ func kLengthApart(nums []int, k int) bool { last := -k - 1; for i, num := range 
   <div class="tab-panel" data-lang="ruby">
 
 {% highlight ruby %}
-class Solution def k_length_apart(nums, k) last = -k - 1 nums.each_with_index do |num, i| if num == 1 if i - last <= k return false end last = i end end true end end
+# @param {Integer[]} nums
+         # @param {Integer} k
+         # @return {Boolean}
+         def k_length_apart(nums, k)
+             prev = -1
+             nums.each_with_index do |num, i|
+                 if num == 1
+                     if prev != -1 && i - prev <= k
+                         return false
+                     end
+                     prev = i
+                 end
+             end
+             true
+         end
 {% endhighlight %}
 
   </div>
@@ -211,7 +379,20 @@ class Solution def k_length_apart(nums, k) last = -k - 1 nums.each_with_index do
   <div class="tab-panel" data-lang="scala">
 
 {% highlight scala %}
-object Solution { def kLengthApart(nums: Array[Int], k: Int): Boolean = { var last: Int = -k - 1; nums.indices.foreach { i => if (nums(i) == 1) { if (i - last <= k) return false; last = i } }; true } }
+object Solution {
+             def kLengthApart(nums: Array[Int], k: Int): Boolean = {
+                 var prev = -1
+                 for (i <- nums.indices) {
+                     if (nums(i) == 1) {
+                         if (prev != -1 && i - prev <= k) {
+                             return false
+                         }
+                         prev = i
+                     }
+                 }
+                 true
+             }
+         }
 {% endhighlight %}
 
   </div>
@@ -219,7 +400,20 @@ object Solution { def kLengthApart(nums: Array[Int], k: Int): Boolean = { var la
   <div class="tab-panel" data-lang="rust">
 
 {% highlight rust %}
-impl Solution { pub fn k_length_apart(nums: Vec<i32>, k: i32) -> bool { let mut last: i32 = -k - 1; for (i, num) in nums.into_iter().enumerate() { if num == 1 { if i as i32 - last <= k { return false; } last = i as i32; } } true } }
+impl Solution {
+             pub fn k_length_apart(nums: Vec<i32>, k: i32) -> bool {
+                 let mut prev = -1;
+                 for (i, &num) in nums.iter().enumerate() {
+                     if num == 1 {
+                         if prev != -1 && i as i32 - prev <= k {
+                             return false;
+                         }
+                         prev = i as i32;
+                     }
+                 }
+                 true
+             }
+         }
 {% endhighlight %}
 
   </div>
@@ -227,7 +421,16 @@ impl Solution { pub fn k_length_apart(nums: Vec<i32>, k: i32) -> bool { let mut 
   <div class="tab-panel" data-lang="racket">
 
 {% highlight racket %}
-(define (k-length-apart nums k) (let loop ((last (- k 1)) (nums nums)) (cond ((null? nums) #t) ((= (car nums) 1) (if (<= (- (length nums) (length (cdr nums))) last k) #f (loop (length nums) (cdr nums)))) (else (loop last (cdr nums))))))
+#lang racket
+         (define (k-length-apart nums k)
+             (let loop ((nums nums) (prev -1))
+                 (cond
+                     ((null? nums) #t)
+                     ((= (car nums) 1)
+                      (if (and (not (= prev -1)) (<= (- (length nums) prev) k))
+                          #f
+                          (loop (cdr nums) (length nums))))
+                     (else (loop (cdr nums) prev)))))
 {% endhighlight %}
 
   </div>
@@ -235,7 +438,20 @@ impl Solution { pub fn k_length_apart(nums: Vec<i32>, k: i32) -> bool { let mut 
   <div class="tab-panel" data-lang="erlang">
 
 {% highlight erlang %}
--module(solution). -export([k_length_apart/2]). k_length_apart(nums, k) -> k_length_apart(nums, k, -k-1). k_length_apart([1|nums], k, last) -> if length(nums) - length(tl(nums)) =< k -> false; true -> k_length_apart(nums, k, length(nums)); k_length_apart([_|nums], k, last) -> k_length_apart(nums, k, last); k_length_apart([], _, _) -> true.
+-module(solution).
+         -export([k_length_apart/2]).
+         k_length_apart(Nums, K) ->
+             k_length_apart(Nums, K, -1).
+         k_length_apart([], _, _) ->
+             true;
+         k_length_apart([1 | T], K, Prev) ->
+             case Prev of
+                 -1 -> k_length_apart(T, K, 0);
+                 _ when 0 =< (0 - Prev) andalso (0 - Prev) =< K -> false;
+                 _ -> k_length_apart(T, K, 0)
+             end;
+         k_length_apart([_ | T], K, Prev) ->
+             k_length_apart(T, K, Prev).
 {% endhighlight %}
 
   </div>
@@ -243,7 +459,21 @@ impl Solution { pub fn k_length_apart(nums: Vec<i32>, k: i32) -> bool { let mut 
   <div class="tab-panel" data-lang="elixir">
 
 {% highlight elixir %}
-defmodule Solution do def k_length_apart(nums, k) do k_length_apart(nums, k, -k-1) end defp k_length_apart([1|nums], k, last) when length(nums) - length(tl(nums)) <= k, do: false defp k_length_apart([1|nums], k, _), do: k_length_apart(nums, k, length(nums)) defp k_length_apart([_|nums], k, last), do: k_length_apart(nums, k, last) defp k_length_apart([], _, _), do: true end
+defmodule Solution do
+             def k_length_apart(nums, k) do
+                 k_length_apart(nums, k, -1)
+             end
+
+             defp k_length_apart([], _, _), do: true
+             defp k_length_apart([1 | t], k, prev) do
+                 case prev do
+                     -1 -> k_length_apart(t, k, 0)
+                     _ when 0 <= (0 - prev) and (0 - prev) <= k -> false
+                     _ -> k_length_apart(t, k, 0)
+                 end
+             end
+             defp k_length_apart([_ | t], k, prev), do: k_length_apart(t, k, prev)
+         end
 {% endhighlight %}
 
   </div>
@@ -253,6 +483,6 @@ defmodule Solution do def k_length_apart(nums, k) do k_length_apart(nums, k, -k-
 
 ### Complexity Analysis
 
-- **Time Complexity:** O(n) where n is the length of the binary array, because we are making a single pass through the array.
+- **Time Complexity:** O(n) where n is the length of the binary array, because we are doing a single pass through the array.
 
-- **Space Complexity:** O(1) because we are using a constant amount of space to store the position of the last encountered 1.
+- **Space Complexity:** O(1) because we are using a constant amount of space to store the index of the previous 1 and the current index.
