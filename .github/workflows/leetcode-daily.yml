@@ -8,6 +8,11 @@ on:
   # Allow manual trigger
   workflow_dispatch:
 
+  # Run on push to develop (for testing)
+  push:
+    branches:
+      - develop
+
 permissions:
   contents: write
 
@@ -19,7 +24,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: develop
           fetch-depth: 0
 
       - name: Set up Python
@@ -85,7 +90,7 @@ jobs:
           DATE=$(date -u +"%Y-%m-%d")
 
           git commit -m "Add LeetCode daily challenge: $TITLE ($DATE)"
-          git push
+          git push origin develop
 
       - name: Clean up
         if: always()
