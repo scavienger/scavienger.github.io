@@ -39,11 +39,39 @@ Given a binary string `s`, return _the number of substrings with all characters_
 
 1. Count number of 1s in each consecutive-1 group. For a group with n consecutive 1s, the total contribution of it to the final answer is (n + 1) * n // 2.
 
-## ⚡ AI-Generated Solution (llama-3.3-70b-versatile)
+## ✨ AI-Generated Solution (gemini-2.5-flash)
 
 ### Approach
 
-The approach to solve this problem is to iterate through the binary string and count the number of consecutive 1s. For each group of consecutive 1s, calculate the total number of substrings that can be formed using the formula (n + 1) * n // 2, where n is the number of consecutive 1s. This formula is derived from the fact that for a group of n consecutive 1s, there are n substrings of length 1, n-1 substrings of length 2, ..., and 1 substring of length n. The total number of substrings is the sum of the first n natural numbers, which is given by the formula n * (n + 1) // 2.
+The problem asks us to count the total number of substrings consisting only of '1's in a given binary string `s`. The result should be returned modulo `10^9 + 7`.
+
+The core idea is to identify consecutive blocks of '1's. For any block of `n` consecutive '1's, say "11...1" (n times), the number of substrings with only '1's that can be formed from this block is the sum of integers from 1 to `n`. This is because we can form `n` substrings of length 1 ("1"), `n-1` substrings of length 2 ("11"), ..., and 1 substring of length `n` ("11...1"). The sum `1 + 2 + ... + n` is given by the formula `n * (n + 1) / 2`.
+
+We can iterate through the input string `s` character by character. We maintain a `current_consecutive_ones` counter. When we encounter a '1', we increment this counter. When we encounter a '0' (or reach the end of the string), it signifies the end of a block of consecutive '1's. At this point:
+1. We calculate the contribution of the just-ended block using the formula `current_consecutive_ones * (current_consecutive_ones + 1) / 2`.
+2. We add this contribution to a running `total_substrings` count.
+3. We reset `current_consecutive_ones` to 0 to start counting a new block.
+
+It's important to perform the modulo operation (`% (10^9 + 7)`) after each addition to `total_substrings` to prevent integer overflow, as the sum can become very large. Also, the intermediate product `current_consecutive_ones * (current_consecutive_ones + 1)` can be up to `(10^5)^2 = 10^10`, which might exceed the capacity of a standard 32-bit integer. Therefore, `long` or `long long` (or equivalent arbitrary-precision types) should be used for `current_consecutive_ones` and `total_substrings` and the intermediate calculations to ensure correctness before applying the modulo.
+
+After iterating through the entire string, there might be a trailing sequence of '1's (if the string ends with '1's). The algorithm correctly handles this by performing the contribution calculation one last time for any non-zero `current_consecutive_ones` count remaining after the loop finishes.
+
+Example walk-through for `s = "0110111"`:
+- `MOD = 10^9 + 7`, `total_substrings = 0`, `current_consecutive_ones = 0`
+- `s[0] = '0'`: `current_consecutive_ones` is 0. No contribution. Reset `current_consecutive_ones` to 0.
+- `s[1] = '1'`: `current_consecutive_ones` becomes 1.
+- `s[2] = '1'`: `current_consecutive_ones` becomes 2.
+- `s[3] = '0'`: End of a block of '1's. `current_consecutive_ones` is 2.
+  - Contribution: `2 * (2 + 1) / 2 = 3`.
+  - `total_substrings = (0 + 3) % MOD = 3`.
+  - Reset `current_consecutive_ones` to 0.
+- `s[4] = '1'`: `current_consecutive_ones` becomes 1.
+- `s[5] = '1'`: `current_consecutive_ones` becomes 2.
+- `s[6] = '1'`: `current_consecutive_ones` becomes 3.
+- End of string: Remaining `current_consecutive_ones` is 3.
+  - Contribution: `3 * (3 + 1) / 2 = 6`.
+  - `total_substrings = (3 + 6) % MOD = 9`.
+- Final result: 9.
 
 ### Code
 
@@ -93,22 +121,27 @@ The approach to solve this problem is to iterate through the binary string and c
 
 {% highlight cpp %}
 class Solution {
-       public:
-           int numSub(string s) {
-               long long res = 0;
-               long long count = 0;
-               for (char c : s) {
-                   if (c == '1') {
-                       count++;
-                   } else {
-                       res += count * (count + 1) / 2;
-                       count = 0;
-                   }
-               }
-               res += count * (count + 1) / 2;
-               return res % (1e9 + 7);
-           }
-       };
+public:
+    int numSub(std::string s) {
+        long long MOD = 1e9 + 7;
+        long long totalSubstrings = 0;
+        long long currentConsecutiveOnes = 0;
+
+        for (char c : s) {
+            if (c == '1') {
+                currentConsecutiveOnes++;
+            } else {
+                totalSubstrings = (totalSubstrings + currentConsecutiveOnes * (currentConsecutiveOnes + 1) / 2) % MOD;
+                currentConsecutiveOnes = 0;
+            }
+        }
+        
+        // Add contributions from any trailing ones
+        totalSubstrings = (totalSubstrings + currentConsecutiveOnes * (currentConsecutiveOnes + 1) / 2) % MOD;
+        
+        return static_cast<int>(totalSubstrings);
+    }
+};
 {% endhighlight %}
 
   </div>
@@ -117,21 +150,26 @@ class Solution {
 
 {% highlight java %}
 class Solution {
-           public int numSub(String s) {
-               long res = 0;
-               long count = 0;
-               for (char c : s.toCharArray()) {
-                   if (c == '1') {
-                       count++;
-                   } else {
-                       res += count * (count + 1) / 2;
-                       count = 0;
-                   }
-               }
-               res += count * (count + 1) / 2;
-               return (int)(res % (1e9 + 7));
-           }
-       }
+    public int numSub(String s) {
+        long MOD = 1_000_000_007;
+        long totalSubstrings = 0;
+        long currentConsecutiveOnes = 0;
+
+        for (char c : s.toCharArray()) {
+            if (c == '1') {
+                currentConsecutiveOnes++;
+            } else {
+                totalSubstrings = (totalSubstrings + currentConsecutiveOnes * (currentConsecutiveOnes + 1) / 2) % MOD;
+                currentConsecutiveOnes = 0;
+            }
+        }
+        
+        // Add contributions from any trailing ones
+        totalSubstrings = (totalSubstrings + currentConsecutiveOnes * (currentConsecutiveOnes + 1) / 2) % MOD;
+        
+        return (int) totalSubstrings;
+    }
+}
 {% endhighlight %}
 
   </div>
@@ -140,17 +178,22 @@ class Solution {
 
 {% highlight python %}
 class Solution:
-           def numSub(self, s: str) -> int:
-               res = 0
-               count = 0
-               for c in s:
-                   if c == '1':
-                       count += 1
-                   else:
-                       res += count * (count + 1) // 2
-                       count = 0
-               res += count * (count + 1) // 2
-               return res % (10**9 + 7)
+    def numSub(self, s: str) -> int:
+        MOD = 10**9 + 7
+        total_substrings = 0
+        current_consecutive_ones = 0
+
+        for char in s:
+            if char == '1':
+                current_consecutive_ones += 1
+            else:
+                total_substrings = (total_substrings + current_consecutive_ones * (current_consecutive_ones + 1) // 2) % MOD
+                current_consecutive_ones = 0
+        
+        # Add contributions from any trailing ones
+        total_substrings = (total_substrings + current_consecutive_ones * (current_consecutive_ones + 1) // 2) % MOD
+        
+        return total_substrings
 {% endhighlight %}
 
   </div>
@@ -159,17 +202,22 @@ class Solution:
 
 {% highlight python %}
 class Solution:
-           def numSub(self, s: str) -> int:
-               res = 0
-               count = 0
-               for c in s:
-                   if c == '1':
-                       count += 1
-                   else:
-                       res += count * (count + 1) // 2
-                       count = 0
-               res += count * (count + 1) // 2
-               return res % (10**9 + 7)
+    def numSub(self, s: str) -> int:
+        MOD = 10**9 + 7
+        total_substrings = 0
+        current_consecutive_ones = 0
+
+        for char in s:
+            if char == '1':
+                current_consecutive_ones += 1
+            else:
+                total_substrings = (total_substrings + current_consecutive_ones * (current_consecutive_ones + 1) // 2) % MOD
+                current_consecutive_ones = 0
+        
+        # Add contributions from any trailing ones
+        total_substrings = (total_substrings + current_consecutive_ones * (current_consecutive_ones + 1) // 2) % MOD
+        
+        return total_substrings
 {% endhighlight %}
 
   </div>
@@ -177,23 +225,28 @@ class Solution:
   <div class="tab-panel" data-lang="c">
 
 {% highlight c %}
-#include <stdio.h>
-       #include <string.h>
+#include <string.h> // For strlen
 
-       int numSub(char * s){
-           long long res = 0;
-           long long count = 0;
-           for (int i = 0; i < strlen(s); i++) {
-               if (s[i] == '1') {
-                   count++;
-               } else {
-                   res += count * (count + 1) / 2;
-                   count = 0;
-               }
-           }
-           res += count * (count + 1) / 2;
-           return res % (1000000007);
-       }
+int numSub(char * s){
+    long long MOD = 1000000007;
+    long long totalSubstrings = 0;
+    long long currentConsecutiveOnes = 0;
+    
+    int len = strlen(s);
+    for (int i = 0; i < len; i++) {
+        if (s[i] == '1') {
+            currentConsecutiveOnes++;
+        } else {
+            totalSubstrings = (totalSubstrings + currentConsecutiveOnes * (currentConsecutiveOnes + 1) / 2) % MOD;
+            currentConsecutiveOnes = 0;
+        }
+    }
+    
+    // Add contributions from any trailing ones
+    totalSubstrings = (totalSubstrings + currentConsecutiveOnes * (currentConsecutiveOnes + 1) / 2) % MOD;
+    
+    return (int) totalSubstrings;
+}
 {% endhighlight %}
 
   </div>
@@ -202,21 +255,26 @@ class Solution:
 
 {% highlight csharp %}
 public class Solution {
-           public int NumSub(string s) {
-               long res = 0;
-               long count = 0;
-               foreach (char c in s) {
-                   if (c == '1') {
-                       count++;
-                   } else {
-                       res += count * (count + 1) / 2;
-                       count = 0;
-                   }
-               }
-               res += count * (count + 1) / 2;
-               return (int)(res % (1000000007));
-           }
-       }
+    public int NumSub(string s) {
+        long MOD = 1_000_000_007;
+        long totalSubstrings = 0;
+        long currentConsecutiveOnes = 0;
+
+        foreach (char c in s) {
+            if (c == '1') {
+                currentConsecutiveOnes++;
+            } else {
+                totalSubstrings = (totalSubstrings + currentConsecutiveOnes * (currentConsecutiveOnes + 1) / 2) % MOD;
+                currentConsecutiveOnes = 0;
+            }
+        }
+        
+        // Add contributions from any trailing ones
+        totalSubstrings = (totalSubstrings + currentConsecutiveOnes * (currentConsecutiveOnes + 1) / 2) % MOD;
+        
+        return (int) totalSubstrings;
+    }
+}
 {% endhighlight %}
 
   </div>
@@ -224,20 +282,32 @@ public class Solution {
   <div class="tab-panel" data-lang="javascript">
 
 {% highlight javascript %}
+/**
+ * @param {string} s
+ * @return {number}
+ */
 var numSub = function(s) {
-           let res = 0;
-           let count = 0;
-           for (let c of s) {
-               if (c == '1') {
-                   count++;
-               } else {
-                   res += count * (count + 1) / 2;
-                   count = 0;
-               }
-           }
-           res += count * (count + 1) / 2;
-           return res % (1000000007);
-       };
+    const MOD = 1_000_000_007;
+    let totalSubstrings = 0;
+    let currentConsecutiveOnes = 0;
+
+    for (let i = 0; i < s.length; i++) {
+        if (s[i] === '1') {
+            currentConsecutiveOnes++;
+        } else {
+            // Use BigInt for intermediate product to prevent overflow in JavaScript Number type.
+            let contribution = (BigInt(currentConsecutiveOnes) * BigInt(currentConsecutiveOnes + 1) / 2n);
+            totalSubstrings = (totalSubstrings + Number(contribution % BigInt(MOD))) % MOD;
+            currentConsecutiveOnes = 0;
+        }
+    }
+    
+    // Add contributions from any trailing ones
+    let contribution = (BigInt(currentConsecutiveOnes) * BigInt(currentConsecutiveOnes + 1) / 2n);
+    totalSubstrings = (totalSubstrings + Number(contribution % BigInt(MOD))) % MOD;
+    
+    return totalSubstrings;
+};
 {% endhighlight %}
 
   </div>
@@ -246,19 +316,27 @@ var numSub = function(s) {
 
 {% highlight typescript %}
 function numSub(s: string): number {
-           let res: number = 0;
-           let count: number = 0;
-           for (let c of s) {
-               if (c == '1') {
-                   count++;
-               } else {
-                   res += count * (count + 1) / 2;
-                   count = 0;
-               }
-           }
-           res += count * (count + 1) / 2;
-           return res % (1000000007);
-       }
+    const MOD: number = 1_000_000_007;
+    let totalSubstrings: number = 0;
+    let currentConsecutiveOnes: number = 0;
+
+    for (let i = 0; i < s.length; i++) {
+        if (s[i] === '1') {
+            currentConsecutiveOnes++;
+        } else {
+            // Use BigInt for intermediate product to prevent overflow in JavaScript Number type.
+            let contribution = (BigInt(currentConsecutiveOnes) * BigInt(currentConsecutiveOnes + 1) / 2n);
+            totalSubstrings = (totalSubstrings + Number(contribution % BigInt(MOD))) % MOD;
+            currentConsecutiveOnes = 0;
+        }
+    }
+    
+    // Add contributions from any trailing ones
+    let contribution = (BigInt(currentConsecutiveOnes) * BigInt(currentConsecutiveOnes + 1) / 2n);
+    totalSubstrings = (totalSubstrings + Number(contribution % BigInt(MOD))) % MOD;
+    
+    return totalSubstrings;
+}
 {% endhighlight %}
 
   </div>
@@ -267,21 +345,34 @@ function numSub(s: string): number {
 
 {% highlight php %}
 class Solution {
-           function numSub($s) {
-               $res = 0;
-               $count = 0;
-               for ($i = 0; $i < strlen($s); $i++) {
-                   if ($s[$i] == '1') {
-                       $count++;
-                   } else {
-                       $res += $count * ($count + 1) / 2;
-                       $count = 0;
-                   }
-               }
-               $res += $count * ($count + 1) / 2;
-               return $res % (1000000007);
-           }
-       }
+
+    /**
+     * @param String $s
+     * @return Integer
+     */
+    function numSub($s) {
+        $MOD = 1000000007;
+        $totalSubstrings = 0;
+        $currentConsecutiveOnes = 0;
+
+        for ($i = 0; $i < strlen($s); $i++) {
+            if ($s[$i] == '1') {
+                $currentConsecutiveOnes++;
+            } else {
+                // PHP integers automatically handle large numbers on 64-bit systems.
+                $contribution = (int)(($currentConsecutiveOnes * ($currentConsecutiveOnes + 1)) / 2);
+                $totalSubstrings = ($totalSubstrings + $contribution) % $MOD;
+                $currentConsecutiveOnes = 0;
+            }
+        }
+        
+        // Add contributions from any trailing ones
+        $contribution = (int)(($currentConsecutiveOnes * ($currentConsecutiveOnes + 1)) / 2);
+        $totalSubstrings = ($totalSubstrings + $contribution) % $MOD;
+        
+        return $totalSubstrings;
+    }
+}
 {% endhighlight %}
 
   </div>
@@ -290,21 +381,31 @@ class Solution {
 
 {% highlight swift %}
 class Solution {
-           func numSub(_ s: String) -> Int {
-               var res: Int64 = 0
-               var count: Int64 = 0
-               for c in s {
-                   if c == "1" {
-                       count += 1
-                   } else {
-                       res += count * (count + 1) / 2
-                       count = 0
-                   }
-               }
-               res += count * (count + 1) / 2
-               return Int(res % 1000000007)
-           }
-       }
+    func numSub(_ s: String) -> Int {
+        let MOD: Int = 1_000_000_007
+        var totalSubstrings: Int = 0
+        var currentConsecutiveOnes: Int = 0
+
+        for char in s {
+            if char == "1" {
+                currentConsecutiveOnes += 1
+            } else {
+                let n = currentConsecutiveOnes
+                // Swift's Int is typically 64-bit on modern platforms, handling intermediate product 10^10 correctly.
+                let contribution = n * (n + 1) / 2
+                totalSubstrings = (totalSubstrings + contribution) % MOD
+                currentConsecutiveOnes = 0
+            }
+        }
+        
+        // Add contributions from any trailing ones
+        let n = currentConsecutiveOnes
+        let contribution = n * (n + 1) / 2
+        totalSubstrings = (totalSubstrings + contribution) % MOD
+        
+        return totalSubstrings
+    }
+}
 {% endhighlight %}
 
   </div>
@@ -313,21 +414,26 @@ class Solution {
 
 {% highlight kotlin %}
 class Solution {
-           fun numSub(s: String): Int {
-               var res: Long = 0
-               var count: Long = 0
-               for (c in s) {
-                   if (c == '1') {
-                       count++
-                   } else {
-                       res += count * (count + 1) / 2
-                       count = 0
-                   }
-               }
-               res += count * (count + 1) / 2
-               return (res % 1000000007).toInt()
-           }
-       }
+    fun numSub(s: String): Int {
+        val MOD = 1_000_000_007L // Use Long for modulo constant
+        var totalSubstrings: Long = 0L
+        var currentConsecutiveOnes: Long = 0L // Use Long for count
+
+        for (char in s) {
+            if (char == '1') {
+                currentConsecutiveOnes++
+            } else {
+                totalSubstrings = (totalSubstrings + currentConsecutiveOnes * (currentConsecutiveOnes + 1) / 2) % MOD
+                currentConsecutiveOnes = 0L
+            }
+        }
+        
+        // Add contributions from any trailing ones
+        totalSubstrings = (totalSubstrings + currentConsecutiveOnes * (currentConsecutiveOnes + 1) / 2) % MOD
+        
+        return totalSubstrings.toInt()
+    }
+}
 {% endhighlight %}
 
   </div>
@@ -336,21 +442,28 @@ class Solution {
 
 {% highlight dart %}
 class Solution {
-           int numSub(String s) {
-               int res = 0;
-               int count = 0;
-               for (var c in s.split('')) {
-                   if (c == '1') {
-                       count++;
-                   } else {
-                       res += count * (count + 1) ~/ 2;
-                       count = 0;
-                   }
-               }
-               res += count * (count + 1) ~/ 2;
-               return res % 1000000007;
-           }
-       }
+  int numSub(String s) {
+    final int MOD = 1_000_000_007;
+    int totalSubstrings = 0;
+    int currentConsecutiveOnes = 0;
+
+    for (int i = 0; i < s.length; i++) {
+      if (s[i] == '1') {
+        currentConsecutiveOnes++;
+      } else {
+        // Dart integers (int) have arbitrary precision on the web (JavaScript),
+        // and are 64-bit signed integers on native platforms. This handles large products.
+        totalSubstrings = (totalSubstrings + currentConsecutiveOnes * (currentConsecutiveOnes + 1) ~/ 2) % MOD;
+        currentConsecutiveOnes = 0;
+      }
+    }
+    
+    // Add contributions from any trailing ones
+    totalSubstrings = (totalSubstrings + currentConsecutiveOnes * (currentConsecutiveOnes + 1) ~/ 2) % MOD;
+    
+    return totalSubstrings;
+  }
+}
 {% endhighlight %}
 
   </div>
@@ -360,30 +473,29 @@ class Solution {
 {% highlight go %}
 package main
 
-       import (
-           "fmt"
-       )
+func numSub(s string) int {
+    const MOD = 1_000_000_007
+    totalSubstrings := 0
+    currentConsecutiveOnes := 0
 
-       func numSub(s string) int {
-           res := 0
-           count := 0
-           for _, c := range s {
-               if c == '1' {
-                   count++
-               } else {
-                   res += count * (count + 1) / 2
-                   count = 0
-               }
-           }
-           res += count * (count + 1) / 2
-           return res % 1000000007
-       }
-
-       func main() {
-           fmt.Println(numSub("0110111")) // 9
-           fmt.Println(numSub("101")) // 2
-           fmt.Println(numSub("111111")) // 21
-       }
+    for _, char := range s { // range iterates over unicode runes, which is fine for ASCII '0' and '1'
+        if char == '1' {
+            currentConsecutiveOnes++
+        } else {
+            // currentConsecutiveOnes can be up to 10^5, product can be 10^10.
+            // Use int64 for intermediate calculation to prevent overflow before modulo.
+            contribution := int64(currentConsecutiveOnes) * int64(currentConsecutiveOnes + 1) / 2
+            totalSubstrings = (totalSubstrings + int(contribution % MOD)) % MOD
+            currentConsecutiveOnes = 0
+        }
+    }
+    
+    // Add contributions from any trailing ones
+    contribution := int64(currentConsecutiveOnes) * int64(currentConsecutiveOnes + 1) / 2
+    totalSubstrings = (totalSubstrings + int(contribution % MOD)) % MOD
+    
+    return totalSubstrings
+}
 {% endhighlight %}
 
   </div>
@@ -391,22 +503,30 @@ package main
   <div class="tab-panel" data-lang="ruby">
 
 {% highlight ruby %}
-# @param {String} s
-       # @return {Integer}
-       def num_sub(s)
-           res = 0
-           count = 0
-           s.each_char do |c|
-               if c == '1'
-                   count += 1
-               else
-                   res += count * (count + 1) / 2
-                   count = 0
-               end
-           end
-           res += count * (count + 1) / 2
-           res % 1000000007
-       end
+class Solution
+    def numSub(s)
+        mod = 1_000_000_007
+        total_substrings = 0
+        current_consecutive_ones = 0
+
+        # Ruby handles arbitrary precision integers, so no overflow concerns.
+        s.each_char do |char|
+            if char == '1'
+                current_consecutive_ones += 1
+            else
+                contribution = current_consecutive_ones * (current_consecutive_ones + 1) / 2
+                total_substrings = (total_substrings + contribution) % mod
+                current_consecutive_ones = 0
+            end
+        end
+        
+        # Add contributions from any trailing ones
+        contribution = current_consecutive_ones * (current_consecutive_ones + 1) / 2
+        total_substrings = (total_substrings + contribution) % mod
+        
+        total_substrings
+    end
+end
 {% endhighlight %}
 
   </div>
@@ -415,21 +535,26 @@ package main
 
 {% highlight scala %}
 object Solution {
-           def numSub(s: String): Int = {
-               var res: Long = 0
-               var count: Long = 0
-               for (c <- s) {
-                   if (c == '1') {
-                       count += 1
-                   } else {
-                       res += count * (count + 1) / 2
-                       count = 0
-                   }
-               }
-               res += count * (count + 1) / 2
-               (res % 1000000007).toInt
-           }
-       }
+    def numSub(s: String): Int = {
+        val MOD: Long = 1_000_000_007L
+        var totalSubstrings: Long = 0L
+        var currentConsecutiveOnes: Long = 0L
+
+        for (char <- s) {
+            if (char == '1') {
+                currentConsecutiveOnes += 1
+            } else {
+                totalSubstrings = (totalSubstrings + currentConsecutiveOnes * (currentConsecutiveOnes + 1) / 2) % MOD
+                currentConsecutiveOnes = 0L
+            }
+        }
+        
+        // Add contributions from any trailing ones
+        totalSubstrings = (totalSubstrings + currentConsecutiveOnes * (currentConsecutiveOnes + 1) / 2) % MOD
+        
+        totalSubstrings.toInt
+    }
+}
 {% endhighlight %}
 
   </div>
@@ -438,21 +563,30 @@ object Solution {
 
 {% highlight rust %}
 impl Solution {
-           pub fn num_sub(s: String) -> i32 {
-               let mut res: i64 = 0;
-               let mut count: i64 = 0;
-               for c in s.chars() {
-                   if c == '1' {
-                       count += 1;
-                   } else {
-                       res += count * (count + 1) / 2;
-                       count = 0;
-                   }
-               }
-               res += count * (count + 1) / 2;
-               (res % 1000000007) as i32
-           }
-       }
+    pub fn num_sub(s: String) -> i32 {
+        let modulo: i64 = 1_000_000_007;
+        let mut total_substrings: i64 = 0;
+        let mut current_consecutive_ones: i64 = 0;
+
+        for char_code in s.as_bytes() { // Iterate over bytes for ASCII chars '0' and '1'
+            if *char_code == b'1' {
+                current_consecutive_ones += 1;
+            } else {
+                // current_consecutive_ones can be up to 10^5, product can be 10^10.
+                // i64 handles this intermediate product before modulo.
+                let contribution = current_consecutive_ones * (current_consecutive_ones + 1) / 2;
+                total_substrings = (total_substrings + contribution) % modulo;
+                current_consecutive_ones = 0;
+            }
+        }
+        
+        // Add contributions from any trailing ones
+        let contribution = current_consecutive_ones * (current_consecutive_ones + 1) / 2;
+        total_substrings = (total_substrings + contribution) % modulo;
+        
+        total_substrings as i32
+    }
+}
 {% endhighlight %}
 
   </div>
@@ -462,14 +596,28 @@ impl Solution {
 {% highlight racket %}
 #lang racket
 
-       (define (num-sub s)
-           (let loop ((res 0)
-                     (count 0)
-                     (s s))
-             (cond
-               ((null? s) (modulo (+ res (* count (add1 count)) / 2) 1000000007))
-               ((eq? (car s) #\1) (loop res (add1 count) (cdr s)))
-               (else (loop (+ res (* count (add1 count)) / 2) 0 (cdr s))))))
+(define (num-sub s)
+  (define MOD 1000000007)
+  (define total-substrings 0)
+  (define current-consecutive-ones 0)
+
+  (for ([char (string->list s)])
+    (if (char=? char #\1)
+        (set! current-consecutive-ones (+ current-consecutive-ones 1))
+        (begin
+          (set! total-substrings
+                (modulo (+ total-substrings
+                           (quotient (* current-consecutive-ones (+ current-consecutive-ones 1)) 2))
+                        MOD))
+          (set! current-consecutive-ones 0))))
+
+  ;; Add contributions from any trailing ones
+  (set! total-substrings
+        (modulo (+ total-substrings
+                   (quotient (* current-consecutive-ones (+ current-consecutive-ones 1)) 2))
+                MOD))
+  
+  total-substrings)
 {% endhighlight %}
 
   </div>
@@ -478,18 +626,27 @@ impl Solution {
 
 {% highlight erlang %}
 -module(solution).
-       -export([num_sub/1]).
+-export([num_sub/1]).
 
-       num_sub(S) ->
-           num_sub(S, 0, 0).
-
-       num_sub([], Res, Count) ->
-           (Res + Count * (Count + 1) div 2) rem 1000000007;
-       num_sub([C|Cs], Res, Count) ->
-           case C of
-               $1 -> num_sub(Cs, Res, Count + 1);
-               _ -> num_sub(Cs, Res + Count * (Count + 1) div 2, 0)
-           end.
+num_sub(S) ->
+    MOD = 1000000007,
+    {TotalSubstrings, CurrentConsecutiveOnes} = lists:foldl(
+        fun(Char, {AccTotal, AccOnes}) ->
+            case Char of
+                $1 ->
+                    {AccTotal, AccOnes + 1};
+                $0 ->
+                    % Erlang integers have arbitrary precision, no overflow concerns.
+                    Contribution = (AccOnes * (AccOnes + 1) div 2),
+                    {(AccTotal + Contribution) rem MOD, 0}
+            end
+        end,
+        {0, 0},
+        S
+    ),
+    % Add contributions from any trailing ones
+    Contribution = (CurrentConsecutiveOnes * (CurrentConsecutiveOnes + 1) div 2),
+    (TotalSubstrings + Contribution) rem MOD.
 {% endhighlight %}
 
   </div>
@@ -498,21 +655,27 @@ impl Solution {
 
 {% highlight elixir %}
 defmodule Solution do
-           def num_sub(s) do
-               num_sub(s, 0, 0)
-           end
-
-           defp num_sub([], res, count) do
-               (res + count * (count + 1) div 2) rem 1_000_000_007
-           end
-
-           defp num_sub([c|cs], res, count) do
-               case c do
-                   ?1 -> num_sub(cs, res, count + 1)
-                   _ -> num_sub(cs, res + count * (count + 1) div 2, 0)
-               end
-           end
-       end
+  @spec num_sub(s :: String.t) :: integer
+  def num_sub(s) do
+    mod = 1_000_000_007
+    
+    # Elixir integers have arbitrary precision, no overflow concerns.
+    {total_substrings, current_consecutive_ones} = 
+      String.graphemes(s) # Or String.to_charlist(s) for ASCII '0' and '1'
+      |> Enum.reduce({0, 0}, fn
+        "1", {acc_total, acc_ones} ->
+          {acc_total, acc_ones + 1}
+        "0", {acc_total, acc_ones} ->
+          contribution = div(acc_ones * (acc_ones + 1), 2)
+          {rem(acc_total + contribution, mod), 0}
+        _, acc -> acc # Should not be reached with valid binary string input
+      end)
+    
+    # Add contributions from any trailing ones
+    contribution = div(current_consecutive_ones * (current_consecutive_ones + 1), 2)
+    rem(total_substrings + contribution, mod)
+  end
+end
 {% endhighlight %}
 
   </div>
@@ -522,6 +685,6 @@ defmodule Solution do
 
 ### Complexity Analysis
 
-- **Time Complexity:** O(n), where n is the length of the binary string. This is because we are iterating through the string once.
+- **Time Complexity:** O(N)
 
-- **Space Complexity:** O(1), as we are using a constant amount of space to store the count of consecutive 1s and the total number of substrings.
+- **Space Complexity:** O(1)
