@@ -45,35 +45,37 @@ Given a binary string `s`, return _the number of substrings with all characters_
 
 The problem asks us to count the total number of substrings consisting only of '1's in a given binary string `s`. Since the answer can be very large, we need to return it modulo `10^9 + 7`.
 
-The core idea is to iterate through the string and keep track of consecutive '1's. When we encounter a '1', it extends the current sequence of consecutive '1's. Each '1' at the end of a sequence of `k` consecutive '1's (i.e., this '1' is the k-th '1' in the current block) contributes `k` new substrings that *end* at its current position:
-1. The single '1' itself.
-2. The '11' ending at this position (if `k >= 2`).
-3. The '111' ending at this position (if `k >= 3`).
-...and so on, up to the sequence of `k` '1's ending at this position.
+The core idea is to identify contiguous blocks of '1's. For any block of `n` consecutive '1's (e.g., "111" has `n=3`), the substrings with only '1's that can be formed from this block are:
+- `n` substrings of length 1 ("1", "1", "1")
+- `n-1` substrings of length 2 ("11", "11")
+- ...
+- `1` substring of length `n` ("111")
 
-For example, consider the string `s = "111"`:
-- When we process the first `'1'` (at index 0): `current_consecutive_ones` becomes 1. This '1' forms one substring: "1". We add 1 to `total_substrings`.
-- When we process the second `'1'` (at index 1): `current_consecutive_ones` becomes 2. This '1' forms two substrings ending at index 1: "1" and "11". We add 2 to `total_substrings`.
-- When we process the third `'1'` (at index 2): `current_consecutive_ones` becomes 3. This '1' forms three substrings ending at index 2: "1", "11", and "111". We add 3 to `total_substrings`.
+The total number of such substrings for a block of `n` consecutive '1's is the sum `1 + 2 + ... + n`, which is given by the triangular number formula: `n * (n + 1) / 2`.
 
-Thus, for "111", the total substrings would be 1 + 2 + 3 = 6. This is equivalent to summing the length of the current consecutive '1's block each time a '1' is encountered.
+Our approach will be to iterate through the string, keeping track of the current count of consecutive '1's. When we encounter a '0' or reach the end of the string, it signifies the end of a block of '1's. At this point:
+1. We take the `current_ones` count, let's call it `n`.
+2. We calculate its contribution to the total: `n * (n + 1) / 2`.
+3. We add this contribution to our running total, applying the modulo `10^9 + 7` at each addition.
+4. We reset `current_ones` to 0.
 
-When we encounter a '0', it breaks any current sequence of '1's, so we reset `current_consecutive_ones` to 0.
+After iterating through the entire string, there might be a trailing block of '1's (if the string ends with '1's). We perform one final check for `current_ones > 0` and add its contribution to the total.
 
-**Algorithm:**
-1. Initialize `total_substrings` to 0.
-2. Initialize `current_consecutive_ones` to 0.
-3. Define `MOD = 10^9 + 7`.
-4. Iterate through each character `c` in the input string `s`:
-   a. If `c` is `'1'`:
-      i. Increment `current_consecutive_ones`.
-      ii. Add the current `current_consecutive_ones` count to `total_substrings`. Perform modulo `MOD` after each addition to prevent overflow: `total_substrings = (total_substrings + current_consecutive_ones) % MOD`.
-   b. If `c` is `'0'`:
-      i. Reset `current_consecutive_ones` to 0.
-5. After iterating through the entire string, `total_substrings` will hold the final count.
-6. Return `total_substrings`.
+**Example Trace (`s = "0110111"`):**
+- Initialize `total_count = 0`, `current_ones = 0`, `MOD = 10^9 + 7`.
+- Iterate through `s`:
+  - `s[0] = '0'`: `current_ones` is 0, no contribution. Reset `current_ones = 0`.
+  - `s[1] = '1'`: `current_ones` becomes 1.
+  - `s[2] = '1'`: `current_ones` becomes 2.
+  - `s[3] = '0'`: Block ends. `n = current_ones = 2`. Contribution = `2 * (2 + 1) / 2 = 3`. `total_count = (0 + 3) % MOD = 3`. Reset `current_ones = 0`.
+  - `s[4] = '1'`: `current_ones` becomes 1.
+  - `s[5] = '1'`: `current_ones` becomes 2.
+  - `s[6] = '1'`: `current_ones` becomes 3.
+- End of loop.
+- Final check: `current_ones` is 3. Contribution = `3 * (3 + 1) / 2 = 6`. `total_count = (3 + 6) % MOD = 9`.
+- Return `9`.
 
-This approach is efficient as it processes each character once and uses only a few variables.
+Modulo operations should be applied carefully. The sum `total_count` should be modulo `MOD` after each addition. The intermediate `n * (n + 1) / 2` can be calculated first. For `n` up to `10^5`, `n * (n+1)` can be up to `10^{10}`, which requires 64-bit integers (`long` in Java/Go, `long long` in C++, Python handles automatically, JavaScript handles sufficiently) to prevent overflow before division, if applicable.
 
 ### Code
 
@@ -88,155 +90,229 @@ This approach is efficient as it processes each character once and uses only a f
     <label for="lang-python">Python</label>
     <label for="lang-java">Java</label>
     <label for="lang-cpp">C++</label>
-    <label for="lang-javascript">JavaScript</label>
-    <label for="lang-typescript">TypeScript</label>
+    <label for="lang-javascript">JS</label>
+    <label for="lang-typescript">TS</label>
     <label for="lang-go">Go</label>
   </div>
 
   <div class="tab-panel" data-lang="python">
 
-```python
+{% highlight python %}
 class Solution:
     def numSub(self, s: str) -> int:
         MOD = 10**9 + 7
-        total_substrings = 0
-        current_consecutive_ones = 0
+        total_count = 0
+        current_ones = 0
 
         for char in s:
             if char == '1':
-                current_consecutive_ones += 1
-                total_substrings = (total_substrings + current_consecutive_ones) % MOD
+                current_ones += 1
             else:
-                current_consecutive_ones = 0
+                # Block of ones ended
+                if current_ones > 0:
+                    # Calculate sum of 1 to current_ones (n * (n + 1) / 2)
+                    contribution = current_ones * (current_ones + 1) // 2
+                    total_count = (total_count + contribution) % MOD
+                current_ones = 0
         
-        return total_substrings
-```
+        # After the loop, check for any trailing block of ones
+        if current_ones > 0:
+            contribution = current_ones * (current_ones + 1) // 2
+            total_count = (total_count + contribution) % MOD
+            
+        return total_count
+{% endhighlight %}
 
   </div>
 
   <div class="tab-panel" data-lang="java">
 
-```java
+{% highlight java %}
 class Solution {
     public int numSub(String s) {
-        long MOD = 1_000_000_007L; 
-        long totalSubstrings = 0;
-        int currentConsecutiveOnes = 0;
+        final int MOD = 1_000_000_007;
+        long totalCount = 0;
+        long currentOnes = 0;
 
         for (char c : s.toCharArray()) {
             if (c == '1') {
-                currentConsecutiveOnes++;
-                totalSubstrings = (totalSubstrings + currentConsecutiveOnes) % MOD;
+                currentOnes++;
             } else {
-                currentConsecutiveOnes = 0;
+                // Block of ones ended
+                if (currentOnes > 0) {
+                    // Calculate sum of 1 to currentOnes (n * (n + 1) / 2)
+                    long contribution = currentOnes * (currentOnes + 1) / 2;
+                    totalCount = (totalCount + contribution) % MOD;
+                }
+                currentOnes = 0;
             }
         }
-
-        return (int) totalSubstrings;
+        
+        // After the loop, check for any trailing block of ones
+        if (currentOnes > 0) {
+            long contribution = currentOnes * (currentOnes + 1) / 2;
+            totalCount = (totalCount + contribution) % MOD;
+        }
+            
+        return (int)totalCount;
     }
 }
-```
+{% endhighlight %}
 
   </div>
 
   <div class="tab-panel" data-lang="cpp">
 
-```cpp
+{% highlight cpp %}
+#include <string>
+#include <vector>
+
 class Solution {
 public:
-    int numSub(string s) {
-        long long MOD = 1e9 + 7; 
-        long long total_substrings = 0;
-        int current_consecutive_ones = 0;
+    int numSub(std::string s) {
+        const int MOD = 1e9 + 7;
+        long long total_count = 0;
+        long long current_ones = 0;
 
         for (char c : s) {
             if (c == '1') {
-                current_consecutive_ones++;
-                total_substrings = (total_substrings + current_consecutive_ones) % MOD;
+                current_ones++;
             } else {
-                current_consecutive_ones = 0;
+                // Block of ones ended
+                if (current_ones > 0) {
+                    // Calculate sum of 1 to current_ones (n * (n + 1) / 2)
+                    long long contribution = current_ones * (current_ones + 1) / 2;
+                    total_count = (total_count + contribution) % MOD;
+                }
+                current_ones = 0;
             }
         }
-
-        return (int) total_substrings;
+        
+        // After the loop, check for any trailing block of ones
+        if (current_ones > 0) {
+            long long contribution = current_ones * (current_ones + 1) / 2;
+            total_count = (total_count + contribution) % MOD;
+        }
+            
+        return static_cast<int>(total_count);
     }
 };
-```
+{% endhighlight %}
 
   </div>
 
   <div class="tab-panel" data-lang="javascript">
 
-```javascript
+{% highlight javascript %}
 /**
  * @param {string} s
  * @return {number}
  */
 var numSub = function(s) {
     const MOD = 10**9 + 7;
-    let totalSubstrings = 0;
-    let currentConsecutiveOnes = 0;
+    let totalCount = 0;
+    let currentOnes = 0;
 
     for (let i = 0; i < s.length; i++) {
         if (s[i] === '1') {
-            currentConsecutiveOnes++;
-            totalSubstrings = (totalSubstrings + currentConsecutiveOnes) % MOD;
+            currentOnes++;
         } else {
-            currentConsecutiveOnes = 0;
+            // Block of ones ended
+            if (currentOnes > 0) {
+                // Calculate sum of 1 to currentOnes (n * (n + 1) / 2)
+                // JavaScript numbers handle up to 2^53-1 accurately for integers
+                // 10^5 * (10^5 + 1) / 2 is approximately 5 * 10^9, which fits.
+                let contribution = currentOnes * (currentOnes + 1) / 2;
+                totalCount = (totalCount + contribution) % MOD;
+            }
+            currentOnes = 0;
         }
     }
-
-    return totalSubstrings;
+    
+    // After the loop, check for any trailing block of ones
+    if (currentOnes > 0) {
+        let contribution = currentOnes * (currentOnes + 1) / 2;
+        totalCount = (totalCount + contribution) % MOD;
+    }
+        
+    return totalCount;
 };
-```
+{% endhighlight %}
 
   </div>
 
   <div class="tab-panel" data-lang="typescript">
 
-```typescript
+{% highlight typescript %}
 function numSub(s: string): number {
     const MOD = 10**9 + 7;
-    let totalSubstrings: number = 0;
-    let currentConsecutiveOnes: number = 0;
+    let totalCount: number = 0;
+    let currentOnes: number = 0;
 
     for (let i = 0; i < s.length; i++) {
         if (s[i] === '1') {
-            currentConsecutiveOnes++;
-            totalSubstrings = (totalSubstrings + currentConsecutiveOnes) % MOD;
+            currentOnes++;
         } else {
-            currentConsecutiveOnes = 0;
+            // Block of ones ended
+            if (currentOnes > 0) {
+                // Calculate sum of 1 to currentOnes (n * (n + 1) / 2)
+                let contribution = currentOnes * (currentOnes + 1) / 2;
+                totalCount = (totalCount + contribution) % MOD;
+            }
+            currentOnes = 0;
         }
     }
-
-    return totalSubstrings;
+    
+    // After the loop, check for any trailing block of ones
+    if (currentOnes > 0) {
+        let contribution = currentOnes * (currentOnes + 1) / 2;
+        totalCount = (totalCount + contribution) % MOD;
+    }
+        
+    return totalCount;
 }
-```
+{% endhighlight %}
 
   </div>
 
   <div class="tab-panel" data-lang="go">
 
-```go
+{% highlight go %}
 package main
 
+import (
+	"fmt"
+)
+
 func numSub(s string) int {
-	MOD := 1_000_000_007
-	totalSubstrings := 0
-	currentConsecutiveOnes := 0
+    const MOD = 1_000_000_007
+    var totalCount int = 0
+    var currentOnes int = 0
 
-	for _, r := range s {
-		if r == '1' {
-			currentConsecutiveOnes++
-			totalSubstrings = (totalSubstrings + currentConsecutiveOnes) % MOD
-		} else {
-			currentConsecutiveOnes = 0
-		}
-	}
-
-	return totalSubstrings
+    for _, r := range s {
+        if r == '1' {
+            currentOnes++
+        } else {
+            // Block of ones ended
+            if currentOnes > 0 {
+                // Calculate sum of 1 to currentOnes (n * (n + 1) / 2)
+                // Go's int type is typically 64-bit on most systems, sufficient for 10^5 * (10^5+1)
+                contribution := currentOnes * (currentOnes + 1) / 2
+                totalCount = (totalCount + contribution) % MOD
+            }
+            currentOnes = 0
+        }
+    }
+    
+    // After the loop, check for any trailing block of ones
+    if currentOnes > 0 {
+        contribution := currentOnes * (currentOnes + 1) / 2
+        totalCount = (totalCount + contribution) % MOD
+    }
+        
+    return totalCount
 }
-```
+{% endhighlight %}
 
   </div>
 
@@ -245,6 +321,6 @@ func numSub(s string) int {
 
 ### Complexity Analysis
 
-- **Time Complexity:** O(N), where N is the length of the input string `s`. We iterate through the string exactly once, performing constant time operations for each character.
+- **Time Complexity:** O(N), where N is the length of the string `s`. We iterate through the string once, performing constant time operations for each character.
 
-- **Space Complexity:** O(1), as we only use a few integer variables to store counts and the modulo constant, regardless of the input string's length.
+- **Space Complexity:** O(1), as we only use a few integer variables to store counts and the total, regardless of the input string's length.

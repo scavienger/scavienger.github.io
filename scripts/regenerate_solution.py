@@ -324,8 +324,8 @@ class SolutionRegenerator:
             ('python', 'Python', 'python'),
             ('java', 'Java', 'java'),
             ('cpp', 'C++', 'cpp'),
-            ('javascript', 'JavaScript', 'javascript'),
-            ('typescript', 'TypeScript', 'typescript'),
+            ('javascript', 'JS', 'javascript'),
+            ('typescript', 'TS', 'typescript'),
             ('go', 'Go', 'go')
         ]
 
@@ -349,9 +349,9 @@ class SolutionRegenerator:
             if lang_key in solutions:
                 code = solutions[lang_key].strip()
                 tabs_html.append(f'  <div class="tab-panel" data-lang="{lang_key}">\n\n')
-                tabs_html.append(f'```{fence}\n')
+                tabs_html.append('{%% highlight %s %%}\n' % fence)
                 tabs_html.append(code + '\n')
-                tabs_html.append('```\n\n')
+                tabs_html.append('{% endhighlight %}\n\n')
                 tabs_html.append('  </div>\n\n')
 
         tabs_html.append('</div>\n')

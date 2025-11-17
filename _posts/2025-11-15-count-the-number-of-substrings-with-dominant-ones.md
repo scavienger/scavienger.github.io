@@ -65,27 +65,27 @@ Since there are 21 substrings total and 5 of them have non-dominant ones, it fol
 
 ### Approach
 
-The problem asks us to count substrings `s[l..r]` where the number of ones (`ones`) is greater than or equal to the square of the number of zeros (`zeros`). That is, `ones >= zeros^2`. The length of the string `s` can be up to `4 * 10^4`.
+The core idea relies on a key observation: for a substring `s[l..r]` with `Z` zeros and `O` ones, to be "dominant" (i.e., `O >= Z^2`), the number of zeros `Z` must be relatively small. Since `O + Z` is the length of the substring and `O + Z <= N` (total string length), it must be that `N - Z >= O >= Z^2`. This implies `Z^2 + Z - N <= 0`. Solving this quadratic inequality for `Z`, we find that `Z <= (-1 + sqrt(1 + 4N)) / 2`. For `N=4*10^4`, this upper bound for `Z` is approximately `199`. Let `K_MAX_Z` be this maximum possible number of zeros (e.g., 200). Any substring with more than `K_MAX_Z` zeros cannot be dominant.
 
-A brute-force approach iterating over all `O(N^2)` substrings and counting `ones` and `zeros` for each would be too slow (`O(N^3)` or `O(N^2)` if using prefix sums).
+This constraint on `Z` allows for an optimized counting strategy:
 
-The key observation comes from the constraint `ones >= zeros^2`:
-Since `ones <= N` (the total length of the string), it must be that `N >= ones >= zeros^2`. This implies `zeros^2 <= N`, or `zeros <= sqrt(N)`. For `N = 4 * 10^4`, `sqrt(N) = 200`. This means any substring with dominant ones can have at most `sqrt(N)` zeros. Let `K = floor(sqrt(N))`.
+1.  **Prefix Sums**: First, we precompute `pref_zeros` and `pref_ones` arrays. `pref_zeros[i]` stores the count of '0's in the prefix `s[0...i-1]`, and `pref_ones[i]` stores the count of '1's in `s[0...i-1]`. `pref_zeros[0]` and `pref_ones[0]` are 0, representing an empty prefix.
 
-This observation allows us to optimize the counting process. We can iterate through all possible starting positions `l` from `0` to `N-1`. For each `l`, we need to efficiently count valid `r`'s.
+2.  **Iterate Right Endpoints `r`**: We iterate through each possible right endpoint `r` of a substring `s[l..r]` from `0` to `N-1`.
 
-The strategy is as follows:
-1.  **Precompute zero indices**: Create a list `all_zero_indices` containing the 0-indexed positions of all '0's in `s`. Add sentinels to `all_zero_indices`: `-1` at the beginning and `N` at the end. These sentinels simplify boundary conditions.
-2.  **Iterate `l` (left pointer)**: For each `l` from `0` to `N-1`:
-    a.  **Handle `zeros = 0` case**: Substrings `s[l..r]` with zero zeros consist entirely of '1's. For such substrings, `ones >= 0^2` is always true (since `ones >= 0`). We find the index in `all_zero_indices` corresponding to the first '0' at or after `l` using binary search (`bisect_left` in Python, `lower_bound` in C++, `Collections.binarySearch` in Java, custom `bisectLeft` in JS/TS, `sort.SearchInts` in Go). Let the position of this zero be `first_zero_pos_from_l`. All `r` in `[l, first_zero_pos_from_l - 1]` form substrings with zero zeros. The count of such substrings is `first_zero_pos_from_l - l`. Add this to the total answer.
-    b.  **Handle `zeros > 0` cases**: Iterate `k_th_zero` from `1` to `K` (the maximum allowed number of zeros). For each `k_th_zero`:
-        i.   Find the actual index of the `k_th_zero`-th '0' character at or after `l`. This is found by taking the index of the first zero at or after `l` (from step 2a) and adding `k_th_zero - 1` to it within `all_zero_indices`. Let this be `pos_of_kth_zero`. If `k_th_zero` zeros do not exist up to `N-1` (e.g., we ran out of zeros in `all_zero_indices`), break this inner loop.
-        ii.  Find the actual index of the `(k_th_zero + 1)`-th '0' character at or after `l`. Let this be `pos_of_kplus1th_zero`. This defines the right boundary for `r` (exclusive) such that `s[l..r]` contains exactly `k_th_zero` zeros (i.e., `r` can go up to `pos_of_kplus1th_zero - 1`).
-        iii. For `s[l..r]` to be dominant, we need `ones >= k_th_zero^2`. The number of ones in `s[l..r]` is `(r - l + 1) - k_th_zero`. So, we need `(r - l + 1) - k_th_zero >= k_th_zero^2`, which simplifies to `r >= l + k_th_zero^2 + k_th_zero - 1`. Let this minimum required `r` be `min_r_needed`.
-        iv. Combine the constraints on `r`: `r` must be at least `pos_of_kth_zero` (to include the `k_th_zero`-th zero) and at least `min_r_needed` (for the dominant condition). So, the actual lower bound for `r` is `valid_r_start = max(pos_of_kth_zero, min_r_needed)`. The upper bound for `r` is `valid_r_end = pos_of_kplus1th_zero - 1`.
-        v. If `valid_r_start <= valid_r_end`, then all `r` in this range are valid, and we add `(valid_r_end - valid_r_start + 1)` to the total answer.
+3.  **Iterate Zero Counts `z`**: For each `r`, we iterate through all possible numbers of zeros `z` that `s[l..r]` could contain, from `0` up to `K_MAX_Z`. Note that `z` also cannot exceed `pref_zeros[r+1]` (the total zeros up to `r`).
 
-By splitting the processing based on the number of zeros and leveraging the `zeros <= K` bound, this algorithm avoids the `O(N^2)` worst case when there are many '1's.
+4.  **Derive `l` conditions**: For a fixed `r` and `z`:
+    *   The number of zeros in `s[0...r]` is `pref_zeros[r+1]`. If `s[l..r]` has `z` zeros, then `s[0...l-1]` (where `j=l-1`) must have `pref_zeros[j] = pref_zeros[r+1] - z`. Let this be `target_prev_zeros`.
+    *   The number of ones in `s[0...r]` is `pref_ones[r+1]`. The dominant condition `O >= Z^2` becomes `(pref_ones[r+1] - pref_ones[j]) >= z^2`. Rearranging, we need `pref_ones[j] <= pref_ones[r+1] - z^2`. Let this be `required_prev_ones_upper_bound`.
+
+5.  **Efficient Counting**: To count `j`s (and thus `l`s) that satisfy both conditions for current `r` and `z`:
+    *   We use a hash map `zeros_to_ones_map`. `zeros_to_ones_map[k]` stores a list of `pref_ones` values for all indices `j` where `pref_zeros[j] = k`. These lists are kept sorted.
+    *   For the `target_prev_zeros`, we retrieve its corresponding `ones_list` from the map. Since this list is sorted, we can use binary search (e.g., Python's `bisect_right`) to find how many elements in `ones_list` are less than or equal to `required_prev_ones_upper_bound`. This count is added to our total answer.
+
+6.  **Update Map**: After iterating through all `z` for the current `r`, we add `pref_ones[r+1]` to `zeros_to_ones_map[pref_zeros[r+1]]`. Since `pref_ones` values are non-decreasing as `r` increases, appending new values keeps the lists within `zeros_to_ones_map` sorted, which is essential for `bisect_right`.
+
+7.  **Base Case**: Initialize `zeros_to_ones_map[0].append(0)` to account for the empty prefix `s[0...-1]`, which has 0 zeros and 0 ones (representing `j=-1`).
 
 ### Code
 
@@ -100,181 +100,183 @@ By splitting the processing based on the number of zeros and leveraging the `zer
     <label for="lang-python">Python</label>
     <label for="lang-java">Java</label>
     <label for="lang-cpp">C++</label>
-    <label for="lang-javascript">JavaScript</label>
-    <label for="lang-typescript">TypeScript</label>
+    <label for="lang-javascript">JS</label>
+    <label for="lang-typescript">TS</label>
     <label for="lang-go">Go</label>
   </div>
 
   <div class="tab-panel" data-lang="python">
 
-```python
+{% highlight python %}
+import collections
+import math
 import bisect
 
 class Solution:
     def numberOfSubstrings(self, s: str) -> int:
         n = len(s)
         ans = 0
+
+        # K_MAX_Z is the maximum possible number of zeros in a dominant substring.
+        # If Z zeros, O ones, then O >= Z^2.
+        # Also O + Z <= N. So N - Z >= O >= Z^2.
+        # This implies Z^2 + Z - N <= 0.
+        # The maximum Z is floor((-1 + sqrt(1 + 4N)) / 2).
+        # For N = 4 * 10^4, Z_max is 199.
+        K_MAX_Z = int((math.sqrt(1 + 4 * n) - 1) / 2)
         
-        # K is the maximum number of zeros a dominant substring can have.
-        # If ones >= zeros^2 and ones <= N, then N >= zeros^2 => zeros <= sqrt(N).
-        k_max = int(n**0.5)
-        
-        # Precompute indices of all zeros, plus sentinels for easier boundary handling.
-        # The first sentinel -1 handles cases where l=0 and s[0]='1'.
-        # The last sentinel N handles cases where there are no more zeros until the end of string.
-        all_zero_indices = [-1]
+        # Prefixes sums for zeros and ones. pref_zeros[i] is count up to index i-1.
+        # So pref_zeros[0] = 0, pref_zeros[i] for s[0...i-1].
+        pref_zeros = [0] * (n + 1)
+        pref_ones = [0] * (n + 1)
         for i in range(n):
-            if s[i] == '0':
-                all_zero_indices.append(i)
-        all_zero_indices.append(n)
+            pref_zeros[i+1] = pref_zeros[i] + (1 if s[i] == '0' else 0)
+            pref_ones[i+1] = pref_ones[i] + (1 if s[i] == '1' else 0)
+
+        # zeros_to_ones_map stores lists of pref_ones values for specific pref_zeros counts.
+        # zeros_to_ones_map[z_count] = [o1, o2, o3, ...]
+        # Each list must be sorted to use bisect_right, which is maintained by appending
+        # as pref_ones is non-decreasing with increasing 'r'.
+        zeros_to_ones_map = collections.defaultdict(list)
         
-        for l in range(n):
-            # Find the index in `all_zero_indices` of the first zero at or after `l`.
-            # `bisect_left` returns the insertion point, which is exactly what we need.
-            start_idx_in_zero_list = bisect.bisect_left(all_zero_indices, l)
+        # Initialize for prefix up to index -1 (empty string or for l=0).
+        # pref_zeros[-1] = 0, pref_ones[-1] = 0
+        zeros_to_ones_map[0].append(0)
+
+        for r in range(n):
+            # current_total_zeros and current_total_ones are for prefix s[0...r]
+            current_total_zeros = pref_zeros[r+1]
+            current_total_ones = pref_ones[r+1]
+
+            # Iterate through all possible number of zeros 'z' in substring s[l...r]
+            # 'z' can range from 0 up to K_MAX_Z.
+            # 'z' also cannot be more than current_total_zeros.
+            for z in range(min(K_MAX_Z, current_total_zeros) + 1):
+                # We are looking for an index `j` (which corresponds to `l-1`) such that:
+                # 1. Number of zeros in s[0...j] is `target_prev_zeros`.
+                #    `target_prev_zeros = current_total_zeros - z`
+                # 2. Number of ones in s[0...j] (`pref_ones[j]`) satisfies the dominant condition:
+                #    `(current_total_ones - pref_ones[j]) >= z*z`
+                #    which rearranges to `pref_ones[j] <= current_total_ones - z*z`
+                
+                target_prev_zeros = current_total_zeros - z
+                
+                # `target_prev_zeros` is guaranteed to be non-negative due to loop range of `z`.
+                
+                required_prev_ones_upper_bound = current_total_ones - z * z
+
+                # Find `j`s in `zeros_to_ones_map[target_prev_zeros]` that satisfy the `pref_ones` condition.
+                if target_prev_zeros in zeros_to_ones_map:
+                    ones_list = zeros_to_ones_map[target_prev_zeros]
+                    # `bisect.bisect_right` returns an insertion point that ensures elements to its left are <= value.
+                    count = bisect.bisect_right(ones_list, required_prev_ones_upper_bound)
+                    ans += count
             
-            # Case 1: Substrings with 0 zeros (i.e., all '1's)
-            # These substrings are s[l..r] where r is from l to (first_zero_pos_from_l - 1).
-            first_zero_pos_from_l = all_zero_indices[start_idx_in_zero_list]
-            if first_zero_pos_from_l > l: # Means s[l] is '1' and there are ones before the first zero
-                # Any substring of only '1's is dominant (ones >= 0^2 always true).
-                ans += (first_zero_pos_from_l - l)
-            
-            # Case 2: Substrings with `k_th_zero` zeros, where 1 <= k_th_zero <= k_max
-            for k_th_zero in range(1, k_max + 1):
-                # `current_zero_list_idx` points to the `k_th_zero`-th actual zero index relative to `l`'s first zero.
-                current_zero_list_idx = start_idx_in_zero_list + k_th_zero - 1
-                
-                # If we've run out of zeros in the string for this `k_th_zero` count.
-                # `len(all_zero_indices) - 1` is the index of the last sentinel (N).
-                if current_zero_list_idx >= len(all_zero_indices) - 1:
-                    break # No more k_th_zero zeros possible from l
-                
-                # `pos_of_kth_zero` is the actual index of the k_th zero in `s`.
-                # `pos_of_kplus1th_zero` is the actual index of the (k+1)-th zero in `s`.
-                # Substrings s[l..r] with exactly `k_th_zero` zeros will have `r` in range
-                # [pos_of_kth_zero, pos_of_kplus1th_zero - 1].
-                pos_of_kth_zero = all_zero_indices[current_zero_list_idx]
-                pos_of_kplus1th_zero = all_zero_indices[current_zero_list_idx + 1]
-                
-                # Calculate the minimum 'r' required for `s[l..r]` to be dominant for this `k_th_zero`.
-                # ones = (r - l + 1) - k_th_zero
-                # Condition: (r - l + 1) - k_th_zero >= k_th_zero^2
-                # r - l + 1 >= k_th_zero^2 + k_th_zero
-                # r >= l + k_th_zero^2 + k_th_zero - 1
-                min_r_needed = l + k_th_zero**2 + k_th_zero - 1
-                
-                # The valid range for `r` is limited by `pos_of_kth_zero` and `pos_of_kplus1th_zero`.
-                # `r` must be at least `pos_of_kth_zero` to include the `k_th_zero`-th zero.
-                # `r` must be at most `pos_of_kplus1th_zero - 1` to not include the `(k+1)`-th zero.
-                valid_r_start = max(pos_of_kth_zero, min_r_needed)
-                valid_r_end = pos_of_kplus1th_zero - 1
-                
-                # If the valid range is non-empty, add the count of `r` values.
-                if valid_r_start <= valid_r_end:
-                    ans += (valid_r_end - valid_r_start + 1)
-                    
+            # Add current prefix (s[0...r]) sums to the map for future iterations.
+            zeros_to_ones_map[current_total_zeros].append(current_total_ones)
+        
         return ans
-```
+{% endhighlight %}
 
   </div>
 
   <div class="tab-panel" data-lang="java">
 
-```java
+{% highlight java %}
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 class Solution {
     public long numberOfSubstrings(String s) {
         int n = s.length();
         long ans = 0;
+
+        // K_MAX_Z is the maximum possible number of zeros in a dominant substring.
+        // Derived from Z^2 + Z - N <= 0.
+        int K_MAX_Z = (int) Math.floor((-1 + Math.sqrt(1 + 4L * n)) / 2);
         
-        // K is the maximum number of zeros a dominant substring can have.
-        // If ones >= zeros^2 and ones <= N, then N >= zeros^2 => zeros <= sqrt(N).
-        int kMax = (int) Math.sqrt(n);
-        
-        // Precompute indices of all zeros, plus sentinels for easier boundary handling.
-        // The first sentinel -1 handles cases where l=0 and s[0]='1'.
-        // The last sentinel n handles cases where there are no more zeros until the end of string.
-        List<Integer> allZeroIndices = new ArrayList<>();
-        allZeroIndices.add(-1);
+        // Prefix sums for zeros and ones. prefZeros[i] is count up to index i-1.
+        int[] prefZeros = new int[n + 1];
+        int[] prefOnes = new int[n + 1];
         for (int i = 0; i < n; i++) {
-            if (s.charAt(i) == '0') {
-                allZeroIndices.add(i);
-            }
+            prefZeros[i+1] = prefZeros[i] + (s.charAt(i) == '0' ? 1 : 0);
+            prefOnes[i+1] = prefOnes[i] + (s.charAt(i) == '1' ? 1 : 0);
         }
-        allZeroIndices.add(n);
+
+        // zerosToOnesMap stores lists of prefOnes values for specific prefZeros counts.
+        // Map<Integer, List<Integer>> zerosToOnesMap = new HashMap<>();
+        // Using a custom class to optimize memory as N is large
+        // Or just accept that HashMap<Integer, ArrayList<Integer>> is standard.
+        Map<Integer, List<Integer>> zerosToOnesMap = new HashMap<>();
         
-        for (int l = 0; l < n; l++) {
-            // Find the index in `allZeroIndices` of the first zero at or after `l`.
-            // `Collections.binarySearch` returns (-(insertion point) - 1) if not found.
-            // The insertion point is the index where the element would be inserted to maintain sorted order.
-            int startIdxInZeroList = Collections.binarySearch(allZeroIndices, l);
-            if (startIdxInZeroList < 0) {
-                startIdxInZeroList = -startIdxInZeroList - 1;
-            }
-            
-            // Case 1: Substrings with 0 zeros (i.e., all '1's)
-            // These substrings are s[l..r] where r is from l to (firstZeroPosFromL - 1).
-            int firstZeroPosFromL = allZeroIndices.get(startIdxInZeroList);
-            if (firstZeroPosFromL > l) { // Means s[l] is '1' and there are ones before the first zero
-                // Any substring of only '1's is dominant (ones >= 0^2 always true).
-                ans += (firstZeroPosFromL - l);
-            }
-            
-            // Case 2: Substrings with `k_th_zero` zeros, where 1 <= k_th_zero <= kMax
-            for (int kThZero = 1; kThZero <= kMax; kThZero++) {
-                // `currentZeroListIdx` points to the `k_th_zero`-th actual zero index relative to `l`'s first zero.
-                int currentZeroListIdx = startIdxInZeroList + kThZero - 1;
+        // Initialize for prefix up to index -1 (empty string or for l=0).
+        // prefZeros[-1] = 0, prefOnes[-1] = 0
+        zerosToOnesMap.computeIfAbsent(0, k -> new ArrayList<>()).add(0);
+
+        for (int r = 0; r < n; r++) {
+            // currentTotalZeros and currentTotalOnes are for prefix s[0...r]
+            int currentTotalZeros = prefZeros[r+1];
+            int currentTotalOnes = prefOnes[r+1];
+
+            // Iterate through all possible number of zeros 'z' in substring s[l...r]
+            // 'z' can range from 0 up to K_MAX_Z.
+            // 'z' also cannot be more than currentTotalZeros.
+            for (int z = 0; z <= Math.min(K_MAX_Z, currentTotalZeros); z++) {
+                // We are looking for an index `j` (which corresponds to `l-1`) such that:
+                // 1. Number of zeros in s[0...j] is `targetPrevZeros`.
+                //    `targetPrevZeros = currentTotalZeros - z`
+                // 2. Number of ones in s[0...j] (`prefOnes[j]`) satisfies the dominant condition:
+                //    `(currentTotalOnes - prefOnes[j]) >= z*z`
+                //    which rearranges to `prefOnes[j] <= currentTotalOnes - z*z`
                 
-                // If we've run out of zeros in the string for this `k_th_zero` count.
-                // `allZeroIndices.size() - 1` is the index of the last sentinel (N).
-                if (currentZeroListIdx >= allZeroIndices.size() - 1) {
-                    break; // No more k_th_zero zeros possible from l
-                }
+                int targetPrevZeros = currentTotalZeros - z;
                 
-                // `posOfKthZero` is the actual index of the k_th zero in `s`.
-                // `posOfKplus1thZero` is the actual index of the (k+1)-th zero in `s`.
-                // Substrings s[l..r] with exactly `k_th_zero` zeros will have `r` in range
-                // [posOfKthZero, posOfKplus1thZero - 1].
-                int posOfKthZero = allZeroIndices.get(currentZeroListIdx);
-                int posOfKplus1thZero = allZeroIndices.get(currentZeroListIdx + 1);
+                // `targetPrevZeros` is guaranteed to be non-negative due to loop range of `z`.
                 
-                // Calculate the minimum 'r' required for `s[l..r]` to be dominant for this `k_th_zero`.
-                // ones = (r - l + 1) - k_th_zero
-                // Condition: (r - l + 1) - k_th_zero >= k_th_zero^2
-                // r - l + 1 >= k_th_zero^2 + k_th_zero
-                // r >= l + k_th_zero^2 + k_th_zero - 1
-                long minRNeeded = (long)l + (long)kThZero * kThZero + kThZero - 1;
-                
-                // The valid range for `r` is limited by `posOfKthZero` and `posOfKplus1thZero`.
-                // `r` must be at least `posOfKthZero` to include the `k_th_zero`-th zero.
-                // `r` must be at most `posOfKplus1thZero - 1` to not include the `(k+1)`-th zero.
-                long validRStart = Math.max(posOfKthZero, minRNeeded);
-                long validREnd = posOfKplus1thZero - 1;
-                
-                // If the valid range is non-empty, add the count of `r` values.
-                if (validRStart <= validREnd) {
-                    ans += (validREnd - validRStart + 1);
+                long requiredPrevOnesUpperBound = currentTotalOnes - (long)z * z;
+
+                // Find `j`s in `zerosToOnesMap[targetPrevZeros]` that satisfy the `prefOnes` condition.
+                if (zerosToOnesMap.containsKey(targetPrevZeros)) {
+                    List<Integer> onesList = zerosToOnesMap.get(targetPrevZeros);
+                    // `Collections.binarySearch` returns index of key if found, or `(-(insertion point) - 1)` if not found.
+                    // `insertion point` is the index at which the key would be inserted so that the list remains sorted.
+                    // We need to count elements <= `requiredPrevOnesUpperBound`.
+                    int idx = Collections.binarySearch(onesList, (int)requiredPrevOnesUpperBound);
+                    if (idx < 0) {
+                        idx = -idx - 1; // This is the count of elements <= requiredPrevOnesUpperBound
+                    } else {
+                        // If found, there might be duplicates. Need to find the first element > requiredPrevOnesUpperBound.
+                        // `binarySearch` only guarantees finding *an* index if duplicates exist. Iterate right.
+                        while (idx < onesList.size() && onesList.get(idx) <= requiredPrevOnesUpperBound) {
+                            idx++;
+                        }
+                    }
+                    ans += idx;
                 }
             }
+            
+            // Add current prefix (s[0...r]) sums to the map for future iterations.
+            // Ensure the list for currentTotalZeros is created if it doesn't exist.
+            zerosToOnesMap.computeIfAbsent(currentTotalZeros, k -> new ArrayList<>()).add(currentTotalOnes);
         }
         
         return ans;
     }
 }
-```
+{% endhighlight %}
 
   </div>
 
   <div class="tab-panel" data-lang="cpp">
 
-```cpp
+{% highlight cpp %}
 #include <string>
 #include <vector>
 #include <cmath>
+#include <map>
 #include <algorithm>
 
 class Solution {
@@ -282,84 +284,77 @@ public:
     long long numberOfSubstrings(std::string s) {
         int n = s.length();
         long long ans = 0;
+
+        // K_MAX_Z is the maximum possible number of zeros in a dominant substring.
+        // Derived from Z^2 + Z - N <= 0.
+        int K_MAX_Z = static_cast<int>(std::floor((-1 + std::sqrt(1 + 4LL * n)) / 2));
         
-        // K is the maximum number of zeros a dominant substring can have.
-        // If ones >= zeros^2 and ones <= N, then N >= zeros^2 => zeros <= sqrt(N).
-        int k_max = static_cast<int>(std::sqrt(n));
-        
-        // Precompute indices of all zeros, plus sentinels for easier boundary handling.
-        // The first sentinel -1 handles cases where l=0 and s[0]='1'.
-        // The last sentinel n handles cases where there are no more zeros until the end of string.
-        std::vector<int> all_zero_indices;
-        all_zero_indices.push_back(-1);
+        // Prefix sums for zeros and ones. prefZeros[i] is count up to index i-1.
+        std::vector<int> prefZeros(n + 1, 0);
+        std::vector<int> prefOnes(n + 1, 0);
         for (int i = 0; i < n; ++i) {
-            if (s[i] == '0') {
-                all_zero_indices.push_back(i);
-            }
+            prefZeros[i+1] = prefZeros[i] + (s[i] == '0' ? 1 : 0);
+            prefOnes[i+1] = prefOnes[i] + (s[i] == '1' ? 1 : 0);
         }
-        all_zero_indices.push_back(n);
+
+        // zerosToOnesMap stores vectors of prefOnes values for specific prefZeros counts.
+        // std::map<int, std::vector<int>> zerosToOnesMap;
+        // For competitive programming, unordered_map might be faster on average,
+        // but map is safer for worst-case performance guarantees and doesn't require custom hash.
+        std::map<int, std::vector<int>> zerosToOnesMap;
         
-        for (int l = 0; l < n; ++l) {
-            // Find the iterator to the first zero in `all_zero_indices` at or after `l`.
-            auto it = std::lower_bound(all_zero_indices.begin(), all_zero_indices.end(), l);
-            int start_idx_in_zero_list = std::distance(all_zero_indices.begin(), it);
-            
-            // Case 1: Substrings with 0 zeros (i.e., all '1's)
-            // These substrings are s[l..r] where r is from l to (first_zero_pos_from_l - 1).
-            int first_zero_pos_from_l = all_zero_indices[start_idx_in_zero_list];
-            if (first_zero_pos_from_l > l) { // Means s[l] is '1' and there are ones before the first zero
-                // Any substring of only '1's is dominant (ones >= 0^2 always true).
-                ans += (first_zero_pos_from_l - l);
-            }
-            
-            // Case 2: Substrings with `k_th_zero` zeros, where 1 <= k_th_zero <= k_max
-            for (int k_th_zero = 1; k_th_zero <= k_max; ++k_th_zero) {
-                // `current_zero_list_idx` points to the `k_th_zero`-th actual zero index relative to `l`'s first zero.
-                int current_zero_list_idx = start_idx_in_zero_list + k_th_zero - 1;
+        // Initialize for prefix up to index -1 (empty string or for l=0).
+        // prefZeros[-1] = 0, prefOnes[-1] = 0
+        zerosToOnesMap[0].push_back(0);
+
+        for (int r = 0; r < n; ++r) {
+            // currentTotalZeros and currentTotalOnes are for prefix s[0...r]
+            int currentTotalZeros = prefZeros[r+1];
+            int currentTotalOnes = prefOnes[r+1];
+
+            // Iterate through all possible number of zeros 'z' in substring s[l...r]
+            // 'z' can range from 0 up to K_MAX_Z.
+            // 'z' also cannot be more than currentTotalZeros.
+            for (int z = 0; z <= std::min(K_MAX_Z, currentTotalZeros); ++z) {
+                // We are looking for an index `j` (which corresponds to `l-1`) such that:
+                // 1. Number of zeros in s[0...j] is `targetPrevZeros`.
+                //    `targetPrevZeros = currentTotalZeros - z`
+                // 2. Number of ones in s[0...j] (`prefOnes[j]`) satisfies the dominant condition:
+                //    `(currentTotalOnes - prefOnes[j]) >= z*z`
+                //    which rearranges to `prefOnes[j] <= currentTotalOnes - z*z`
                 
-                // If we've run out of zeros in the string for this `k_th_zero` count.
-                // `all_zero_indices.size() - 1` is the index of the last sentinel (N).
-                if (current_zero_list_idx >= all_zero_indices.size() - 1) {
-                    break; // No more k_th_zero zeros possible from l
-                }
+                int targetPrevZeros = currentTotalZeros - z;
                 
-                // `pos_of_kth_zero` is the actual index of the k_th zero in `s`.
-                // `pos_of_kplus1th_zero` is the actual index of the (k+1)-th zero in `s`.
-                // Substrings s[l..r] with exactly `k_th_zero` zeros will have `r` in range
-                // [pos_of_kth_zero, pos_of_kplus1th_zero - 1].
-                int pos_of_kth_zero = all_zero_indices[current_zero_list_idx];
-                int pos_of_kplus1th_zero = all_zero_indices[current_zero_list_idx + 1];
+                // `targetPrevZeros` is guaranteed to be non-negative due to loop range of `z`.
                 
-                // Calculate the minimum 'r' required for `s[l..r]` to be dominant for this `k_th_zero`.
-                // ones = (r - l + 1) - k_th_zero
-                // Condition: (r - l + 1) - k_th_zero >= k_th_zero^2
-                // r - l + 1 >= k_th_zero^2 + k_th_zero
-                // r >= l + k_th_zero^2 + k_th_zero - 1
-                long long min_r_needed = (long long)l + (long long)k_th_zero * k_th_zero + k_th_zero - 1;
-                
-                // The valid range for `r` is limited by `pos_of_kth_zero` and `pos_of_kplus1th_zero`.
-                // `r` must be at least `pos_of_kth_zero` to include the `k_th_zero`-th zero.
-                // `r` must be at most `pos_of_kplus1th_zero - 1` to not include the `(k+1)`-th zero.
-                long long valid_r_start = std::max((long long)pos_of_kth_zero, min_r_needed);
-                long long valid_r_end = pos_of_kplus1th_zero - 1;
-                
-                // If the valid range is non-empty, add the count of `r` values.
-                if (valid_r_start <= valid_r_end) {
-                    ans += (valid_r_end - valid_r_start + 1);
+                long long requiredPrevOnesUpperBound = currentTotalOnes - (long long)z * z;
+
+                // Find `j`s in `zerosToOnesMap[targetPrevZeros]` that satisfy the `prefOnes` condition.
+                auto it = zerosToOnesMap.find(targetPrevZeros);
+                if (it != zerosToOnesMap.end()) {
+                    std::vector<int>& onesList = it->second;
+                    // `std::upper_bound` returns an iterator to the first element that is greater than `value`.
+                    // The distance from `begin()` to this iterator gives the count of elements <= `value`.
+                    auto upper_bound_it = std::upper_bound(onesList.begin(), onesList.end(), requiredPrevOnesUpperBound);
+                    ans += std::distance(onesList.begin(), upper_bound_it);
                 }
             }
+            
+            // Add current prefix (s[0...r]) sums to the map for future iterations.
+            // The `prefOnes` values within each vector will remain sorted because `prefOnes` is non-decreasing over 'r'.
+            zerosToOnesMap[currentTotalZeros].push_back(currentTotalOnes);
         }
         
         return ans;
     }
 };
-```
+{% endhighlight %}
 
   </div>
 
   <div class="tab-panel" data-lang="javascript">
 
-```javascript
+{% highlight javascript %}
 /**
  * @param {string} s
  * @return {number}
@@ -367,190 +362,170 @@ public:
 var numberOfSubstrings = function(s) {
     const n = s.length;
     let ans = 0;
+
+    // K_MAX_Z is the maximum possible number of zeros in a dominant substring.
+    // Derived from Z^2 + Z - N <= 0.
+    const K_MAX_Z = Math.floor((-1 + Math.sqrt(1 + 4 * n)) / 2);
     
-    // K is the maximum number of zeros a dominant substring can have.
-    // If ones >= zeros^2 and ones <= N, then N >= zeros^2 => zeros <= sqrt(N).
-    const kMax = Math.floor(Math.sqrt(n));
-    
-    // Precompute indices of all zeros, plus sentinels for easier boundary handling.
-    // The first sentinel -1 handles cases where l=0 and s[0]='1'.
-    // The last sentinel n handles cases where there are no more zeros until the end of string.
-    const allZeroIndices = [-1];
+    // Prefix sums for zeros and ones. prefZeros[i] is count up to index i-1.
+    const prefZeros = new Array(n + 1).fill(0);
+    const prefOnes = new Array(n + 1).fill(0);
     for (let i = 0; i < n; i++) {
-        if (s[i] === '0') {
-            allZeroIndices.push(i);
-        }
+        prefZeros[i+1] = prefZeros[i] + (s[i] === '0' ? 1 : 0);
+        prefOnes[i+1] = prefOnes[i] + (s[i] === '1' ? 1 : 0);
     }
-    allZeroIndices.push(n);
+
+    // zerosToOnesMap stores arrays of prefOnes values for specific prefZeros counts.
+    // Map<Integer, Array<Integer>>
+    const zerosToOnesMap = new Map();
     
-    // Custom binary search equivalent to bisect_left
-    const bisectLeft = (arr, x) => {
-        let low = 0;
-        let high = arr.length;
-        while (low < high) {
-            const mid = Math.floor((low + high) / 2);
-            if (arr[mid] < x) {
-                low = mid + 1;
-            } else {
-                high = mid;
+    // Initialize for prefix up to index -1 (empty string or for l=0).
+    // prefZeros[-1] = 0, prefOnes[-1] = 0
+    zerosToOnesMap.set(0, [0]);
+
+    for (let r = 0; r < n; r++) {
+        // currentTotalZeros and currentTotalOnes are for prefix s[0...r]
+        const currentTotalZeros = prefZeros[r+1];
+        const currentTotalOnes = prefOnes[r+1];
+
+        // Iterate through all possible number of zeros 'z' in substring s[l...r]
+        // 'z' can range from 0 up to K_MAX_Z.
+        // 'z' also cannot be more than currentTotalZeros.
+        for (let z = 0; z <= Math.min(K_MAX_Z, currentTotalZeros); z++) {
+            // We are looking for an index `j` (which corresponds to `l-1`) such that:
+            // 1. Number of zeros in s[0...j] is `targetPrevZeros`.
+            //    `targetPrevZeros = currentTotalZeros - z`
+            // 2. Number of ones in s[0...j] (`prefOnes[j]`) satisfies the dominant condition:
+            //    `(currentTotalOnes - prefOnes[j]) >= z*z`
+            //    which rearranges to `prefOnes[j] <= currentTotalOnes - z*z`
+            
+            const targetPrevZeros = currentTotalZeros - z;
+            
+            // `targetPrevZeros` is guaranteed to be non-negative due to loop range of `z`.
+            
+            const requiredPrevOnesUpperBound = currentTotalOnes - z * z;
+
+            // Find `j`s in `zerosToOnesMap[targetPrevZeros]` that satisfy the `prefOnes` condition.
+            if (zerosToOnesMap.has(targetPrevZeros)) {
+                const onesList = zerosToOnesMap.get(targetPrevZeros);
+                // Custom binary search to find upper_bound (equivalent to bisect_right)
+                let low = 0;
+                let high = onesList.length;
+                let count = 0;
+                while (low < high) {
+                    let mid = Math.floor((low + high) / 2);
+                    if (onesList[mid] <= requiredPrevOnesUpperBound) {
+                        count = mid + 1;
+                        low = mid + 1;
+                    } else {
+                        high = mid;
+                    }
+                }
+                ans += count;
             }
         }
-        return low;
-    };
-    
-    for (let l = 0; l < n; l++) {
-        // Find the index in `allZeroIndices` of the first zero at or after `l`.
-        const startIdxInZeroList = bisectLeft(allZeroIndices, l);
         
-        // Case 1: Substrings with 0 zeros (i.e., all '1's)
-        // These substrings are s[l..r] where r is from l to (firstZeroPosFromL - 1).
-        const firstZeroPosFromL = allZeroIndices[startIdxInZeroList];
-        if (firstZeroPosFromL > l) { // Means s[l] is '1' and there are ones before the first zero
-            // Any substring of only '1's is dominant (ones >= 0^2 always true).
-            ans += (firstZeroPosFromL - l);
+        // Add current prefix (s[0...r]) sums to the map for future iterations.
+        // If the key does not exist, initialize with an empty array.
+        if (!zerosToOnesMap.has(currentTotalZeros)) {
+            zerosToOnesMap.set(currentTotalZeros, []);
         }
-        
-        // Case 2: Substrings with `k_th_zero` zeros, where 1 <= k_th_zero <= kMax
-        for (let kThZero = 1; kThZero <= kMax; kThZero++) {
-            // `currentZeroListIdx` points to the `k_th_zero`-th actual zero index relative to `l`'s first zero.
-            const currentZeroListIdx = startIdxInZeroList + kThZero - 1;
-            
-            // If we've run out of zeros in the string for this `k_th_zero` count.
-            // `allZeroIndices.length - 1` is the index of the last sentinel (N).
-            if (currentZeroListIdx >= allZeroIndices.length - 1) {
-                break; // No more k_th_zero zeros possible from l
-            }
-            
-            // `posOfKthZero` is the actual index of the k_th zero in `s`.
-            // `posOfKplus1thZero` is the actual index of the (k+1)-th zero in `s`.
-            // Substrings s[l..r] with exactly `k_th_zero` zeros will have `r` in range
-            // [posOfKthZero, posOfKplus1thZero - 1].
-            const posOfKthZero = allZeroIndices[currentZeroListIdx];
-            const posOfKplus1thZero = allZeroIndices[currentZeroListIdx + 1];
-            
-            // Calculate the minimum 'r' required for `s[l..r]` to be dominant for this `k_th_zero`.
-            // ones = (r - l + 1) - k_th_zero
-            // Condition: (r - l + 1) - k_th_zero >= k_th_zero^2
-            // r - l + 1 >= k_th_zero^2 + k_th_zero
-            // r >= l + k_th_zero^2 + k_th_zero - 1
-            const minRNeeded = l + kThZero * kThZero + kThZero - 1;
-            
-            // The valid range for `r` is limited by `posOfKthZero` and `posOfKplus1thZero`.
-            // `r` must be at least `posOfKthZero` to include the `k_th_zero`-th zero.
-            // `r` must be at most `posOfKplus1thZero - 1` to not include the `(k+1)`-th zero.
-            const validRStart = Math.max(posOfKthZero, minRNeeded);
-            const validREnd = posOfKplus1thZero - 1;
-            
-            // If the valid range is non-empty, add the count of `r` values.
-            if (validRStart <= validREnd) {
-                ans += (validREnd - validRStart + 1);
-            }
-        }
+        zerosToOnesMap.get(currentTotalZeros).push(currentTotalOnes);
     }
     
     return ans;
 };
-```
+{% endhighlight %}
 
   </div>
 
   <div class="tab-panel" data-lang="typescript">
 
-```typescript
+{% highlight typescript %}
 function numberOfSubstrings(s: string): number {
     const n: number = s.length;
     let ans: number = 0;
+
+    // K_MAX_Z is the maximum possible number of zeros in a dominant substring.
+    // Derived from Z^2 + Z - N <= 0.
+    const K_MAX_Z: number = Math.floor((-1 + Math.sqrt(1 + 4 * n)) / 2);
     
-    // K is the maximum number of zeros a dominant substring can have.
-    // If ones >= zeros^2 and ones <= N, then N >= zeros^2 => zeros <= sqrt(N).
-    const kMax: number = Math.floor(Math.sqrt(n));
-    
-    // Precompute indices of all zeros, plus sentinels for easier boundary handling.
-    // The first sentinel -1 handles cases where l=0 and s[0]='1'.
-    // The last sentinel n handles cases where there are no more zeros until the end of string.
-    const allZeroIndices: number[] = [-1];
+    // Prefix sums for zeros and ones. prefZeros[i] is count up to index i-1.
+    const prefZeros: number[] = new Array(n + 1).fill(0);
+    const prefOnes: number[] = new Array(n + 1).fill(0);
     for (let i = 0; i < n; i++) {
-        if (s[i] === '0') {
-            allZeroIndices.push(i);
-        }
+        prefZeros[i+1] = prefZeros[i] + (s[i] === '0' ? 1 : 0);
+        prefOnes[i+1] = prefOnes[i] + (s[i] === '1' ? 1 : 0);
     }
-    allZeroIndices.push(n);
+
+    // zerosToOnesMap stores arrays of prefOnes values for specific prefZeros counts.
+    // Map<number, number[]>
+    const zerosToOnesMap: Map<number, number[]> = new Map();
     
-    // Custom binary search equivalent to bisect_left
-    const bisectLeft = (arr: number[], x: number): number => {
-        let low = 0;
-        let high = arr.length;
-        while (low < high) {
-            const mid = Math.floor((low + high) / 2);
-            if (arr[mid] < x) {
-                low = mid + 1;
-            } else {
-                high = mid;
+    // Initialize for prefix up to index -1 (empty string or for l=0).
+    // prefZeros[-1] = 0, prefOnes[-1] = 0
+    zerosToOnesMap.set(0, [0]);
+
+    for (let r = 0; r < n; r++) {
+        // currentTotalZeros and currentTotalOnes are for prefix s[0...r]
+        const currentTotalZeros: number = prefZeros[r+1];
+        const currentTotalOnes: number = prefOnes[r+1];
+
+        // Iterate through all possible number of zeros 'z' in substring s[l...r]
+        // 'z' can range from 0 up to K_MAX_Z.
+        // 'z' also cannot be more than currentTotalZeros.
+        for (let z = 0; z <= Math.min(K_MAX_Z, currentTotalZeros); z++) {
+            // We are looking for an index `j` (which corresponds to `l-1`) such that:
+            // 1. Number of zeros in s[0...j] is `targetPrevZeros`.
+            //    `targetPrevZeros = currentTotalZeros - z`
+            // 2. Number of ones in s[0...j] (`prefOnes[j]`) satisfies the dominant condition:
+            //    `(currentTotalOnes - prefOnes[j]) >= z*z`
+            //    which rearranges to `prefOnes[j] <= currentTotalOnes - z*z`
+            
+            const targetPrevZeros: number = currentTotalZeros - z;
+            
+            // `targetPrevZeros` is guaranteed to be non-negative due to loop range of `z`.
+            
+            const requiredPrevOnesUpperBound: number = currentTotalOnes - z * z;
+
+            // Find `j`s in `zerosToOnesMap[targetPrevZeros]` that satisfy the `prefOnes` condition.
+            if (zerosToOnesMap.has(targetPrevZeros)) {
+                const onesList: number[] = zerosToOnesMap.get(targetPrevZeros)!;
+                // Custom binary search to find upper_bound (equivalent to bisect_right)
+                let low: number = 0;
+                let high: number = onesList.length;
+                let count: number = 0;
+                while (low < high) {
+                    let mid: number = Math.floor((low + high) / 2);
+                    if (onesList[mid] <= requiredPrevOnesUpperBound) {
+                        count = mid + 1;
+                        low = mid + 1;
+                    } else {
+                        high = mid;
+                    }
+                }
+                ans += count;
             }
         }
-        return low;
-    };
-    
-    for (let l = 0; l < n; l++) {
-        // Find the index in `allZeroIndices` of the first zero at or after `l`.
-        const startIdxInZeroList = bisectLeft(allZeroIndices, l);
         
-        // Case 1: Substrings with 0 zeros (i.e., all '1's)
-        // These substrings are s[l..r] where r is from l to (firstZeroPosFromL - 1).
-        const firstZeroPosFromL = allZeroIndices[startIdxInZeroList];
-        if (firstZeroPosFromL > l) { // Means s[l] is '1' and there are ones before the first zero
-            // Any substring of only '1's is dominant (ones >= 0^2 always true).
-            ans += (firstZeroPosFromL - l);
+        // Add current prefix (s[0...r]) sums to the map for future iterations.
+        // If the key does not exist, initialize with an empty array.
+        if (!zerosToOnesMap.has(currentTotalZeros)) {
+            zerosToOnesMap.set(currentTotalZeros, []);
         }
-        
-        // Case 2: Substrings with `k_th_zero` zeros, where 1 <= k_th_zero <= kMax
-        for (let kThZero = 1; kThZero <= kMax; kThZero++) {
-            // `currentZeroListIdx` points to the `k_th_zero`-th actual zero index relative to `l`'s first zero.
-            const currentZeroListIdx = startIdxInZeroList + kThZero - 1;
-            
-            // If we've run out of zeros in the string for this `k_th_zero` count.
-            // `allZeroIndices.length - 1` is the index of the last sentinel (N).
-            if (currentZeroListIdx >= allZeroIndices.length - 1) {
-                break; // No more k_th_zero zeros possible from l
-            }
-            
-            // `posOfKthZero` is the actual index of the k_th zero in `s`.
-            // `posOfKplus1thZero` is the actual index of the (k+1)-th zero in `s`.
-            // Substrings s[l..r] with exactly `k_th_zero` zeros will have `r` in range
-            // [posOfKthZero, posOfKplus1thZero - 1].
-            const posOfKthZero = allZeroIndices[currentZeroListIdx];
-            const posOfKplus1thZero = allZeroIndices[currentZeroListIdx + 1];
-            
-            // Calculate the minimum 'r' required for `s[l..r]` to be dominant for this `k_th_zero`.
-            // ones = (r - l + 1) - k_th_zero
-            // Condition: (r - l + 1) - k_th_zero >= k_th_zero^2
-            // r - l + 1 >= k_th_zero^2 + k_th_zero
-            // r >= l + k_th_zero^2 + k_th_zero - 1
-            const minRNeeded: number = l + kThZero * kThZero + kThZero - 1;
-            
-            // The valid range for `r` is limited by `posOfKthZero` and `posOfKplus1thZero`.
-            // `r` must be at least `posOfKthZero` to include the `k_th_zero`-th zero.
-            // `r` must be at most `posOfKplus1thZero - 1` to not include the `(k+1)`-th zero.
-            const validRStart: number = Math.max(posOfKthZero, minRNeeded);
-            const validREnd: number = posOfKplus1thZero - 1;
-            
-            // If the valid range is non-empty, add the count of `r` values.
-            if (validRStart <= validREnd) {
-                ans += (validREnd - validRStart + 1);
-            }
-        }
+        zerosToOnesMap.get(currentTotalZeros)!.push(currentTotalOnes);
     }
     
     return ans;
 }
-```
+{% endhighlight %}
 
   </div>
 
   <div class="tab-panel" data-lang="go">
 
-```go
-package main
+{% highlight go %}
+package solution
 
 import (
 	"math"
@@ -558,81 +533,72 @@ import (
 )
 
 func numberOfSubstrings(s string) int64 {
-	n := len(s)
-	ans := int64(0)
+    n := len(s)
+    var ans int64 = 0
 
-	// K is the maximum number of zeros a dominant substring can have.
-	// If ones >= zeros^2 and ones <= N, then N >= zeros^2 => zeros <= sqrt(N).
-	kMax := int(math.Sqrt(float64(n)))
+    // K_MAX_Z is the maximum possible number of zeros in a dominant substring.
+    // Derived from Z^2 + Z - N <= 0.
+    K_MAX_Z := int(math.Floor((-1 + math.Sqrt(1 + 4*float64(n))) / 2))
+    
+    // Prefix sums for zeros and ones. prefZeros[i] is count up to index i-1.
+    prefZeros := make([]int, n + 1)
+    prefOnes := make([]int, n + 1)
+    for i := 0; i < n; i++ {
+        prefZeros[i+1] = prefZeros[i] + (func() int { if s[i] == '0' { return 1 } else { return 0 } }()) 
+        prefOnes[i+1] = prefOnes[i] + (func() int { if s[i] == '1' { return 1 } else { return 0 } }()) 
+    }
 
-	// Precompute indices of all zeros, plus sentinels for easier boundary handling.
-	// The first sentinel -1 handles cases where l=0 and s[0]='1'.
-	// The last sentinel n handles cases where there are no more zeros until the end of string.
-	allZeroIndices := []int{-1}
-	for i := 0; i < n; i++ {
-		if s[i] == '0' {
-			allZeroIndices = append(allZeroIndices, i)
-		}
-	}
-	allZeroIndices = append(allZeroIndices, n)
+    // zerosToOnesMap stores slices of prefOnes values for specific prefZeros counts.
+    zerosToOnesMap := make(map[int][]int)
+    
+    // Initialize for prefix up to index -1 (empty string or for l=0).
+    // prefZeros[-1] = 0, prefOnes[-1] = 0
+    zerosToOnesMap[0] = append(zerosToOnesMap[0], 0)
 
-	for l := 0; l < n; l++ {
-		// Find the index in `allZeroIndices` of the first zero at or after `l`.
-		// `sort.SearchInts` returns the index of the first element >= x.
-		startIdxInZeroList := sort.SearchInts(allZeroIndices, l)
+    for r := 0; r < n; r++ {
+        // currentTotalZeros and currentTotalOnes are for prefix s[0...r]
+        currentTotalZeros := prefZeros[r+1]
+        currentTotalOnes := prefOnes[r+1]
 
-		// Case 1: Substrings with 0 zeros (i.e., all '1's)
-		// These substrings are s[l..r] where r is from l to (firstZeroPosFromL - 1).
-		firstZeroPosFromL := allZeroIndices[startIdxInZeroList]
-		if firstZeroPosFromL > l { // Means s[l] is '1' and there are ones before the first zero
-			// Any substring of only '1's is dominant (ones >= 0^2 always true).
-			ans += int64(firstZeroPosFromL - l)
-		}
+        // Iterate through all possible number of zeros 'z' in substring s[l...r]
+        // 'z' can range from 0 up to K_MAX_Z.
+        // 'z' also cannot be more than currentTotalZeros.
+        for z := 0; z <= min(K_MAX_Z, currentTotalZeros); z++ {
+            // We are looking for an index `j` (which corresponds to `l-1`) such that:
+            // 1. Number of zeros in s[0...j] is `targetPrevZeros`.
+            //    `targetPrevZeros = currentTotalZeros - z`
+            // 2. Number of ones in s[0...j] (`prefOnes[j]`) satisfies the dominant condition:
+            //    `(currentTotalOnes - prefOnes[j]) >= z*z`
+            //    which rearranges to `prefOnes[j] <= currentTotalOnes - z*z`
+            
+            targetPrevZeros := currentTotalZeros - z;
+            
+            // `targetPrevZeros` is guaranteed to be non-negative due to loop range of `z`.
+            
+            requiredPrevOnesUpperBound := currentTotalOnes - z * z;
 
-		// Case 2: Substrings with `k_th_zero` zeros, where 1 <= k_th_zero <= kMax
-		for kThZero := 1; kThZero <= kMax; kThZero++ {
-			// `currentZeroListIdx` points to the `k_th_zero`-th actual zero index relative to `l`'s first zero.
-			currentZeroListIdx := startIdxInZeroList + kThZero - 1
-
-			// If we've run out of zeros in the string for this `k_th_zero` count.
-			// `len(allZeroIndices) - 1` is the index of the last sentinel (n).
-			if currentZeroListIdx >= len(allZeroIndices)-1 {
-				break // No more k_th_zero zeros possible from l
-			}
-
-			// `posOfKthZero` is the actual index of the k_th zero in `s`.
-			// `posOfKplus1thZero` is the actual index of the (k+1)-th zero in `s`.
-			// Substrings s[l..r] with exactly `k_th_zero` zeros will have `r` in range
-			// [posOfKthZero, posOfKplus1thZero - 1].
-			posOfKthZero := allZeroIndices[currentZeroListIdx]
-			posOfKplus1thZero := allZeroIndices[currentZeroListIdx+1]
-
-			// Calculate the minimum 'r' required for `s[l..r]` to be dominant for this `k_th_zero`.
-			// ones = (r - l + 1) - k_th_zero
-			// Condition: (r - l + 1) - k_th_zero >= k_th_zero^2
-			// r - l + 1 >= k_th_zero^2 + k_th_zero
-			// r >= l + k_th_zero^2 + k_th_zero - 1
-			minRNeeded := int64(l) + int64(kThZero)*int64(kThZero) + int64(kThZero) - 1
-
-			// The valid range for `r` is limited by `posOfKthZero` and `posOfKplus1thZero`.
-			// `r` must be at least `posOfKthZero` to include the `k_th_zero`-th zero.
-			// `r` must be at most `posOfKplus1thZero - 1` to not include the `(k+1)`-th zero.
-			validRStart := int64(posOfKthZero)
-			if minRNeeded > validRStart {
-				validRStart = minRNeeded
-			}
-			validREnd := int64(posOfKplus1thZero - 1)
-
-			// If the valid range is non-empty, add the count of `r` values.
-			if validRStart <= validREnd {
-				ans += (validREnd - validRStart + 1)
-			}
-		}
-	}
-
-	return ans
+            // Find `j`s in `zerosToOnesMap[targetPrevZeros]` that satisfy the `prefOnes` condition.
+            if onesList, ok := zerosToOnesMap[targetPrevZeros]; ok {
+                // `sort.SearchInts` finds the smallest index i such that onesList[i] >= requiredPrevOnesUpperBound + 1 (effectively upper_bound).
+                // All elements before this index i are <= requiredPrevOnesUpperBound.
+                count := sort.SearchInts(onesList, requiredPrevOnesUpperBound + 1)
+                ans += int64(count)
+            }
+        }
+        
+        // Add current prefix (s[0...r]) sums to the map for future iterations.
+        // The `prefOnes` values within each slice will remain sorted because `prefOnes` is non-decreasing over 'r'.
+        zerosToOnesMap[currentTotalZeros] = append(zerosToOnesMap[currentTotalZeros], currentTotalOnes)
+    }
+    
+    return ans
 }
-```
+
+func min(a, b int) int {
+    if a < b { return a }
+    return b
+}
+{% endhighlight %}
 
   </div>
 
@@ -641,18 +607,14 @@ func numberOfSubstrings(s string) int64 {
 
 ### Complexity Analysis
 
-- **Time Complexity:** O(N * sqrt(N))
+- **Time Complexity:** The time complexity is `O(N * K_MAX_Z * logN)`.
+- Precomputing prefix sums takes `O(N)`.
+- The outer loop iterates `r` from `0` to `N-1`, which is `N` iterations.
+- The inner loop iterates `z` from `0` to `K_MAX_Z`. `K_MAX_Z` is `O(sqrt(N))` (specifically, `floor((-1 + sqrt(1+4N))/2)` for the given `N`).
+- Inside the inner loop, `bisect_right` (binary search) on a list of `pref_ones` values takes `O(log P)` time, where `P` is the length of the list (at most `N`). So, `O(logN)`.
+- Appending to the list is `O(1)`.
+Therefore, the total time complexity is `O(N * sqrt(N) * logN)`. For `N=4*10^4`, this is approximately `4*10^4 * 200 * 15 = 1.2 * 10^8` operations, which is feasible within typical time limits.
 
-1.  **Preprocessing**: Building `all_zero_indices` takes `O(N)` time.
-2.  **Outer loop (for `l`)**: This loop runs `N` times.
-3.  **Inside the outer loop**:
-    a.  A binary search operation (like `bisect_left` or `lower_bound`) on `all_zero_indices` takes `O(log M)` time, where `M` is the number of zeros. Since `M <= N`, this is `O(log N)`.
-    b.  The `zeros=0` case calculation is `O(1)`.
-    c.  The inner loop for `k_th_zero` runs at most `K = floor(sqrt(N))` times.
-    d.  Inside the inner loop, all operations (array indexing, arithmetic) are `O(1)`.
-
-Thus, the total time complexity is `N * (log N + K) = N * (log N + sqrt(N))`. Since `sqrt(N)` dominates `log N` for large `N`, the overall time complexity is `O(N * sqrt(N))`. Given `N = 4 * 10^4`, `N * sqrt(N) = 4 * 10^4 * 200 = 8 * 10^6`, which is efficient enough.
-
-- **Space Complexity:** O(N)
-
-The `all_zero_indices` list stores the indices of all '0's in the string `s`. In the worst case (e.g., `s` consists entirely of '0's), this list will contain `N+2` elements (including sentinels). Therefore, the space complexity is `O(N)`.
+- **Space Complexity:** The space complexity is `O(N)`.
+- `pref_zeros` and `pref_ones` arrays take `O(N)` space.
+- `zeros_to_ones_map` stores lists of `pref_ones` values. The keys of the map are `pref_zeros` counts, which range from `0` to `N`. However, we only care about counts up to `K_MAX_Z` (about 200) for active lookups, but the map itself might store up to `N` distinct `pref_zeros` values (e.g., for `s = '00...0'`). The total number of elements across all lists stored in the map is `N+1` (since each `(pref_zeros[j], pref_ones[j])` pair for `j=-1...N-1` is stored once). Thus, the total space is `O(N)`.

@@ -142,8 +142,8 @@ This calculation needs to be done iteratively for all `x` from `0` to `n-1` and 
     <label for="lang-python">Python</label>
     <label for="lang-java">Java</label>
     <label for="lang-cpp">C++</label>
-    <label for="lang-javascript">JavaScript</label>
-    <label for="lang-typescript">TypeScript</label>
+    <label for="lang-javascript">JS</label>
+    <label for="lang-typescript">TS</label>
     <label for="lang-go">Go</label>
   </div>
 

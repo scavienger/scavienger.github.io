@@ -50,7 +50,7 @@ Given an binary array `nums` and an integer `k`, return `true` _if all_`1` _'s a
 
 ### Approach
 
-The problem asks us to determine if all '1's in a given binary array `nums` are separated by at least `k` zeros. This means if we find a '1' at index `i` and the next '1' is at index `j`, then the number of zeros between them (which is `j - i - 1`) must be greater than or equal to `k`. Equivalently, the distance between their indices, `j - i`, must be strictly greater than `k` (i.e., `j - i > k`).
+The problem asks us to verify if every pair of '1's in a binary array `nums` is separated by at least `k` zeros. This means that if we find a '1' at index `i` and the next '1' is at index `j` (where `j > i`), then the number of zeros between them, which is `j - i - 1`, must be greater than or equal to `k`. If this condition is not met for any pair of consecutive '1's, we should return `false`. If we traverse the entire array and find no such violation, we return `true`.
 
 ### Code
 
@@ -65,200 +65,203 @@ The problem asks us to determine if all '1's in a given binary array `nums` are 
     <label for="lang-python">Python</label>
     <label for="lang-java">Java</label>
     <label for="lang-cpp">C++</label>
-    <label for="lang-javascript">JavaScript</label>
-    <label for="lang-typescript">TypeScript</label>
+    <label for="lang-javascript">JS</label>
+    <label for="lang-typescript">TS</label>
     <label for="lang-go">Go</label>
   </div>
 
   <div class="tab-panel" data-lang="python">
 
-```python
-import math
-from typing import List
-
+{% highlight python %}
 class Solution:
     def kLengthApart(self, nums: List[int], k: int) -> bool:
-        # Initialize last_one_idx. A value like -k - 1 ensures that the
-        # first '1' encountered in the array will always satisfy the
-        # distance condition, as (first_idx - (-k - 1) - 1) = first_idx + k >= k.
+        # Initialize last_one_idx to a value that ensures the first '1' encountered
+        # will always satisfy the distance condition. Specifically, if the first '1'
+        # is at index `i`, we want `i - last_one_idx - 1 >= k` to be true.
+        # Setting last_one_idx = -k - 1 makes the check `i - (-k - 1) - 1 = i + k >= k`,
+        # which is always true for `i >= 0` and `k >= 0`.
         last_one_idx = -k - 1
         
         for i, num in enumerate(nums):
             if num == 1:
-                # Calculate the number of zeros between the current '1' and the last '1'.
-                # If the current '1' is at index 'i' and the previous '1' was at 'last_one_idx',
-                # the number of elements between them is i - last_one_idx - 1.
-                # If this count is less than k, the condition is violated.
+                # If the current element is '1', check the distance from the last '1'.
+                # The number of zeros between the current '1' at 'i' and the last '1'
+                # at 'last_one_idx' is `i - last_one_idx - 1`.
                 if i - last_one_idx - 1 < k:
-                    return False
-                # Update the index of the last seen '1'.
+                    return False  # Violation found, return false immediately
+                # Update last_one_idx to the current '1's index
                 last_one_idx = i
                 
-        # If the loop completes, it means all '1's satisfied the distance requirement.
+        # If the loop completes without finding any violations, all '1's are k-length apart.
         return True
-```
+{% endhighlight %}
 
   </div>
 
   <div class="tab-panel" data-lang="java">
 
-```java
+{% highlight java %}
 class Solution {
     public boolean kLengthApart(int[] nums, int k) {
-        // Initialize lastOneIdx. A value like -k - 1 ensures that the
-        // first '1' encountered in the array will always satisfy the
-        // distance condition, as (firstIdx - (-k - 1) - 1) = firstIdx + k >= k.
+        // Initialize lastOneIdx to a value that ensures the first '1' encountered
+        // will always satisfy the distance condition. Specifically, if the first '1'
+        // is at index `i`, we want `i - lastOneIdx - 1 >= k` to be true.
+        // Setting lastOneIdx = -k - 1 makes the check `i - (-k - 1) - 1 = i + k >= k`,
+        // which is always true for `i >= 0` and `k >= 0`.
         int lastOneIdx = -k - 1;
         
         for (int i = 0; i < nums.length; i++) {
             if (nums[i] == 1) {
-                // Calculate the number of zeros between the current '1' and the last '1'.
-                // If the current '1' is at index 'i' and the previous '1' was at 'lastOneIdx',
-                // the number of elements between them is i - lastOneIdx - 1.
-                // If this count is less than k, the condition is violated.
+                // If the current element is '1', check the distance from the last '1'.
+                // The number of zeros between the current '1' at 'i' and the last '1'
+                // at 'lastOneIdx' is `i - lastOneIdx - 1`.
                 if (i - lastOneIdx - 1 < k) {
-                    return false;
+                    return false; // Violation found, return false immediately
                 }
-                // Update the index of the last seen '1'.
+                // Update lastOneIdx to the current '1's index
                 lastOneIdx = i;
             }
         }
         
-        // If the loop completes, it means all '1's satisfied the distance requirement.
+        // If the loop completes without finding any violations, all '1's are k-length apart.
         return true;
     }
 }
-```
+{% endhighlight %}
 
   </div>
 
   <div class="tab-panel" data-lang="cpp">
 
-```cpp
+{% highlight cpp %}
 #include <vector>
 
 class Solution {
 public:
     bool kLengthApart(std::vector<int>& nums, int k) {
-        // Initialize lastOneIdx. A value like -k - 1 ensures that the
-        // first '1' encountered in the array will always satisfy the
-        // distance condition, as (first_idx - (-k - 1) - 1) = first_idx + k >= k.
+        // Initialize lastOneIdx to a value that ensures the first '1' encountered
+        // will always satisfy the distance condition. Specifically, if the first '1'
+        // is at index `i`, we want `i - lastOneIdx - 1 >= k` to be true.
+        // Setting lastOneIdx = -k - 1 makes the check `i - (-k - 1) - 1 = i + k >= k`,
+        // which is always true for `i >= 0` and `k >= 0`.
         int lastOneIdx = -k - 1;
         
         for (int i = 0; i < nums.size(); ++i) {
             if (nums[i] == 1) {
-                // Calculate the number of zeros between the current '1' and the last '1'.
-                // If the current '1' is at index 'i' and the previous '1' was at 'lastOneIdx',
-                // the number of elements between them is i - lastOneIdx - 1.
-                // If this count is less than k, the condition is violated.
+                // If the current element is '1', check the distance from the last '1'.
+                // The number of zeros between the current '1' at 'i' and the last '1'
+                // at 'lastOneIdx' is `i - lastOneIdx - 1`.
                 if (i - lastOneIdx - 1 < k) {
-                    return false;
+                    return false; // Violation found, return false immediately
                 }
-                // Update the index of the last seen '1'.
+                // Update lastOneIdx to the current '1's index
                 lastOneIdx = i;
             }
         }
         
-        // If the loop completes, it means all '1's satisfied the distance requirement.
+        // If the loop completes without finding any violations, all '1's are k-length apart.
         return true;
     }
 };
-```
+{% endhighlight %}
 
   </div>
 
   <div class="tab-panel" data-lang="javascript">
 
-```javascript
+{% highlight javascript %}
 /**
  * @param {number[]} nums
  * @param {number} k
  * @return {boolean}
  */
 var kLengthApart = function(nums, k) {
-    // Initialize lastOneIdx. A value like -k - 1 ensures that the
-    // first '1' encountered in the array will always satisfy the
-    // distance condition, as (firstIdx - (-k - 1) - 1) = firstIdx + k >= k.
+    // Initialize lastOneIdx to a value that ensures the first '1' encountered
+    // will always satisfy the distance condition. Specifically, if the first '1'
+    // is at index `i`, we want `i - lastOneIdx - 1 >= k` to be true.
+    // Setting lastOneIdx = -k - 1 makes the check `i - (-k - 1) - 1 = i + k >= k`,
+    // which is always true for `i >= 0` and `k >= 0`.
     let lastOneIdx = -k - 1;
     
     for (let i = 0; i < nums.length; i++) {
         if (nums[i] === 1) {
-            // Calculate the number of zeros between the current '1' and the last '1'.
-            // If the current '1' is at index 'i' and the previous '1' was at 'lastOneIdx',
-            // the number of elements between them is i - lastOneIdx - 1.
-            // If this count is less than k, the condition is violated.
+            // If the current element is '1', check the distance from the last '1'.
+            // The number of zeros between the current '1' at 'i' and the last '1'
+            // at 'lastOneIdx' is `i - lastOneIdx - 1`.
             if (i - lastOneIdx - 1 < k) {
-                return false;
+                return false; // Violation found, return false immediately
             }
-            // Update the index of the last seen '1'.
+            // Update lastOneIdx to the current '1's index
             lastOneIdx = i;
         }
     }
     
-    // If the loop completes, it means all '1's satisfied the distance requirement.
+    // If the loop completes without finding any violations, all '1's are k-length apart.
     return true;
 };
-```
+{% endhighlight %}
 
   </div>
 
   <div class="tab-panel" data-lang="typescript">
 
-```typescript
+{% highlight typescript %}
 function kLengthApart(nums: number[], k: number): boolean {
-    // Initialize lastOneIdx. A value like -k - 1 ensures that the
-    // first '1' encountered in the array will always satisfy the
-    // distance condition, as (firstIdx - (-k - 1) - 1) = firstIdx + k >= k.
+    // Initialize lastOneIdx to a value that ensures the first '1' encountered
+    // will always satisfy the distance condition. Specifically, if the first '1'
+    // is at index `i`, we want `i - lastOneIdx - 1 >= k` to be true.
+    // Setting lastOneIdx = -k - 1 makes the check `i - (-k - 1) - 1 = i + k >= k`,
+    // which is always true for `i >= 0` and `k >= 0`.
     let lastOneIdx: number = -k - 1;
     
     for (let i = 0; i < nums.length; i++) {
         if (nums[i] === 1) {
-            // Calculate the number of zeros between the current '1' and the last '1'.
-            // If the current '1' is at index 'i' and the previous '1' was at 'lastOneIdx',
-            // the number of elements between them is i - lastOneIdx - 1.
-            // If this count is less than k, the condition is violated.
+            // If the current element is '1', check the distance from the last '1'.
+            // The number of zeros between the current '1' at 'i' and the last '1'
+            // at 'lastOneIdx' is `i - lastOneIdx - 1`.
             if (i - lastOneIdx - 1 < k) {
-                return false;
+                return false; // Violation found, return false immediately
             }
-            // Update the index of the last seen '1'.
+            // Update lastOneIdx to the current '1's index
             lastOneIdx = i;
         }
     }
     
-    // If the loop completes, it means all '1's satisfied the distance requirement.
+    // If the loop completes without finding any violations, all '1's are k-length apart.
     return true;
 }
-```
+{% endhighlight %}
 
   </div>
 
   <div class="tab-panel" data-lang="go">
 
-```go
+{% highlight go %}
 func kLengthApart(nums []int, k int) bool {
-    // Initialize lastOneIdx. A value like -k - 1 ensures that the
-    // first '1' encountered in the array will always satisfy the
-    // distance condition, as (firstIdx - (-k - 1) - 1) = firstIdx + k >= k.
+    // Initialize lastOneIdx to a value that ensures the first '1' encountered
+    // will always satisfy the distance condition. Specifically, if the first '1'
+    // is at index `i`, we want `i - lastOneIdx - 1 >= k` to be true.
+    // Setting lastOneIdx = -k - 1 makes the check `i - (-k - 1) - 1 = i + k >= k`,
+    // which is always true for `i >= 0` and `k >= 0`.
     lastOneIdx := -k - 1
     
     for i := 0; i < len(nums); i++ {
         if nums[i] == 1 {
-            // Calculate the number of zeros between the current '1' and the last '1'.
-            // If the current '1' is at index 'i' and the previous '1' was at 'lastOneIdx',
-            // the number of elements between them is i - lastOneIdx - 1.
-            // If this count is less than k, the condition is violated.
+            // If the current element is '1', check the distance from the last '1'.
+            // The number of zeros between the current '1' at 'i' and the last '1'
+            // at 'lastOneIdx' is `i - lastOneIdx - 1`.
             if i - lastOneIdx - 1 < k {
-                return false
+                return false // Violation found, return false immediately
             }
-            // Update the index of the last seen '1'.
+            // Update lastOneIdx to the current '1's index
             lastOneIdx = i
         }
     }
     
-    // If the loop completes, it means all '1's satisfied the distance requirement.
+    // If the loop completes without finding any violations, all '1's are k-length apart.
     return true
 }
-```
+{% endhighlight %}
 
   </div>
 
