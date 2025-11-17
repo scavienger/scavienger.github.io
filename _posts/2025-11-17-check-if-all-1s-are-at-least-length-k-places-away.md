@@ -50,21 +50,18 @@ Given an binary array `nums` and an integer `k`, return `true` _if all_`1` _'s a
 
 ### Approach
 
-The problem asks us to determine if all '1's in a binary array `nums` are separated by at least `k` '0's. This means that for any two consecutive '1's, the count of '0's between them must be greater than or equal to `k`.
+The problem asks us to determine if all '1's in a binary array `nums` are separated by at least `k` zeros. We can solve this by iterating through the array and keeping track of the index of the most recently encountered '1'.
 
-We can solve this by iterating through the array once. We need to keep track of the index of the previously encountered '1'. Let's call this `last_one_idx`.
+1.  Initialize a variable `last_one_index` to a sentinel value (e.g., -1) to indicate that no '1' has been found yet.
+2.  Iterate through the `nums` array from left to right, using an index `i`.
+3.  If the current element `nums[i]` is a '1':
+    a.  Check if `last_one_index` is not its sentinel value (meaning this is not the first '1' we've encountered).
+    b.  If it's not the first '1', calculate the number of zeros between the current '1' and the `last_one_index`. This distance is `i - last_one_index - 1`. (e.g., if '1' is at index 0 and next '1' is at index 3, `3 - 0 - 1 = 2` zeros in between).
+    c.  If this calculated distance is less than `k`, it means the condition is violated, so we immediately return `false`.
+    d.  After checking (or if it's the first '1'), update `last_one_index` to the current index `i`.
+4.  If the loop completes without returning `false`, it means all pairs of '1's satisfy the `k` distance requirement, so we return `true`.
 
-1.  Initialize `last_one_idx`. A good sentinel value is `-k - 1`. This choice simplifies the logic because when we encounter the very first '1' at index `i`, the calculated distance `i - last_one_idx - 1` will be `i - (-k - 1) - 1 = i + k`. Since `i >= 0`, this distance `i + k` will always be `>= k`. Therefore, the first '1' will never trigger a `false` condition, and we don't need a special check for the first '1' being the `last_one_idx`.
-
-2.  Iterate through `nums` from index `i = 0` to `nums.length - 1`:
-    a.  If `nums[i]` is `1`:
-        i.  Calculate the number of '0's between the current '1' (at index `i`) and the previous '1' (at `last_one_idx`). This count is `i - last_one_idx - 1`.
-        ii. If this count is less than `k` (i.e., `i - last_one_idx - 1 < k`), it means the '1's are not `k` places apart. In this case, we immediately return `false`.
-        iii. Update `last_one_idx` to the current index `i`.
-
-3.  If the loop completes without returning `false`, it means all pairs of '1's are at least `k` places apart. So, return `true`.
-
-This approach ensures that every time a '1' is found, its distance from the preceding '1' is checked against `k`. If any pair violates the condition, we stop and return `false`. If all pairs satisfy it, we return `true`.
+This approach handles edge cases such as an array with no '1's, only one '1', or `k=0` correctly. For `k=0`, any distance is valid (including zero zeros between ones), and `i - last_one_index - 1 < 0` will never be true because `i - last_one_index - 1` will always be at least 0 if there are two distinct '1's.
 
 ### Code
 
@@ -89,18 +86,16 @@ This approach ensures that every time a '1' is found, its distance from the prec
 {% highlight python %}
 class Solution:
     def kLengthApart(self, nums: List[int], k: int) -> bool:
-        # Initialize last_one_idx. Using -k-1 allows us to avoid a special check for the first '1'.
-        # For the first '1' at index 'i', the distance i - (-k-1) - 1 = i + k, which is always >= k.
-        last_one_idx = -k - 1
-        
-        for i, num in enumerate(nums):
-            if num == 1:
-                # Calculate the number of zeros between the current '1' and the last '1'.
-                # This is (current_index - last_one_index) - 1.
-                if i - last_one_idx - 1 < k:
-                    return False
-                last_one_idx = i
-                
+        last_one_index = -1
+        for i in range(len(nums)):
+            if nums[i] == 1:
+                if last_one_index != -1:
+                    # Found a subsequent '1'
+                    # Calculate the number of zeros between the current '1' and the last '1'
+                    # Distance is (current_index - last_one_index) - 1
+                    if i - last_one_index - 1 < k:
+                        return False
+                last_one_index = i
         return True
 {% endhighlight %}
 
@@ -111,21 +106,20 @@ class Solution:
 {% highlight java %}
 class Solution {
     public boolean kLengthApart(int[] nums, int k) {
-        // Initialize lastOneIdx. Using -k-1 allows us to avoid a special check for the first '1'.
-        // For the first '1' at index 'i', the distance i - (-k-1) - 1 = i + k, which is always >= k.
-        int lastOneIdx = -k - 1;
-        
+        int lastOneIndex = -1;
         for (int i = 0; i < nums.length; i++) {
             if (nums[i] == 1) {
-                // Calculate the number of zeros between the current '1' and the last '1'.
-                // This is (current_index - last_one_index) - 1.
-                if (i - lastOneIdx - 1 < k) {
-                    return false;
+                if (lastOneIndex != -1) {
+                    // Found a subsequent '1'
+                    // Calculate the number of zeros between the current '1' and the last '1'
+                    // Distance is (current_index - last_one_index) - 1
+                    if (i - lastOneIndex - 1 < k) {
+                        return false;
+                    }
                 }
-                lastOneIdx = i;
+                lastOneIndex = i;
             }
         }
-        
         return true;
     }
 }
@@ -136,26 +130,25 @@ class Solution {
   <div class="tab-panel" data-lang="cpp">
 
 {% highlight cpp %}
-#include <vector> // Required for std::vector
+#include <vector>
 
 class Solution {
 public:
     bool kLengthApart(std::vector<int>& nums, int k) {
-        // Initialize lastOneIdx. Using -k-1 allows us to avoid a special check for the first '1'.
-        // For the first '1' at index 'i', the distance i - (-k-1) - 1 = i + k, which is always >= k.
-        int lastOneIdx = -k - 1;
-        
+        int lastOneIndex = -1;
         for (int i = 0; i < nums.size(); ++i) {
             if (nums[i] == 1) {
-                // Calculate the number of zeros between the current '1' and the last '1'.
-                // This is (current_index - last_one_index) - 1.
-                if (i - lastOneIdx - 1 < k) {
-                    return false;
+                if (lastOneIndex != -1) {
+                    // Found a subsequent '1'
+                    // Calculate the number of zeros between the current '1' and the last '1'
+                    // Distance is (current_index - last_one_index) - 1
+                    if (i - lastOneIndex - 1 < k) {
+                        return false;
+                    }
                 }
-                lastOneIdx = i;
+                lastOneIndex = i;
             }
         }
-        
         return true;
     }
 };
@@ -172,21 +165,20 @@ public:
  * @return {boolean}
  */
 var kLengthApart = function(nums, k) {
-    // Initialize lastOneIdx. Using -k-1 allows us to avoid a special check for the first '1'.
-    // For the first '1' at index 'i', the distance i - (-k-1) - 1 = i + k, which is always >= k.
-    let lastOneIdx = -k - 1;
-    
+    let lastOneIndex = -1;
     for (let i = 0; i < nums.length; i++) {
         if (nums[i] === 1) {
-            // Calculate the number of zeros between the current '1' and the last '1'.
-            // This is (current_index - last_one_index) - 1.
-            if (i - lastOneIdx - 1 < k) {
-                return false;
+            if (lastOneIndex !== -1) {
+                // Found a subsequent '1'
+                // Calculate the number of zeros between the current '1' and the last '1'
+                // Distance is (current_index - last_one_index) - 1
+                if (i - lastOneIndex - 1 < k) {
+                    return false;
+                }
             }
-            lastOneIdx = i;
+            lastOneIndex = i;
         }
     }
-    
     return true;
 };
 {% endhighlight %}
@@ -197,21 +189,20 @@ var kLengthApart = function(nums, k) {
 
 {% highlight typescript %}
 function kLengthApart(nums: number[], k: number): boolean {
-    // Initialize lastOneIdx. Using -k-1 allows us to avoid a special check for the first '1'.
-    // For the first '1' at index 'i', the distance i - (-k-1) - 1 = i + k, which is always >= k.
-    let lastOneIdx: number = -k - 1;
-    
+    let lastOneIndex: number = -1;
     for (let i = 0; i < nums.length; i++) {
         if (nums[i] === 1) {
-            // Calculate the number of zeros between the current '1' and the last '1'.
-            // This is (current_index - last_one_index) - 1.
-            if (i - lastOneIdx - 1 < k) {
-                return false;
+            if (lastOneIndex !== -1) {
+                // Found a subsequent '1'
+                // Calculate the number of zeros between the current '1' and the last '1'
+                // Distance is (current_index - last_one_index) - 1
+                if (i - lastOneIndex - 1 < k) {
+                    return false;
+                }
             }
-            lastOneIdx = i;
+            lastOneIndex = i;
         }
     }
-    
     return true;
 };
 {% endhighlight %}
@@ -221,24 +212,21 @@ function kLengthApart(nums: number[], k: number): boolean {
   <div class="tab-panel" data-lang="go">
 
 {% highlight go %}
-package main
-
 func kLengthApart(nums []int, k int) bool {
-    // Initialize lastOneIdx. Using -k-1 allows us to avoid a special check for the first '1'.
-    // For the first '1' at index 'i', the distance i - (-k-1) - 1 = i + k, which is always >= k.
-    lastOneIdx := -k - 1
-    
-    for i, num := range nums {
-        if num == 1 {
-            // Calculate the number of zeros between the current '1' and the last '1'.
-            // This is (current_index - last_one_index) - 1.
-            if i - lastOneIdx - 1 < k {
-                return false
+    lastOneIndex := -1
+    for i := 0; i < len(nums); i++ {
+        if nums[i] == 1 {
+            if lastOneIndex != -1 {
+                // Found a subsequent '1'
+                // Calculate the number of zeros between the current '1' and the last '1'
+                // Distance is (current_index - last_one_index) - 1
+                if i - lastOneIndex - 1 < k {
+                    return false
+                }
             }
-            lastOneIdx = i
+            lastOneIndex = i
         }
     }
-    
     return true
 }
 {% endhighlight %}
@@ -249,5 +237,5 @@ func kLengthApart(nums []int, k int) bool {
 
 ### Complexity Analysis
 
-- **Time Complexity:** O(N), where N is the length of the `nums` array. We iterate through the array exactly once, performing constant time operations (comparisons, arithmetic, assignments) for each element. Therefore, the time complexity is directly proportional to the size of the input array.
-- **Space Complexity:** O(1). We use a fixed number of variables (`last_one_idx`, loop counter `i`, and current element `num`) regardless of the input array's size. No additional data structures are allocated that scale with the input.
+- **Time Complexity:** O(N)
+- **Space Complexity:** O(1)
