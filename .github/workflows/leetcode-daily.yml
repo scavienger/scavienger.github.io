@@ -5,9 +5,14 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
-  # Allow manual trigger with model selection
+  # Allow manual trigger with branch and model selection
   workflow_dispatch:
     inputs:
+      ai_model:
+        description: 'AI Model'
+        required: false
+        default: 'develop'
+        type: string
       ai_model:
         description: 'AI Model'
         required: false
