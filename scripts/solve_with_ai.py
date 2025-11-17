@@ -89,6 +89,12 @@ For each solution:
 - Complete, working code for each language
 - Time and space complexity analysis
 
+CRITICAL FORMATTING REQUIREMENTS:
+- Each code solution MUST include proper line breaks and indentation
+- DO NOT write code in a single line - use multiple lines with proper formatting
+- Follow standard formatting conventions for each language
+- Use newlines (\\n) to separate statements, function definitions, and control structures
+
 Format your response as JSON:
 {
   "approach": "Detailed explanation here",
@@ -197,13 +203,14 @@ Provide ONLY the JSON response, no additional text."""
                 json={
                     "model": self.model_name,
                     "messages": [
-                        {"role": "system", "content": "You are an expert Python programmer solving LeetCode problems."},
+                        {"role": "system", "content": "You are an expert programmer solving LeetCode problems. Always format code with proper line breaks and indentation."},
                         {"role": "user", "content": prompt}
                     ],
-                    "temperature": 0.7,
-                    "max_tokens": 4096
+                    "temperature": 0.3,
+                    "max_tokens": 8000,
+                    "response_format": {"type": "json_object"}
                 },
-                timeout=30
+                timeout=60
             )
             response.raise_for_status()
 
