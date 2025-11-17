@@ -15,6 +15,11 @@ on:
           - gemini
           - groq
         default: gemini
+      target_branch:
+        description: 'Target branch for the update'
+        required: false
+        default: 'develop'
+        type: string
 
 jobs:
   regenerate:
@@ -26,7 +31,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: develop
+          ref: ${{ inputs.target_branch }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -60,4 +65,4 @@ jobs:
           # Commit changes
           git add _posts/
           git commit -m "Regenerate AI solution for ${{ inputs.date }} using ${{ inputs.ai_provider }}"
-          git push origin develop
+          git push origin ${{ inputs.target_branch }}

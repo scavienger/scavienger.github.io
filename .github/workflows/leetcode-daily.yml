@@ -5,8 +5,14 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
-  # Allow manual trigger
+  # Allow manual trigger with branch selection
   workflow_dispatch:
+    inputs:
+      target_branch:
+        description: 'Target branch for the post'
+        required: false
+        default: 'develop'
+        type: string
 
   # Run on push to develop (for testing)
   push:
@@ -21,10 +27,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Determine target branch
+        id: branch
+        run: |
+          # Use input branch if provided (manual trigger)
+          # Otherwise use develop for scheduled runs
+          # For push events, use the pushed branch
+          if [ -n "${{ inputs.target_branch }}" ]; then
+            echo "name=${{ inputs.target_branch }}" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event_name }}" = "push" ]; then
+            echo "name=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          else
+            echo "name=develop" >> $GITHUB_OUTPUT
+          fi
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: develop
+          ref: ${{ steps.branch.outputs.name }}
           fetch-depth: 0
 
       - name: Set up Python
@@ -90,7 +110,7 @@ jobs:
           DATE=$(date -u +"%Y-%m-%d")
 
           git commit -m "Add LeetCode daily challenge: $TITLE ($DATE)"
-          git push origin develop
+          git push origin ${{ steps.branch.outputs.name }}
 
       - name: Clean up
         if: always()
