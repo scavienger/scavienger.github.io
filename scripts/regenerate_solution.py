@@ -324,8 +324,8 @@ class SolutionRegenerator:
             ('python', 'Python', 'python'),
             ('java', 'Java', 'java'),
             ('cpp', 'C++', 'cpp'),
-            ('javascript', 'JavaScript', 'javascript'),
-            ('typescript', 'TypeScript', 'typescript'),
+            ('javascript', 'JS', 'javascript'),
+            ('typescript', 'TS', 'typescript'),
             ('go', 'Go', 'go')
         ]
 
