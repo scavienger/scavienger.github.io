@@ -7,14 +7,14 @@ on:
         description: 'Post date (YYYY-MM-DD)'
         required: true
         type: string
-      ai_provider:
-        description: 'AI Provider'
+      ai_model:
+        description: 'AI Model'
         required: true
         type: choice
         options:
-          - gemini
-          - groq
-        default: gemini
+          - gemini-2.5-flash
+          - llama-3.3-70b-versatile
+        default: gemini-2.5-flash
       target_branch:
         description: 'Target branch for the update'
         required: false
@@ -45,11 +45,12 @@ jobs:
 
       - name: Regenerate AI solution
         env:
-          AI_PROVIDER: ${{ inputs.ai_provider }}
+          AI_MODEL: ${{ inputs.ai_model }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: |
-          python scripts/regenerate_solution.py ${{ inputs.date }} ${{ inputs.ai_provider }}
+          echo "Using AI model: $AI_MODEL"
+          python scripts/regenerate_solution.py ${{ inputs.date }} ${{ inputs.ai_model }}
 
       - name: Commit and push changes
         run: |
@@ -64,5 +65,5 @@ jobs:
 
           # Commit changes
           git add _posts/
-          git commit -m "Regenerate AI solution for ${{ inputs.date }} using ${{ inputs.ai_provider }}"
+          git commit -m "Regenerate AI solution for ${{ inputs.date }} using ${{ inputs.ai_model }}"
           git push origin ${{ inputs.target_branch }}

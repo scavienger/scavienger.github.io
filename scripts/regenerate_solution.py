@@ -54,19 +54,30 @@ class SolutionRegenerator:
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         })
 
-        # Initialize AI provider
-        self.provider = os.getenv('AI_PROVIDER', 'gemini').lower()
+        # Initialize AI model
+        self.model_name = os.getenv('AI_MODEL', 'gemini-2.5-flash')
         self.gemini_model = None
         self.groq_api_key = None
 
+        # Determine provider from model name
+        if 'gemini' in self.model_name:
+            self.provider = 'gemini'
+        elif 'llama' in self.model_name:
+            self.provider = 'groq'
+        else:
+            self.provider = 'gemini'
+            self.model_name = 'gemini-2.5-flash'
+
         # Gemini setup
-        gemini_key = os.getenv('GEMINI_API_KEY')
-        if gemini_key:
-            genai.configure(api_key=gemini_key)
-            self.gemini_model = genai.GenerativeModel('gemini-2.5-flash')
+        if self.provider == 'gemini':
+            gemini_key = os.getenv('GEMINI_API_KEY')
+            if gemini_key:
+                genai.configure(api_key=gemini_key)
+                self.gemini_model = genai.GenerativeModel(self.model_name)
 
         # Groq setup
-        self.groq_api_key = os.getenv('GROQ_API_KEY')
+        if self.provider == 'groq':
+            self.groq_api_key = os.getenv('GROQ_API_KEY')
 
     def find_post_file(self, date_str: str) -> Optional[str]:
         """Find post file by date"""
@@ -230,10 +241,11 @@ class SolutionRegenerator:
         return markdown.strip(), images
 
     def generate_ai_solution(self, problem_data: Dict) -> Optional[Dict]:
-        """Generate AI solution using configured provider"""
+        """Generate AI solution using configured model"""
         from solve_with_ai import AISolutionGenerator
 
         generator = AISolutionGenerator()
+        generator.model_name = self.model_name
         generator.provider = self.provider
 
         # Override provider keys
@@ -285,15 +297,15 @@ class SolutionRegenerator:
 
     def generate_solution_section(self, ai_solution: Dict) -> str:
         """Generate the AI solution markdown section"""
-        provider = self.provider.upper()
-        provider_emojis = {
-            'GEMINI': '✨',
-            'GROQ': '⚡'
+        # Model emoji mapping
+        model_emojis = {
+            'gemini-2.5-flash': '✨',
+            'llama-3.3-70b-versatile': '⚡'
         }
-        emoji = provider_emojis.get(provider, '🤖')
+        emoji = model_emojis.get(self.model_name, '🤖')
 
         parts = []
-        parts.append(f"## {emoji} AI-Generated Solution ({provider})\n")
+        parts.append(f"## {emoji} AI-Generated Solution ({self.model_name})\n")
 
         # Approach
         parts.append("### Approach\n")
@@ -320,13 +332,27 @@ class SolutionRegenerator:
 
     def _generate_code_tabs(self, solutions: Dict) -> str:
         """Generate Pure CSS tabs for code"""
+        # All 19 languages supported by LeetCode
         languages = [
-            ('python', 'Python', 'python'),
-            ('java', 'Java', 'java'),
             ('cpp', 'C++', 'cpp'),
-            ('javascript', 'JS', 'javascript'),
-            ('typescript', 'TS', 'typescript'),
-            ('go', 'Go', 'go')
+            ('java', 'Java', 'java'),
+            ('python', 'Python', 'python'),
+            ('python3', 'Python3', 'python'),
+            ('c', 'C', 'c'),
+            ('csharp', 'C#', 'csharp'),
+            ('javascript', 'JavaScript', 'javascript'),
+            ('typescript', 'TypeScript', 'typescript'),
+            ('php', 'PHP', 'php'),
+            ('swift', 'Swift', 'swift'),
+            ('kotlin', 'Kotlin', 'kotlin'),
+            ('dart', 'Dart', 'dart'),
+            ('go', 'Go', 'go'),
+            ('ruby', 'Ruby', 'ruby'),
+            ('scala', 'Scala', 'scala'),
+            ('rust', 'Rust', 'rust'),
+            ('racket', 'Racket', 'racket'),
+            ('erlang', 'Erlang', 'erlang'),
+            ('elixir', 'Elixir', 'elixir')
         ]
 
         tabs_html = ['<div class="code-tabs">\n']
@@ -390,15 +416,15 @@ class SolutionRegenerator:
 def main():
     """Main function"""
     if len(sys.argv) < 2:
-        print("Usage: python regenerate_solution.py <date> [provider]", file=sys.stderr)
-        print("Example: python regenerate_solution.py 2025-11-14 gemini", file=sys.stderr)
+        print("Usage: python regenerate_solution.py <date> [model]", file=sys.stderr)
+        print("Example: python regenerate_solution.py 2025-11-14 gemini-2.5-flash", file=sys.stderr)
         return 1
 
     date_str = sys.argv[1]
-    provider = sys.argv[2] if len(sys.argv) > 2 else os.getenv('AI_PROVIDER', 'gemini')
+    model_name = sys.argv[2] if len(sys.argv) > 2 else os.getenv('AI_MODEL', 'gemini-2.5-flash')
 
-    # Set provider
-    os.environ['AI_PROVIDER'] = provider
+    # Set model
+    os.environ['AI_MODEL'] = model_name
 
     regenerator = SolutionRegenerator()
 
@@ -447,7 +473,7 @@ def main():
     new_problem_section = regenerator.generate_problem_section(problem_data)
 
     # Generate AI solution
-    print(f"Generating AI solution with {provider}...", file=sys.stderr)
+    print(f"Generating AI solution with {model_name}...", file=sys.stderr)
     ai_solution = regenerator.generate_ai_solution(problem_data)
     if not ai_solution:
         print("Failed to generate AI solution", file=sys.stderr)

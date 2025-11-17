@@ -15,22 +15,45 @@ from google import generativeai as genai
 class AISolutionGenerator:
     """Generates solutions using AI providers"""
 
+    # Model configurations
+    MODEL_CONFIGS = {
+        'gemini-2.5-flash': {
+            'provider': 'gemini',
+            'api_key_env': 'GEMINI_API_KEY'
+        },
+        'llama-3.3-70b-versatile': {
+            'provider': 'groq',
+            'api_key_env': 'GROQ_API_KEY'
+        }
+    }
+
     def __init__(self):
-        # Get provider from environment (default: gemini)
-        self.provider = os.getenv('AI_PROVIDER', 'gemini').lower()
+        # Get model name from environment (default: gemini-2.5-flash)
+        self.model_name = os.getenv('AI_MODEL', 'gemini-2.5-flash')
+
+        # Get model config
+        model_config = self.MODEL_CONFIGS.get(self.model_name)
+        if not model_config:
+            print(f"Unknown model: {self.model_name}, falling back to gemini-2.5-flash", file=sys.stderr)
+            self.model_name = 'gemini-2.5-flash'
+            model_config = self.MODEL_CONFIGS['gemini-2.5-flash']
+
+        self.provider = model_config['provider']
 
         # Initialize API clients based on available keys
         self.gemini_model = None
         self.groq_api_key = None
 
         # Gemini setup
-        gemini_key = os.getenv('GEMINI_API_KEY')
-        if gemini_key:
-            genai.configure(api_key=gemini_key)
-            self.gemini_model = genai.GenerativeModel('gemini-2.5-flash')
+        if self.provider == 'gemini':
+            gemini_key = os.getenv('GEMINI_API_KEY')
+            if gemini_key:
+                genai.configure(api_key=gemini_key)
+                self.gemini_model = genai.GenerativeModel(self.model_name)
 
         # Groq setup
-        self.groq_api_key = os.getenv('GROQ_API_KEY')
+        if self.provider == 'groq':
+            self.groq_api_key = os.getenv('GROQ_API_KEY')
 
     def create_prompt(self, problem_data: Dict) -> str:
         """Create a prompt for the AI models"""
@@ -172,7 +195,7 @@ Provide ONLY the JSON response, no additional text."""
                     "Content-Type": "application/json"
                 },
                 json={
-                    "model": "llama-3.3-70b-versatile",
+                    "model": self.model_name,
                     "messages": [
                         {"role": "system", "content": "You are an expert Python programmer solving LeetCode problems."},
                         {"role": "user", "content": prompt}
@@ -193,8 +216,8 @@ Provide ONLY the JSON response, no additional text."""
             return None
 
     def generate_solution(self, problem_data: Dict) -> Optional[Dict]:
-        """Generate solution using the configured provider"""
-        print(f"Generating solution with {self.provider}...", file=sys.stderr)
+        """Generate solution using the configured model"""
+        print(f"Generating solution with {self.model_name}...", file=sys.stderr)
 
         if self.provider == 'groq':
             return self.solve_with_groq(problem_data)
@@ -221,7 +244,7 @@ def main():
     if solution:
         # Add solution to problem data
         problem_data['ai_solution'] = {
-            'provider': generator.provider,
+            'model': generator.model_name,
             **solution
         }
     else:
