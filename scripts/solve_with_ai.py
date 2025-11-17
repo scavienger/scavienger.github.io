@@ -84,16 +84,24 @@ Problem Description:
 
         prompt += """Please provide solutions in ALL 19 programming languages supported by LeetCode: C++, Java, Python, Python3, C, C#, JavaScript, TypeScript, PHP, Swift, Kotlin, Dart, Go, Ruby, Scala, Rust, Racket, Erlang, and Elixir.
 
-For each solution:
-- Provide a clear explanation of your approach (once, shared)
-- Complete, working code for each language
-- Time and space complexity analysis
+APPROACH REQUIREMENTS:
+- Provide a DETAILED explanation of your approach (minimum 3-5 paragraphs)
+- Explain the problem-solving strategy step by step
+- Describe the algorithm logic clearly
+- Include examples or edge cases if helpful
+- Make the explanation thorough and educational
 
-CRITICAL FORMATTING REQUIREMENTS:
+CODE FORMATTING REQUIREMENTS (CRITICAL):
 - Each code solution MUST include proper line breaks and indentation
 - DO NOT write code in a single line - use multiple lines with proper formatting
 - Follow standard formatting conventions for each language
 - Use newlines (\\n) to separate statements, function definitions, and control structures
+- Properly indent nested blocks (loops, conditionals, functions)
+- Add blank lines between logical sections for readability
+
+COMPLEXITY ANALYSIS:
+- Provide detailed time and space complexity with explanations
+- Explain why the complexity is what it is
 
 Format your response as JSON:
 {
@@ -133,6 +141,11 @@ Provide ONLY the JSON response, no additional text."""
         """Clean code by removing markdown code block markers and normalizing whitespace"""
         if not code:
             return code
+
+        # First, ensure newlines are properly decoded (JSON may escape them)
+        # Replace literal \n with actual newlines if they exist
+        if '\\n' in code:
+            code = code.replace('\\n', '\n')
 
         # Remove markdown code block markers (```python, ```cpp, etc.)
         lines = code.split('\n')
