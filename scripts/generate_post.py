@@ -196,16 +196,24 @@ leetcode_url: {leetcode_url}
         ai_solution = question_data.get('ai_solution', {})
 
         if ai_solution:
-            provider = ai_solution.get('provider', 'AI').upper()
+            # Get model name (new format) or fallback to provider (old format)
+            model_name = ai_solution.get('model')
+            if not model_name:
+                # Fallback for old format
+                provider = ai_solution.get('provider', 'AI').upper()
+                model_name = {
+                    'GEMINI': 'gemini-2.5-flash',
+                    'GROQ': 'llama-3.3-70b-versatile'
+                }.get(provider, 'AI')
 
-            # Provider emoji mapping
-            provider_emojis = {
-                'GEMINI': '✨',
-                'GROQ': '⚡'
+            # Model emoji mapping
+            model_emojis = {
+                'gemini-2.5-flash': '✨',
+                'llama-3.3-70b-versatile': '⚡'
             }
-            emoji = provider_emojis.get(provider, '🤖')
+            emoji = model_emojis.get(model_name, '🤖')
 
-            body_parts.append(f"## {emoji} AI-Generated Solution ({provider})\n")
+            body_parts.append(f"## {emoji} AI-Generated Solution ({model_name})\n")
 
             # Approach
             body_parts.append("### Approach\n")

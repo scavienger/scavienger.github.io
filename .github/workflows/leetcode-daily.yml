@@ -5,7 +5,7 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
-  # Allow manual trigger with branch selection
+  # Allow manual trigger with branch and model selection
   workflow_dispatch:
     inputs:
       target_branch:
@@ -13,6 +13,14 @@ on:
         required: false
         default: 'develop'
         type: string
+      ai_model:
+        description: 'AI Model'
+        required: false
+        type: choice
+        options:
+          - gemini-2.5-flash
+          - llama-3.3-70b-versatile
+        default: gemini-2.5-flash
 
   # Run on push to develop (for testing)
   push:
@@ -70,10 +78,11 @@ jobs:
 
       - name: Generate AI solution
         env:
-          AI_PROVIDER: gemini  # Change to 'groq' if you want to use Groq instead
+          AI_MODEL: ${{ inputs.ai_model || 'gemini-2.5-flash' }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: |
+          echo "Using AI model: $AI_MODEL"
           python scripts/solve_with_ai.py question_data.json > question_with_solution.json || true
           if [ -f question_with_solution.json ] && [ -s question_with_solution.json ]; then
             echo "AI solution generated successfully"
