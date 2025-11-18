@@ -1176,12 +1176,14 @@ html {
 }
 
 /* Active tab label - using id and for attribute matching with suffix support */
+/* Note: Order matters for overlapping prefixes (python3 before python, etc.) */
 .code-tabs input[id^="lang-cpp"]:checked ~ .tab-labels label[for^="lang-cpp"],
 .code-tabs input[id^="lang-java"]:checked ~ .tab-labels label[for^="lang-java"],
 .code-tabs input[id^="lang-python3"]:checked ~ .tab-labels label[for^="lang-python3"],
-.code-tabs input[id^="lang-python"]:checked ~ .tab-labels label[for^="lang-python"],
-.code-tabs input[id^="lang-c-"]:checked ~ .tab-labels label[for^="lang-c-"],
+.code-tabs input[id="lang-python"]:checked ~ .tab-labels label[for="lang-python"],
+.code-tabs input[id^="lang-python-"]:checked ~ .tab-labels label[for^="lang-python-"],
 .code-tabs input[id="lang-c"]:checked ~ .tab-labels label[for="lang-c"],
+.code-tabs input[id^="lang-c-"]:checked ~ .tab-labels label[for^="lang-c-"],
 .code-tabs input[id^="lang-csharp"]:checked ~ .tab-labels label[for^="lang-csharp"],
 .code-tabs input[id^="lang-javascript"]:checked ~ .tab-labels label[for^="lang-javascript"],
 .code-tabs input[id^="lang-typescript"]:checked ~ .tab-labels label[for^="lang-typescript"],
