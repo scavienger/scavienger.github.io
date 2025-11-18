@@ -1176,9 +1176,10 @@ html {
 }
 
 /* Active tab label - using id and for attribute matching with suffix support */
-/* Note: Order matters for overlapping prefixes (python3 before python, etc.) */
+/* Note: Overlapping prefixes (java/javascript, python/python3, etc.) use exact/hyphen matching */
 .code-tabs input[id^="lang-cpp"]:checked ~ .tab-labels label[for^="lang-cpp"],
-.code-tabs input[id^="lang-java"]:checked ~ .tab-labels label[for^="lang-java"],
+.code-tabs input[id="lang-java"]:checked ~ .tab-labels label[for="lang-java"],
+.code-tabs input[id^="lang-java-"]:checked ~ .tab-labels label[for^="lang-java-"],
 .code-tabs input[id^="lang-python3"]:checked ~ .tab-labels label[for^="lang-python3"],
 .code-tabs input[id="lang-python"]:checked ~ .tab-labels label[for="lang-python"],
 .code-tabs input[id^="lang-python-"]:checked ~ .tab-labels label[for^="lang-python-"],
