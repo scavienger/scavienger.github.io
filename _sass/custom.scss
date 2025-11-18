@@ -1175,26 +1175,27 @@ html {
   background-color: rgba(102, 126, 234, 0.1);
 }
 
-/* Active tab label - using id and for attribute matching */
-.code-tabs input#lang-cpp:checked ~ .tab-labels label[for="lang-cpp"],
-.code-tabs input#lang-java:checked ~ .tab-labels label[for="lang-java"],
-.code-tabs input#lang-python:checked ~ .tab-labels label[for="lang-python"],
-.code-tabs input#lang-python3:checked ~ .tab-labels label[for="lang-python3"],
-.code-tabs input#lang-c:checked ~ .tab-labels label[for="lang-c"],
-.code-tabs input#lang-csharp:checked ~ .tab-labels label[for="lang-csharp"],
-.code-tabs input#lang-javascript:checked ~ .tab-labels label[for="lang-javascript"],
-.code-tabs input#lang-typescript:checked ~ .tab-labels label[for="lang-typescript"],
-.code-tabs input#lang-php:checked ~ .tab-labels label[for="lang-php"],
-.code-tabs input#lang-swift:checked ~ .tab-labels label[for="lang-swift"],
-.code-tabs input#lang-kotlin:checked ~ .tab-labels label[for="lang-kotlin"],
-.code-tabs input#lang-dart:checked ~ .tab-labels label[for="lang-dart"],
-.code-tabs input#lang-go:checked ~ .tab-labels label[for="lang-go"],
-.code-tabs input#lang-ruby:checked ~ .tab-labels label[for="lang-ruby"],
-.code-tabs input#lang-scala:checked ~ .tab-labels label[for="lang-scala"],
-.code-tabs input#lang-rust:checked ~ .tab-labels label[for="lang-rust"],
-.code-tabs input#lang-racket:checked ~ .tab-labels label[for="lang-racket"],
-.code-tabs input#lang-erlang:checked ~ .tab-labels label[for="lang-erlang"],
-.code-tabs input#lang-elixir:checked ~ .tab-labels label[for="lang-elixir"] {
+/* Active tab label - using id and for attribute matching with suffix support */
+.code-tabs input[id^="lang-cpp"]:checked ~ .tab-labels label[for^="lang-cpp"],
+.code-tabs input[id^="lang-java"]:checked ~ .tab-labels label[for^="lang-java"],
+.code-tabs input[id^="lang-python3"]:checked ~ .tab-labels label[for^="lang-python3"],
+.code-tabs input[id^="lang-python"]:checked ~ .tab-labels label[for^="lang-python"],
+.code-tabs input[id^="lang-c-"]:checked ~ .tab-labels label[for^="lang-c-"],
+.code-tabs input[id="lang-c"]:checked ~ .tab-labels label[for="lang-c"],
+.code-tabs input[id^="lang-csharp"]:checked ~ .tab-labels label[for^="lang-csharp"],
+.code-tabs input[id^="lang-javascript"]:checked ~ .tab-labels label[for^="lang-javascript"],
+.code-tabs input[id^="lang-typescript"]:checked ~ .tab-labels label[for^="lang-typescript"],
+.code-tabs input[id^="lang-php"]:checked ~ .tab-labels label[for^="lang-php"],
+.code-tabs input[id^="lang-swift"]:checked ~ .tab-labels label[for^="lang-swift"],
+.code-tabs input[id^="lang-kotlin"]:checked ~ .tab-labels label[for^="lang-kotlin"],
+.code-tabs input[id^="lang-dart"]:checked ~ .tab-labels label[for^="lang-dart"],
+.code-tabs input[id^="lang-go"]:checked ~ .tab-labels label[for^="lang-go"],
+.code-tabs input[id^="lang-ruby"]:checked ~ .tab-labels label[for^="lang-ruby"],
+.code-tabs input[id^="lang-scala"]:checked ~ .tab-labels label[for^="lang-scala"],
+.code-tabs input[id^="lang-rust"]:checked ~ .tab-labels label[for^="lang-rust"],
+.code-tabs input[id^="lang-racket"]:checked ~ .tab-labels label[for^="lang-racket"],
+.code-tabs input[id^="lang-erlang"]:checked ~ .tab-labels label[for^="lang-erlang"],
+.code-tabs input[id^="lang-elixir"]:checked ~ .tab-labels label[for^="lang-elixir"] {
   opacity: 1;
   color: white;
   background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
@@ -1360,18 +1361,29 @@ details[open] summary::before {
   color: white;
 }
 
-details > *:not(summary) {
-  padding: 1.5em;
+details > *:not(summary):not(.code-tabs) {
+  padding: 0 1.5em;
 }
 
 /* Nested headings within details */
 details h3 {
-  margin-top: 0.5em;
+  margin-top: 1.5em;
+  margin-bottom: 1em;
+  padding-top: 0;
   color: var(--primary-color);
+}
+
+details h3:first-of-type {
+  margin-top: 1em;
 }
 
 /* Code tabs within details */
 details .code-tabs {
+  margin: 1.5em 0;
+}
+
+/* Complexity list and other content within details */
+details ul, details p {
   margin: 1em 0;
 }
 
