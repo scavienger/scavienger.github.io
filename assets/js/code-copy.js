@@ -3,7 +3,7 @@
  * Adds "Copy" buttons to all code blocks
  */
 
-(function() {
+(function () {
   'use strict';
 
   // Wait for DOM to be ready
@@ -31,7 +31,7 @@
       // Create copy button
       const button = document.createElement('button');
       button.className = 'copy-code-btn';
-      button.textContent = 'Copy';
+      button.textContent = '📋 Copy';
       button.setAttribute('aria-label', 'Copy code to clipboard');
 
       // Insert wrapper before pre element
@@ -42,7 +42,7 @@
       wrapper.appendChild(button);
 
       // Add click event
-      button.addEventListener('click', function() {
+      button.addEventListener('click', function () {
         copyCodeToClipboard(pre, button);
       });
     });
@@ -106,7 +106,7 @@
   function showCopySuccess(button) {
     const originalText = button.textContent;
     button.classList.add('copied');
-    button.textContent = 'Copied';
+    button.textContent = '✅ Copied';
 
     setTimeout(() => {
       button.classList.remove('copied');
