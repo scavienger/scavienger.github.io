@@ -190,3 +190,4 @@
 - 테스트 후 master에 반영
 - API 키는 GitHub Secrets로 관리
 - 설정 값은 워크플로우 파일에서 관리
+## Sass import migration (planned)\n- Replace @import with @use/@forward in assets/main.scss and partials (custom.scss, dark-mode.scss, minima integration).\n- Verify minima entry points; add wrapper if needed.\n- After changes, run bundle exec jekyll build to ensure no warnings.\n

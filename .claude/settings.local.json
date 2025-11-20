@@ -1,9 +1,24 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(git pull:*)",
+      "Bash(bundle exec jekyll serve:*)",
+      "Bash(git stash:*)",
+      "Bash(timeout /t 5)",
+      "Bash(nul)",
+      "Bash(exit 0)",
+      "Bash(powershell -Command:*)",
+      "Bash(bundle exec jekyll:*)",
+      "Bash(pip install:*)",
+      "Bash(taskkill:*)"
     ],
     "deny": [],
     "ask": []
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "powershell -NoProfile -Command \"$dir = Split-Path -Leaf (Get-Location); $branch = git rev-parse --abbrev-ref HEAD 2>$null; $status = if (git status --porcelain 2>$null) { ' ✗' } else { ' ✓' }; Write-Host \\\"$dir on $branch$status\\\" -NoNewline\"",
+    "padding": 1
   }
 }
