@@ -36,6 +36,12 @@ Thumbs.db
 
 # Claude Code
 .claude/settings.local.json
+.claude/commands/
 
 # BMAD Plugin
 .bmad/
+bmad-project.json
+
+# Browser-specific
+.well-known/
+
