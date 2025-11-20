@@ -1,0 +1,82 @@
+{
+  "2025-11-01": {
+    "link": "/problems/delete-nodes-from-linked-list-present-in-array/",
+    "titleSlug": "delete-nodes-from-linked-list-present-in-array"
+  },
+  "2025-11-02": {
+    "link": "/problems/count-unguarded-cells-in-the-grid/",
+    "titleSlug": "count-unguarded-cells-in-the-grid"
+  },
+  "2025-11-03": {
+    "link": "/problems/minimum-time-to-make-rope-colorful/",
+    "titleSlug": "minimum-time-to-make-rope-colorful"
+  },
+  "2025-11-04": {
+    "link": "/problems/find-x-sum-of-all-k-long-subarrays-i/",
+    "titleSlug": "find-x-sum-of-all-k-long-subarrays-i"
+  },
+  "2025-11-05": {
+    "link": "/problems/find-x-sum-of-all-k-long-subarrays-ii/",
+    "titleSlug": "find-x-sum-of-all-k-long-subarrays-ii"
+  },
+  "2025-11-06": {
+    "link": "/problems/power-grid-maintenance/",
+    "titleSlug": "power-grid-maintenance"
+  },
+  "2025-11-07": {
+    "link": "/problems/maximize-the-minimum-powered-city/",
+    "titleSlug": "maximize-the-minimum-powered-city"
+  },
+  "2025-11-08": {
+    "link": "/problems/minimum-one-bit-operations-to-make-integers-zero/",
+    "titleSlug": "minimum-one-bit-operations-to-make-integers-zero"
+  },
+  "2025-11-09": {
+    "link": "/problems/count-operations-to-obtain-zero/",
+    "titleSlug": "count-operations-to-obtain-zero"
+  },
+  "2025-11-10": {
+    "link": "/problems/minimum-operations-to-convert-all-elements-to-zero/",
+    "titleSlug": "minimum-operations-to-convert-all-elements-to-zero"
+  },
+  "2025-11-11": {
+    "link": "/problems/ones-and-zeroes/",
+    "titleSlug": "ones-and-zeroes"
+  },
+  "2025-11-12": {
+    "link": "/problems/minimum-number-of-operations-to-make-all-array-elements-equal-to-1/",
+    "titleSlug": "minimum-number-of-operations-to-make-all-array-elements-equal-to-1"
+  },
+  "2025-11-13": {
+    "link": "/problems/maximum-number-of-operations-to-move-ones-to-the-end/",
+    "titleSlug": "maximum-number-of-operations-to-move-ones-to-the-end"
+  },
+  "2025-11-14": {
+    "link": "/problems/increment-submatrices-by-one/",
+    "titleSlug": "increment-submatrices-by-one"
+  },
+  "2025-11-15": {
+    "link": "/problems/count-the-number-of-substrings-with-dominant-ones/",
+    "titleSlug": "count-the-number-of-substrings-with-dominant-ones"
+  },
+  "2025-11-16": {
+    "link": "/problems/number-of-substrings-with-only-1s/",
+    "titleSlug": "number-of-substrings-with-only-1s"
+  },
+  "2025-11-17": {
+    "link": "/problems/check-if-all-1s-are-at-least-length-k-places-away/",
+    "titleSlug": "check-if-all-1s-are-at-least-length-k-places-away"
+  },
+  "2025-11-18": {
+    "link": "/problems/1-bit-and-2-bit-characters/",
+    "titleSlug": "1-bit-and-2-bit-characters"
+  },
+  "2025-11-19": {
+    "link": "/problems/keep-multiplying-found-values-by-two/",
+    "titleSlug": "keep-multiplying-found-values-by-two"
+  },
+  "2025-11-20": {
+    "link": "/problems/set-intersection-size-at-least-two/",
+    "titleSlug": "set-intersection-size-at-least-two"
+  }
+}
