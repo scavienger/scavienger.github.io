@@ -50,27 +50,27 @@ Given an binary array `nums` and an integer `k`, return `true` _if all_`1` _'s a
 We've generated solutions using multiple AI models. Click to expand each solution:
 
 
-<details open>
-<summary><strong>✨ Solution from gemini-2.5-flash</strong></summary>
+<details class="ai-solution-card" open markdown="1">
+<summary class="ai-solution-header">
+  <span class="ai-model-badge">✨ Solution from <strong>gemini-2.5-flash</strong></span>
+  <small class="solution-timestamp">(2025-11-19 22:39:13)</small>
+</summary>
+
+<div class="ai-solution-content">
 
 ### Approach
 
-The problem requires us to verify if all '1's in a given binary array `nums` are separated by at least `k` places. This means if we find a '1' at index `i` and the next '1' at index `j`, there must be at least `k` zeros strictly between them. Mathematically, this translates to `j - i - 1 >= k`.
+The problem asks us to determine if all occurrences of the digit '1' in a given binary array `nums` are separated by at least `k` places. This means if we find a '1' at index `i` and the very next '1' (to its right) at index `j`, there must be at least `k` zeros between them. In other words, the count of elements between index `i` and `j`, excluding `nums[i]` and `nums[j]`, must be greater than or equal to `k`. Mathematically, this implies `j - i - 1 >= k`, which can be rearranged to `j - i >= k + 1` (the distance between their indices must be at least `k+1`).
 
-Our approach involves a single pass through the array, keeping track of the count of zeros since the last '1' was encountered. To handle the initial state and edge cases correctly, we use two variables: `zero_count` and `found_first_one`. `zero_count` will keep track of how many zeros we've seen since the most recent '1'. `found_first_one` is a boolean flag that helps us know if we've already encountered at least one '1' in the array.
+The most efficient way to solve this is to traverse the array once, keeping track of the index of the last '1' encountered. We can initialize a variable, let's call it `last_one_index`, to a sentinel value like -1 to signify that we haven't found any '1's yet. As we iterate through the `nums` array, whenever we encounter a '1', we perform a check. If `last_one_index` is not -1, it means we have previously seen a '1'. At this point, we calculate the number of zeros between the current '1' and the previous '1'. This count is `current_index - last_one_index - 1`.
 
-Initially, `zero_count` is set to `k`. This seemingly arbitrary initial value is crucial. If the very first element of `nums` is '1', we don't have a previous '1' to compare it against, so the distance condition is vacuously true for it. By initializing `zero_count` to `k` (or any value greater than or equal to `k`), when the first '1' is encountered, the check `zero_count < k` will evaluate to `false`, thus not triggering an premature `false` return. `found_first_one` is initialized to `false` because we haven't seen any '1's yet.
+If this calculated count of zeros is less than `k`, it means the condition is violated, and we can immediately return `false`. If the condition holds (i.e., `current_index - last_one_index - 1 >= k`), or if `last_one_index` was -1 (meaning this is the first '1' we've encountered), we update `last_one_index` to the `current_index`. We continue this process for the entire array. If the loop completes without returning `false`, it implies that all pairs of '1's satisfy the `k`-length apart condition, and we can confidently return `true`.
 
-As we iterate through the `nums` array element by element: if the current element is a '1':
-1. We first check `found_first_one`. If it's `true`, it means this is not the first '1' in the array, and we must check the distance from the previous '1'. We compare `zero_count` with `k`. If `zero_count` is less than `k`, it signifies that there are fewer than `k` zeros separating this '1' from the previous one, violating the problem's condition. In this scenario, we immediately return `false`.
-2. After the check (or if `found_first_one` was `false`), we set `found_first_one` to `true` because we have now definitely encountered at least one '1'.
-3. Finally, we reset `zero_count` to `0`. This is because we just found a '1', and any subsequent zeros will be counted starting from this point.
-
-If the current element is a '0': we only care about counting zeros if we've already found at least one '1'. So, if `found_first_one` is `true`, we simply increment `zero_count`. If `found_first_one` is `false`, we do nothing, as these zeros are before the first relevant '1'. If the loop completes without returning `false`, it means all '1's adhere to the `k`-length separation requirement, or there were no '1's at all, so we return `true`.
+Consider a few edge cases: If `nums` contains no '1's or only one '1', `last_one_index` will either remain -1 or be updated only once, so the distance check `if (last_one_index != -1)` will never evaluate to true for a subsequent '1' to trigger a `false` return. In these scenarios, the loop finishes, and `true` is correctly returned, as there are no '1's to violate the condition. If `k` is 0, the condition `i - last_one_index - 1 < 0` would mean `i - last_one_index < 1`. This implies that `1`s can be adjacent (e.g., `[1,1]`), which is consistent with being 'at least 0 places away'. The algorithm correctly handles this by returning `true` for `[1,1], k=0`.
 
 ### Code
 
-<div class="code-tabs">
+<div class="code-tabs" markdown="0">
   <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-cpp-gemini-2-5-flash" checked>
   <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-java-gemini-2-5-flash">
   <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-python-gemini-2-5-flash">
@@ -118,25 +118,18 @@ If the current element is a '0': we only care about counting zeros if we've alre
 class Solution {
 public:
     bool kLengthApart(std::vector<int>& nums, int k) {
-        int zeroCount = k;
-        bool foundFirstOne = false;
-
-        for (int num : nums) {
-            if (num == 1) {
-                if (foundFirstOne) {
-                    if (zeroCount < k) {
+        int lastOneIndex = -1;
+        for (int i = 0; i < nums.size(); ++i) {
+            if (nums[i] == 1) {
+                if (lastOneIndex != -1) {
+                    // Check if the number of zeros between current 1 and last 1 is less than k
+                    if (i - lastOneIndex - 1 < k) {
                         return false;
                     }
                 }
-                foundFirstOne = true;
-                zeroCount = 0;
-            } else {
-                if (foundFirstOne) {
-                    zeroCount++;
-                }
+                lastOneIndex = i;
             }
         }
-
         return true;
     }
 };
@@ -149,25 +142,18 @@ public:
 {% highlight java %}
 class Solution {
     public boolean kLengthApart(int[] nums, int k) {
-        int zeroCount = k;
-        boolean foundFirstOne = false;
-
-        for (int num : nums) {
-            if (num == 1) {
-                if (foundFirstOne) {
-                    if (zeroCount < k) {
+        int lastOneIndex = -1;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] == 1) {
+                if (lastOneIndex != -1) {
+                    // Check if the number of zeros between current 1 and last 1 is less than k
+                    if (i - lastOneIndex - 1 < k) {
                         return false;
                     }
                 }
-                foundFirstOne = true;
-                zeroCount = 0;
-            } else {
-                if (foundFirstOne) {
-                    zeroCount++;
-                }
+                lastOneIndex = i;
             }
         }
-
         return true;
     }
 }
@@ -180,21 +166,14 @@ class Solution {
 {% highlight python %}
 class Solution:
     def kLengthApart(self, nums: List[int], k: int) -> bool:
-        zero_count = k
-        found_first_one = False
-
-        for num in nums:
-            if num == 1:
-                if found_first_one:
-                    if zero_count < k:
+        last_one_index = -1
+        for i in range(len(nums)):
+            if nums[i] == 1:
+                if last_one_index != -1:
+                    # Check if the number of zeros between current 1 and last 1 is less than k
+                    if i - last_one_index - 1 < k:
                         return False
-                
-                found_first_one = True
-                zero_count = 0
-            else: # num == 0
-                if found_first_one:
-                    zero_count += 1
-        
+                last_one_index = i
         return True
 {% endhighlight %}
 
@@ -205,21 +184,14 @@ class Solution:
 {% highlight python %}
 class Solution:
     def kLengthApart(self, nums: List[int], k: int) -> bool:
-        zero_count = k
-        found_first_one = False
-
-        for num in nums:
-            if num == 1:
-                if found_first_one:
-                    if zero_count < k:
+        last_one_index = -1
+        for i in range(len(nums)):
+            if nums[i] == 1:
+                if last_one_index != -1:
+                    # Check if the number of zeros between current 1 and last 1 is less than k
+                    if i - last_one_index - 1 < k:
                         return False
-                
-                found_first_one = True
-                zero_count = 0
-            else: # num == 0
-                if found_first_one:
-                    zero_count += 1
-        
+                last_one_index = i
         return True
 {% endhighlight %}
 
@@ -229,27 +201,21 @@ class Solution:
 
 {% highlight c %}
 #include <stdbool.h>
+#include <stddef.h> // For size_t
 
 bool kLengthApart(int* nums, int numsSize, int k) {
-    int zeroCount = k;
-    bool foundFirstOne = false;
-
+    int lastOneIndex = -1;
     for (int i = 0; i < numsSize; i++) {
         if (nums[i] == 1) {
-            if (foundFirstOne) {
-                if (zeroCount < k) {
+            if (lastOneIndex != -1) {
+                // Check if the number of zeros between current 1 and last 1 is less than k
+                if (i - lastOneIndex - 1 < k) {
                     return false;
                 }
             }
-            foundFirstOne = true;
-            zeroCount = 0;
-        } else {
-            if (foundFirstOne) {
-                zeroCount++;
-            }
+            lastOneIndex = i;
         }
     }
-
     return true;
 }
 {% endhighlight %}
@@ -259,27 +225,22 @@ bool kLengthApart(int* nums, int numsSize, int k) {
   <div class="tab-panel" data-lang="csharp">
 
 {% highlight csharp %}
+using System;
+
 public class Solution {
     public bool KLengthApart(int[] nums, int k) {
-        int zeroCount = k;
-        bool foundFirstOne = false;
-
-        foreach (int num in nums) {
-            if (num == 1) {
-                if (foundFirstOne) {
-                    if (zeroCount < k) {
+        int lastOneIndex = -1;
+        for (int i = 0; i < nums.Length; i++) {
+            if (nums[i] == 1) {
+                if (lastOneIndex != -1) {
+                    // Check if the number of zeros between current 1 and last 1 is less than k
+                    if (i - lastOneIndex - 1 < k) {
                         return false;
                     }
                 }
-                foundFirstOne = true;
-                zeroCount = 0;
-            } else {
-                if (foundFirstOne) {
-                    zeroCount++;
-                }
+                lastOneIndex = i;
             }
         }
-
         return true;
     }
 }
@@ -296,25 +257,18 @@ public class Solution {
  * @return {boolean}
  */
 var kLengthApart = function(nums, k) {
-    let zeroCount = k;
-    let foundFirstOne = false;
-
+    let lastOneIndex = -1;
     for (let i = 0; i < nums.length; i++) {
         if (nums[i] === 1) {
-            if (foundFirstOne) {
-                if (zeroCount < k) {
+            if (lastOneIndex !== -1) {
+                // Check if the number of zeros between current 1 and last 1 is less than k
+                if (i - lastOneIndex - 1 < k) {
                     return false;
                 }
             }
-            foundFirstOne = true;
-            zeroCount = 0;
-        } else { // nums[i] === 0
-            if (foundFirstOne) {
-                zeroCount++;
-            }
+            lastOneIndex = i;
         }
     }
-
     return true;
 };
 {% endhighlight %}
@@ -325,25 +279,18 @@ var kLengthApart = function(nums, k) {
 
 {% highlight typescript %}
 function kLengthApart(nums: number[], k: number): boolean {
-    let zeroCount: number = k;
-    let foundFirstOne: boolean = false;
-
+    let lastOneIndex: number = -1;
     for (let i = 0; i < nums.length; i++) {
         if (nums[i] === 1) {
-            if (foundFirstOne) {
-                if (zeroCount < k) {
+            if (lastOneIndex !== -1) {
+                // Check if the number of zeros between current 1 and last 1 is less than k
+                if (i - lastOneIndex - 1 < k) {
                     return false;
                 }
             }
-            foundFirstOne = true;
-            zeroCount = 0;
-        } else { // nums[i] === 0
-            if (foundFirstOne) {
-                zeroCount++;
-            }
+            lastOneIndex = i;
         }
     }
-
     return true;
 };
 {% endhighlight %}
@@ -353,35 +300,31 @@ function kLengthApart(nums: number[], k: number): boolean {
   <div class="tab-panel" data-lang="php">
 
 {% highlight php %}
+<?php
 class Solution {
+
     /**
      * @param Integer[] $nums
      * @param Integer $k
      * @return Boolean
      */
     function kLengthApart($nums, $k) {
-        $zeroCount = $k;
-        $foundFirstOne = false;
-
-        foreach ($nums as $num) {
-            if ($num === 1) {
-                if ($foundFirstOne) {
-                    if ($zeroCount < $k) {
+        $lastOneIndex = -1;
+        for ($i = 0; $i < count($nums); $i++) {
+            if ($nums[$i] === 1) {
+                if ($lastOneIndex !== -1) {
+                    // Check if the number of zeros between current 1 and last 1 is less than k
+                    if ($i - $lastOneIndex - 1 < $k) {
                         return false;
                     }
                 }
-                $foundFirstOne = true;
-                $zeroCount = 0;
-            } else { // $num === 0
-                if ($foundFirstOne) {
-                    $zeroCount++;
-                }
+                $lastOneIndex = $i;
             }
         }
-
         return true;
     }
 }
+?>
 {% endhighlight %}
 
   </div>
@@ -391,25 +334,18 @@ class Solution {
 {% highlight swift %}
 class Solution {
     func kLengthApart(_ nums: [Int], _ k: Int) -> Bool {
-        var zeroCount = k
-        var foundFirstOne = false
-
-        for num in nums {
-            if num == 1 {
-                if foundFirstOne {
-                    if zeroCount < k {
+        var lastOneIndex = -1
+        for i in 0..<nums.count {
+            if nums[i] == 1 {
+                if lastOneIndex != -1 {
+                    // Check if the number of zeros between current 1 and last 1 is less than k
+                    if i - lastOneIndex - 1 < k {
                         return false
                     }
                 }
-                foundFirstOne = true
-                zeroCount = 0
-            } else { // num == 0
-                if foundFirstOne {
-                    zeroCount += 1
-                }
+                lastOneIndex = i
             }
         }
-
         return true
     }
 }
@@ -422,25 +358,18 @@ class Solution {
 {% highlight kotlin %}
 class Solution {
     fun kLengthApart(nums: IntArray, k: Int): Boolean {
-        var zeroCount = k
-        var foundFirstOne = false
-
-        for (num in nums) {
-            if (num == 1) {
-                if (foundFirstOne) {
-                    if (zeroCount < k) {
+        var lastOneIndex = -1
+        for (i in nums.indices) {
+            if (nums[i] == 1) {
+                if (lastOneIndex != -1) {
+                    // Check if the number of zeros between current 1 and last 1 is less than k
+                    if (i - lastOneIndex - 1 < k) {
                         return false
                     }
                 }
-                foundFirstOne = true
-                zeroCount = 0
-            } else { // num == 0
-                if (foundFirstOne) {
-                    zeroCount++
-                }
+                lastOneIndex = i
             }
         }
-
         return true
     }
 }
@@ -453,25 +382,18 @@ class Solution {
 {% highlight dart %}
 class Solution {
   bool kLengthApart(List<int> nums, int k) {
-    int zeroCount = k;
-    bool foundFirstOne = false;
-
-    for (int num in nums) {
-      if (num == 1) {
-        if (foundFirstOne) {
-          if (zeroCount < k) {
+    int lastOneIndex = -1;
+    for (int i = 0; i < nums.length; i++) {
+      if (nums[i] == 1) {
+        if (lastOneIndex != -1) {
+          // Check if the number of zeros between current 1 and last 1 is less than k
+          if (i - lastOneIndex - 1 < k) {
             return false;
           }
         }
-        foundFirstOne = true;
-        zeroCount = 0;
-      } else { // num == 0
-        if (foundFirstOne) {
-          zeroCount++;
-        }
+        lastOneIndex = i;
       }
     }
-
     return true;
   }
 }
@@ -482,26 +404,21 @@ class Solution {
   <div class="tab-panel" data-lang="go">
 
 {% highlight go %}
-func kLengthApart(nums []int, k int) bool {
-    zeroCount := k
-    foundFirstOne := false
+package main
 
-    for _, num := range nums {
-        if num == 1 {
-            if foundFirstOne {
-                if zeroCount < k {
+func kLengthApart(nums []int, k int) bool {
+    lastOneIndex := -1
+    for i := 0; i < len(nums); i++ {
+        if nums[i] == 1 {
+            if lastOneIndex != -1 {
+                // Check if the number of zeros between current 1 and last 1 is less than k
+                if i - lastOneIndex - 1 < k {
                     return false
                 }
             }
-            foundFirstOne = true
-            zeroCount = 0
-        } else { // num == 0
-            if foundFirstOne {
-                zeroCount++
-            }
+            lastOneIndex = i
         }
     }
-
     return true
 }
 {% endhighlight %}
@@ -511,22 +428,22 @@ func kLengthApart(nums []int, k int) bool {
   <div class="tab-panel" data-lang="ruby">
 
 {% highlight ruby %}
+# @param {Integer[]} nums
+# @param {Integer} k
+# @return {Boolean}
 def k_length_apart(nums, k)
-    zero_count = k
-    found_first_one = false
-
-    nums.each do |num|
+    last_one_index = -1
+    nums.each_with_index do |num, i|
         if num == 1
-            if found_first_one
-                return false if zero_count < k
+            if last_one_index != -1
+                # Check if the number of zeros between current 1 and last 1 is less than k
+                if i - last_one_index - 1 < k
+                    return false
+                end
             end
-            found_first_one = true
-            zero_count = 0
-        else # num == 0
-            zero_count += 1 if found_first_one
+            last_one_index = i
         end
     end
-
     true
 end
 {% endhighlight %}
@@ -538,25 +455,18 @@ end
 {% highlight scala %}
 object Solution {
     def kLengthApart(nums: Array[Int], k: Int): Boolean = {
-        var zeroCount = k
-        var foundFirstOne = false
-
-        for (num <- nums) {
-            if (num == 1) {
-                if (foundFirstOne) {
-                    if (zeroCount < k) {
+        var lastOneIndex = -1
+        for (i <- nums.indices) {
+            if (nums(i) == 1) {
+                if (lastOneIndex != -1) {
+                    // Check if the number of zeros between current 1 and last 1 is less than k
+                    if (i - lastOneIndex - 1 < k) {
                         return false
                     }
                 }
-                foundFirstOne = true
-                zeroCount = 0
-            } else { // num == 0
-                if (foundFirstOne) {
-                    zeroCount += 1
-                }
+                lastOneIndex = i
             }
         }
-
         true
     }
 }
@@ -569,25 +479,18 @@ object Solution {
 {% highlight rust %}
 impl Solution {
     pub fn k_length_apart(nums: Vec<i32>, k: i32) -> bool {
-        let mut zero_count = k;
-        let mut found_first_one = false;
-
-        for num in nums {
+        let mut last_one_index: i32 = -1;
+        for (i, &num) in nums.iter().enumerate() {
             if num == 1 {
-                if found_first_one {
-                    if zero_count < k {
+                if last_one_index != -1 {
+                    // Check if the number of zeros between current 1 and last 1 is less than k
+                    if (i as i32) - last_one_index - 1 < k {
                         return false;
                     }
                 }
-                found_first_one = true;
-                zero_count = 0;
-            } else { // num == 0
-                if found_first_one {
-                    zero_count += 1;
-                }
+                last_one_index = i as i32;
             }
         }
-
         true
     }
 }
@@ -599,23 +502,26 @@ impl Solution {
 
 {% highlight racket %}
 #lang racket
-(define/contract (k-length-apart nums k)
-  (-> (listof integer?) integer? boolean?)
-  (let loop ((nums nums)
-             (zero-count k)
-             (found-first-one #f))
-    (cond
-      ((empty? nums) #t)
-      ((= (car nums) 1)
-       (if found-first-one
-           (if (< zero-count k)
-               #f ; Condition violated
-               (loop (cdr nums) 0 #t))
-           (loop (cdr nums) 0 #t))) ; First 1, reset count, set flag
-      (else ; (= (car nums) 0)
-       (if found-first-one
-           (loop (cdr nums) (+ zero-count 1) found-first-one)
-           (loop (cdr nums) zero-count found-first-one))))))
+
+(provide (rename-out [k-length-apart-impl kLengthApart]))
+
+;; LeetCode's Python template suggests List[int], implying array-like access.
+;; For Racket, we'll use a vector for efficient indexed access (O(1)).
+;; The input 'nums' might be a list, so we'd typically convert it if direct indexing is needed.
+;; Assuming 'nums' is passed as a list, convert to vector for internal processing.
+(define (k-length-apart-impl nums-list k)
+  (let ([nums (list->vector nums-list)]) ; Convert list to vector for array-like access
+    (let loop ((i 0) (last-one-index -1))
+      (cond
+        ((= i (vector-length nums)) #t) ; Reached end of array, all checks passed
+        ((= (vector-ref nums i) 1)
+         (if (not (= last-one-index -1))
+             (if (< (- i last-one-index 1) k)
+                 #f ; Condition violated: less than k zeros between 1s
+                 (loop (+ i 1) i)) ; Condition met, update last-one-index and continue
+             (loop (+ i 1) i))) ; First '1', just update last-one-index and continue
+        (else ; nums[i] is 0
+         (loop (+ i 1) last-one-index)))))) ; Continue with same last-one-index
 {% endhighlight %}
 
   </div>
@@ -627,25 +533,29 @@ impl Solution {
 -export([k_length_apart/2]).
 
 k_length_apart(Nums, K) ->
-    k_length_apart_impl(Nums, K, K, false).
+    % Helper function for list iteration using head/tail recursion
+    k_length_apart_list(Nums, K, -1, 0).
 
-k_length_apart_impl([], _K, _ZeroCount, _FoundFirstOne) ->
-    true;
-
-k_length_apart_impl([1 | Rest], K, ZeroCount, FoundFirstOne) ->
-    if
-        FoundFirstOne andalso (ZeroCount < K) ->
-            false;
-        true ->
-            k_length_apart_impl(Rest, K, 0, true)
-    end;
-
-k_length_apart_impl([0 | Rest], K, ZeroCount, FoundFirstOne) ->
-    if
-        FoundFirstOne ->
-            k_length_apart_impl(Rest, K, ZeroCount + 1, FoundFirstOne);
-        true ->
-            k_length_apart_impl(Rest, K, ZeroCount, FoundFirstOne)
+k_length_apart_list([], _K, _LastOneIndex, _CurrentIndex) ->
+    true; % Reached end of the list, all checks passed
+k_length_apart_list([Head|Tail], K, LastOneIndex, CurrentIndex) ->
+    case Head of
+        1 ->
+            if LastOneIndex =/= -1 ->
+                % Calculate number of zeros between current 1 and last 1
+                Dist = CurrentIndex - LastOneIndex - 1,
+                if Dist < K ->
+                    false; % Condition violated
+                true ->
+                    % Condition met, update last_one_index and continue
+                    k_length_apart_list(Tail, K, CurrentIndex, CurrentIndex + 1)
+                end;
+            true -> % First '1', just update last_one_index and continue
+                k_length_apart_list(Tail, K, CurrentIndex, CurrentIndex + 1)
+            end;
+        0 ->
+            % Current element is 0, continue with same last_one_index
+            k_length_apart_list(Tail, K, LastOneIndex, CurrentIndex + 1)
     end.
 {% endhighlight %}
 
@@ -657,24 +567,33 @@ k_length_apart_impl([0 | Rest], K, ZeroCount, FoundFirstOne) ->
 defmodule Solution do
   @spec k_length_apart(nums :: [integer], k :: integer) :: boolean
   def k_length_apart(nums, k) do
-    do_k_length_apart(nums, k, k, false)
+    # Helper function for list iteration using head/tail recursion
+    do_k_length_apart(nums, k, -1, 0)
   end
 
-  defp do_k_length_apart([], _k, _zero_count, _found_first_one), do: true
-
-  defp do_k_length_apart([1 | rest], k, zero_count, found_first_one) do
-    if found_first_one && zero_count < k do
-      false
-    else
-      do_k_length_apart(rest, k, 0, true)
-    end
+  defp do_k_length_apart([], _k, _last_one_index, _current_index) do
+    true # Reached end of the list, all checks passed
   end
 
-  defp do_k_length_apart([0 | rest], k, zero_count, found_first_one) do
-    if found_first_one do
-      do_k_length_apart(rest, k, zero_count + 1, found_first_one)
-    else
-      do_k_length_apart(rest, k, zero_count, found_first_one)
+  defp do_k_length_apart([head | tail], k, last_one_index, current_index) do
+    case head do
+      1 ->
+        if last_one_index != -1 do
+          # Calculate number of zeros between current 1 and last 1
+          dist = current_index - last_one_index - 1
+          if dist < k do
+            false # Condition violated
+          else
+            # Condition met, update last_one_index and continue
+            do_k_length_apart(tail, k, current_index, current_index + 1)
+          end
+        else
+          # First '1', just update last_one_index and continue
+          do_k_length_apart(tail, k, current_index, current_index + 1)
+        end
+      0 ->
+        # Current element is 0, continue with same last_one_index
+        do_k_length_apart(tail, k, last_one_index, current_index + 1)
     end
   end
 end
@@ -686,23 +605,29 @@ end
 
 ### Complexity Analysis
 
-- **Time Complexity:** O(N), where N is the length of the `nums` array. The algorithm iterates through the array exactly once, performing a constant number of operations (comparisons, assignments, increments) for each element. Thus, the execution time grows linearly with the input size.
+- **Time Complexity:** O(N)
 
-- **Space Complexity:** O(1). The algorithm uses a fixed number of auxiliary variables (`zero_count` and `found_first_one`) regardless of the input array's size. No additional data structures are allocated that depend on N.
+- **Space Complexity:** O(1)
 
+</div>
 </details>
 
 
-<details>
-<summary><strong>⚡ Solution from llama-3.3-70b-versatile</strong></summary>
+<details class="ai-solution-card" markdown="1">
+<summary class="ai-solution-header">
+  <span class="ai-model-badge">⚡ Solution from <strong>llama-3.3-70b-versatile</strong></span>
+  <small class="solution-timestamp">(2025-11-19 22:39:18)</small>
+</summary>
+
+<div class="ai-solution-content">
 
 ### Approach
 
-The problem can be solved by iterating over the given binary array and checking the distance between each pair of 1's. We can use a variable to keep track of the position of the last 1 encountered. If the distance between the current 1 and the last 1 is less than k, we return false. If we finish iterating over the array without finding any pair of 1's that are less than k places apart, we return true.
+The problem can be solved by iterating through the given binary array and checking the distance between each pair of 1's. We can use a variable to keep track of the position of the last 1 we encountered. If we find a new 1 and the distance between it and the last 1 is less than k, we return false. If we finish iterating through the array without finding any 1's that are too close together, we return true.
 
 ### Code
 
-<div class="code-tabs">
+<div class="code-tabs" markdown="0">
   <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-cpp-llama-3-3-70b-versatile" checked>
   <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-java-llama-3-3-70b-versatile">
   <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-python-llama-3-3-70b-versatile">
@@ -747,10 +672,9 @@ The problem can be solved by iterating over the given binary array and checking 
   <div class="tab-panel" data-lang="cpp">
 
 {% highlight cpp %}
-#include <vector>
-       class Solution {
+class Solution {
        public:
-           bool kLengthApart(std::vector<int>& nums, int k) {
+           bool kLengthApart(vector<int>& nums, int k) {
                int lastOne = -1;
                for (int i = 0; i < nums.size(); i++) {
                    if (nums[i] == 1) {
@@ -793,12 +717,12 @@ class Solution {
 {% highlight python %}
 class Solution:
            def kLengthApart(self, nums: list[int], k: int) -> bool:
-               lastOne = -1
-               for i in range(len(nums)):
-                   if nums[i] == 1:
-                       if lastOne != -1 and i - lastOne - 1 < k:
+               last_one = -1
+               for i, num in enumerate(nums):
+                   if num == 1:
+                       if last_one != -1 and i - last_one - 1 < k:
                            return False
-                       lastOne = i
+                       last_one = i
                return True
 {% endhighlight %}
 
@@ -809,12 +733,12 @@ class Solution:
 {% highlight python %}
 class Solution:
            def kLengthApart(self, nums: list[int], k: int) -> bool:
-               lastOne = -1
-               for i in range(len(nums)):
-                   if nums[i] == 1:
-                       if lastOne != -1 and i - lastOne - 1 < k:
+               last_one = -1
+               for i, num in enumerate(nums):
+                   if num == 1:
+                       if last_one != -1 and i - last_one - 1 < k:
                            return False
-                       lastOne = i
+                       last_one = i
                return True
 {% endhighlight %}
 
@@ -925,9 +849,9 @@ class Solution {
 {% highlight swift %}
 class Solution {
            func kLengthApart(_ nums: [Int], _ k: Int) -> Bool {
-               var lastOne: Int = -1
-               for i in 0..<nums.count {
-                   if nums[i] == 1 {
+               var lastOne = -1
+               for (i, num) in nums.enumerated() {
+                   if num == 1 {
                        if lastOne != -1 && i - lastOne - 1 < k {
                            return false
                        }
@@ -946,7 +870,7 @@ class Solution {
 {% highlight kotlin %}
 class Solution {
            fun kLengthApart(nums: IntArray, k: Int): Boolean {
-               var lastOne: Int = -1
+               var lastOne = -1
                for (i in nums.indices) {
                    if (nums[i] == 1) {
                        if (lastOne != -1 && i - lastOne - 1 < k) {
@@ -988,8 +912,8 @@ class Solution {
 {% highlight go %}
 func kLengthApart(nums []int, k int) bool {
            lastOne := -1
-           for i := 0; i < len(nums); i++ {
-               if nums[i] == 1 {
+           for i, num := range nums {
+               if num == 1 {
                    if lastOne != -1 && i-lastOne-1 < k {
                        return false
                    }
@@ -1029,7 +953,7 @@ func kLengthApart(nums []int, k int) bool {
 {% highlight scala %}
 object Solution {
            def kLengthApart(nums: Array[Int], k: Int): Boolean = {
-               var lastOne: Int = -1
+               var lastOne = -1
                for (i <- nums.indices) {
                    if (nums(i) == 1) {
                        if (lastOne != -1 && i - lastOne - 1 < k) {
@@ -1050,7 +974,7 @@ object Solution {
 {% highlight rust %}
 impl Solution {
            pub fn k_length_apart(nums: Vec<i32>, k: i32) -> bool {
-               let mut last_one: i32 = -1;
+               let mut last_one = -1;
                for (i, &num) in nums.iter().enumerate() {
                    if num == 1 {
                        if last_one != -1 && i as i32 - last_one - 1 < k {
@@ -1071,14 +995,14 @@ impl Solution {
 {% highlight racket %}
 #lang racket
        (define (k-length-apart nums k)
-           (let loop ((nums nums) (last-one -1))
+           (let loop ([nums nums] [last-one -1])
              (cond
-               ((null? nums) #t)
-               ((= (car nums) 1)
-                (if (and (not (= last-one -1)) (< (- (length nums) last-one -1) k))
+               [(null? nums) #t]
+               [(= (car nums) 1)
+                (if (and (not (= last-one -1)) (< (- (length nums) last-one) k))
                     #f
-                    (loop (cdr nums) (- (length nums) (length (cdr nums))))))
-               (else (loop (cdr nums) last-one)))))
+                    (loop (cdr nums) (length nums)))]
+               [else (loop (cdr nums) last-one)])))
 {% endhighlight %}
 
   </div>
@@ -1090,12 +1014,12 @@ impl Solution {
        -export([k_length_apart/2]).
        k_length_apart(Nums, K) ->
            k_length_apart(Nums, K, -1).
-       k_length_apart([], _, _) ->
+       k_length_apart([], _K, _LastOne) ->
            true;
        k_length_apart([1|T], K, -1) ->
            k_length_apart(T, K, 0);
        k_length_apart([1|T], K, LastOne) ->
-           case (length(T) + LastOne) < K of
+           case (0 - LastOne) - 1 < K of
                true -> false;
                false -> k_length_apart(T, K, 0)
            end;
@@ -1112,11 +1036,15 @@ defmodule Solution do
            def k_length_apart(nums, k) do
                k_length_apart(nums, k, -1)
            end
-
-           defp k_length_apart([], _, _), do: true
+           defp k_length_apart([], _k, _last_one), do: true
            defp k_length_apart([1|t], k, -1), do: k_length_apart(t, k, 0)
-           defp k_length_apart([1|t], k, last_one) when length(t) + last_one < k, do: false
-           defp k_length_apart([1|t], k, _), do: k_length_apart(t, k, 0)
+           defp k_length_apart([1|t], k, last_one) do
+               if 0 - last_one - 1 < k do
+                   false
+               else
+                   k_length_apart(t, k, 0)
+               end
+           end
            defp k_length_apart([_|t], k, last_one), do: k_length_apart(t, k, last_one)
        end
 {% endhighlight %}
@@ -1127,8 +1055,9 @@ defmodule Solution do
 
 ### Complexity Analysis
 
-- **Time Complexity:** O(n) where n is the length of the input array, because we are doing a single pass over the array.
+- **Time Complexity:** O(n) where n is the length of the input array, because we are doing a constant amount of work for each element in the array.
 
-- **Space Complexity:** O(1) because we are using a constant amount of space to store the position of the last 1 and the current index.
+- **Space Complexity:** O(1) because we are using a constant amount of space to store our variables, regardless of the size of the input array.
 
+</div>
 </details>
