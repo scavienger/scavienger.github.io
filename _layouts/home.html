@@ -28,10 +28,11 @@ layout: default
   <section class="stats-section">
     <h2 class="section-title">Problem Statistics</h2>
     <div class="stats-container">
-      {% assign total_posts = site.posts | size %}
-      {% assign easy_posts = site.posts | where_exp: "post", "post.difficulty == 'Easy'" | size %}
-      {% assign medium_posts = site.posts | where_exp: "post", "post.difficulty == 'Medium'" | size %}
-      {% assign hard_posts = site.posts | where_exp: "post", "post.difficulty == 'Hard'" | size %}
+      {% assign all_posts = site.posts | concat: site.daily | concat: site.weekly | sort: 'date' | reverse %}
+      {% assign total_posts = all_posts | size %}
+      {% assign easy_posts = all_posts | where_exp: "post", "post.difficulty == 'Easy'" | size %}
+      {% assign medium_posts = all_posts | where_exp: "post", "post.difficulty == 'Medium'" | size %}
+      {% assign hard_posts = all_posts | where_exp: "post", "post.difficulty == 'Hard'" | size %}
 
       <div class="stat-card total">
         <div class="stat-icon">📊</div>
@@ -63,9 +64,9 @@ layout: default
   <section class="posts-section">
     <h2 class="section-title">Recent Challenges</h2>
 
-    {%- if site.posts.size > 0 -%}
+    {%- if all_posts.size > 0 -%}
       <div class="post-grid">
-        {%- assign recent_posts = site.posts | slice: 0, 6 -%}
+        {%- assign recent_posts = all_posts | slice: 0, 6 -%}
         {%- for post in recent_posts -%}
           <article class="post-card">
             <div class="post-card-header">
@@ -100,7 +101,7 @@ layout: default
         {%- endfor -%}
       </div>
 
-      {%- if site.posts.size > 6 -%}
+      {%- if all_posts.size > 6 -%}
         <div class="view-all">
           <a href="{{ '/archive' | relative_url }}" class="view-all-link">
             View All Problems <span class="arrow">→</span>
@@ -153,3 +154,5 @@ layout: default
   </section>
 
 </div>
+
+{% include dark-mode-toggle.html %}
