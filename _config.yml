@@ -13,6 +13,9 @@ plugins:
   - jekyll-feed
   - jekyll-seo-tag
 
+# Include future-dated posts (datasets are dated ahead)
+future: true
+
 # Syntax highlighting
 highlighter: rouge
 kramdown:
@@ -20,7 +23,7 @@ kramdown:
   syntax_highlighter_opts:
     block:
       line_numbers: true
-
+  parse_block_html: true
 # Timezone
 timezone: Asia/Seoul
 
@@ -31,6 +34,15 @@ permalink: /:year/:month/:day/:title/
 collections:
   posts:
     output: true
+  daily:
+    output: true
+    permalink: /:year/:month/:day/:title/
+  weekly:
+    output: true
+    permalink: /:year/:month/:day/:title/
+
+# Collections directory under _posts (use _posts/_daily, _posts/_weekly)
+collections_dir: _posts
 
 # Header navigation
 header_pages:
@@ -43,6 +55,18 @@ defaults:
   - scope:
       path: ""
       type: "posts"
+    values:
+      layout: "post"
+      author: "scavienger"
+  - scope:
+      path: "_posts/_daily"
+      type: "daily"
+    values:
+      layout: "post"
+      author: "scavienger"
+  - scope:
+      path: "_posts/_weekly"
+      type: "weekly"
     values:
       layout: "post"
       author: "scavienger"

@@ -12,7 +12,8 @@ Browse LeetCode problems organized by difficulty level.
 
 ## Easy
 
-{% assign easy_posts = site.posts | where: "difficulty", "Easy" %}
+{% assign all_posts = site.posts | concat: site.daily | concat: site.weekly %}
+{% assign easy_posts = all_posts | where: "difficulty", "Easy" %}
 {% if easy_posts.size > 0 %}
 <ul class="post-list">
 {% for post in easy_posts %}
@@ -38,7 +39,7 @@ Browse LeetCode problems organized by difficulty level.
 
 ## Medium
 
-{% assign medium_posts = site.posts | where: "difficulty", "Medium" %}
+{% assign medium_posts = all_posts | where: "difficulty", "Medium" %}
 {% if medium_posts.size > 0 %}
 <ul class="post-list">
 {% for post in medium_posts %}
@@ -64,7 +65,7 @@ Browse LeetCode problems organized by difficulty level.
 
 ## Hard
 
-{% assign hard_posts = site.posts | where: "difficulty", "Hard" %}
+{% assign hard_posts = all_posts | where: "difficulty", "Hard" %}
 {% if hard_posts.size > 0 %}
 <ul class="post-list">
 {% for post in hard_posts %}

@@ -8,8 +8,9 @@ permalink: /topics/
 
 Browse LeetCode problems organized by topic/tag.
 
+{% assign all_posts = site.posts | concat: site.daily | concat: site.weekly %}
 {% assign all_tags = "" | split: "" %}
-{% for post in site.posts %}
+{% for post in all_posts %}
   {% if post.tags %}
     {% for tag in post.tags %}
       {% unless all_tags contains tag %}
@@ -23,7 +24,7 @@ Browse LeetCode problems organized by topic/tag.
 
 <div class="tag-cloud">
 {% for tag in sorted_tags %}
-  {% assign tag_posts = site.posts | where_exp: "post", "post.tags contains tag" %}
+  {% assign tag_posts = all_posts | where_exp: "post", "post.tags contains tag" %}
   <a href="#{{ tag | slugify }}" class="tag-link">
     {{ tag }} <span class="tag-count">({{ tag_posts.size }})</span>
   </a>
@@ -33,7 +34,7 @@ Browse LeetCode problems organized by topic/tag.
 ---
 
 {% for tag in sorted_tags %}
-{% assign tag_posts = site.posts | where_exp: "post", "post.tags contains tag" %}
+{% assign tag_posts = all_posts | where_exp: "post", "post.tags contains tag" %}
 
 <h2 id="{{ tag | slugify }}">{{ tag }}</h2>
 

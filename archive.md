@@ -8,7 +8,8 @@ permalink: /archive/
 
 Browse all LeetCode Daily Challenge problems solved on this blog.
 
-{% assign posts_by_year = site.posts | group_by_exp: "post", "post.date | date: '%Y'" %}
+{% assign all_posts = site.posts | concat: site.daily | concat: site.weekly | sort: 'date' | reverse %}
+{% assign posts_by_year = all_posts | group_by_exp: "post", "post.date | date: '%Y'" %}
 
 {% for year in posts_by_year %}
 ## {{ year.name }}
