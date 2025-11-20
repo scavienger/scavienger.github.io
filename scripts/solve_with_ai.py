@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 AI Solution Generator for LeetCode Problems
 Supports Gemini (default) and Groq providers
@@ -8,8 +9,21 @@ import json
 import os
 import sys
 from typing import Dict, Optional
+from datetime import datetime
 import requests
 from google import generativeai as genai
+
+# Fix Windows console encoding
+if sys.platform == 'win32':
+    import io
+    import os
+    # Set encoding via environment variable (safer for subprocess)
+    os.environ['PYTHONIOENCODING'] = 'utf-8'
+    # Only wrap if not already wrapped
+    if hasattr(sys.stdout, 'buffer') and not isinstance(sys.stdout, io.TextIOWrapper):
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+    if hasattr(sys.stderr, 'buffer') and not isinstance(sys.stderr, io.TextIOWrapper):
+        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
 
 
 class AISolutionGenerator:
@@ -284,9 +298,10 @@ def main():
     solution = generator.generate_solution(problem_data)
 
     if solution:
-        # Add solution to problem data
+        # Add solution to problem data with timestamp
         problem_data['ai_solution'] = {
             'model': generator.model_name,
+            'generated_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S %z'),
             **solution
         }
     else:
