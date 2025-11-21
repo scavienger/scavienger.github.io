@@ -45,3 +45,5 @@ bmad-project.json
 # Browser-specific
 .well-known/
 
+# Screenshots
+screenshot/

@@ -15,7 +15,10 @@ from dateutil import parser as date_parser
 class PostGenerator:
     """Generates Jekyll markdown posts"""
 
-    def __init__(self, posts_dir="_posts"):
+    def __init__(self, posts_dir=None):
+        # Default to _posts/_daily if not specified
+        if posts_dir is None:
+            posts_dir = os.path.join("_posts", "_daily")
         self.posts_dir = posts_dir
 
     def generate_post(self, question_data):
@@ -114,7 +117,7 @@ class PostGenerator:
         ]
 
         # Start the tabs container
-        tabs_html = ['<div class="code-tabs">\n']
+        tabs_html = ['<div class="code-tabs" markdown="0">\n']
 
         # Create radio inputs (hidden) with unique names and IDs
         radio_name = f"code-lang{suffix}"
@@ -138,7 +141,9 @@ class PostGenerator:
                 code = solutions[lang_key].strip()
                 tabs_html.append(f'  <div class="tab-panel" data-lang="{lang_key}">\n\n')
                 tabs_html.append('{%% highlight %s %%}\n' % fence)
+                tabs_html.append('{% raw %}\n')
                 tabs_html.append(code + '\n')
+                tabs_html.append('{% endraw %}\n')
                 tabs_html.append('{% endhighlight %}\n\n')
                 tabs_html.append('  </div>\n\n')
 
@@ -212,6 +217,8 @@ leetcode_url: {leetcode_url}
 
             for idx, solution in enumerate(ai_solutions):
                 model_name = solution.get('model', 'AI')
+                # Support both 'generated_at' (from solve_with_ai.py) and 'timestamp' (legacy)
+                timestamp = solution.get('generated_at') or solution.get('timestamp') or datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
                 # Model emoji mapping
                 model_emojis = {
@@ -220,11 +227,15 @@ leetcode_url: {leetcode_url}
                 }
                 emoji = model_emojis.get(model_name, '🤖')
 
-                # Create collapsible section
+                # Create collapsible section with proper structure
                 is_first = idx == 0
                 open_attr = ' open' if is_first else ''
-                body_parts.append(f'\n<details{open_attr}>')
-                body_parts.append(f'<summary><strong>{emoji} Solution from {model_name}</strong></summary>\n')
+                body_parts.append(f'\n<details class="ai-solution-card"{open_attr} markdown="1">')
+                body_parts.append('<summary class="ai-solution-header">')
+                body_parts.append(f'  <span class="ai-model-badge">{emoji} Solution from <strong>{model_name}</strong></span>')
+                body_parts.append(f'  <small class="solution-timestamp">({timestamp})</small>')
+                body_parts.append('</summary>\n')
+                body_parts.append('<div class="ai-solution-content">\n')
 
                 # Approach
                 body_parts.append("### Approach\n")
@@ -248,6 +259,7 @@ leetcode_url: {leetcode_url}
                 body_parts.append(f"- **Time Complexity:** {solution.get('time_complexity', 'N/A')}\n")
                 body_parts.append(f"- **Space Complexity:** {solution.get('space_complexity', 'N/A')}\n")
 
+                body_parts.append('</div>')
                 body_parts.append('</details>\n')
 
         elif ai_solution:

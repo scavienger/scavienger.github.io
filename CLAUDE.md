@@ -356,6 +356,73 @@ generate_post_by_date.py
 - Multi-solution posts use model names as suffix: `"gemini"`, `"groq"`
 - Prevents radio button conflicts when multiple tab sets exist
 
+### ⚠️ CRITICAL: Jekyll Liquid Escaping for Code Blocks
+
+**MUST ALWAYS wrap code with `{% raw %}` tags to prevent Liquid parsing errors!**
+
+**Problem**: Jekyll's Liquid template engine parses `{{` and `}}` as variables BEFORE syntax highlighting. This causes build failures when code contains these characters (common in Go, Python, Rust, etc.).
+
+**Example Conflicts**:
+- **Go**: `[][]int{{1, 2}, {3, 4}}` → Liquid tries to parse `{{1, 2}`
+- **Python**: `f"{{value}}"` → Liquid error
+- **Rust**: `macro_rules! { ... {{ ... }} }` → Liquid error
+
+**Required Pattern in `generate_post.py`** (lines 143-147):
+```python
+tabs_html.append('{%% highlight %s %%}\n' % fence)
+tabs_html.append('{% raw %}\n')        # ← CRITICAL: Must not be removed!
+tabs_html.append(code + '\n')
+tabs_html.append('{% endraw %}\n')     # ← CRITICAL: Must not be removed!
+tabs_html.append('{% endhighlight %}\n\n')
+```
+
+**Why This Matters**:
+- Without `{% raw %}`, posts with Go/Python/Rust code will fail Jekyll build
+- AI-generated code naturally contains `{{` patterns
+- Removing these tags breaks the site build
+- Affects ~30% of LeetCode problems (those using affected languages)
+
+**DO NOT REMOVE** the `{% raw %}` and `{% endraw %}` tags when modifying code generation!
+
+### ⚠️ CRITICAL: Code Indentation Normalization
+
+**MUST always dedent AI-generated code to remove extra indentation!**
+
+**Problem**: Some AI models (especially Llama) generate code with extra leading indentation (e.g., 7 extra spaces on every line). This makes the code look unprofessional and inconsistent across different AI solutions.
+
+**Example Issue:**
+```cpp
+// Gemini (correct)
+class Solution {
+public:
+    int solve() {
+
+// Llama (wrong - extra 7 spaces)
+class Solution {
+       public:
+           int solve() {
+```
+
+**Required Pattern in `solve_with_ai.py`** (lines 175-178):
+```python
+# Remove leading/trailing whitespace
+cleaned = cleaned.strip()
+
+# Remove common leading indentation from all lines (fixes Llama extra indentation)
+cleaned = textwrap.dedent(cleaned)  # ← CRITICAL: Must not be removed!
+
+return cleaned
+```
+
+**Why This Matters**:
+- Ensures consistent code formatting across all AI models
+- Removes extra indentation from Llama/Groq responses
+- Preserves relative indentation within code (nested blocks)
+- Works for all 19 programming languages
+- Uses Python's `textwrap.dedent()` to find and remove common leading whitespace
+
+**DO NOT REMOVE** the `textwrap.dedent()` call when modifying code cleaning!
+
 ### AI Solution Format
 
 **Required Fields:**

@@ -8,6 +8,7 @@ Supports Gemini (default) and Groq providers
 import json
 import os
 import sys
+import textwrap
 from typing import Dict, Optional
 from datetime import datetime
 import requests
@@ -172,6 +173,9 @@ Provide ONLY the JSON response, no additional text."""
 
         # Remove leading/trailing whitespace
         cleaned = cleaned.strip()
+
+        # Remove common leading indentation from all lines (fixes Llama extra indentation)
+        cleaned = textwrap.dedent(cleaned)
 
         return cleaned
 
