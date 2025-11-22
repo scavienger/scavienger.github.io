@@ -30,7 +30,8 @@ from solve_with_ai import AISolutionGenerator
 from generate_post import PostGenerator
 
 # Constants
-SUPPORTED_MODELS = ['gemini-2.5-flash', 'llama-3.3-70b-versatile']
+SUPPORTED_MODELS = ['gemini-2.5-flash', 'llama-3.3-70b-versatile', 'qwen-2.5-32b', 'groq/compound']
+DEFAULT_MODELS = ['gemini-2.5-flash', 'llama-3.3-70b-versatile']
 CACHE_PATH = os.path.join("data", "daily_challenges.json")
 WEEKLY_CACHE_PATH = os.path.join("data", "weekly_challenges.json")
 DAILY_POSTS_DIR = os.path.join("_posts", "_daily")
@@ -176,7 +177,7 @@ def build_date_list(start_date: str, end_date: Optional[str]) -> List[str]:
 
 def validate_models(models: List[str]) -> List[str]:
     if not models:
-        return SUPPORTED_MODELS
+        return DEFAULT_MODELS
     invalid = [m for m in models if m not in SUPPORTED_MODELS]
     if invalid:
         raise ValueError(f"Invalid model(s): {', '.join(invalid)}. Supported: {', '.join(SUPPORTED_MODELS)}")
@@ -247,7 +248,8 @@ def generate_ai_solutions(problem_data: Dict, model_names: List[str]) -> List[Di
             sol["model"] = model
             sol["generated_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S %z")
             solutions.append(sol)
-            print(f"✅ Generated with {model}", file=sys.stderr)
+            elapsed = sol.get("elapsed_time", 0.0)
+            print(f"✅ Generated with {model} -> {elapsed:.2f}s", file=sys.stderr)
         else:
             print(f"⚠️ Failed to generate with {model}", file=sys.stderr)
     return solutions
