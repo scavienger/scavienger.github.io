@@ -259,6 +259,8 @@ leetcode_url: {leetcode_url}
                 body_parts.append(f"- **Time Complexity:** {solution.get('time_complexity', 'N/A')}\n")
                 body_parts.append(f"- **Space Complexity:** {solution.get('space_complexity', 'N/A')}\n")
 
+
+
                 body_parts.append('</div>')
                 body_parts.append('</details>\n')
 
@@ -277,7 +279,9 @@ leetcode_url: {leetcode_url}
             # Model emoji mapping
             model_emojis = {
                 'gemini-2.5-flash': '✨',
-                'llama-3.3-70b-versatile': '⚡'
+                'llama-3.3-70b-versatile': '⚡',
+                'qwen-2.5-32b': '🚀',
+                'groq/compound': '🧬'
             }
             emoji = model_emojis.get(model_name, '🤖')
 
