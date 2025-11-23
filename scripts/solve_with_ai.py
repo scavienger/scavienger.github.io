@@ -84,6 +84,8 @@ class AISolutionGenerator:
         if self.provider == 'groq':
             self.groq_api_key = os.getenv('GROQ_API_KEY')
 
+    
+
     def create_prompt(self, problem_data: Dict, target_languages: list) -> str:
         """Create a prompt for the AI models for specific languages"""
         title = problem_data.get('title', '')
@@ -91,6 +93,15 @@ class AISolutionGenerator:
         difficulty = problem_data.get('difficulty', '')
         hints = problem_data.get('hints', [])
         code_template = problem_data.get('code_template', '')
+
+        lang_pairs = []
+        for lang in target_languages:
+            key = lang.lower().replace("c++", "cpp").replace("c#", "csharp")
+            lang_pairs.append((key, lang))
+        sample_solutions_lines = [
+            f'    "{key}": "Complete {lang} code"' for key, lang in lang_pairs
+        ]
+        sample_solutions = "\n".join(sample_solutions_lines)
 
         prompt = f"""You are an expert programmer solving LeetCode problems in multiple languages.
 
@@ -112,28 +123,41 @@ Problem Description:
             prompt += f"Code Template (Python):\n```python\n{code_template}\n```\n\n"
 
         langs_str = ", ".join(target_languages)
-        prompt += f"""Please provide solutions in the following programming languages: {langs_str}.
+        prompt += f"""Please provide solutions ONLY for these languages (match this list exactly): {langs_str}
 
-REQUIREMENTS:
-1. BRIEF approach explanation (max 2 sentences).
-2. CODE ONLY. NO COMMENTS inside code blocks.
-3. Standard formatting (indentation, newlines) is required.
-4. Complete and runnable code (imports, classes).
+APPROACH REQUIREMENTS:
+- Provide a DETAILED explanation of your approach (maximum 3 paragraphs)
+- Explain the problem-solving strategy step by step
+- Describe the algorithm logic clearly
+- Include examples or edge cases if helpful
+- Make the explanation thorough and educational
 
-Format as JSON:
+CODE FORMATTING REQUIREMENTS (CRITICAL):
+- Each code solution MUST include proper line breaks and indentation
+- DO NOT write code in a single line - use multiple lines with proper formatting
+- Follow standard formatting conventions for each language
+- Use newlines (\n) to separate statements, function definitions, and control structures
+- Properly indent nested blocks (loops, conditionals, functions)
+- Add blank lines between logical sections for readability
+
+COMPLEXITY ANALYSIS:
+- Provide detailed time and space complexity with explanations
+- Explain why the complexity is what it is
+
+Format your response as JSON:
 {{
-  "approach": "Brief explanation",
-  "time_complexity": "O(...)",
-  "space_complexity": "O(...)",
+  "approach": "Detailed explanation here",
+  "time_complexity": "O(...) with explanation",
+  "space_complexity": "O(...) with explanation",
   "solutions": {{
-"""
-        for lang in target_languages:
-            key = lang.lower().replace("c++", "cpp").replace("c#", "csharp")
-            prompt += f'    "{key}": "Code for {lang}",\n'
-        
-        prompt += """  }
-}
-"""
+{sample_solutions}
+  }}
+}}
+
+Important: Each code solution must be complete and runnable. Include class/function definitions, imports, and follow language conventions for each specific language.
+
+Provide ONLY the JSON response, no additional text."""
+
         return prompt
 
     def _snippet_candidates(self, problem_slug: str, lang_slug: str, problem_date: Optional[str]) -> list:

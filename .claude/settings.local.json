@@ -11,7 +11,14 @@
       "Bash(powershell -Command:*)",
       "Bash(bundle exec jekyll:*)",
       "Bash(pip install:*)",
-      "Bash(taskkill:*)"
+      "Bash(taskkill:*)",
+      "Bash(python scripts/generate_post.py:*)",
+      "Bash(python scripts/generate_posts.py:*)",
+      "Bash(timeout 30 bundle exec jekyll build:*)",
+      "Bash(python -m py_compile:*)",
+      "Bash(timeout 60 bundle exec jekyll build:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []
