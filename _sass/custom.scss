@@ -77,6 +77,14 @@ pre {
   overflow-x: auto;
   box-shadow: 0 2px 4px var(--shadow);
   margin: 1.5em 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* Disable word wrap for code highlighting blocks */
+.highlight pre {
+  white-space: pre;
+  word-wrap: normal;
 }
 
 pre code {
@@ -1414,8 +1422,10 @@ html {
 /* Individual tab label */
 .code-tabs .tab-labels label {
   /* Desktop: 7 tabs per row, all equal size */
-  flex: 0 0 calc((100% - 12px) / 7);  /* 7 tabs, 6 gaps of 2px each */
-  box-sizing: border-box;  /* Include border and padding in width calculation */
+  flex: 0 0 calc((100% - 12px) / 7);
+  /* 7 tabs, 6 gaps of 2px each */
+  box-sizing: border-box;
+  /* Include border and padding in width calculation */
 
   padding: 10px 14px;
   text-align: center;
@@ -1546,7 +1556,8 @@ html {
 /* Tablet: 5 tabs per row */
 @media screen and (max-width: 768px) {
   .code-tabs .tab-labels label {
-    flex: 0 0 calc((100% - 8px) / 5);  /* 5 tabs, 4 gaps of 2px each */
+    flex: 0 0 calc((100% - 8px) / 5);
+    /* 5 tabs, 4 gaps of 2px each */
     padding: 12px 10px;
     font-size: 12px;
   }
@@ -1555,7 +1566,8 @@ html {
 /* Mobile: 3 tabs per row */
 @media screen and (max-width: 480px) {
   .code-tabs .tab-labels label {
-    flex: 0 0 calc((100% - 4px) / 3);  /* 3 tabs, 2 gaps of 2px each */
+    flex: 0 0 calc((100% - 4px) / 3);
+    /* 3 tabs, 2 gaps of 2px each */
     padding: 10px 8px;
     font-size: 11px;
   }
