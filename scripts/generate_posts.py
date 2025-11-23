@@ -30,7 +30,7 @@ from solve_with_ai import AISolutionGenerator
 from generate_post import PostGenerator
 
 # Constants
-SUPPORTED_MODELS = ['gemini-2.5-flash', 'llama-3.3-70b-versatile', 'qwen-2.5-32b', 'groq/compound']
+SUPPORTED_MODELS = ['gemini-2.5-flash', 'llama-3.3-70b-versatile', 'groq/compound']
 DEFAULT_MODELS = ['gemini-2.5-flash', 'llama-3.3-70b-versatile']
 CACHE_PATH = os.path.join("data", "daily_challenges.json")
 WEEKLY_CACHE_PATH = os.path.join("data", "weekly_challenges.json")
@@ -223,6 +223,18 @@ def fetch_problem_by_slug(slug: str) -> Optional[Dict]:
         if snippet.get("langSlug") in ["python3", "python"]:
             python_code = snippet.get("code", "")
             break
+
+    # Save all code snippets for indent correction
+    snippets_dir = os.path.join("_posts", "_snippets", slug)
+    os.makedirs(snippets_dir, exist_ok=True)
+    
+    for snippet in question.get("codeSnippets", []):
+        lang_slug = snippet.get("langSlug", "")
+        code = snippet.get("code", "")
+        if lang_slug and code:
+            snippet_file = os.path.join(snippets_dir, f"{lang_slug}.txt")
+            with open(snippet_file, 'w', encoding='utf-8') as f:
+                f.write(code)
 
     # Images are not explicitly included; leave empty
     return {
