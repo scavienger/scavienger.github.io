@@ -20,6 +20,7 @@ import json
 import os
 import re
 import sys
+import time
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
 import requests
@@ -349,7 +350,7 @@ def main():
 
     # Track overall success
     overall_success = True
-    for d in dates:
+    for i, d in enumerate(dates):
         info = cache.get(d)
         weekly_info = weekly_cache.get(d)
 
@@ -366,6 +367,11 @@ def main():
             overall_success = overall_success and ok_w
         else:
             print(f"ℹ️ No weekly challenge for {d} in cache. Skipping weekly.", file=sys.stderr)
+
+        # Wait 60 seconds between dates, but not after the last one
+        if i < len(dates) - 1:
+            print("Waiting 60 seconds before next date...", file=sys.stderr)
+            time.sleep(60)
 
     return 0 if overall_success else 1
 
