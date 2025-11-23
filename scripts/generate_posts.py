@@ -387,8 +387,8 @@ def main():
     args = parser.parse_args()
 
     # Determine if the second positional argument is actually an end_date or a model name.
-    # If it does not match the YYYY‑MM‑DD pattern, treat it as part of the models list.
-    date_pattern = re.compile(r"^\\d{4}-\\d{2}-\\d{2}$")
+    # If it does not match the YYYY-MM-DD pattern, treat it as part of the models list.
+    date_pattern = re.compile(r"^\d{4}-\d{2}-\d{2}$")
     end_date = args.end_date if args.end_date and date_pattern.match(args.end_date) else None
     models_list = []
     if args.end_date and not date_pattern.match(args.end_date):
