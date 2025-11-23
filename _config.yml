@@ -13,6 +13,13 @@ plugins:
   - jekyll-feed
   - jekyll-seo-tag
 
+# Exclude non-post snippet files under daily posts (language templates)
+exclude:
+  - "**/*.txt"
+
+sass:
+  quiet_deps: true
+
 # Include future-dated posts (datasets are dated ahead)
 future: true
 
