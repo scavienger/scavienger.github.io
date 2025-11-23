@@ -136,12 +136,32 @@ Format as JSON:
 """
         return prompt
 
-    def _load_snippet(self, problem_slug: str, lang_slug: str) -> Optional[str]:
+    def _snippet_candidates(self, problem_slug: str, lang_slug: str, problem_date: Optional[str]) -> list:
+        """Build possible snippet locations, preferring the new per-date layout."""
+        candidates = []
+        if problem_date:
+            try:
+                dt = datetime.strptime(problem_date, "%Y-%m-%d")
+                date_dir = os.path.join(
+                    "_posts",
+                    "_daily",
+                    dt.strftime("%Y"),
+                    dt.strftime("%m"),
+                    dt.strftime("%d"),
+                )
+                candidates.append(os.path.join(date_dir, f"{lang_slug}.txt"))
+            except ValueError:
+                # Ignore invalid dates and fall back to legacy layout
+                pass
+        candidates.append(os.path.join("_posts", "_snippets", problem_slug, f"{lang_slug}.txt"))
+        return candidates
+
+    def _load_snippet(self, problem_slug: str, lang_slug: str, problem_date: Optional[str] = None) -> Optional[str]:
         """Load code snippet template for given problem and language."""
-        snippet_path = os.path.join("_posts", "_snippets", problem_slug, f"{lang_slug}.txt")
-        if os.path.exists(snippet_path):
-            with open(snippet_path, 'r', encoding='utf-8') as f:
-                return f.read()
+        for snippet_path in self._snippet_candidates(problem_slug, lang_slug, problem_date):
+            if os.path.exists(snippet_path):
+                with open(snippet_path, 'r', encoding='utf-8') as f:
+                    return f.read()
         return None
 
     def _detect_indent_unit(self, code: str) -> int:
@@ -212,7 +232,7 @@ Format as JSON:
             return most_common_excess if most_common_excess >= 7 else None
         return None
 
-    def _clean_code(self, code: str, problem_slug: str = "", lang_slug: str = "") -> str:
+    def _clean_code(self, code: str, problem_slug: str = "", lang_slug: str = "", problem_date: str = "") -> str:
         """Clean code by removing markdown code block markers and normalizing whitespace"""
         if not code:
             return code
@@ -239,7 +259,7 @@ Format as JSON:
 
         # Try snippet-based correction if we have both problem_slug and lang_slug
         if problem_slug and lang_slug:
-            template = self._load_snippet(problem_slug, lang_slug)
+            template = self._load_snippet(problem_slug, lang_slug, problem_date)
             if template:
                 excess = self._detect_excess_from_template(cleaned, template)
                 if excess and excess >= 7:
@@ -280,7 +300,7 @@ Format as JSON:
                     # Determine indent unit from snippet if available, else default to 4
                     indent_unit = 4
                     if problem_slug and lang_slug:
-                        template = self._load_snippet(problem_slug, lang_slug)
+                        template = self._load_snippet(problem_slug, lang_slug, problem_date)
                         if template:
                             indent_unit = self._detect_indent_unit(template)
 
@@ -307,7 +327,7 @@ Format as JSON:
 
         return cleaned
 
-    def parse_json_response(self, response_text: str, problem_slug: str = "") -> Dict:
+    def parse_json_response(self, response_text: str, problem_slug: str = "", problem_date: str = "") -> Dict:
         """Extract and parse JSON from AI response"""
         try:
             # 1. Try to find JSON within markdown code blocks first
@@ -334,7 +354,7 @@ Format as JSON:
             # Validate structure
             if 'solutions' in parsed and isinstance(parsed['solutions'], dict):
                 for lang, code in parsed['solutions'].items():
-                    parsed['solutions'][lang] = self._clean_code(code, problem_slug, lang)
+                    parsed['solutions'][lang] = self._clean_code(code, problem_slug, lang, problem_date)
                 return parsed
             elif 'code' in parsed: # Legacy format support
                 return {
@@ -342,7 +362,7 @@ Format as JSON:
                     "time_complexity": parsed.get("time_complexity", "N/A"),
                     "space_complexity": parsed.get("space_complexity", "N/A"),
                     "solutions": {
-                        "python": self._clean_code(parsed.get("code", ""), problem_slug, "python")
+                        "python": self._clean_code(parsed.get("code", ""), problem_slug, "python", problem_date)
                     }
                 }
             else:
@@ -403,6 +423,7 @@ Format as JSON:
             return None
 
         problem_slug = problem_data.get('title_slug', '')
+        problem_date = problem_data.get('date', '')
         final_solution = {"solutions": {}}
         total_elapsed_time = 0.0
         
@@ -485,7 +506,7 @@ Format as JSON:
                 # Store raw response safely
                 try:
                     response_text = response.text
-                    batch_result = self.parse_json_response(response_text)
+                    batch_result = self.parse_json_response(response_text, problem_slug, problem_date)
                     if batch_result and "solutions" in batch_result:
                         self._merge_solutions(final_solution, batch_result)
                     else:
@@ -509,6 +530,7 @@ Format as JSON:
             return None
 
         problem_slug = problem_data.get('title_slug', '')
+        problem_date = problem_data.get('date', '')
         final_solution = {"solutions": {}}
         total_elapsed_time = 0.0
 
@@ -556,7 +578,7 @@ Format as JSON:
                 
                 content = data['choices'][0]['message']['content']
                 # print(f"[Groq] Batch {i+1} Raw Content:\n{content}", file=sys.stderr)
-                batch_result = self.parse_json_response(content, problem_slug)
+                batch_result = self.parse_json_response(content, problem_slug, problem_date)
                 
                 if batch_result and "solutions" in batch_result:
                     self._merge_solutions(final_solution, batch_result)

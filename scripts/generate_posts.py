@@ -6,14 +6,8 @@ Unified post generator / regenerator.
 Features:
   - Fetch LeetCode Daily Challenges via problemset __NEXT_DATA__ and cache date->(link,titleSlug)
   - Generate or overwrite posts for a date or date range
-  - Multiple AI models (defaults: gemini-2.5-flash, llama-3.3-70b-versatile); validates model names
+  - Multiple AI models (defaults: gemini-2.5-flash, llama-3.3-70b-versatile, groq/compound); validates model names
   - If post exists, overwrite AI solution sections; if missing, create new post
-
-Usage:
-  python scripts/generate_posts.py <start_date> [end_date] [models...]
-    - date format: YYYY-MM-DD
-    - if end_date omitted: single date
-    - if models omitted: all supported models
 """
 
 import json
@@ -25,6 +19,7 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Optional
 import requests
 from bs4 import BeautifulSoup
+import yaml
 
 # Reuse existing components
 from solve_with_ai import AISolutionGenerator
@@ -129,7 +124,6 @@ def update_cache_if_needed(target_dates: List[str]) -> Dict[str, Dict[str, str]]
 
     print(f"Cache missing dates: {', '.join(missing)}. Fetching daily challenges via GraphQL...", file=sys.stderr)
 
-    # determine months to fetch
     months = set((int(d[:4]), int(d[5:7])) for d in missing)
     fetched_any = False
     for year, month in months:
@@ -150,7 +144,6 @@ def update_cache_if_needed(target_dates: List[str]) -> Dict[str, Dict[str, str]]
         return cache
 
     save_cache(cache)
-    # Save weekly cache even if unchanged to ensure file exists
     ensure_cache_dir()
     with open(WEEKLY_CACHE_PATH, "w", encoding="utf-8") as f:
         json.dump(weekly_cache, f, ensure_ascii=False, indent=2)
@@ -159,6 +152,15 @@ def update_cache_if_needed(target_dates: List[str]) -> Dict[str, Dict[str, str]]
 
 def parse_date(date_str: str) -> datetime:
     return datetime.strptime(date_str, "%Y-%m-%d")
+
+
+def build_post_path(posts_dir: str, date_str: str, slug: str) -> str:
+    """Build the new nested path for a post without the date prefix in filename."""
+    dt = parse_date(date_str)
+    year = dt.strftime("%Y")
+    month = dt.strftime("%m")
+    day = dt.strftime("%d")
+    return os.path.join(posts_dir, year, month, day, f"{slug}.md")
 
 
 def build_date_list(start_date: str, end_date: Optional[str]) -> List[str]:
@@ -185,7 +187,7 @@ def validate_models(models: List[str]) -> List[str]:
     return models
 
 
-def fetch_problem_by_slug(slug: str) -> Optional[Dict]:
+def fetch_problem_by_slug(slug: str, snippet_dir: Optional[str] = None) -> Optional[Dict]:
     """
     Fetch problem details via LeetCode GraphQL by titleSlug.
     """
@@ -218,26 +220,23 @@ def fetch_problem_by_slug(slug: str) -> Optional[Dict]:
     if not question:
         return None
 
-    # Extract Python template if present
     python_code = ""
     for snippet in question.get("codeSnippets", []):
         if snippet.get("langSlug") in ["python3", "python"]:
             python_code = snippet.get("code", "")
             break
 
-    # Save all code snippets for indent correction
-    snippets_dir = os.path.join("_posts", "_snippets", slug)
-    os.makedirs(snippets_dir, exist_ok=True)
-    
-    for snippet in question.get("codeSnippets", []):
-        lang_slug = snippet.get("langSlug", "")
-        code = snippet.get("code", "")
-        if lang_slug and code:
-            snippet_file = os.path.join(snippets_dir, f"{lang_slug}.txt")
-            with open(snippet_file, 'w', encoding='utf-8') as f:
-                f.write(code)
+    target_snippet_dir = snippet_dir or os.path.join("_posts", "_snippets", slug)
+    if target_snippet_dir:
+        os.makedirs(target_snippet_dir, exist_ok=True)
+        for snippet in question.get("codeSnippets", []):
+            lang_slug = snippet.get("langSlug", "")
+            code = snippet.get("code", "")
+            if lang_slug and code:
+                snippet_file = os.path.join(target_snippet_dir, f"{lang_slug}.txt")
+                with open(snippet_file, "w", encoding="utf-8") as f:
+                    f.write(code)
 
-    # Images are not explicitly included; leave empty
     return {
         "title": question.get("title", "Unknown Title"),
         "title_slug": question.get("titleSlug", slug),
@@ -268,19 +267,52 @@ def generate_ai_solutions(problem_data: Dict, model_names: List[str]) -> List[Di
     return solutions
 
 
-def find_post_file(date_str: str, posts_dir: str) -> Optional[str]:
-    prefix = f"{date_str}-"
+def find_post_file(date_str: str, posts_dir: str, slug: str) -> Optional[str]:
+    """Locate an existing post, preferring the new nested path and falling back to legacy flat names."""
+    expected_path = build_post_path(posts_dir, date_str, slug)
+    if os.path.exists(expected_path):
+        return expected_path
+
     if not os.path.exists(posts_dir):
         return None
+
+    prefix = f"{date_str}-"
     for fname in os.listdir(posts_dir):
         if fname.startswith(prefix) and fname.endswith(".md"):
             return os.path.join(posts_dir, fname)
     return None
 
 
-def build_question_data(problem: Dict, date_str: str, link: str) -> Dict:
+def load_existing_post(filepath: str) -> Dict:
+    """Return a dict with keys 'ai_solutions' (list) and other front‑matter if present."""
+    if not os.path.exists(filepath):
+        return {}
+    with open(filepath, "r", encoding="utf-8") as f:
+        content = f.read()
+    if not content.startswith("---"):
+        return {}
+    parts = content.split("---")
+    # parts[1] is the YAML front‑matter
+    try:
+        meta = yaml.safe_load(parts[1]) or {}
+    except Exception:
+        meta = {}
+    return meta
+
+
+def merge_solutions(existing: List[Dict], new: List[Dict]) -> List[Dict]:
+    """Replace or add solutions by model name."""
+    existing_by_model = {s.get("model"): s for s in existing or []}
+    for sol in new:
+        existing_by_model[sol.get("model")] = sol
+    return list(existing_by_model.values())
+
+def build_question_data(problem: Dict, date_str: str, link: str, slug: str) -> Dict:
+    """Create the dictionary that will be fed to PostGenerator."""
     return {
         "title": problem["title"],
+        "slug": slug,
+        "title_slug": problem.get("title_slug", slug),
         "date": date_str,
         "difficulty": problem["difficulty"],
         "content": problem["content"],
@@ -290,65 +322,102 @@ def build_question_data(problem: Dict, date_str: str, link: str) -> Dict:
         "code_template": problem["code_template"],
         "link": link,
         "question_id": problem.get("question_id", ""),
-        "ai_solutions": [],
+        "ai_solutions": [],   # will be filled later
     }
 
-
-def process_date(date_str: str, link: str, slug: str, model_names: List[str], posts_dir: str) -> bool:
+def process_date(date_str: str, link: str, slug: str, model_names: List[str], posts_dir: str, update_models: Optional[List[str]] = None) -> bool:
     print(f"\n=== Processing {date_str} ({slug}) [{os.path.basename(posts_dir)}] ===", file=sys.stderr)
-    problem = fetch_problem_by_slug(slug)
+    post_path = build_post_path(posts_dir, date_str, slug)
+    snippet_dir = os.path.dirname(post_path)
+
+    problem = fetch_problem_by_slug(slug, snippet_dir=snippet_dir)
     if not problem:
-        print(f"⚠️ Failed to fetch problem for {slug}", file=sys.stderr)
+        print(f"!! Failed to fetch problem for {slug}", file=sys.stderr)
         return False
 
-    qdata = build_question_data(problem, date_str, f"https://leetcode.com{link}")
-    ai_solutions = generate_ai_solutions(problem, model_names)
-    qdata["ai_solutions"] = ai_solutions
+    problem["date"] = date_str
+    problem["slug"] = slug
+
+    # Load any existing post to preserve solutions
+    existing_post_path = find_post_file(date_str, posts_dir, slug)
+    existing_meta = load_existing_post(existing_post_path) if existing_post_path else {}
+    existing_solutions = existing_meta.get("ai_solutions", [])
+
+    # Determine which models we actually need to generate
+    if update_models:
+        needed_models = [m for m in update_models if m in model_names]
+    else:
+        # generate only missing models
+        needed_models = [m for m in model_names if not any(s.get("model") == m for s in existing_solutions)]
+
+    if not needed_models:
+        print(f"?? All requested models already present for {date_str}. Skipping generation.", file=sys.stderr)
+        # Still write post to ensure any other fields are up-to-date
+        qdata = build_question_data(problem, date_str, f"https://leetcode.com{link}", slug)
+        qdata["ai_solutions"] = existing_solutions
+        generator = PostGenerator(posts_dir)
+        ensure_posts_dirs()
+        generator.generate_post(qdata)
+        return True
+
+    qdata = build_question_data(problem, date_str, f"https://leetcode.com{link}", slug)
+    # Generate only needed models
+    new_solutions = generate_ai_solutions(problem, needed_models)
+    # Merge with existing solutions (replace same model)
+    merged = merge_solutions(existing_solutions, new_solutions)
+    qdata["ai_solutions"] = merged
 
     generator = PostGenerator(posts_dir)
     ensure_posts_dirs()
     filepath = generator.generate_post(qdata)
     if filepath:
-        print(f"✅ Wrote post: {filepath}", file=sys.stderr)
+        print(f"[ok] Wrote post: {filepath}", file=sys.stderr)
         return True
-    print(f"⚠️ Failed to write post for {date_str}", file=sys.stderr)
+    print(f"!! Failed to write post for {date_str}", file=sys.stderr)
     return False
 
 
 def main():
-    if len(sys.argv) < 2:
-        print(__doc__)
-        return 1
+    import argparse
+    parser = argparse.ArgumentParser(description="Generate LeetCode daily/weekly posts.")
+    parser.add_argument("start_date", help="YYYY-MM-DD")
+    parser.add_argument("end_date", nargs="?", help="YYYY-MM-DD (optional)")
+    parser.add_argument("models", nargs="*", help="Model names to use (default: all supported)")
+    parser.add_argument("--update-models", dest="update_models", default="", help="Comma‑separated list of models to re‑generate for existing posts")
+    args = parser.parse_args()
 
-    # Parse args
-    start_date = sys.argv[1]
-    end_date = None
-    models_start_index = 2
-
-    if len(sys.argv) >= 3 and re.match(r"^\d{4}-\d{2}-\d{2}$", sys.argv[2]):
-        end_date = sys.argv[2]
-        models_start_index = 3
+    # Determine if the second positional argument is actually an end_date or a model name.
+    # If it does not match the YYYY‑MM‑DD pattern, treat it as part of the models list.
+    date_pattern = re.compile(r"^\\d{4}-\\d{2}-\\d{2}$")
+    end_date = args.end_date if args.end_date and date_pattern.match(args.end_date) else None
+    models_list = []
+    if args.end_date and not date_pattern.match(args.end_date):
+        # args.end_date is actually a model name; prepend it to models list
+        models_list.append(args.end_date)
+    models_list.extend(args.models)
 
     try:
-        dates = build_date_list(start_date, end_date)
+        dates = build_date_list(args.start_date, end_date)
     except ValueError as e:
         print(f"Error: {e}", file=sys.stderr)
         return 1
 
     try:
-        models = validate_models(sys.argv[models_start_index:])
+        models = validate_models(models_list)
     except ValueError as e:
         print(f"Error: {e}", file=sys.stderr)
         return 1
+
+    update_models = [m.strip() for m in args.update_models.split(',') if m.strip()] if args.update_models else None
 
     print(f"Dates: {', '.join(dates)}", file=sys.stderr)
     print(f"Models: {', '.join(models)}", file=sys.stderr)
+    if update_models:
+        print(f"Update‑only models: {', '.join(update_models)}", file=sys.stderr)
 
-    # Ensure cache and load challenges
     cache = update_cache_if_needed(dates)
     weekly_cache = load_weekly_cache()
 
-    # Track overall success
     overall_success = True
     for i, d in enumerate(dates):
         info = cache.get(d)
@@ -356,25 +425,24 @@ def main():
 
         # Daily
         if info:
-            ok = process_date(d, info["link"], info["titleSlug"], models, DAILY_POSTS_DIR)
+            ok = process_date(d, info["link"], info["titleSlug"], models, DAILY_POSTS_DIR, update_models)
             overall_success = overall_success and ok
         else:
             print(f"ℹ️ No daily challenge for {d} in cache. Skipping daily.", file=sys.stderr)
 
         # Weekly (optional)
         if weekly_info:
-            ok_w = process_date(d, weekly_info["link"], weekly_info["titleSlug"], models, WEEKLY_POSTS_DIR)
+            ok_w = process_date(d, weekly_info["link"], weekly_info["titleSlug"], models, WEEKLY_POSTS_DIR, update_models)
             overall_success = overall_success and ok_w
         else:
             print(f"ℹ️ No weekly challenge for {d} in cache. Skipping weekly.", file=sys.stderr)
 
-        # Wait 60 seconds between dates, but not after the last one
+        # Wait between dates (except after last)
         if i < len(dates) - 1:
             print("Waiting 60 seconds before next date...", file=sys.stderr)
             time.sleep(60)
 
     return 0 if overall_success else 1
-
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -27,14 +27,20 @@ class PostGenerator:
             # Parse date
             question_date = date_parser.parse(question_data['date'])
             date_str = question_date.strftime('%Y-%m-%d')
+            slug = question_data.get('slug') or question_data.get('title_slug') or self._sanitize_filename(question_data['title'])
 
-            # Create filename-safe title
-            safe_title = self._sanitize_filename(question_data['title'])
-            filename = f"{date_str}-{safe_title}.md"
-            filepath = os.path.join(self.posts_dir, filename)
+            # Build nested path: _posts/_daily/YYYY/MM/DD/<slug>.md
+            post_dir = os.path.join(
+                self.posts_dir,
+                question_date.strftime('%Y'),
+                question_date.strftime('%m'),
+                question_date.strftime('%d'),
+            )
+            filename = f"{slug}.md"
+            filepath = os.path.join(post_dir, filename)
 
             # Ensure posts directory exists
-            os.makedirs(self.posts_dir, exist_ok=True)
+            os.makedirs(post_dir, exist_ok=True)
 
             # Generate post content
             content = self._generate_content(question_data, date_str)
