@@ -136,7 +136,83 @@ Format as JSON:
 """
         return prompt
 
-    def _clean_code(self, code: str) -> str:
+    def _load_snippet(self, problem_slug: str, lang_slug: str) -> Optional[str]:
+        """Load code snippet template for given problem and language."""
+        snippet_path = os.path.join("_posts", "_snippets", problem_slug, f"{lang_slug}.txt")
+        if os.path.exists(snippet_path):
+            with open(snippet_path, 'r', encoding='utf-8') as f:
+                return f.read()
+        return None
+
+    def _detect_indent_unit(self, code: str) -> int:
+        """Detect indentation unit (e.g., 2 or 4 spaces) from code."""
+        lines = code.split('\n')
+        indents = []
+        for line in lines:
+            stripped = line.lstrip(' ')
+            if not stripped:
+                continue
+            indent = len(line) - len(stripped)
+            if indent > 0:
+                indents.append(indent)
+        
+        if not indents:
+            return 4
+            
+        # Find GCD of all indents
+        from math import gcd
+        from functools import reduce
+        
+        # Filter out very large indents (likely continuations)
+        valid_indents = [i for i in indents if i <= 12]
+        if not valid_indents:
+            return 4
+            
+        common_indent = reduce(gcd, valid_indents)
+        return common_indent if common_indent in [2, 4] else 4
+
+    def _find_matching_line(self, template_lines: list, ai_line: str) -> Optional[int]:
+        """Find a matching line in template based on content similarity."""
+        ai_content = ai_line.strip()
+        if not ai_content or len(ai_content) < 5:
+            return None
+        
+        for i, template_line in enumerate(template_lines):
+            template_content = template_line.strip()
+            if template_content == ai_content:
+                return i
+            if len(template_content) >= 10 and len(ai_content) >= 10:
+                if template_content[:10] == ai_content[:10]:
+                    return i
+        return None
+
+    def _detect_excess_from_template(self, ai_code: str, template_code: str) -> Optional[int]:
+        """Detect excess indentation by comparing AI code with template."""
+        ai_lines = ai_code.split('\n')
+        template_lines = template_code.split('\n')
+        
+        excesses = []
+        for ai_line in ai_lines[:15]:
+            if not ai_line.strip():
+                continue
+            
+            template_idx = self._find_matching_line(template_lines, ai_line)
+            if template_idx is not None:
+                template_line = template_lines[template_idx]
+                template_indent = len(template_line) - len(template_line.lstrip(' '))
+                ai_indent = len(ai_line) - len(ai_line.lstrip(' '))
+                diff = ai_indent - template_indent
+                if diff > 0:
+                    excesses.append(diff)
+        
+        if excesses:
+            from collections import Counter
+            counter = Counter(excesses)
+            most_common_excess = counter.most_common(1)[0][0]
+            return most_common_excess if most_common_excess >= 7 else None
+        return None
+
+    def _clean_code(self, code: str, problem_slug: str = "", lang_slug: str = "") -> str:
         """Clean code by removing markdown code block markers and normalizing whitespace"""
         if not code:
             return code
@@ -158,12 +234,80 @@ Format as JSON:
         # Remove leading/trailing whitespace
         cleaned = cleaned.strip()
 
-        # Remove common leading indentation from all lines (fixes Llama extra indentation)
+        # Remove common leading indentation from all lines
         cleaned = textwrap.dedent(cleaned)
+
+        # Try snippet-based correction if we have both problem_slug and lang_slug
+        if problem_slug and lang_slug:
+            template = self._load_snippet(problem_slug, lang_slug)
+            if template:
+                excess = self._detect_excess_from_template(cleaned, template)
+                if excess and excess >= 7:
+                    lines = cleaned.split('\n')
+                    corrected_lines = []
+                    for line in lines:
+                        if not line.strip():
+                            corrected_lines.append(line)
+                        else:
+                            current_indent = len(line) - len(line.lstrip(' '))
+                            new_indent = max(0, current_indent - excess)
+                            corrected_lines.append(' ' * new_indent + line.lstrip(' '))
+                    return '\n'.join(corrected_lines)
+
+        # Fallback: Dynamic analysis for fixed excess indentation
+        lines = cleaned.split('\n')
+        non_empty_lines = []
+        for line in lines:
+            if line.strip():
+                non_empty_lines.append(line)
+                if len(non_empty_lines) >= 10:
+                    break
+        
+        if len(non_empty_lines) >= 3:
+            first_indent = len(non_empty_lines[0]) - len(non_empty_lines[0].lstrip(' '))
+            
+            diffs_from_first = []
+            for line in non_empty_lines[1:]:
+                indent = len(line) - len(line.lstrip(' '))
+                diff = indent - first_indent
+                if diff > 0:
+                    diffs_from_first.append(diff)
+            
+            if diffs_from_first:
+                fixed_excess = min(diffs_from_first)
+                
+                if fixed_excess >= 7:
+                    # Determine indent unit from snippet if available, else default to 4
+                    indent_unit = 4
+                    if problem_slug and lang_slug:
+                        template = self._load_snippet(problem_slug, lang_slug)
+                        if template:
+                            indent_unit = self._detect_indent_unit(template)
+
+                    # Calculate actual excess to remove, preserving natural indentation
+                    excess_to_remove = fixed_excess
+                    
+                    # Check if preserving indent_unit leaves a likely bug amount (7-9)
+                    if 7 <= (fixed_excess - indent_unit) <= 10:
+                        excess_to_remove = fixed_excess - indent_unit
+                    # Also check 2 spaces (common in JS/TS/Ruby)
+                    elif 7 <= (fixed_excess - 2) <= 10:
+                        excess_to_remove = fixed_excess - 2
+                    
+                    cleaned_lines = []
+                    for line in lines:
+                        if not line.strip():
+                            cleaned_lines.append(line)
+                        else:
+                            current_indent = len(line) - len(line.lstrip(' '))
+                            new_indent = max(0, current_indent - excess_to_remove)
+                            cleaned_lines.append(' ' * new_indent + line.lstrip(' '))
+                    
+                    cleaned = '\n'.join(cleaned_lines)
 
         return cleaned
 
-    def parse_json_response(self, response_text: str) -> Dict:
+    def parse_json_response(self, response_text: str, problem_slug: str = "") -> Dict:
         """Extract and parse JSON from AI response"""
         try:
             # 1. Try to find JSON within markdown code blocks first
@@ -190,7 +334,7 @@ Format as JSON:
             # Validate structure
             if 'solutions' in parsed and isinstance(parsed['solutions'], dict):
                 for lang, code in parsed['solutions'].items():
-                    parsed['solutions'][lang] = self._clean_code(code)
+                    parsed['solutions'][lang] = self._clean_code(code, problem_slug, lang)
                 return parsed
             elif 'code' in parsed: # Legacy format support
                 return {
@@ -198,7 +342,7 @@ Format as JSON:
                     "time_complexity": parsed.get("time_complexity", "N/A"),
                     "space_complexity": parsed.get("space_complexity", "N/A"),
                     "solutions": {
-                        "python": self._clean_code(parsed.get("code", ""))
+                        "python": self._clean_code(parsed.get("code", ""), problem_slug, "python")
                     }
                 }
             else:
@@ -258,6 +402,7 @@ Format as JSON:
             print("Gemini API key not found", file=sys.stderr)
             return None
 
+        problem_slug = problem_data.get('title_slug', '')
         final_solution = {"solutions": {}}
         total_elapsed_time = 0.0
         
@@ -363,6 +508,7 @@ Format as JSON:
             print("Groq API key not found", file=sys.stderr)
             return None
 
+        problem_slug = problem_data.get('title_slug', '')
         final_solution = {"solutions": {}}
         total_elapsed_time = 0.0
 
@@ -409,8 +555,8 @@ Format as JSON:
                     print(f"[Groq] Batch {i+1} Usage: {data['usage']}", file=sys.stderr)
                 
                 content = data['choices'][0]['message']['content']
-                print(f"[Groq] Batch {i+1} Raw Content:\n{content}", file=sys.stderr)
-                batch_result = self.parse_json_response(content)
+                # print(f"[Groq] Batch {i+1} Raw Content:\n{content}", file=sys.stderr)
+                batch_result = self.parse_json_response(content, problem_slug)
                 
                 if batch_result and "solutions" in batch_result:
                     self._merge_solutions(final_solution, batch_result)
