@@ -83,18 +83,18 @@ We've generated solutions using multiple AI models. Click to expand each solutio
 <details class="ai-solution-card" open markdown="1">
 <summary class="ai-solution-header">
   <span class="ai-model-badge">✨ Solution from <strong>gemini-2.5-flash</strong></span>
-  <small class="solution-timestamp">(2025-11-24 07:30:19 )</small>
+  <small class="solution-timestamp">(2025-11-24 07:41:33 )</small>
 </summary>
 
 <div class="ai-solution-content">
 
 ### Approach
 
-The problem asks us to count the number of unique palindromic subsequences of length three. A length-three palindrome has the form 'X Y X', where 'X' is the first and last character, and 'Y' is the middle character. Both 'X' and 'Y' must be lowercase English letters. Since there are only 26 possible lowercase English letters, there are at most 26 * 26 = 676 unique length-three palindromes. This small upper bound suggests that we can iterate through all possible 'X' characters and for each 'X', determine the unique 'Y' characters that can form 'X Y X'.
+The problem asks us to count the number of unique palindromic subsequences of length three. A length-3 palindrome has the form 'char1 + char2 + char1'. For example, 'aba', 'aca', 'bbb'. There are 26 possible choices for 'char1' (from 'a' to 'z') and 26 possible choices for 'char2' (also 'a' to 'z'), meaning there are at most 26 * 26 = 676 unique length-3 palindromes. This relatively small upper bound suggests that we can iterate through possible 'char1' values.
 
-The core idea is to iterate through each possible character 'X' from 'a' to 'z'. For a palindrome 'X Y X' to exist as a subsequence, we need to find at least two occurrences of 'X' in the string 's'. Specifically, we need the first occurrence of 'X' (let's say at index `first_X`) and the last occurrence of 'X' (at index `last_X`). If `first_X < last_X`, then any character 'Y' that appears in the substring `s[first_X + 1 ... last_X - 1]` can serve as the middle character. We collect all unique characters 'Y' from this substring and add their count to our total.
+The core idea is to iterate through each possible character 'c' from 'a' to 'z' that could serve as 'char1'. For each such 'c', we need to find its first occurrence index (let's call it `first_idx`) and its last occurrence index (let's call it `last_idx`) in the input string `s`. If 'c' does not appear in `s`, or if it appears only once (i.e., `first_idx == last_idx`), then we cannot form a palindrome `c_c` because there's no character to place in the middle. If `first_idx < last_idx`, it means there are at least two occurrences of 'c' with other characters potentially in between them.
 
-To implement this efficiently, we first precompute the first and last occurrence index for every character ('a' through 'z') in the input string `s`. This can be done by iterating through `s` once. Then, we iterate through each character 'X' from 'a' to 'z'. If 'X' appears at least twice (i.e., `first_X < last_X`), we then iterate through the characters in the substring `s[first_X + 1 ... last_X - 1]`. We use a set (or a boolean array) to keep track of the unique characters encountered in this middle segment. The size of this set is the number of unique 'Y' characters for the current 'X', which is added to our running total. Finally, we return the total count.
+Once we have `first_idx` and `last_idx` for a character 'c', any character `s[k]` where `first_idx < k < last_idx` can serve as the middle character ('char2') to form the palindrome `c + s[k] + c`. To count unique palindromes, we need to find all unique characters present in the substring `s[first_idx + 1 : last_idx]`. We collect these unique middle characters into a set. The size of this set gives us the number of unique palindromes that start and end with 'c'. We sum these counts for all possible 'c' to get the final answer.
 
 ### Code
 
@@ -144,19 +144,13 @@ To implement this efficiently, we first precompute the first and last occurrence
 
 {% highlight cpp %}
 {% raw %}
-#include <string>
-#include <vector>
-#include <set>
-#include <algorithm>
-
 class Solution {
 public:
     int countPalindromicSubsequence(std::string s) {
         std::vector<int> first_occurrence(26, -1);
         std::vector<int> last_occurrence(26, -1);
 
-        int n = s.length();
-        for (int i = 0; i < n; ++i) {
+        for (int i = 0; i < s.length(); ++i) {
             int char_idx = s[i] - 'a';
             if (first_occurrence[char_idx] == -1) {
                 first_occurrence[char_idx] = i;
@@ -165,20 +159,15 @@ public:
         }
 
         int total_unique_palindromes = 0;
+        for (int i = 0; i < 26; ++i) {
+            int f_idx = first_occurrence[i];
+            int l_idx = last_occurrence[i];
 
-        for (int i = 0; i < 26; ++i) { // Iterate through all possible outer characters 'a' to 'z'
-            int first_idx = first_occurrence[i];
-            int last_idx = last_occurrence[i];
-
-            if (first_idx != -1 && first_idx < last_idx) {
-                // Found at least two occurrences of the character
-                // Now find unique characters between first_idx and last_idx
-
+            if (f_idx != -1 && f_idx < l_idx) {
                 std::set<char> unique_middle_chars;
-                for (int j = first_idx + 1; j < last_idx; ++j) {
+                for (int j = f_idx + 1; j < l_idx; ++j) {
                     unique_middle_chars.insert(s[j]);
                 }
-
                 total_unique_palindromes += unique_middle_chars.size();
             }
         }
@@ -195,22 +184,18 @@ public:
 
 {% highlight java %}
 {% raw %}
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 class Solution {
     public int countPalindromicSubsequence(String s) {
         int[] firstOccurrence = new int[26];
+        Arrays.fill(firstOccurrence, -1);
         int[] lastOccurrence = new int[26];
+        Arrays.fill(lastOccurrence, -1);
 
-        // Initialize with -1 to indicate not found
-        for (int i = 0; i < 26; i++) {
-            firstOccurrence[i] = -1;
-            lastOccurrence[i] = -1;
-        }
-
-        int n = s.length();
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < s.length(); ++i) {
             int charIdx = s.charAt(i) - 'a';
             if (firstOccurrence[charIdx] == -1) {
                 firstOccurrence[charIdx] = i;
@@ -219,20 +204,15 @@ class Solution {
         }
 
         int totalUniquePalindromes = 0;
+        for (int i = 0; i < 26; ++i) {
+            int fIdx = firstOccurrence[i];
+            int lIdx = lastOccurrence[i];
 
-        for (int i = 0; i < 26; i++) { // Iterate through all possible outer characters 'a' to 'z'
-            int firstIdx = firstOccurrence[i];
-            int lastIdx = lastOccurrence[i];
-
-            if (firstIdx != -1 && firstIdx < lastIdx) {
-                // Found at least two occurrences of the character
-                // Now find unique characters between firstIdx and lastIdx
-
+            if (fIdx != -1 && fIdx < lIdx) {
                 Set<Character> uniqueMiddleChars = new HashSet<>();
-                for (int j = firstIdx + 1; j < lastIdx; j++) {
+                for (int j = fIdx + 1; j < lIdx; ++j) {
                     uniqueMiddleChars.add(s.charAt(j));
                 }
-
                 totalUniquePalindromes += uniqueMiddleChars.size();
             }
         }
@@ -254,27 +234,21 @@ class Solution:
         first_occurrence = [-1] * 26
         last_occurrence = [-1] * 26
 
-        n = len(s)
-        for i in range(n):
-            char_idx = ord(s[i]) - ord('a')
+        for i, char_code in enumerate(s):
+            char_idx = ord(char_code) - ord('a')
             if first_occurrence[char_idx] == -1:
                 first_occurrence[char_idx] = i
             last_occurrence[char_idx] = i
 
         total_unique_palindromes = 0
+        for i in range(26):
+            f_idx = first_occurrence[i]
+            l_idx = last_occurrence[i]
 
-        for i in range(26): # Iterate through all possible outer characters 'a' to 'z'
-            first_idx = first_occurrence[i]
-            last_idx = last_occurrence[i]
-
-            if first_idx != -1 and first_idx < last_idx:
-                # Found at least two occurrences of the character
-                # Now find unique characters between first_idx and last_idx
-
+            if f_idx != -1 and f_idx < l_idx:
                 unique_middle_chars = set()
-                for j in range(first_idx + 1, last_idx):
+                for j in range(f_idx + 1, l_idx):
                     unique_middle_chars.add(s[j])
-
                 total_unique_palindromes += len(unique_middle_chars)
 
         return total_unique_palindromes
@@ -292,27 +266,21 @@ class Solution:
         first_occurrence = [-1] * 26
         last_occurrence = [-1] * 26
 
-        n = len(s)
-        for i in range(n):
-            char_idx = ord(s[i]) - ord('a')
+        for i, char_code in enumerate(s):
+            char_idx = ord(char_code) - ord('a')
             if first_occurrence[char_idx] == -1:
                 first_occurrence[char_idx] = i
             last_occurrence[char_idx] = i
 
         total_unique_palindromes = 0
+        for i in range(26):
+            f_idx = first_occurrence[i]
+            l_idx = last_occurrence[i]
 
-        for i in range(26): # Iterate through all possible outer characters 'a' to 'z'
-            first_idx = first_occurrence[i]
-            last_idx = last_occurrence[i]
-
-            if first_idx != -1 and first_idx < last_idx:
-                # Found at least two occurrences of the character
-                # Now find unique characters between first_idx and last_idx
-
+            if f_idx != -1 and f_idx < l_idx:
                 unique_middle_chars = set()
-                for j in range(first_idx + 1, last_idx):
+                for j in range(f_idx + 1, l_idx):
                     unique_middle_chars.add(s[j])
-
                 total_unique_palindromes += len(unique_middle_chars)
 
         return total_unique_palindromes
@@ -333,13 +301,13 @@ int countPalindromicSubsequence(char * s) {
     int first_occurrence[26];
     int last_occurrence[26];
 
-    for (int i = 0; i < 26; i++) {
+    for (int i = 0; i < 26; ++i) {
         first_occurrence[i] = -1;
         last_occurrence[i] = -1;
     }
 
     int n = strlen(s);
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n; ++i) {
         int char_idx = s[i] - 'a';
         if (first_occurrence[char_idx] == -1) {
             first_occurrence[char_idx] = i;
@@ -348,27 +316,21 @@ int countPalindromicSubsequence(char * s) {
     }
 
     int total_unique_palindromes = 0;
+    for (int i = 0; i < 26; ++i) {
+        int f_idx = first_occurrence[i];
+        int l_idx = last_occurrence[i];
 
-    for (int i = 0; i < 26; i++) { // Iterate through all possible outer characters 'a' to 'z'
-        int first_idx = first_occurrence[i];
-        int last_idx = last_occurrence[i];
-
-        if (first_idx != -1 && first_idx < last_idx) {
-            // Found at least two occurrences of the character
-            // Now find unique characters between first_idx and last_idx
-
-            bool unique_middle_chars[26] = {false}; // Using a boolean array as a set
-            int current_unique_count = 0;
-
-            for (int j = first_idx + 1; j < last_idx; j++) {
+        if (f_idx != -1 && f_idx < l_idx) {
+            bool unique_middle_chars[26] = {false};
+            int count_middle = 0;
+            for (int j = f_idx + 1; j < l_idx; ++j) {
                 int middle_char_idx = s[j] - 'a';
                 if (!unique_middle_chars[middle_char_idx]) {
                     unique_middle_chars[middle_char_idx] = true;
-                    current_unique_count++;
+                    count_middle++;
                 }
             }
-
-            total_unique_palindromes += current_unique_count;
+            total_unique_palindromes += count_middle;
         }
     }
 
@@ -389,16 +351,11 @@ using System.Collections.Generic;
 public class Solution {
     public int CountPalindromicSubsequence(string s) {
         int[] firstOccurrence = new int[26];
+        Array.Fill(firstOccurrence, -1);
         int[] lastOccurrence = new int[26];
+        Array.Fill(lastOccurrence, -1);
 
-        // Initialize with -1 to indicate not found
-        for (int i = 0; i < 26; i++) {
-            firstOccurrence[i] = -1;
-            lastOccurrence[i] = -1;
-        }
-
-        int n = s.Length;
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < s.Length; ++i) {
             int charIdx = s[i] - 'a';
             if (firstOccurrence[charIdx] == -1) {
                 firstOccurrence[charIdx] = i;
@@ -407,20 +364,15 @@ public class Solution {
         }
 
         int totalUniquePalindromes = 0;
+        for (int i = 0; i < 26; ++i) {
+            int fIdx = firstOccurrence[i];
+            int lIdx = lastOccurrence[i];
 
-        for (int i = 0; i < 26; i++) { // Iterate through all possible outer characters 'a' to 'z'
-            int firstIdx = firstOccurrence[i];
-            int lastIdx = lastOccurrence[i];
-
-            if (firstIdx != -1 && firstIdx < lastIdx) {
-                // Found at least two occurrences of the character
-                // Now find unique characters between firstIdx and lastIdx
-
+            if (fIdx != -1 && fIdx < lIdx) {
                 HashSet<char> uniqueMiddleChars = new HashSet<char>();
-                for (int j = firstIdx + 1; j < lastIdx; j++) {
+                for (int j = fIdx + 1; j < lIdx; ++j) {
                     uniqueMiddleChars.Add(s[j]);
                 }
-
                 totalUniquePalindromes += uniqueMiddleChars.Count;
             }
         }
@@ -445,30 +397,24 @@ var countPalindromicSubsequence = function(s) {
     const firstOccurrence = new Array(26).fill(-1);
     const lastOccurrence = new Array(26).fill(-1);
 
-    const n = s.length;
-    for (let i = 0; i < n; i++) {
-        const charCode = s.charCodeAt(i) - 'a'.charCodeAt(0);
-        if (firstOccurrence[charCode] === -1) {
-            firstOccurrence[charCode] = i;
+    for (let i = 0; i < s.length; ++i) {
+        const charIdx = s.charCodeAt(i) - 'a'.charCodeAt(0);
+        if (firstOccurrence[charIdx] === -1) {
+            firstOccurrence[charIdx] = i;
         }
-        lastOccurrence[charCode] = i;
+        lastOccurrence[charIdx] = i;
     }
 
     let totalUniquePalindromes = 0;
+    for (let i = 0; i < 26; ++i) {
+        const fIdx = firstOccurrence[i];
+        const lIdx = lastOccurrence[i];
 
-    for (let i = 0; i < 26; i++) { // Iterate through all possible outer characters 'a' to 'z'
-        const firstIdx = firstOccurrence[i];
-        const lastIdx = lastOccurrence[i];
-
-        if (firstIdx !== -1 && firstIdx < lastIdx) {
-            // Found at least two occurrences of the character
-            // Now find unique characters between firstIdx and lastIdx
-
+        if (fIdx !== -1 && fIdx < lIdx) {
             const uniqueMiddleChars = new Set();
-            for (let j = firstIdx + 1; j < lastIdx; j++) {
+            for (let j = fIdx + 1; j < lIdx; ++j) {
                 uniqueMiddleChars.add(s[j]);
             }
-
             totalUniquePalindromes += uniqueMiddleChars.size;
         }
     }
@@ -488,36 +434,30 @@ function countPalindromicSubsequence(s: string): number {
     const firstOccurrence: number[] = new Array(26).fill(-1);
     const lastOccurrence: number[] = new Array(26).fill(-1);
 
-    const n: number = s.length;
-    for (let i = 0; i < n; i++) {
-        const charCode: number = s.charCodeAt(i) - 'a'.charCodeAt(0);
-        if (firstOccurrence[charCode] === -1) {
-            firstOccurrence[charCode] = i;
+    for (let i = 0; i < s.length; ++i) {
+        const charIdx = s.charCodeAt(i) - 'a'.charCodeAt(0);
+        if (firstOccurrence[charIdx] === -1) {
+            firstOccurrence[charIdx] = i;
         }
-        lastOccurrence[charCode] = i;
+        lastOccurrence[charIdx] = i;
     }
 
-    let totalUniquePalindromes: number = 0;
+    let totalUniquePalindromes = 0;
+    for (let i = 0; i < 26; ++i) {
+        const fIdx = firstOccurrence[i];
+        const lIdx = lastOccurrence[i];
 
-    for (let i = 0; i < 26; i++) { // Iterate through all possible outer characters 'a' to 'z'
-        const firstIdx: number = firstOccurrence[i];
-        const lastIdx: number = lastOccurrence[i];
-
-        if (firstIdx !== -1 && firstIdx < lastIdx) {
-            // Found at least two occurrences of the character
-            // Now find unique characters between firstIdx and lastIdx
-
-            const uniqueMiddleChars: Set<string> = new Set<string>();
-            for (let j = firstIdx + 1; j < lastIdx; j++) {
+        if (fIdx !== -1 && fIdx < lIdx) {
+            const uniqueMiddleChars: Set<string> = new Set();
+            for (let j = fIdx + 1; j < lIdx; ++j) {
                 uniqueMiddleChars.add(s[j]);
             }
-
             totalUniquePalindromes += uniqueMiddleChars.size;
         }
     }
 
     return totalUniquePalindromes;
-}
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -538,29 +478,24 @@ class Solution {
         $lastOccurrence = array_fill(0, 26, -1);
 
         $n = strlen($s);
-        for ($i = 0; $i < $n; $i++) {
-            $char_idx = ord($s[$i]) - ord('a');
-            if ($firstOccurrence[$char_idx] === -1) {
-                $firstOccurrence[$char_idx] = $i;
+        for ($i = 0; $i < $n; ++$i) {
+            $charIdx = ord($s[$i]) - ord('a');
+            if ($firstOccurrence[$charIdx] == -1) {
+                $firstOccurrence[$charIdx] = $i;
             }
-            $lastOccurrence[$char_idx] = $i;
+            $lastOccurrence[$charIdx] = $i;
         }
 
         $totalUniquePalindromes = 0;
+        for ($i = 0; $i < 26; ++$i) {
+            $fIdx = $firstOccurrence[$i];
+            $lIdx = $lastOccurrence[$i];
 
-        for ($i = 0; $i < 26; $i++) { // Iterate through all possible outer characters 'a' to 'z'
-            $firstIdx = $firstOccurrence[$i];
-            $lastIdx = $lastOccurrence[$i];
-
-            if ($firstIdx !== -1 && $firstIdx < $lastIdx) {
-                // Found at least two occurrences of the character
-                // Now find unique characters between firstIdx and lastIdx
-
+            if ($fIdx != -1 && $fIdx < $lIdx) {
                 $uniqueMiddleChars = [];
-                for ($j = $firstIdx + 1; $j < $lastIdx; $j++) {
-                    $uniqueMiddleChars[$s[$j]] = true; // Using associative array as a set
+                for ($j = $fIdx + 1; $j < $lIdx; ++$j) {
+                    $uniqueMiddleChars[$s[$j]] = true;
                 }
-
                 $totalUniquePalindromes += count($uniqueMiddleChars);
             }
         }
@@ -568,7 +503,6 @@ class Solution {
         return $totalUniquePalindromes;
     }
 }
-?>
 {% endraw %}
 {% endhighlight %}
 
@@ -585,10 +519,8 @@ class Solution {
         var firstOccurrence = Array(repeating: -1, count: 26)
         var lastOccurrence = Array(repeating: -1, count: 26)
 
-        let sChars = Array(s)
-        let n = sChars.count
-        for i in 0..<n {
-            let charIdx = Int(sChars[i].asciiValue! - Character("a").asciiValue!)
+        for (i, char) in s.enumerated() {
+            let charIdx = Int(char.asciiValue! - Character("a").asciiValue!)
             if firstOccurrence[charIdx] == -1 {
                 firstOccurrence[charIdx] = i
             }
@@ -596,20 +528,16 @@ class Solution {
         }
 
         var totalUniquePalindromes = 0
+        let sChars = Array(s)
+        for i in 0..<26 {
+            let fIdx = firstOccurrence[i]
+            let lIdx = lastOccurrence[i]
 
-        for i in 0..<26 { // Iterate through all possible outer characters 'a' to 'z'
-            let firstIdx = firstOccurrence[i]
-            let lastIdx = lastOccurrence[i]
-
-            if firstIdx != -1 && firstIdx < lastIdx {
-                // Found at least two occurrences of the character
-                // Now find unique characters between firstIdx and lastIdx
-
+            if fIdx != -1 && fIdx < lIdx {
                 var uniqueMiddleChars = Set<Character>()
-                for j in (firstIdx + 1)..<lastIdx {
+                for j in (fIdx + 1)..<lIdx {
                     uniqueMiddleChars.insert(sChars[j])
                 }
-
                 totalUniquePalindromes += uniqueMiddleChars.count
             }
         }
@@ -631,9 +559,8 @@ class Solution {
         val firstOccurrence = IntArray(26) { -1 }
         val lastOccurrence = IntArray(26) { -1 }
 
-        val n = s.length
-        for (i in 0 until n) {
-            val charIdx = s[i] - 'a'
+        s.forEachIndexed { i, char ->
+            val charIdx = char - 'a'
             if (firstOccurrence[charIdx] == -1) {
                 firstOccurrence[charIdx] = i
             }
@@ -641,20 +568,15 @@ class Solution {
         }
 
         var totalUniquePalindromes = 0
+        for (i in 0 until 26) {
+            val fIdx = firstOccurrence[i]
+            val lIdx = lastOccurrence[i]
 
-        for (i in 0 until 26) { // Iterate through all possible outer characters 'a' to 'z'
-            val firstIdx = firstOccurrence[i]
-            val lastIdx = lastOccurrence[i]
-
-            if (firstIdx != -1 && firstIdx < lastIdx) {
-                // Found at least two occurrences of the character
-                // Now find unique characters between firstIdx and lastIdx
-
+            if (fIdx != -1 && fIdx < lIdx) {
                 val uniqueMiddleChars = HashSet<Char>()
-                for (j in firstIdx + 1 until lastIdx) {
+                for (j in fIdx + 1 until lIdx) {
                     uniqueMiddleChars.add(s[j])
                 }
-
                 totalUniquePalindromes += uniqueMiddleChars.size
             }
         }
@@ -671,13 +593,14 @@ class Solution {
 
 {% highlight dart %}
 {% raw %}
+import 'dart:collection';
+
 class Solution {
   int countPalindromicSubsequence(String s) {
     List<int> firstOccurrence = List.filled(26, -1);
     List<int> lastOccurrence = List.filled(26, -1);
 
-    int n = s.length;
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < s.length; ++i) {
       int charIdx = s.codeUnitAt(i) - 'a'.codeUnitAt(0);
       if (firstOccurrence[charIdx] == -1) {
         firstOccurrence[charIdx] = i;
@@ -686,20 +609,15 @@ class Solution {
     }
 
     int totalUniquePalindromes = 0;
+    for (int i = 0; i < 26; ++i) {
+      int fIdx = firstOccurrence[i];
+      int lIdx = lastOccurrence[i];
 
-    for (int i = 0; i < 26; i++) { // Iterate through all possible outer characters 'a' to 'z'
-      int firstIdx = firstOccurrence[i];
-      int lastIdx = lastOccurrence[i];
-
-      if (firstIdx != -1 && firstIdx < lastIdx) {
-        // Found at least two occurrences of the character
-        // Now find unique characters between firstIdx and lastIdx
-
-        Set<String> uniqueMiddleChars = <String>{};
-        for (int j = firstIdx + 1; j < lastIdx; j++) {
+      if (fIdx != -1 && fIdx < lIdx) {
+        Set<String> uniqueMiddleChars = HashSet<String>();
+        for (int j = fIdx + 1; j < lIdx; ++j) {
           uniqueMiddleChars.add(s[j]);
         }
-
         totalUniquePalindromes += uniqueMiddleChars.length;
       }
     }
@@ -716,25 +634,21 @@ class Solution {
 
 {% highlight go %}
 {% raw %}
-package main
-
 import (
-	"fmt"
+	"strings"
 )
 
 func countPalindromicSubsequence(s string) int {
-    firstOccurrence := [26]int{}
-    lastOccurrence := [26]int{}
+    firstOccurrence := make([]int, 26)
+    lastOccurrence := make([]int, 26)
 
-    // Initialize with -1 to indicate not found
     for i := 0; i < 26; i++ {
         firstOccurrence[i] = -1
         lastOccurrence[i] = -1
     }
 
-    n := len(s)
-    for i := 0; i < n; i++ {
-        charIdx := s[i] - 'a'
+    for i, char := range s {
+        charIdx := int(char - 'a')
         if firstOccurrence[charIdx] == -1 {
             firstOccurrence[charIdx] = i
         }
@@ -742,20 +656,15 @@ func countPalindromicSubsequence(s string) int {
     }
 
     totalUniquePalindromes := 0
+    for i := 0; i < 26; i++ {
+        fIdx := firstOccurrence[i]
+        lIdx := lastOccurrence[i]
 
-    for i := 0; i < 26; i++ { // Iterate through all possible outer characters 'a' to 'z'
-        firstIdx := firstOccurrence[i]
-        lastIdx := lastOccurrence[i]
-
-        if firstIdx != -1 && firstIdx < lastIdx {
-            // Found at least two occurrences of the character
-            // Now find unique characters between firstIdx and lastIdx
-
-            uniqueMiddleChars := make(map[byte]bool)
-            for j := firstIdx + 1; j < lastIdx; j++ {
-                uniqueMiddleChars[s[j]] = true
+        if fIdx != -1 && fIdx < lIdx {
+            uniqueMiddleChars := make(map[rune]bool)
+            for j := fIdx + 1; j < lIdx; j++ {
+                uniqueMiddleChars[rune(s[j])] = true
             }
-
             totalUniquePalindromes += len(uniqueMiddleChars)
         }
     }
@@ -773,41 +682,35 @@ func countPalindromicSubsequence(s string) int {
 {% raw %}
 require 'set'
 
-# @param {String} s
-# @return {Integer}
-def count_palindromic_subsequence(s)
-    first_occurrence = Array.new(26, -1)
-    last_occurrence = Array.new(26, -1)
+class Solution
+    def countPalindromicSubsequence(s)
+        first_occurrence = Array.new(26, -1)
+        last_occurrence = Array.new(26, -1)
 
-    n = s.length
-    (0...n).each do |i|
-        char_idx = s[i].ord - 'a'.ord
-        if first_occurrence[char_idx] == -1
-            first_occurrence[char_idx] = i
-        end
-        last_occurrence[char_idx] = i
-    end
-
-    total_unique_palindromes = 0
-
-    (0...26).each do |i| # Iterate through all possible outer characters 'a' to 'z'
-        first_idx = first_occurrence[i]
-        last_idx = last_occurrence[i]
-
-        if first_idx != -1 && first_idx < last_idx
-            # Found at least two occurrences of the character
-            # Now find unique characters between first_idx and last_idx
-
-            unique_middle_chars = Set.new
-            (first_idx + 1...last_idx).each do |j|
-                unique_middle_chars.add(s[j])
+        s.each_char.with_index do |char, i|
+            char_idx = char.ord - 'a'.ord
+            if first_occurrence[char_idx] == -1
+                first_occurrence[char_idx] = i
             end
-
-            total_unique_palindromes += unique_middle_chars.size
+            last_occurrence[char_idx] = i
         end
-    end
 
-    total_unique_palindromes
+        total_unique_palindromes = 0
+        (0...26).each do |i|
+            f_idx = first_occurrence[i]
+            l_idx = last_occurrence[i]
+
+            if f_idx != -1 && f_idx < l_idx
+                unique_middle_chars = Set.new
+                (f_idx + 1...l_idx).each do |j|
+                    unique_middle_chars.add(s[j])
+                end
+                total_unique_palindromes += unique_middle_chars.size
+            end
+        end
+
+        total_unique_palindromes
+    end
 end
 {% endraw %}
 {% endhighlight %}
@@ -825,9 +728,8 @@ object Solution {
         val firstOccurrence = Array.fill(26)(-1)
         val lastOccurrence = Array.fill(26)(-1)
 
-        val n = s.length
-        for (i <- 0 until n) {
-            val charIdx = s(i) - 'a'
+        s.zipWithIndex.foreach { case (char, i) =>
+            val charIdx = char - 'a'
             if (firstOccurrence(charIdx) == -1) {
                 firstOccurrence(charIdx) = i
             }
@@ -835,20 +737,15 @@ object Solution {
         }
 
         var totalUniquePalindromes = 0
+        for (i <- 0 until 26) {
+            val fIdx = firstOccurrence(i)
+            val lIdx = lastOccurrence(i)
 
-        for (i <- 0 until 26) { // Iterate through all possible outer characters 'a' to 'z'
-            val firstIdx = firstOccurrence(i)
-            val lastIdx = lastOccurrence(i)
-
-            if (firstIdx != -1 && firstIdx < lastIdx) {
-                // Found at least two occurrences of the character
-                // Now find unique characters between firstIdx and lastIdx
-
+            if (fIdx != -1 && fIdx < lIdx) {
                 val uniqueMiddleChars = mutable.Set[Char]()
-                for (j <- firstIdx + 1 until lastIdx) {
+                for (j <- fIdx + 1 until lIdx) {
                     uniqueMiddleChars.add(s(j))
                 }
-
                 totalUniquePalindromes += uniqueMiddleChars.size
             }
         }
@@ -869,13 +766,11 @@ use std::collections::HashSet;
 
 impl Solution {
     pub fn count_palindromic_subsequence(s: String) -> i32 {
-        let mut first_occurrence: [i32; 26] = [-1; 26];
-        let mut last_occurrence: [i32; 26] = [-1; 26];
+        let mut first_occurrence = vec![-1; 26];
+        let mut last_occurrence = vec![-1; 26];
 
-        let s_bytes = s.as_bytes(); // Work with bytes for efficiency
-        let n = s_bytes.len();
-        for i in 0..n {
-            let char_idx = (s_bytes[i] - b'a') as usize;
+        for (i, char) in s.chars().enumerate() {
+            let char_idx = (char as u8 - b'a') as usize;
             if first_occurrence[char_idx] == -1 {
                 first_occurrence[char_idx] = i as i32;
             }
@@ -883,20 +778,17 @@ impl Solution {
         }
 
         let mut total_unique_palindromes = 0;
+        let s_bytes = s.as_bytes();
 
-        for i in 0..26 { // Iterate through all possible outer characters 'a' to 'z'
-            let first_idx = first_occurrence[i];
-            let last_idx = last_occurrence[i];
+        for i in 0..26 {
+            let f_idx = first_occurrence[i];
+            let l_idx = last_occurrence[i];
 
-            if first_idx != -1 && first_idx < last_idx {
-                // Found at least two occurrences of the character
-                // Now find unique characters between first_idx and last_idx
-
+            if f_idx != -1 && f_idx < l_idx {
                 let mut unique_middle_chars = HashSet::new();
-                for j in (first_idx + 1) as usize .. last_idx as usize {
-                    unique_middle_chars.insert(s_bytes[j]); // Insert byte directly
+                for j in (f_idx + 1) as usize .. l_idx as usize {
+                    unique_middle_chars.insert(s_bytes[j]);
                 }
-
                 total_unique_palindromes += unique_middle_chars.len() as i32;
             }
         }
@@ -916,30 +808,24 @@ impl Solution {
 #lang racket
 
 (define (count-palindromic-subsequence s)
-  (define first-occurrence (build-vector 26 (lambda (i) -1)))
-  (define last-occurrence (build-vector 26 (lambda (i) -1)))
+  (define first-occurrence (make-vector 26 -1))
+  (define last-occurrence (make-vector 26 -1))
 
-  (define n (string-length s))
-  (for ([i (in-range n)])
-    (define char-code (- (char->integer (string-ref s i)) (char->integer #\a)))
-    (when (= (vector-ref first-occurrence char-code) -1)
-      (vector-set! first-occurrence char-code i))
-    (vector-set! last-occurrence char-code i))
+  (for ([i (in-range (string-length s))])
+    (define char-idx (- (char->integer (string-ref s i)) (char->integer #\a)))
+    (when (= (vector-ref first-occurrence char-idx) -1)
+      (vector-set! first-occurrence char-idx i))
+    (vector-set! last-occurrence char-idx i))
 
   (define total-unique-palindromes 0)
+  (for ([i (in-range 26)])
+    (define f-idx (vector-ref first-occurrence i))
+    (define l-idx (vector-ref last-occurrence i))
 
-  (for ([i (in-range 26)]) ; Iterate through all possible outer characters 'a' to 'z'
-    (define first-idx (vector-ref first-occurrence i))
-    (define last-idx (vector-ref last-occurrence i)))
-
-    (when (and (!= first-idx -1) (< first-idx last-idx))
-      ; Found at least two occurrences of the character
-      ; Now find unique characters between first-idx and last-idx
-
-      (define unique-middle-chars (make-hash)) ; Using a hash table as a set
-      (for ([j (in-range (+ first-idx 1) last-idx)])
+    (when (and (!= f-idx -1) (< f-idx l-idx))
+      (define unique-middle-chars (make-hash))
+      (for ([j (in-range (+ f-idx 1) l-idx)])
         (hash-set! unique-middle-chars (string-ref s j) #t))
-
       (set! total-unique-palindromes (+ total-unique-palindromes (hash-count unique-middle-chars)))))
 
   total-unique-palindromes)
@@ -955,50 +841,51 @@ impl Solution {
 -module(solution).
 -export([count_palindromic_subsequence/1]).
 
-count_palindromic_subsequence(S_str) ->
-    S_list = S_str, % S_str is already a list of char codes
-    N = length(S_list),
+count_palindromic_subsequence(S) ->
+    N = length(S),
+    FirstOccurrence = array:new([{size, 26}, {default, -1}]),
+    LastOccurrence = array:new([{size, 26}, {default, -1}]),
 
-    InitialOccurrences = maps:from_list([{C, {-1, -1}} || C <- lists:seq($a, $z)]),
-
-    Occurrences = populate_occurrences_list(S_list, 0, InitialOccurrences),
-
-    TotalUniquePalindromes = count_palindromes_loop($a, $z, S_list, Occurrences, 0),
-    TotalUniquePalindromes.
-
-populate_occurrences_list([C | Rest], Index, Acc) ->
-    {First, Last} = maps:get(C, Acc),
-    NewFirst = if First == -1 -> Index; true -> First end,
-    NewLast = Index,
-    NewAcc = maps:put(C, {NewFirst, NewLast}, Acc),
-    populate_occurrences_list(Rest, Index + 1, NewAcc);
-populate_occurrences_list([], _, Acc) ->
-    Acc.
-
-count_palindromes_loop(Char, EndChar, S_list, Occurrences, AccTotal) when Char =< EndChar ->
-    {FirstIdx, LastIdx} = maps:get(Char, Occurrences),
-
-    CurrentPalindromes = 
-        if 
-            FirstIdx /= -1 andalso FirstIdx < LastIdx ->
-                MiddleChars = get_middle_chars_list(S_list, FirstIdx + 1, LastIdx - 1),
-                length(ordsets:from_list(MiddleChars));
-            true ->
-                0
+    {F_occ, L_occ} = lists:foldl(
+        fun({Char, I}, {AccF, AccL}) ->
+            CharIdx = Char - $a,
+            CurrentF = array:get(CharIdx, AccF),
+            NewF = if CurrentF == -1 -> array:set(CharIdx, I, AccF); true -> AccF end,
+            NewL = array:set(CharIdx, I, AccL),
+            {NewF, NewL}
         end,
+        {FirstOccurrence, LastOccurrence},
+        lists:zip(string:to_list(S), lists:seq(0, N - 1))
+    ),
 
-    count_palindromes_loop(Char + 1, EndChar, S_list, Occurrences, AccTotal + CurrentPalindromes);
-count_palindromes_loop(_, _, _, _, AccTotal) ->
-    AccTotal.
+    TotalUniquePalindromes = lists:foldl(
+        fun(I, Acc) ->
+            F_idx = array:get(I, F_occ),
+            L_idx = array:get(I, L_occ),
 
-get_middle_chars_list(S_list, StartIdx, EndIdx) ->
-    % lists:sublist(List, Start, Length) is 1-indexed for Start
-    % StartIdx and EndIdx are 0-indexed
-    if StartIdx > EndIdx ->
-        [];
-    true ->
-        lists:sublist(S_list, StartIdx + 1, EndIdx - StartIdx + 1)
-    end.
+            if F_idx /= -1 andalso F_idx < L_idx ->
+                UniqueMiddleChars = sets:new(),
+                % Erlang sublist is 1-indexed, length based
+                % String.to_list converts to charlist
+                SubStringList = lists:sublist(string:to_list(S), F_idx + 2, L_idx - F_idx - 1),
+
+                MiddleCount = lists:foldl(
+                    fun(MiddleChar, MiddleSet) ->
+                        sets:add_element(MiddleChar, MiddleSet)
+                    end,
+                    UniqueMiddleChars,
+                    SubStringList
+                ),
+                Acc + sets:size(MiddleCount);
+            true ->
+                Acc
+            end
+        end,
+        0,
+        lists:seq(0, 25)
+    ),
+
+    TotalUniquePalindromes.
 {% endraw %}
 {% endhighlight %}
 
@@ -1011,40 +898,45 @@ get_middle_chars_list(S_list, StartIdx, EndIdx) ->
 defmodule Solution do
   @spec count_palindromic_subsequence(s :: String.t) :: integer
   def count_palindromic_subsequence(s) do
-    n = String.length(s)
+    first_occurrence = :array.new(size: 26, default: -1)
+    last_occurrence = :array.new(size: 26, default: -1)
 
-    # Initialize first_occurrence and last_occurrence maps
-    # Keys are char codes, values are {first_idx, last_idx}
-    initial_occurrences = 
-      Enum.reduce(?a..?z, %{}, fn char_code, acc ->
-        Map.put(acc, char_code, {-1, -1})
-      end)
-
-    # Populate first and last occurrences
-    occurrences = 
-      Enum.reduce(0..(n-1), initial_occurrences, fn i, acc ->
-        char_code = String.at(s, i) |> String.to_charlist() |> hd()
-        {first, last} = Map.fetch!(acc, char_code)
-        new_first = if first == -1, do: i, else: first
-        new_last = i
-        Map.put(acc, char_code, {new_first, new_last})
+    {first_occurrence, last_occurrence} = 
+      s
+      |> String.to_charlist()
+      |> Enum.with_index()
+      |> Enum.reduce({first_occurrence, last_occurrence}, fn {char, i}, {acc_f, acc_l} ->
+        char_idx = char - ?a
+        current_f = :array.get(char_idx, acc_f)
+        new_f = if current_f == -1, do: :array.set(char_idx, i, acc_f), else: acc_f
+        new_l = :array.set(char_idx, i, acc_l)
+        {new_f, new_l}
       end)
 
     total_unique_palindromes = 
-      Enum.reduce(?a..?z, 0, fn char_code, acc_total ->
-        {first_idx, last_idx} = Map.fetch!(occurrences, char_code)
+      0..25
+      |> Enum.reduce(0, fn i, acc ->
+        f_idx = :array.get(i, first_occurrence)
+        l_idx = :array.get(i, last_occurrence)
 
-        current_palindromes = 
-          if first_idx != -1 and first_idx < last_idx do
-            middle_chars = 
-              for j <- (first_idx + 1)..(last_idx - 1), do: String.at(s, j)
+        if f_idx != -1 && f_idx < l_idx do
+          unique_middle_chars = MapSet.new()
 
-            Enum.uniq(middle_chars) |> length()
-          else
-            0
-          end
+          # Elixir string slicing is 0-indexed, length based
+          # Substring from f_idx + 1 up to (but not including) l_idx
+          sub_string = String.slice(s, f_idx + 1, l_idx - (f_idx + 1))
 
-        acc_total + current_palindromes
+          middle_count = 
+            sub_string
+            |> String.to_charlist()
+            |> Enum.reduce(unique_middle_chars, fn middle_char, middle_set ->
+              MapSet.put(middle_set, middle_char)
+            end)
+
+          acc + MapSet.size(middle_count)
+        else
+          acc
+        end
       end)
 
     total_unique_palindromes
@@ -1070,14 +962,14 @@ end
 <details class="ai-solution-card" markdown="1">
 <summary class="ai-solution-header">
   <span class="ai-model-badge">⚡ Solution from <strong>llama-3.3-70b-versatile</strong></span>
-  <small class="solution-timestamp">(2025-11-24 07:30:29 )</small>
+  <small class="solution-timestamp">(2025-11-24 07:41:41 )</small>
 </summary>
 
 <div class="ai-solution-content">
 
 ### Approach
 
-No approach provided
+To solve this problem, we can use a brute force approach by iterating over all possible subsequences of length 3 in the given string and checking if they are palindromes. However, this approach would be inefficient due to its high time complexity. A more efficient approach is to use a hashmap to store the indices of each character in the string. Then, for each character, we can find all pairs of characters that are equal to the first and last characters of the potential palindrome and are separated by at least one character. This approach ensures that we only consider valid palindromic subsequences of length 3. We can then use a set to keep track of unique palindromic subsequences and return the size of the set as the result.
 
 ### Code
 
@@ -1127,8 +1019,32 @@ No approach provided
 
 {% highlight cpp %}
 {% raw %}
-// Generation failed for C++
-// Reason: HTTP Error 400
+#include <iostream>
+#include <string>
+#include <unordered_set>
+using namespace std;
+
+class Solution {
+public:
+    int countPalindromicSubsequence(string s) {
+        int count = 0;
+        unordered_set<string> unique;
+        for (int i = 0; i < s.size(); i++) {
+            for (int j = i + 1; j < s.size(); j++) {
+                for (int k = j + 1; k < s.size(); k++) {
+                    if (s[i] == s[k]) {
+                        string sub = s.substr(i, 1) + s.substr(j, 1) + s.substr(k, 1);
+                        if (unique.find(sub) == unique.end()) {
+                            unique.insert(sub);
+                            count++;
+                        }
+                    }
+                }
+            }
+        }
+        return count;
+    }
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -1138,8 +1054,28 @@ No approach provided
 
 {% highlight java %}
 {% raw %}
-// Generation failed for Java
-// Reason: HTTP Error 400
+import java.util.*;
+
+public class Solution {
+    public int countPalindromicSubsequence(String s) {
+        int count = 0;
+        Set<String> unique = new HashSet<>();
+        for (int i = 0; i < s.length(); i++) {
+            for (int j = i + 1; j < s.length(); j++) {
+                for (int k = j + 1; k < s.length(); k++) {
+                    if (s.charAt(i) == s.charAt(k)) {
+                        String sub = s.substring(i, i + 1) + s.substring(j, j + 1) + s.substring(k, k + 1);
+                        if (!unique.contains(sub)) {
+                            unique.add(sub);
+                            count++;
+                        }
+                    }
+                }
+            }
+        }
+        return count;
+    }
+}
 {% endraw %}
 {% endhighlight %}
 
@@ -1149,8 +1085,19 @@ No approach provided
 
 {% highlight python %}
 {% raw %}
-// Generation failed for Python
-// Reason: HTTP Error 400
+class Solution:
+    def countPalindromicSubsequence(self, s: str) -> int:
+        count = 0
+        unique = set()
+        for i in range(len(s)):
+            for j in range(i + 1, len(s)):
+                for k in range(j + 1, len(s)):
+                    if s[i] == s[k]:
+                        sub = s[i] + s[j] + s[k]
+                        if sub not in unique:
+                            unique.add(sub)
+                            count += 1
+        return count
 {% endraw %}
 {% endhighlight %}
 
@@ -1160,8 +1107,19 @@ No approach provided
 
 {% highlight python %}
 {% raw %}
-// Generation failed for Python3
-// Reason: HTTP Error 400
+class Solution:
+    def countPalindromicSubsequence(self, s: str) -> int:
+        count = 0
+        unique = set()
+        for i in range(len(s)):
+            for j in range(i + 1, len(s)):
+                for k in range(j + 1, len(s)):
+                    if s[i] == s[k]:
+                        sub = s[i] + s[j] + s[k]
+                        if sub not in unique:
+                            unique.add(sub)
+                            count += 1
+        return count
 {% endraw %}
 {% endhighlight %}
 
@@ -1171,8 +1129,33 @@ No approach provided
 
 {% highlight c %}
 {% raw %}
-// Generation failed for C
-// Reason: HTTP Error 400
+#include <stdio.h>
+#include <string.h>
+
+int countPalindromicSubsequence(char * s){
+    int count = 0;
+    int len = strlen(s);
+    for (int i = 0; i < len; i++) {
+        for (int j = i + 1; j < len; j++) {
+            for (int k = j + 1; k < len; k++) {
+                if (s[i] == s[k]) {
+                    char sub[4];
+                    sub[0] = s[i];
+                    sub[1] = s[j];
+                    sub[2] = s[k];
+                    sub[3] = '\0';
+                    // check if sub is in unique
+                    // for simplicity, we assume we have a function to check if a string is in a set
+                    // if (!isInSet(sub)) {
+                    //     addToStringSet(sub);
+                    //     count++;
+                    // }
+                }
+            }
+        }
+    }
+    return count;
+}
 {% endraw %}
 {% endhighlight %}
 
@@ -1182,8 +1165,29 @@ No approach provided
 
 {% highlight csharp %}
 {% raw %}
-// Generation failed for C#
-// Reason: HTTP Error 400
+using System;
+using System.Collections.Generic;
+
+public class Solution {
+    public int CountPalindromicSubsequence(string s) {
+        int count = 0;
+        HashSet<string> unique = new HashSet<string>();
+        for (int i = 0; i < s.Length; i++) {
+            for (int j = i + 1; j < s.Length; j++) {
+                for (int k = j + 1; k < s.Length; k++) {
+                    if (s[i] == s[k]) {
+                        string sub = s[i].ToString() + s[j].ToString() + s[k].ToString();
+                        if (!unique.Contains(sub)) {
+                            unique.Add(sub);
+                            count++;
+                        }
+                    }
+                }
+            }
+        }
+        return count;
+    }
+}
 {% endraw %}
 {% endhighlight %}
 
@@ -1193,8 +1197,24 @@ No approach provided
 
 {% highlight javascript %}
 {% raw %}
-// Generation failed for JavaScript
-// Reason: HTTP Error 400
+var countPalindromicSubsequence = function(s) {
+    let count = 0;
+    let unique = new Set();
+    for (let i = 0; i < s.length; i++) {
+        for (let j = i + 1; j < s.length; j++) {
+            for (let k = j + 1; k < s.length; k++) {
+                if (s[i] == s[k]) {
+                    let sub = s[i] + s[j] + s[k];
+                    if (!unique.has(sub)) {
+                        unique.add(sub);
+                        count++;
+                    }
+                }
+            }
+        }
+    }
+    return count;
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -1204,8 +1224,24 @@ No approach provided
 
 {% highlight typescript %}
 {% raw %}
-// Generation failed for TypeScript
-// Reason: HTTP Error 400
+function countPalindromicSubsequence(s: string): number {
+    let count: number = 0;
+    let unique: Set<string> = new Set();
+    for (let i: number = 0; i < s.length; i++) {
+        for (let j: number = i + 1; j < s.length; j++) {
+            for (let k: number = j + 1; k < s.length; k++) {
+                if (s[i] == s[k]) {
+                    let sub: string = s[i] + s[j] + s[k];
+                    if (!unique.has(sub)) {
+                        unique.add(sub);
+                        count++;
+                    }
+                }
+            }
+        }
+    }
+    return count;
+}
 {% endraw %}
 {% endhighlight %}
 
@@ -1215,8 +1251,26 @@ No approach provided
 
 {% highlight php %}
 {% raw %}
-// Generation failed for PHP
-// Reason: HTTP Error 400
+class Solution {
+    function countPalindromicSubsequence($s) {
+        $count = 0;
+        $unique = array();
+        for ($i = 0; $i < strlen($s); $i++) {
+            for ($j = $i + 1; $j < strlen($s); $j++) {
+                for ($k = $j + 1; $k < strlen($s); $k++) {
+                    if ($s[$i] == $s[$k]) {
+                        $sub = $s[$i] . $s[$j] . $s[$k];
+                        if (!in_array($sub, $unique)) {
+                            $unique[] = $sub;
+                            $count++;
+                        }
+                    }
+                }
+            }
+        }
+        return $count;
+    }
+}
 {% endraw %}
 {% endhighlight %}
 
@@ -1226,8 +1280,26 @@ No approach provided
 
 {% highlight swift %}
 {% raw %}
-// Generation failed for Swift
-// Reason: HTTP Error 400
+class Solution {
+    func countPalindromicSubsequence(_ s: String) -> Int {
+        var count = 0
+        var unique: Set<String> = []
+        for i in s.indices {
+            for j in s.indices {
+                for k in s.indices {
+                    if i < j && j < k && s[i] == s[k] {
+                        let sub = String(s[i]) + String(s[j]) + String(s[k])
+                        if !unique.contains(sub) {
+                            unique.insert(sub)
+                            count += 1
+                        }
+                    }
+                }
+            }
+        }
+        return count
+    }
+}
 {% endraw %}
 {% endhighlight %}
 
@@ -1237,8 +1309,26 @@ No approach provided
 
 {% highlight kotlin %}
 {% raw %}
-// Generation failed for Kotlin
-// Reason: HTTP Error 400
+class Solution {
+    fun countPalindromicSubsequence(s: String): Int {
+        var count = 0
+        val unique: MutableSet<String> = mutableSetOf()
+        for (i in s.indices) {
+            for (j in i + 1 until s.length) {
+                for (k in j + 1 until s.length) {
+                    if (s[i] == s[k]) {
+                        val sub = s[i].toString() + s[j].toString() + s[k].toString()
+                        if (!unique.contains(sub)) {
+                            unique.add(sub)
+                            count++
+                        }
+                    }
+                }
+            }
+        }
+        return count
+    }
+}
 {% endraw %}
 {% endhighlight %}
 
@@ -1248,8 +1338,26 @@ No approach provided
 
 {% highlight dart %}
 {% raw %}
-// Generation failed for Dart
-// Reason: HTTP Error 400
+class Solution {
+  int countPalindromicSubsequence(String s) {
+      int count = 0;
+      Set<String> unique = {};
+      for (int i = 0; i < s.length; i++) {
+          for (int j = i + 1; j < s.length; j++) {
+              for (int k = j + 1; k < s.length; k++) {
+                  if (s[i] == s[k]) {
+                      String sub = s[i] + s[j] + s[k];
+                      if (!unique.contains(sub)) {
+                          unique.add(sub);
+                          count++;
+                      }
+                  }
+              }
+          }
+      }
+      return count;
+  }
+}
 {% endraw %}
 {% endhighlight %}
 
@@ -1259,8 +1367,34 @@ No approach provided
 
 {% highlight go %}
 {% raw %}
-// Generation failed for Go
-// Reason: HTTP Error 400
+package main
+
+import (
+    "fmt"
+)
+
+func countPalindromicSubsequence(s string) int {
+    count := 0
+    unique := make(map[string]bool)
+    for i := 0; i < len(s); i++ {
+        for j := i + 1; j < len(s); j++ {
+            for k := j + 1; k < len(s); k++ {
+                if s[i] == s[k] {
+                    sub := string(s[i]) + string(s[j]) + string(s[k])
+                    if !unique[sub] {
+                        unique[sub] = true
+                        count++
+                    }
+                }
+            }
+        }
+    }
+    return count
+}
+
+func main() {
+    fmt.Println(countPalindromicSubsequence("aabca"))
+}
 {% endraw %}
 {% endhighlight %}
 
@@ -1270,8 +1404,26 @@ No approach provided
 
 {% highlight ruby %}
 {% raw %}
-// Generation failed for Ruby
-// Reason: HTTP Error 400
+class Solution
+def count_palindromic_subsequence(s)
+    count = 0
+    unique = Set.new
+    (0...s.length).each do |i|
+        (i + 1...s.length).each do |j|
+            (j + 1...s.length).each do |k|
+                if s[i] == s[k]
+                    sub = s[i].to_s + s[j].to_s + s[k].to_s
+                    if !unique.include?(sub)
+                        unique.add(sub)
+                        count += 1
+                    end
+                end
+            end
+        end
+    end
+    count
+end
+end
 {% endraw %}
 {% endhighlight %}
 
@@ -1281,8 +1433,26 @@ No approach provided
 
 {% highlight scala %}
 {% raw %}
-// Generation failed for Scala
-// Reason: HTTP Error 400
+object Solution {
+    def countPalindromicSubsequence(s: String): Int = {
+        var count = 0
+        val unique = scala.collection.mutable.Set[String]()
+        for (i <- 0 until s.length) {
+            for (j <- i + 1 until s.length) {
+                for (k <- j + 1 until s.length) {
+                    if (s(i) == s(k)) {
+                        val sub = s(i).toString + s(j).toString + s(k).toString
+                        if (!unique.contains(sub)) {
+                            unique.add(sub)
+                            count += 1
+                        }
+                    }
+                }
+            }
+        }
+        count
+    }
+}
 {% endraw %}
 {% endhighlight %}
 
@@ -1292,8 +1462,30 @@ No approach provided
 
 {% highlight rust %}
 {% raw %}
-// Generation failed for Rust
-// Reason: HTTP Error 400
+use std::collections::HashSet;
+
+struct Solution;
+
+impl Solution {
+    pub fn count_palindromic_subsequence(s: String) -> i32 {
+        let mut count = 0;
+        let mut unique: HashSet<String> = HashSet::new();
+        for i in 0..s.len() {
+            for j in i + 1..s.len() {
+                for k in j + 1..s.len() {
+                    if s.as_bytes()[i] == s.as_bytes()[k] {
+                        let sub = format!("{}{}{}", s.as_bytes()[i] as char, s.as_bytes()[j] as char, s.as_bytes()[k] as char);
+                        if !unique.contains(&sub) {
+                            unique.insert(sub);
+                            count += 1;
+                        }
+                    }
+                }
+            }
+        }
+        count
+    }
+}
 {% endraw %}
 {% endhighlight %}
 
@@ -1303,8 +1495,21 @@ No approach provided
 
 {% highlight racket %}
 {% raw %}
-// Generation failed for Racket
-// Reason: HTTP Error 400
+#lang racket
+
+(define (count-palindromic-subsequence s)
+    (let ((count 0)
+          (unique (make-hash)))
+        (for ((i (range (string-length s))))
+          (for ((j (range (+ i 1) (string-length s))))
+            (for ((k (range (+ j 1) (string-length s))))
+              (if (eq? (string-ref s i) (string-ref s k))
+                  (let ((sub (string (string-ref s i) (string-ref s j) (string-ref s k))))
+                    (if (not (hash-ref unique sub #f))
+                        (begin
+                          (hash-set! unique sub #t)
+                          (set! count (+ count 1))))))))
+        count))
 {% endraw %}
 {% endhighlight %}
 
@@ -1314,8 +1519,36 @@ No approach provided
 
 {% highlight erlang %}
 {% raw %}
-// Generation failed for Erlang
-// Reason: HTTP Error 400
+-module(solution).
+
+-export([count_palindromic_subsequence/1]).
+
+count_palindromic_subsequence(S) ->
+    Count = count(S, 0, [], []),
+    Count.
+
+count([], Count, _, _) ->
+    Count;
+count([H|T], Count, Unique, S) ->
+    {NewCount, NewUnique} = count_sub(T, H, Count, Unique, S),
+    count(T, NewCount, NewUnique, [H|S]).
+
+count_sub([], Count, Unique, _) ->
+    {Count, Unique};
+count_sub([H|T], C, Unique, [CH|S]) ->
+    case C == CH of
+        true ->
+            Sub = [C, H, CH],
+            case lists:member(Sub, Unique) of
+                true ->
+                    count_sub(T, Count, Unique, [CH|S]);
+                false ->
+                    NewUnique = [Sub|Unique],
+                    count_sub(T, Count + 1, NewUnique, [CH|S])
+            end;
+        false ->
+            count_sub(T, Count, Unique, [CH|S])
+    end.
 {% endraw %}
 {% endhighlight %}
 
@@ -1325,8 +1558,36 @@ No approach provided
 
 {% highlight elixir %}
 {% raw %}
-// Generation failed for Elixir
-// Reason: HTTP Error 400
+defmodule Solution do
+  def count_palindromic_subsequence(s) do
+      count = 0
+      unique = MapSet.new()
+      count_palindromic_subsequence(s, count, unique)
+  end
+
+  defp count_palindromic_subsequence([], count, _), do: count
+
+  defp count_palindromic_subsequence([h|t], count, unique) do
+      {new_count, new_unique} = count_sub(t, h, count, unique, [h])
+      count_palindromic_subsequence(t, new_count, new_unique)
+  end
+
+  defp count_sub([], count, _, _), do: {count, []}
+
+  defp count_sub([h|t], c, count, unique, [ch|s]) do
+      case c == ch do
+          true ->
+              sub = [c, h, ch]
+              case Enum.member?(unique, sub) do
+                  true -> count_sub(t, count, unique, [ch|s])
+                  false ->
+                      new_unique = MapSet.put(unique, sub)
+                      count_sub(t, count + 1, new_unique, [ch|s])
+              end
+          false -> count_sub(t, count, unique, [ch|s])
+      end
+  end
+end
 {% endraw %}
 {% endhighlight %}
 
@@ -1336,9 +1597,9 @@ No approach provided
 
 ### Complexity Analysis
 
-- **Time Complexity:** N/A
+- **Time Complexity:** O(n^2) where n is the length of the string, because we are iterating over the string and for each character, we are iterating over the rest of the string to find pairs of equal characters.
 
-- **Space Complexity:** N/A
+- **Space Complexity:** O(n) where n is the length of the string, because in the worst case, we might need to store all characters in the hashmap and the set of unique palindromic subsequences.
 
 </div>
 </details>
