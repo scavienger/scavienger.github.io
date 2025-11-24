@@ -62,8 +62,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Add changes first
-          git add _posts/
+          # Add all generated files (posts, cache, snippets)
+          git add _posts/ data/
 
           # Check if there are changes to commit
           if git diff --staged --quiet; then

@@ -94,7 +94,7 @@ git push -u origin develop-hotfix-critical-bug-xyz
 ### 자동화된 워크플로우
 
 1. **Daily LeetCode Post** (`.github/workflows/leetcode-daily.yml`)
-   - **실행**: 매일 09:00 KST
+   - **실행**: 매일 00:00 UTC (자정)
    - **타겟 브랜치**: `develop`
    - **동작**: 자동으로 새 포스트를 `develop`에 커밋
 

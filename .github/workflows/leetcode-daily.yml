@@ -1,7 +1,7 @@
 name: LeetCode Daily Challenge
 
 on:
-  # Run daily at 9:00 AM KST (00:00 UTC)
+  # Run daily at 00:00 UTC (midnight UTC) - when LeetCode Daily Challenge resets
   schedule:
     - cron: '0 0 * * *'
 
@@ -54,54 +54,28 @@ jobs:
           DATE=$(date -u +"%Y-%m-%d")
           MODELS="${{ github.event.inputs.ai_model }}"
           if [ -z "$MODELS" ]; then
-            MODELS="gemini-2.5-flash"
+            # Default: generate with both models for daily automation
+            MODELS="gemini-2.5-flash llama-3.3-70b-versatile"
           fi
           echo "Generating post for $DATE with models: $MODELS"
           python scripts/generate_posts.py "$DATE" $MODELS
 
-      - name: Configure Git
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-
       - name: Commit and push changes
         run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
           DATE=$(date -u +"%Y-%m-%d")
-          git add _posts/
+
+          # Add all generated files (posts, cache, snippets)
+          git add _posts/ data/
 
           # Check if there are changes to commit
           if git diff --staged --quiet; then
-            echo "No new post to commit (may already exist)"
+            echo "No changes to commit (post may already exist)"
             exit 0
           fi
 
-          # Extract title from the generated post frontmatter
-          YEAR=$(date -u +"%Y")
-          MONTH=$(date -u +"%m")
-          DAY=$(date -u +"%d")
-          POST_PATH=$(find "_posts/_daily/$YEAR/$MONTH/$DAY" -maxdepth 1 -name "*.md" | head -n 1)
-          if [ -z "$POST_PATH" ]; then
-            echo "No generated post found for $DATE; aborting commit."
-            exit 1
-          fi
-          TITLE=$(POST_PATH="$POST_PATH" python - <<'PY'
-import os, sys, yaml
-from pathlib import Path
-
-path = Path(os.environ["POST_PATH"])
-try:
-    text = path.read_text(encoding="utf-8")
-    if text.startswith("---"):
-        parts = text.split("---", 2)
-        if len(parts) > 2:
-            meta = yaml.safe_load(parts[1]) or {}
-            print(meta.get("title", "LeetCode Daily Challenge"))
-            sys.exit(0)
-except Exception:
-    pass
-print("LeetCode Daily Challenge")
-PY
-)
-
-          git commit -m "Add LeetCode daily challenge: $TITLE ($DATE)"
+          # Commit changes
+          git commit -m "Add LeetCode daily challenge for $DATE"
           git push origin master

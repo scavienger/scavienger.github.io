@@ -7,7 +7,7 @@
 2. **Archive & Tag Pages** - 문제 탐색 기능 완료
 3. **Visual Improvements** - 다크모드, 반응형 디자인 완료
 4. **AI Solution Generation** - Gemini/Groq 자동 솔루션 생성 완료
-5. **GitHub Actions 자동화** - 매일 09:00 KST 자동 실행
+5. **GitHub Actions 자동화** - 매일 00:00 UTC 자동 실행
 
 ---
 
@@ -115,7 +115,7 @@
 
 ### Phase 1: 기본 인프라
 - [x] Jekyll 블로그 기본 셋업
-- [x] GitHub Actions 자동화 워크플로우 (매일 09:00 KST)
+- [x] GitHub Actions 자동화 워크플로우 (매일 00:00 UTC)
 - [x] LeetCode API 연동 스크립트
 - [x] 포스트 자동 생성 스크립트
 - [x] AdSense 인증 코드 추가
