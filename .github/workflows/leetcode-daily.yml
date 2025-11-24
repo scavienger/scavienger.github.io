@@ -84,9 +84,10 @@ jobs:
             echo "No generated post found for $DATE; aborting commit."
             exit 1
           fi
-          TITLE=$(python - <<'PY'
+          TITLE=$(python - "$POST_PATH" <<'PY'
 import sys, yaml
 from pathlib import Path
+
 path = Path(sys.argv[1])
 try:
     text = path.read_text(encoding="utf-8")
@@ -100,7 +101,7 @@ except Exception:
     pass
 print("LeetCode Daily Challenge")
 PY
-"$POST_PATH")
+)
 
           git commit -m "Add LeetCode daily challenge: $TITLE ($DATE)"
           git push origin master
