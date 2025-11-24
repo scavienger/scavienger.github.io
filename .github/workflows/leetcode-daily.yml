@@ -84,11 +84,11 @@ jobs:
             echo "No generated post found for $DATE; aborting commit."
             exit 1
           fi
-          TITLE=$(python - "$POST_PATH" <<'PY'
-import sys, yaml
+          TITLE=$(POST_PATH="$POST_PATH" python - <<'PY'
+import os, sys, yaml
 from pathlib import Path
 
-path = Path(sys.argv[1])
+path = Path(os.environ["POST_PATH"])
 try:
     text = path.read_text(encoding="utf-8")
     if text.startswith("---"):
