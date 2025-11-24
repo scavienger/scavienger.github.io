@@ -46,39 +46,18 @@ jobs:
         run: |
           pip install -r scripts/requirements.txt
 
-      - name: Fetch LeetCode daily question
-        id: fetch
-        run: |
-          python scripts/fetch_leetcode.py > question_data.json
-          if [ $? -ne 0 ]; then
-            echo "Failed to fetch question"
-            exit 1
-          fi
-          echo "Question data fetched successfully"
-          cat question_data.json
-
-      - name: Generate AI solution
+      - name: Generate post with unified generator
         env:
-          AI_MODEL: ${{ inputs.ai_model || 'gemini-2.5-flash' }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: |
-          echo "Using AI model: $AI_MODEL"
-          python scripts/solve_with_ai.py question_data.json > question_with_solution.json || true
-          if [ -f question_with_solution.json ] && [ -s question_with_solution.json ]; then
-            echo "AI solution generated successfully"
-            mv question_with_solution.json question_data.json
-          else
-            echo "Warning: Failed to generate AI solution, continuing with basic post"
+          DATE=$(date -u +"%Y-%m-%d")
+          MODELS="${{ github.event.inputs.ai_model }}"
+          if [ -z "$MODELS" ]; then
+            MODELS="gemini-2.5-flash"
           fi
-
-      - name: Generate Jekyll post
-        run: |
-          python scripts/generate_post.py < question_data.json
-          if [ $? -ne 0 ]; then
-            echo "Failed to generate post"
-            exit 1
-          fi
+          echo "Generating post for $DATE with models: $MODELS"
+          python scripts/generate_posts.py "$DATE" $MODELS
 
       - name: Configure Git
         run: |
@@ -87,6 +66,7 @@ jobs:
 
       - name: Commit and push changes
         run: |
+          DATE=$(date -u +"%Y-%m-%d")
           git add _posts/
 
           # Check if there are changes to commit
@@ -95,14 +75,32 @@ jobs:
             exit 0
           fi
 
-          # Get the post title from the question data
-          TITLE=$(python -c "import json; data=json.load(open('question_data.json')); print(data['title'])")
-          DATE=$(date -u +"%Y-%m-%d")
+          # Extract title from the generated post frontmatter
+          YEAR=$(date -u +"%Y")
+          MONTH=$(date -u +"%m")
+          DAY=$(date -u +"%d")
+          POST_PATH=$(find "_posts/_daily/$YEAR/$MONTH/$DAY" -maxdepth 1 -name "*.md" | head -n 1)
+          if [ -z "$POST_PATH" ]; then
+            echo "No generated post found for $DATE; aborting commit."
+            exit 1
+          fi
+          TITLE=$(python - <<'PY'
+import sys, yaml
+from pathlib import Path
+path = Path(sys.argv[1])
+try:
+    text = path.read_text(encoding="utf-8")
+    if text.startswith("---"):
+        parts = text.split("---", 2)
+        if len(parts) > 2:
+            meta = yaml.safe_load(parts[1]) or {}
+            print(meta.get("title", "LeetCode Daily Challenge"))
+            sys.exit(0)
+except Exception:
+    pass
+print("LeetCode Daily Challenge")
+PY
+"$POST_PATH")
 
           git commit -m "Add LeetCode daily challenge: $TITLE ($DATE)"
           git push origin master
-
-      - name: Clean up
-        if: always()
-        run: |
-          rm -f question_data.json
