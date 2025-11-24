@@ -78,5 +78,21 @@
   "2025-11-20": {
     "link": "/problems/set-intersection-size-at-least-two/",
     "titleSlug": "set-intersection-size-at-least-two"
+  },
+  "2025-11-21": {
+    "link": "/problems/unique-length-3-palindromic-subsequences/",
+    "titleSlug": "unique-length-3-palindromic-subsequences"
+  },
+  "2025-11-22": {
+    "link": "/problems/find-minimum-operations-to-make-all-elements-divisible-by-three/",
+    "titleSlug": "find-minimum-operations-to-make-all-elements-divisible-by-three"
+  },
+  "2025-11-23": {
+    "link": "/problems/greatest-sum-divisible-by-three/",
+    "titleSlug": "greatest-sum-divisible-by-three"
+  },
+  "2025-11-24": {
+    "link": "/problems/binary-prefix-divisible-by-5/",
+    "titleSlug": "binary-prefix-divisible-by-5"
   }
 }
