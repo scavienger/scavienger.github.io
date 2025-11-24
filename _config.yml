@@ -16,6 +16,7 @@ plugins:
 # Exclude non-post snippet files under daily posts (language templates)
 exclude:
   - "**/*.txt"
+  - CLAUDE.md
 
 sass:
   quiet_deps: true
