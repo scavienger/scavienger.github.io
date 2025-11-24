@@ -368,6 +368,7 @@ generate_post_by_date.py
 - **Rust**: `macro_rules! { ... {{ ... }} }` → Liquid error
 
 **Required Pattern in `generate_post.py`** (lines 143-147):
+{% raw %}
 ```python
 tabs_html.append('{%% highlight %s %%}\n' % fence)
 tabs_html.append('{% raw %}\n')        # ← CRITICAL: Must not be removed!
@@ -375,6 +376,7 @@ tabs_html.append(code + '\n')
 tabs_html.append('{% endraw %}\n')     # ← CRITICAL: Must not be removed!
 tabs_html.append('{% endhighlight %}\n\n')
 ```
+{% endraw %}
 
 **Why This Matters**:
 - Without `{% raw %}`, posts with Go/Python/Rust code will fail Jekyll build
