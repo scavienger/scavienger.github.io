@@ -228,15 +228,21 @@ def generate_ai_solutions(problem_data: Dict, model_names: List[str]) -> List[Di
         os.environ["AI_MODEL"] = model
         generator = AISolutionGenerator()
         sol = generator.generate_solution(problem_data)
-        if sol:
+        # Consider it a failure if generator returned nothing, or if it returned an error placeholder.
+        approach_text = (sol or {}).get("approach", "")
+        has_solutions = bool(sol and sol.get("solutions"))
+        looks_like_error = isinstance(approach_text, str) and approach_text.lower().startswith("failed to parse ai response")
+
+        if sol and has_solutions and not looks_like_error:
             sol["model"] = model
             sol["generated_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S %z")
             solutions.append(sol)
             elapsed = sol.get("elapsed_time", 0.0)
             print(f"✅ Generated with {model} -> {elapsed:.2f}s", file=sys.stderr)
         else:
+            reason = "missing result" if not sol else "parse/validation error"
             # Use ❌ to clearly indicate failure in logs
-            print(f"❌ Failed to generate with {model}", file=sys.stderr)
+            print(f"❌ Failed to generate with {model} ({reason})", file=sys.stderr)
     return solutions
 
 
@@ -273,12 +279,24 @@ def load_existing_post(filepath: str) -> Dict:
     return meta
 
 
-def merge_solutions(existing: List[Dict], new: List[Dict]) -> List[Dict]:
-    """Replace or add solutions by model name."""
-    existing_by_model = {s.get("model"): s for s in existing or []}
+def merge_solutions(existing: List[Dict], new: List[Dict], model_order: List[str]) -> List[Dict]:
+    """Replace or add solutions by model name, preserving model order."""
+    existing_by_model = {s.get("model"): s for s in existing or [] if s.get("model")}
     for sol in new:
-        existing_by_model[sol.get("model")] = sol
-    return list(existing_by_model.values())
+        if sol.get("model"):
+            existing_by_model[sol.get("model")] = sol
+
+    ordered = []
+    for m in model_order:
+        if m in existing_by_model:
+            ordered.append(existing_by_model[m])
+
+    # Append any extra models not in the configured order
+    for key, sol in existing_by_model.items():
+        if key not in model_order:
+            ordered.append(sol)
+
+    return ordered
 
 def build_question_data(problem: Dict, date_str: str, link: str, slug: str) -> Dict:
     """Create the dictionary that will be fed to PostGenerator."""
@@ -318,10 +336,10 @@ def process_date(date_str: str, link: str, slug: str, model_names: List[str], po
 
     # Determine which models we actually need to generate
     if update_models:
-        needed_models = [m for m in update_models if m in model_names]
+        needed_models = update_models
     else:
-        # generate only missing models
-        needed_models = [m for m in model_names if not any(s.get("model") == m for s in existing_solutions)]
+        # No update flag: always regenerate all requested models
+        needed_models = model_names
 
     if not needed_models:
         print(f"?? All requested models already present for {date_str}. Skipping generation.", file=sys.stderr)
@@ -337,7 +355,7 @@ def process_date(date_str: str, link: str, slug: str, model_names: List[str], po
     # Generate only needed models
     new_solutions = generate_ai_solutions(problem, needed_models)
     # Merge with existing solutions (replace same model)
-    merged = merge_solutions(existing_solutions, new_solutions)
+    merged = merge_solutions(existing_solutions, new_solutions, model_names)
     qdata["ai_solutions"] = merged
 
     generator = PostGenerator(posts_dir)
@@ -375,13 +393,19 @@ def main():
         print(f"Error: {e}", file=sys.stderr)
         return 1
 
+    update_models = [m.strip() for m in args.update_models.split(',') if m.strip()] if args.update_models else None
+
     try:
-        models = validate_models(models_list)
+        # If no positional models are provided, fall back to update_models (if any) or defaults.
+        if models_list:
+            models = validate_models(models_list)
+        elif update_models:
+            models = validate_models(update_models)
+        else:
+            models = validate_models(models_list)  # returns DEFAULT_MODELS
     except ValueError as e:
         print(f"Error: {e}", file=sys.stderr)
         return 1
-
-    update_models = [m.strip() for m in args.update_models.split(',') if m.strip()] if args.update_models else None
 
     print(f"Dates: {', '.join(dates)}", file=sys.stderr)
     print(f"Models: {', '.join(models)}", file=sys.stderr)

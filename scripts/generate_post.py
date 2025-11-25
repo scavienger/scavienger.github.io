@@ -10,6 +10,7 @@ import os
 import re
 from datetime import datetime
 from dateutil import parser as date_parser
+import yaml
 
 
 class PostGenerator:
@@ -171,16 +172,28 @@ class PostGenerator:
         question_id = question_data.get('question_id', '')
 
         # Build frontmatter
-        frontmatter = f"""---
-layout: post
-title: "{title}"
-date: {date_str} 09:00:00 +0900
-categories: [LeetCode, {difficulty}]
-tags: {json.dumps(topics, ensure_ascii=False)}
-difficulty: {difficulty}
-leetcode_url: {leetcode_url}
----
-"""
+        frontmatter_lines = [
+            "---",
+            f'layout: post',
+            f'title: "{title}"',
+            f'date: {date_str} 09:00:00 +0900',
+            f'categories: [LeetCode, {difficulty}]',
+            f'tags: {json.dumps(topics, ensure_ascii=False)}',
+            f'difficulty: {difficulty}',
+            f'leetcode_url: {leetcode_url}',
+        ]
+
+        # Persist AI solutions into frontmatter for safe regeneration/merging
+        ai_solutions = question_data.get('ai_solutions', [])
+        if ai_solutions:
+            dumped = yaml.safe_dump(ai_solutions, allow_unicode=True, sort_keys=False)
+            indented = "\n".join(f"  {line}" if line.strip() else line for line in dumped.splitlines())
+            frontmatter_lines.append("ai_solutions:")
+            frontmatter_lines.append(indented)
+
+        frontmatter_lines.append("---")
+        frontmatter_lines.append("")
+        frontmatter = "\n".join(frontmatter_lines)
 
         # Build post body
         body_parts = []
