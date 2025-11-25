@@ -88,14 +88,16 @@ python scripts/generate_posts.py 2025-11-01 2025-11-10 gemini-2.5-flash
 To update existing posts with new AI solutions:
 
 ```bash
-# Regenerate specific model for existing post
+# Regenerate specific model for existing post (use defaults, only regen Llama)
 export GROQ_API_KEY="your-key"
-python scripts/generate_posts.py 2025-11-14 llama-3.3-70b-versatile --update-models llama-3.3-70b-versatile
+python scripts/generate_posts.py 2025-11-14 --update-models llama-3.3-70b-versatile
 
 # Regenerate multiple models
 export GEMINI_API_KEY="your-key"
 export GROQ_API_KEY="your-key"
 python scripts/generate_posts.py 2025-11-14 gemini-2.5-flash llama-3.3-70b-versatile --update-models gemini-2.5-flash,llama-3.3-70b-versatile
+
+Note: `--update-models` filters within the currently active model set. If you omit positional models, the defaults (`gemini-2.5-flash`, `llama-3.3-70b-versatile`) are used. To regen a non-default model (e.g., `qwen-2.5-32b`), add it positionally alongside `--update-models qwen-2.5-32b`.
 ```
 
 You can also trigger regeneration via GitHub Actions:
@@ -129,13 +131,12 @@ scavienger.github.io/
 │   ├── home.html               # Homepage with hero and stats
 │   └── post.html               # Post layout with TOC and related posts
 ├── _posts/                      # Generated blog posts (nested structure)
-│   ├── _daily/                 # Daily challenges
-│   │   └── YYYY/MM/DD/         # Year/Month/Day folders
-│   │       ├── slug.md         # Post file (no date prefix)
-│   │       ├── python.txt      # Python code snippet
-│   │       ├── java.txt        # Java code snippet
-│   │       └── ...             # Other language snippets
-│   └── _weekly/                # Weekly challenges (same structure)
+│   └── _daily/                 # Daily challenges
+│       └── YYYY/MM/DD/         # Year/Month/Day folders
+│           ├── slug.md         # Post file (no date prefix)
+│           ├── python.txt      # Python code snippet
+│           ├── java.txt        # Java code snippet
+│           └── ...             # Other language snippets
 ├── _sass/                       # SCSS stylesheets
 │   ├── custom.scss             # Main styles
 │   └── dark-mode.scss          # Dark mode theme overrides
@@ -149,8 +150,7 @@ scavienger.github.io/
 │   ├── generate_post.py        # Create Jekyll markdown post
 │   └── requirements.txt        # Python dependencies
 ├── data/                        # Cache files
-│   ├── daily_challenges.json   # Cached daily challenge mappings
-│   └── weekly_challenges.json  # Cached weekly challenge mappings
+│   └── daily_challenges.json   # Cached daily challenge mappings
 ├── _config.yml                  # Jekyll configuration
 ├── Gemfile                      # Ruby dependencies
 └── CLAUDE.md                    # This file
@@ -161,7 +161,7 @@ scavienger.github.io/
 The daily automation workflow (`.github/workflows/leetcode-daily.yml`) runs at 00:00 UTC (midnight UTC):
 
 1. **generate_posts.py**: Unified script that handles everything
-   - Fetches daily/weekly challenges from LeetCode GraphQL API (dailyCodingChallengeV2)
+   - Fetches daily challenges from LeetCode GraphQL API (dailyCodingChallengeV2)
    - Caches challenge mappings (date → link, titleSlug) in `data/daily_challenges.json`
    - Fetches problem details by titleSlug via GraphQL (question query)
    - Saves code snippets for all 19 languages to `_posts/_daily/YYYY/MM/DD/{lang}.txt`
@@ -332,7 +332,6 @@ The code tabs use Pure CSS with JavaScript enhancement:
     }
   }
   ```
-- `data/weekly_challenges.json`: Same structure for weekly challenges
 - Cache updated automatically when generating posts for missing dates
 - Uses GraphQL query `dailyCodingChallengeV2(year, month)` to fetch month data at once
 
@@ -416,8 +415,7 @@ _posts/_daily/2025/11/23/
 
 **Collections:**
 - `_daily`: Daily challenge posts (nested under `_posts/_daily/`)
-- `_weekly`: Weekly challenge posts (nested under `_posts/_weekly/`)
-- Both collections output to `/:year/:month/:day/:title/` permalink
+- Output to `/:year/:month/:day/:title/` permalink
 
 **Navigation**:
 - Archive (chronological by date)
@@ -472,10 +470,10 @@ generate_posts.py 2025-11-23 gemini-2.5-flash llama-3.3-70b-versatile
 
 **Regeneration with Update:**
 ```
-generate_posts.py 2025-11-14 gemini-2.5-flash --update-models gemini-2.5-flash
+generate_posts.py 2025-11-14 --update-models gemini-2.5-flash
   → Load existing post
   → Fetch problem details
-  → Generate only specified model
+  → Generate only specified model(s) (defaults list still used for validation)
   → Merge with existing solutions (replace same model)
   → Overwrite post
 ```
@@ -727,7 +725,7 @@ See **BRANCHING_STRATEGY.md** for details.
 ## Key Constraints
 
 ### LeetCode API
-- GraphQL API provides reliable daily/weekly challenge data
+- GraphQL API provides reliable daily challenge data
 - `dailyCodingChallengeV2` query fetches month data at once
 - Problem details fetched by `titleSlug` via `question` query
 - Rate limiting: Be respectful, use caching and delays in batch operations

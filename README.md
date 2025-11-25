@@ -77,11 +77,10 @@ scavienger.github.io/
 │   ├── home.html           # Homepage layout
 │   └── post.html           # Post layout with TOC
 ├── _posts/                 # Auto-generated blog posts (nested by date)
-│   ├── _daily/             # Daily challenges
-│   │   └── YYYY/MM/DD/     # Year/Month/Day folders
-│   │       ├── slug.md     # Post file
-│   │       └── *.txt       # Code snippets for each language
-│   └── _weekly/            # Weekly challenges (same structure)
+│   └── _daily/             # Daily challenges
+│       └── YYYY/MM/DD/     # Year/Month/Day folders
+│           ├── slug.md     # Post file
+│           └── *.txt       # Code snippets for each language
 ├── .github/
 │   └── workflows/
 │       ├── leetcode-daily.yml         # Daily automation workflow
@@ -93,8 +92,7 @@ scavienger.github.io/
 │   ├── solve_with_ai.py     # AI solution generator
 │   └── generate_post.py     # Jekyll post generator
 ├── data/                    # Cache files
-│   ├── daily_challenges.json   # Cached daily challenge mappings
-│   └── weekly_challenges.json  # Cached weekly challenge mappings
+│   └── daily_challenges.json   # Cached daily challenge mappings
 └── assets/
     └── js/
         ├── dark-mode.js     # Dark mode toggle
@@ -107,7 +105,7 @@ scavienger.github.io/
 ### Daily Automation
 
 1. **Scheduled Trigger**: GitHub Actions runs daily at 00:00 UTC (midnight UTC)
-2. **Fetch Challenges**: Queries LeetCode GraphQL API for daily/weekly challenges
+2. **Fetch Challenges**: Queries LeetCode GraphQL API for daily challenges
 3. **Cache Mapping**: Stores date-to-problem mappings in `data/daily_challenges.json`
 4. **Fetch Problem Details**: Gets problem content, examples, hints, and code templates
 5. **Save Snippets**: Stores code templates for all 19 languages
@@ -132,11 +130,13 @@ scavienger.github.io/
 export GEMINI_API_KEY="your-key-here"
 export GROQ_API_KEY="your-key-here"
 
-# Regenerate with single model
-python scripts/generate_posts.py 2025-11-23 gemini-2.5-flash --update-models gemini-2.5-flash
+# Regenerate with single model (use defaults, but only regen Gemini)
+python scripts/generate_posts.py 2025-11-23 --update-models gemini-2.5-flash
 
 # Regenerate with multiple models
 python scripts/generate_posts.py 2025-11-23 gemini-2.5-flash llama-3.3-70b-versatile --update-models gemini-2.5-flash,llama-3.3-70b-versatile
+
+**How it works:** If you omit model arguments, the default set (`gemini-2.5-flash`, `llama-3.3-70b-versatile`) is used; `--update-models` restricts regeneration to the listed models that are also in the active model set. To regenerate a non-default model (e.g., qwen), include it positionally: `python scripts/generate_posts.py 2025-11-23 qwen-2.5-32b --update-models qwen-2.5-32b`.
 ```
 
 This is useful for:
@@ -262,7 +262,6 @@ If you're having trouble with problem fetching:
 ```bash
 # Delete cache to force refresh
 rm data/daily_challenges.json
-rm data/weekly_challenges.json
 ```
 
 ## Advanced Usage
@@ -278,16 +277,9 @@ python scripts/generate_posts.py 2025-11-01 2025-11-30 gemini-2.5-flash
 
 **Note:** This will make many API calls. Use delays between requests to avoid rate limiting.
 
-### Weekly Challenges
-
-The system automatically generates weekly challenge posts in addition to daily posts. They are stored in `_posts/_weekly/` with the same structure as daily posts.
-
 ### Caching System
 
-The system caches daily/weekly challenge mappings in `data/` directory:
-
-- `daily_challenges.json`: Maps dates to daily problems
-- `weekly_challenges.json`: Maps dates to weekly problems
+The system caches daily challenge mappings in `data/daily_challenges.json`.
 
 This cache allows fast regeneration without repeated API calls. The cache is automatically updated when generating posts for missing dates.
 
