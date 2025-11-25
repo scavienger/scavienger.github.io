@@ -35,7 +35,7 @@ kramdown:
       line_numbers: true
   parse_block_html: true
 # Timezone
-timezone: Asia/Seoul
+timezone: UTC
 
 # Permalink structure
 permalink: /:year/:month/:day/:title/
@@ -47,11 +47,8 @@ collections:
   daily:
     output: true
     permalink: /:year/:month/:day/:title/
-  weekly:
-    output: true
-    permalink: /:year/:month/:day/:title/
 
-# Collections directory under _posts (use _posts/_daily, _posts/_weekly)
+# Collections directory under _posts (use _posts/_daily)
 collections_dir: _posts
 
 # Header navigation
@@ -71,12 +68,6 @@ defaults:
   - scope:
       path: "_posts/_daily"
       type: "daily"
-    values:
-      layout: "post"
-      author: "scavienger"
-  - scope:
-      path: "_posts/_weekly"
-      type: "weekly"
     values:
       layout: "post"
       author: "scavienger"

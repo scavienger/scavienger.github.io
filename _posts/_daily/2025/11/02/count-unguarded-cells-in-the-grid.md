@@ -70,7 +70,7 @@ We've generated solutions using multiple AI models. Click to expand each solutio
 <details class="ai-solution-card" open markdown="1">
 <summary class="ai-solution-header">
   <span class="ai-model-badge">✨ Solution from <strong>gemini-2.5-flash</strong></span>
-  <small class="solution-timestamp">(2025-11-22 23:25:26 )</small>
+  <small class="solution-timestamp">(2025-11-23 07:25:26 UTC)</small>
 </summary>
 
 <div class="ai-solution-content">
@@ -1298,7 +1298,7 @@ end
 <details class="ai-solution-card" markdown="1">
 <summary class="ai-solution-header">
   <span class="ai-model-badge">⚡ Solution from <strong>llama-3.3-70b-versatile</strong></span>
-  <small class="solution-timestamp">(2025-11-22 23:25:42 )</small>
+  <small class="solution-timestamp">(2025-11-23 07:25:42 UTC)</small>
 </summary>
 
 <div class="ai-solution-content">
