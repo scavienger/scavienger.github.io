@@ -155,51 +155,31 @@ Problem Description:
         prompt += f"""Please provide solutions ONLY for these languages (match this list exactly): {langs_str}
 
 OUTPUT RULES (CRITICAL):
-- Return a single valid JSON object that matches the schema below.
-- Do not include markdown, code fences, or any text outside the JSON object.
-- Prefer ASCII characters; use Unicode only when necessary (e.g., in comments or string literals).
-- Each code string must contain code only (technical comments allowed, but no explanatory narration).
-- Use actual line breaks in code strings (they will be automatically escaped to \\n when serialized to JSON).
-- CRITICAL: ALL backslashes in code MUST be escaped as \\\\ (double backslash). This is MANDATORY.
-  - Example: "int* ptr;" should be "int* ptr;" (no escaping needed for forward context)
-  - Example: Use "newline" for line breaks, NOT backslash-space continuation "\\    // comment"
-  - Only valid JSON escape sequences allowed: \\", \\\\, \\/, \\b, \\f, \\n, \\r, \\t, \\uXXXX
-  - NEVER use backslash followed by space or other invalid characters (e.g., "\\    " is INVALID)
-- Properly escape special characters: use \\" for quotes inside strings.
-- Avoid HTML entities (like \\u003c); use actual characters instead.
+- Return a single JSON object matching the schema below.
+- No markdown, fences, or text outside the JSON.
+- Prefer ASCII; use Unicode only when necessary in strings.
+- Code strings must contain code only (no comments/narration). Escape every newline as \\n inside the JSON string, and use only valid JSON escapes: \\", \\\\, \\/, \\b, \\f, \\n, \\r, \\t, \\uXXXX. Never use backslash + space or other invalid forms.
+- Avoid HTML entities; use literal characters.
 
-APPROACH REQUIREMENTS:
-- Provide a DETAILED explanation of your approach (maximum 3 paragraphs)
-- Explain the problem-solving strategy step by step
-- Describe the algorithm logic clearly
-- Include examples or edge cases if helpful
-- Make the explanation thorough and educational
+APPROACH:
+- Exactly 2 concise paragraphs describing the working algorithm and key intuition (no failed attempts).
 
-CODE FORMATTING REQUIREMENTS (CRITICAL):
-- Each code solution MUST include proper line breaks and indentation
-- DO NOT write code in a single line - use multiple lines with proper formatting
-- Follow standard formatting conventions for each language
-- Properly indent nested blocks (loops, conditionals, functions)
-- Add blank lines between logical sections for readability
+CODE FORMAT:
+- Multi-line, properly indented code for each language; standard conventions; no explanatory comments.
 
-COMPLEXITY ANALYSIS:
-- Provide detailed time and space complexity with explanations
-- Explain why the complexity is what it is
-- Be thorough and educational in your analysis
+COMPLEXITY:
+- 1 short paragraph for time complexity and 1 for space complexity.
 
 Format your response as JSON:
 {{
-  "approach": "Detailed explanation here (up to 3 paragraphs)",
-  "time_complexity": "O(...) with detailed explanation",
-  "space_complexity": "O(...) with detailed explanation",
+  "approach": "Two-paragraph explanation",
+  "time_complexity": "O(...) with one-paragraph explanation",
+  "space_complexity": "O(...) with one-paragraph explanation",
   "solutions": {{
 {sample_solutions}
   }}
 }}
-
-Important: Each code solution must be complete and runnable. Include class/function definitions, imports, and follow language conventions for each specific language.
-
-Provide ONLY the JSON response, no additional text."""
+"""
 
         return prompt
 
@@ -449,8 +429,10 @@ Provide ONLY the JSON response, no additional text."""
 
     def _create_error_response(self, response_text: str) -> Dict:
         """Create a fallback response when parsing fails"""
-        # Log full response for debugging as requested
-        # print(f"[Parse Failure] Full Response:\n{response_text}", file=sys.stderr) # User requested to suppress full log for known errors
+        # Log the full response to stderr so failures are visible in console
+        if response_text:
+            cleaned = response_text.replace("```", "'''").replace("\r", "")
+            print(f"[Parse Failure] Raw response:\n{cleaned}", file=sys.stderr)
         
         # Embed the full response in the markdown for easier debugging
         # Escape triple backticks to avoid breaking the markdown code block
