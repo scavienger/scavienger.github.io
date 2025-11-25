@@ -6,6 +6,418 @@ categories: [LeetCode, Medium]
 tags: ["Array", "Math", "Number Theory"]
 difficulty: Medium
 leetcode_url: https://leetcode.com/problems/minimum-number-of-operations-to-make-all-array-elements-equal-to-1/
+ai_solutions:
+  - solutions:
+      cpp: "#include <vector>\n#include <numeric>\n#include <algorithm>\n\nclass Solution\
+        \ {\npublic:\n    int minOperations(std::vector<int>& nums) {\n        int n\
+        \ = nums.size();\n        int count_ones = 0;\n        for (int x : nums) {\n\
+        \            if (x == 1) {\n                count_ones++;\n            }\n \
+        \       }\n\n        if (count_ones > 0) {\n            return n - count_ones;\n\
+        \        }\n\n        // No ones in the array, need to create one.\n       \
+        \ // Find the shortest subarray whose GCD is 1.\n        int min_len_to_one\
+        \ = n + 1; // Initialize with a value larger than any possible length\n\n  \
+        \      for (int i = 0; i < n; ++i) {\n            int current_gcd = nums[i];\n\
+        \            for (int j = i + 1; j < n; ++j) {\n                current_gcd\
+        \ = std::gcd(current_gcd, nums[j]);\n                if (current_gcd == 1) {\n\
+        \                    min_len_to_one = std::min(min_len_to_one, j - i + 1);\n\
+        \                    break; // Found the shortest subarray starting at i with\
+        \ GCD 1\n                }\n            }\n        }\n\n        if (min_len_to_one\
+        \ == n + 1) {\n            return -1; // Impossible to make any element 1\n\
+        \        }\n\n        // Operations to create one '1': min_len_to_one - 1\n\
+        \        // Operations to convert remaining n-1 elements to '1': n - 1\n   \
+        \     return (min_len_to_one - 1) + (n - 1);\n    }\n};"
+      java: "import java.util.Arrays;\n\nclass Solution {\n    private int gcd(int a,\
+        \ int b) {\n        while (b != 0) {\n            int temp = b;\n          \
+        \  b = a % b;\n            a = temp;\n        }\n        return a;\n    }\n\n\
+        \    public int minOperations(int[] nums) {\n        int n = nums.length;\n\
+        \        int countOnes = 0;\n        for (int x : nums) {\n            if (x\
+        \ == 1) {\n                countOnes++;\n            }\n        }\n\n      \
+        \  if (countOnes > 0) {\n            return n - countOnes;\n        }\n\n  \
+        \      // No ones in the array, need to create one.\n        // Find the shortest\
+        \ subarray whose GCD is 1.\n        int minLenToOne = n + 1; // Initialize with\
+        \ a value larger than any possible length\n\n        for (int i = 0; i < n;\
+        \ ++i) {\n            int currentGcd = nums[i];\n            for (int j = i\
+        \ + 1; j < n; ++j) {\n                currentGcd = gcd(currentGcd, nums[j]);\n\
+        \                if (currentGcd == 1) {\n                    minLenToOne = Math.min(minLenToOne,\
+        \ j - i + 1);\n                    break; // Found the shortest subarray starting\
+        \ at i with GCD 1\n                }\n            }\n        }\n\n        if\
+        \ (minLenToOne == n + 1) {\n            return -1; // Impossible to make any\
+        \ element 1\n        }\n\n        // Operations to create one '1': minLenToOne\
+        \ - 1\n        // Operations to convert remaining n-1 elements to '1': n - 1\n\
+        \        return (minLenToOne - 1) + (n - 1);\n    }\n}"
+      python: "import math\n\nclass Solution:\n    def minOperations(self, nums: list[int])\
+        \ -> int:\n        n = len(nums)\n        count_ones = nums.count(1)\n\n   \
+        \     if count_ones > 0:\n            return n - count_ones\n\n        # No\
+        \ ones in the array, need to create one.\n        # Find the shortest subarray\
+        \ whose GCD is 1.\n        min_len_to_one = n + 1 # Initialize with a value\
+        \ larger than any possible length\n\n        for i in range(n):\n          \
+        \  current_gcd = nums[i]\n            for j in range(i + 1, n):\n          \
+        \      current_gcd = math.gcd(current_gcd, nums[j])\n                if current_gcd\
+        \ == 1:\n                    min_len_to_one = min(min_len_to_one, j - i + 1)\n\
+        \                    break # Found the shortest subarray starting at i with\
+        \ GCD 1\n\n        if min_len_to_one == n + 1:\n            return -1 # Impossible\
+        \ to make any element 1\n\n        # Operations to create one '1': min_len_to_one\
+        \ - 1\n        # Operations to convert remaining n-1 elements to '1': n - 1\n\
+        \        return (min_len_to_one - 1) + (n - 1)"
+      python3: "import math\n\nclass Solution:\n    def minOperations(self, nums: list[int])\
+        \ -> int:\n        n = len(nums)\n        count_ones = nums.count(1)\n\n   \
+        \     if count_ones > 0:\n            return n - count_ones\n\n        # No\
+        \ ones in the array, need to create one.\n        # Find the shortest subarray\
+        \ whose GCD is 1.\n        min_len_to_one = n + 1 # Initialize with a value\
+        \ larger than any possible length\n\n        for i in range(n):\n          \
+        \  current_gcd = nums[i]\n            for j in range(i + 1, n):\n          \
+        \      current_gcd = math.gcd(current_gcd, nums[j])\n                if current_gcd\
+        \ == 1:\n                    min_len_to_one = min(min_len_to_one, j - i + 1)\n\
+        \                    break # Found the shortest subarray starting at i with\
+        \ GCD 1\n\n        if min_len_to_one == n + 1:\n            return -1 # Impossible\
+        \ to make any element 1\n\n        # Operations to create one '1': min_len_to_one\
+        \ - 1\n        # Operations to convert remaining n-1 elements to '1': n - 1\n\
+        \        return (min_len_to_one - 1) + (n - 1)"
+      c: "#include <stdio.h>\n#include <stdlib.h>\n#include <limits.h>\n\n// Function\
+        \ to compute GCD\nint gcd(int a, int b) {\n    while (b != 0) {\n        int\
+        \ temp = b;\n        b = a % b;\n        a = temp;\n    }\n    return a;\n}\n\
+        \nint minOperations(int* nums, int numsSize) {\n    int n = numsSize;\n    int\
+        \ count_ones = 0;\n    for (int i = 0; i < n; ++i) {\n        if (nums[i] ==\
+        \ 1) {\n            count_ones++;\n        }\n    }\n\n    if (count_ones >\
+        \ 0) {\n        return n - count_ones;\n    }\n\n    // No ones in the array,\
+        \ need to create one.\n    // Find the shortest subarray whose GCD is 1.\n \
+        \   int min_len_to_one = n + 1; // Initialize with a value larger than any possible\
+        \ length\n\n    for (int i = 0; i < n; ++i) {\n        int current_gcd = nums[i];\n\
+        \        for (int j = i + 1; j < n; ++j) {\n            current_gcd = gcd(current_gcd,\
+        \ nums[j]);\n            if (current_gcd == 1) {\n                min_len_to_one\
+        \ = (min_len_to_one < (j - i + 1)) ? min_len_to_one : (j - i + 1);\n       \
+        \         break; // Found the shortest subarray starting at i with GCD 1\n \
+        \           }\n        }\n    }\n\n    if (min_len_to_one == n + 1) {\n    \
+        \    return -1; // Impossible to make any element 1\n    }\n\n    // Operations\
+        \ to create one '1': min_len_to_one - 1\n    // Operations to convert remaining\
+        \ n-1 elements to '1': n - 1\n    return (min_len_to_one - 1) + (n - 1);\n}"
+      csharp: "using System;\nusing System.Linq;\n\npublic class Solution {\n    private\
+        \ int Gcd(int a, int b) {\n        while (b != 0) {\n            int temp =\
+        \ b;\n            b = a % b;\n            a = temp;\n        }\n        return\
+        \ a;\n    }\n\n    public int MinOperations(int[] nums) {\n        int n = nums.Length;\n\
+        \        int countOnes = 0;\n        foreach (int x in nums) {\n           \
+        \ if (x == 1) {\n                countOnes++;\n            }\n        }\n\n\
+        \        if (countOnes > 0) {\n            return n - countOnes;\n        }\n\
+        \n        // No ones in the array, need to create one.\n        // Find the\
+        \ shortest subarray whose GCD is 1.\n        int minLenToOne = n + 1; // Initialize\
+        \ with a value larger than any possible length\n\n        for (int i = 0; i\
+        \ < n; ++i) {\n            int currentGcd = nums[i];\n            for (int j\
+        \ = i + 1; j < n; ++j) {\n                currentGcd = Gcd(currentGcd, nums[j]);\n\
+        \                if (currentGcd == 1) {\n                    minLenToOne = Math.Min(minLenToOne,\
+        \ j - i + 1);\n                    break; // Found the shortest subarray starting\
+        \ at i with GCD 1\n                }\n            }\n        }\n\n        if\
+        \ (minLenToOne == n + 1) {\n            return -1; // Impossible to make any\
+        \ element 1\n        }\n\n        // Operations to create one '1': minLenToOne\
+        \ - 1\n        // Operations to convert remaining n-1 elements to '1': n - 1\n\
+        \        return (minLenToOne - 1) + (n - 1);\n    }\n}"
+      javascript: "/**\n * @param {number[]} nums\n * @return {number}\n */\nvar minOperations\
+        \ = function(nums) {\n    const n = nums.length;\n    let countOnes = 0;\n \
+        \   for (const x of nums) {\n        if (x === 1) {\n            countOnes++;\n\
+        \        }\n    }\n\n    if (countOnes > 0) {\n        return n - countOnes;\n\
+        \    }\n\n    // No ones in the array, need to create one.\n    // Find the\
+        \ shortest subarray whose GCD is 1.\n    let minLenToOne = n + 1; // Initialize\
+        \ with a value larger than any possible length\n\n    const gcd = (a, b) =>\
+        \ {\n        while (b !== 0) {\n            let temp = b;\n            b = a\
+        \ % b;\n            a = temp;\n        }\n        return a;\n    };\n\n    for\
+        \ (let i = 0; i < n; ++i) {\n        let currentGcd = nums[i];\n        for\
+        \ (let j = i + 1; j < n; ++j) {\n            currentGcd = gcd(currentGcd, nums[j]);\n\
+        \            if (currentGcd === 1) {\n                minLenToOne = Math.min(minLenToOne,\
+        \ j - i + 1);\n                break; // Found the shortest subarray starting\
+        \ at i with GCD 1\n            }\n        }\n    }\n\n    if (minLenToOne ===\
+        \ n + 1) {\n        return -1; // Impossible to make any element 1\n    }\n\n\
+        \    // Operations to create one '1': minLenToOne - 1\n    // Operations to\
+        \ convert remaining n-1 elements to '1': n - 1\n    return (minLenToOne - 1)\
+        \ + (n - 1);\n};"
+      typescript: "function minOperations(nums: number[]): number {\n    const n = nums.length;\n\
+        \    let countOnes = 0;\n    for (const x of nums) {\n        if (x === 1) {\n\
+        \            countOnes++;\n        }\n    }\n\n    if (countOnes > 0) {\n  \
+        \      return n - countOnes;\n    }\n\n    // No ones in the array, need to\
+        \ create one.\n    // Find the shortest subarray whose GCD is 1.\n    let minLenToOne\
+        \ = n + 1; // Initialize with a value larger than any possible length\n\n  \
+        \  const gcd = (a: number, b: number): number => {\n        while (b !== 0)\
+        \ {\n            let temp = b;\n            b = a % b;\n            a = temp;\n\
+        \        }\n        return a;\n    };\n\n    for (let i = 0; i < n; ++i) {\n\
+        \        let currentGcd = nums[i];\n        for (let j = i + 1; j < n; ++j)\
+        \ {\n            currentGcd = gcd(currentGcd, nums[j]);\n            if (currentGcd\
+        \ === 1) {\n                minLenToOne = Math.min(minLenToOne, j - i + 1);\n\
+        \                break; // Found the shortest subarray starting at i with GCD\
+        \ 1\n            }\n        }\n    }\n\n    if (minLenToOne === n + 1) {\n \
+        \       return -1; // Impossible to make any element 1\n    }\n\n    // Operations\
+        \ to create one '1': minLenToOne - 1\n    // Operations to convert remaining\
+        \ n-1 elements to '1': n - 1\n    return (minLenToOne - 1) + (n - 1);\n}"
+      php: "<?php\nclass Solution {\n\n    private function gcd(int $a, int $b): int\
+        \ {\n        while ($b !== 0) {\n            $temp = $b;\n            $b = $a\
+        \ % $b;\n            $a = $temp;\n        }\n        return $a;\n    }\n\n \
+        \   /**\n     * @param int[] $nums\n     * @return int\n     */\n    function\
+        \ minOperations(array $nums): int {\n        $n = count($nums);\n        $countOnes\
+        \ = 0;\n        foreach ($nums as $x) {\n            if ($x === 1) {\n     \
+        \           $countOnes++;\n            }\n        }\n\n        if ($countOnes\
+        \ > 0) {\n            return $n - $countOnes;\n        }\n\n        // No ones\
+        \ in the array, need to create one.\n        // Find the shortest subarray whose\
+        \ GCD is 1.\n        $minLenToOne = $n + 1; // Initialize with a value larger\
+        \ than any possible length\n\n        for ($i = 0; $i < $n; ++$i) {\n      \
+        \      $currentGcd = $nums[$i];\n            for ($j = $i + 1; $j < $n; ++$j)\
+        \ {\n                $currentGcd = $this->gcd($currentGcd, $nums[$j]);\n   \
+        \             if ($currentGcd === 1) {\n                    $minLenToOne = min($minLenToOne,\
+        \ $j - $i + 1);\n                    break; // Found the shortest subarray starting\
+        \ at i with GCD 1\n                }\n            }\n        }\n\n        if\
+        \ ($minLenToOne === $n + 1) {\n            return -1; // Impossible to make\
+        \ any element 1\n        }\n\n        // Operations to create one '1': minLenToOne\
+        \ - 1\n        // Operations to convert remaining n-1 elements to '1': n - 1\n\
+        \        return ($minLenToOne - 1) + ($n - 1);\n    }\n}"
+      swift: "import Foundation\n\nclass Solution {\n    private func gcd(_ a: Int,\
+        \ _ b: Int) -> Int {\n        var a = a\n        var b = b\n        while b\
+        \ != 0 {\n            let temp = b\n            b = a % b\n            a = temp\n\
+        \        }\n        return a\n    }\n\n    func minOperations(_ nums: [Int])\
+        \ -> Int {\n        let n = nums.count\n        var countOnes = 0\n        for\
+        \ x in nums {\n            if x == 1 {\n                countOnes += 1\n   \
+        \         }\n        }\n\n        if countOnes > 0 {\n            return n -\
+        \ countOnes\n        }\n\n        // No ones in the array, need to create one.\n\
+        \        // Find the shortest subarray whose GCD is 1.\n        var minLenToOne\
+        \ = n + 1 // Initialize with a value larger than any possible length\n\n   \
+        \     for i in 0..<n {\n            var currentGcd = nums[i]\n            for\
+        \ j in (i + 1)..<n {\n                currentGcd = gcd(currentGcd, nums[j])\n\
+        \                if currentGcd == 1 {\n                    minLenToOne = min(minLenToOne,\
+        \ j - i + 1)\n                    break // Found the shortest subarray starting\
+        \ at i with GCD 1\n                }\n            }\n        }\n\n        if\
+        \ minLenToOne == n + 1 {\n            return -1 // Impossible to make any element\
+        \ 1\n        }\n\n        // Operations to create one '1': minLenToOne - 1\n\
+        \        // Operations to convert remaining n-1 elements to '1': n - 1\n   \
+        \     return (minLenToOne - 1) + (n - 1)\n    }\n}"
+      kotlin: "import kotlin.math.min\n\nclass Solution {\n    private fun gcd(a: Int,\
+        \ b: Int): Int {\n        var num1 = a\n        var num2 = b\n        while\
+        \ (num2 != 0) {\n            val temp = num2\n            num2 = num1 % num2\n\
+        \            num1 = temp\n        }\n        return num1\n    }\n\n    fun minOperations(nums:\
+        \ IntArray): Int {\n        val n = nums.size\n        var countOnes = 0\n \
+        \       for (x in nums) {\n            if (x == 1) {\n                countOnes++\n\
+        \            }\n        }\n\n        if (countOnes > 0) {\n            return\
+        \ n - countOnes\n        }\n\n        // No ones in the array, need to create\
+        \ one.\n        // Find the shortest subarray whose GCD is 1.\n        var minLenToOne\
+        \ = n + 1 // Initialize with a value larger than any possible length\n\n   \
+        \     for (i in 0 until n) {\n            var currentGcd = nums[i]\n       \
+        \     for (j in i + 1 until n) {\n                currentGcd = gcd(currentGcd,\
+        \ nums[j])\n                if (currentGcd == 1) {\n                    minLenToOne\
+        \ = min(minLenToOne, j - i + 1)\n                    break // Found the shortest\
+        \ subarray starting at i with GCD 1\n                }\n            }\n    \
+        \    }\n\n        if (minLenToOne == n + 1) {\n            return -1 // Impossible\
+        \ to make any element 1\n        }\n\n        // Operations to create one '1':\
+        \ minLenToOne - 1\n        // Operations to convert remaining n-1 elements to\
+        \ '1': n - 1\n        return (minLenToOne - 1) + (n - 1)\n    }\n}"
+      dart: "import 'dart:math';\n\nclass Solution {\n  int _gcd(int a, int b) {\n \
+        \   while (b != 0) {\n      int temp = b;\n      b = a % b;\n      a = temp;\n\
+        \    }\n    return a;\n  }\n\n  int minOperations(List<int> nums) {\n    final\
+        \ n = nums.length;\n    int countOnes = 0;\n    for (final x in nums) {\n  \
+        \    if (x == 1) {\n        countOnes++;\n      }\n    }\n\n    if (countOnes\
+        \ > 0) {\n      return n - countOnes;\n    }\n\n    // No ones in the array,\
+        \ need to create one.\n    // Find the shortest subarray whose GCD is 1.\n \
+        \   int minLenToOne = n + 1; // Initialize with a value larger than any possible\
+        \ length\n\n    for (int i = 0; i < n; ++i) {\n      int currentGcd = nums[i];\n\
+        \      for (int j = i + 1; j < n; ++j) {\n        currentGcd = _gcd(currentGcd,\
+        \ nums[j]);\n        if (currentGcd == 1) {\n          minLenToOne = min(minLenToOne,\
+        \ j - i + 1);\n          break; // Found the shortest subarray starting at i\
+        \ with GCD 1\n        }\n      }\n    }\n\n    if (minLenToOne == n + 1) {\n\
+        \      return -1; // Impossible to make any element 1\n    }\n\n    // Operations\
+        \ to create one '1': minLenToOne - 1\n    // Operations to convert remaining\
+        \ n-1 elements to '1': n - 1\n    return (minLenToOne - 1) + (n - 1);\n  }\n\
+        }"
+      go: "package main\n\nimport (\n\t\"math\"\n)\n\nfunc gcd(a, b int) int {\n\tfor\
+        \ b != 0 {\n\t\ta, b = b, a%b\n\t}\n\treturn a\n}\n\nfunc minOperations(nums\
+        \ []int) int {\n\tn := len(nums)\n\tcountOnes := 0\n\tfor _, x := range nums\
+        \ {\n\t\tif x == 1 {\n\t\t\tcountOnes++\n\t\t}\n\t}\n\n\tif countOnes > 0 {\n\
+        \t\treturn n - countOnes\n\t}\n\n\t// No ones in the array, need to create one.\n\
+        \t// Find the shortest subarray whose GCD is 1.\n\tminLenToOne := n + 1 // Initialize\
+        \ with a value larger than any possible length\n\n\tfor i := 0; i < n; i++ {\n\
+        \t\tcurrentGcd := nums[i]\n\t\tfor j := i + 1; j < n; j++ {\n\t\t\tcurrentGcd\
+        \ = gcd(currentGcd, nums[j])\n\t\t\tif currentGcd == 1 {\n\t\t\t\tminLenToOne\
+        \ = int(math.Min(float64(minLenToOne), float64(j-i+1)))\n\t\t\t\tbreak // Found\
+        \ the shortest subarray starting at i with GCD 1\n\t\t\t}\n\t\t}\n\t}\n\n\t\
+        if minLenToOne == n + 1 {\n\t\treturn -1 // Impossible to make any element 1\n\
+        \t}\n\n\t// Operations to create one '1': minLenToOne - 1\n\t// Operations to\
+        \ convert remaining n-1 elements to '1': n - 1\n\treturn (minLenToOne - 1) +\
+        \ (n - 1)\n}"
+      ruby: "def gcd(a, b)\n  while b != 0\n    a, b = b, a % b\n  end\n  a\nend\n\n\
+        # @param {Integer[]} nums\n# @return {Integer}\ndef min_operations(nums)\n \
+        \ n = nums.length\n  count_ones = nums.count(1)\n\n  if count_ones > 0\n   \
+        \ return n - count_ones\n  end\n\n  # No ones in the array, need to create one.\n\
+        \  # Find the shortest subarray whose GCD is 1.\n  min_len_to_one = n + 1 #\
+        \ Initialize with a value larger than any possible length\n\n  (0...n).each\
+        \ do |i|\n    current_gcd = nums[i]\n    (i + 1...n).each do |j|\n      current_gcd\
+        \ = gcd(current_gcd, nums[j])\n      if current_gcd == 1\n        min_len_to_one\
+        \ = [min_len_to_one, j - i + 1].min\n        break # Found the shortest subarray\
+        \ starting at i with GCD 1\n      end\n    end\n  end\n\n  if min_len_to_one\
+        \ == n + 1\n    return -1 # Impossible to make any element 1\n  end\n\n  # Operations\
+        \ to create one '1': min_len_to_one - 1\n  # Operations to convert remaining\
+        \ n-1 elements to '1': n - 1\n  (min_len_to_one - 1) + (n - 1)\nend"
+      scala: "import scala.annotation.tailrec\nimport scala.math.min\n\nobject Solution\
+        \ {\n    @tailrec\n    private def gcd(a: Int, b: Int): Int = {\n        if\
+        \ (b == 0) a\n        else gcd(b, a % b)\n    }\n\n    def minOperations(nums:\
+        \ Array[Int]): Int = {\n        val n = nums.length\n        val countOnes =\
+        \ nums.count(_ == 1)\n\n        if (countOnes > 0) {\n            return n -\
+        \ countOnes\n        }\n\n        // No ones in the array, need to create one.\n\
+        \        // Find the shortest subarray whose GCD is 1.\n        var minLenToOne\
+        \ = n + 1 // Initialize with a value larger than any possible length\n\n   \
+        \     for (i <- 0 until n) {\n            var currentGcd = nums(i)\n       \
+        \     for (j <- i + 1 until n) {\n                currentGcd = gcd(currentGcd,\
+        \ nums(j))\n                if (currentGcd == 1) {\n                    minLenToOne\
+        \ = min(minLenToOne, j - i + 1)\n                    break // Found the shortest\
+        \ subarray starting at i with GCD 1\n                }\n            }\n    \
+        \    }\n\n        if (minLenToOne == n + 1) {\n            return -1 // Impossible\
+        \ to make any element 1\n        }\n\n        // Operations to create one '1':\
+        \ minLenToOne - 1\n        // Operations to convert remaining n-1 elements to\
+        \ '1': n - 1\n        (minLenToOne - 1) + (n - 1)\n    }\n}"
+      rust: "impl Solution {\n    fn gcd(mut a: i32, mut b: i32) -> i32 {\n        while\
+        \ b != 0 {\n            let temp = b;\n            b = a % b;\n            a\
+        \ = temp;\n        }\n        a\n    }\n\n    pub fn min_operations(nums: Vec<i32>)\
+        \ -> i32 {\n        let n = nums.len() as i32;\n        let mut count_ones =\
+        \ 0;\n        for &x in nums.iter() {\n            if x == 1 {\n           \
+        \     count_ones += 1;\n            }\n        }\n\n        if count_ones >\
+        \ 0 {\n            return n - count_ones;\n        }\n\n        // No ones in\
+        \ the array, need to create one.\n        // Find the shortest subarray whose\
+        \ GCD is 1.\n        let mut min_len_to_one = n + 1; // Initialize with a value\
+        \ larger than any possible length\n\n        for i in 0..n as usize {\n    \
+        \        let mut current_gcd = nums[i];\n            for j in (i + 1)..n as\
+        \ usize {\n                current_gcd = Self::gcd(current_gcd, nums[j]);\n\
+        \                if current_gcd == 1 {\n                    min_len_to_one =\
+        \ min_len_to_one.min((j - i + 1) as i32);\n                    break; // Found\
+        \ the shortest subarray starting at i with GCD 1\n                }\n      \
+        \      }\n        }\n\n        if min_len_to_one == n + 1 {\n            return\
+        \ -1; // Impossible to make any element 1\n        }\n\n        // Operations\
+        \ to create one '1': min_len_to_one - 1\n        // Operations to convert remaining\
+        \ n-1 elements to '1': n - 1\n        (min_len_to_one - 1) + (n - 1)\n    }\n\
+        }"
+      racket: "#lang racket\n\n(define (gcd a b)\n  (if (= b 0)\n      a\n      (gcd\
+        \ b (modulo a b))))\n\n(define/public (min-operations nums)\n  (define n (vector-length\
+        \ nums))\n  (define count-ones (for/sum ([x (in-vector nums)]) (if (= x 1) 1\
+        \ 0)))\n\n  (when (> count-ones 0)\n    (return (- n count-ones)))\n\n  ;; No\
+        \ ones in the array, need to create one.\n  ;; Find the shortest subarray whose\
+        \ GCD is 1.\n  (define min-len-to-one (+ n 1)) ; Initialize with a value larger\
+        \ than any possible length\n\n  (for ([i (in-range n)])\n    (define current-gcd\
+        \ (vector-ref nums i))\n    (for ([j (in-range (+ i 1) n)])\n      (set! current-gcd\
+        \ (gcd current-gcd (vector-ref nums j)))\n      (when (= current-gcd 1)\n  \
+        \      (set! min-len-to-one (min min-len-to-one (+ (- j i) 1)))\n        (break)\
+        \ ; Found the shortest subarray starting at i with GCD 1\n        )))\n\n  (if\
+        \ (= min-len-to-one (+ n 1))\n      -1 ; Impossible to make any element 1\n\
+        \      ;; Operations to create one '1': min-len-to-one - 1\n      ;; Operations\
+        \ to convert remaining n-1 elements to '1': n - 1\n      (+ (- min-len-to-one\
+        \ 1) (- n 1))))"
+      erlang: "-module(solution).\n-export([min_operations/1]).\n\n%% Function to compute\
+        \ GCD\ngcd(A, 0) -> A;\ngcd(A, B) -> gcd(B, A rem B).\n\n-spec min_operations(Nums\
+        \ :: [integer()]) -> integer().\nmin_operations(Nums) ->\n    N = length(Nums),\n\
+        \    CountOnes = lists:foldl(fun(X, Acc) -> if X == 1 -> Acc + 1; true -> Acc\
+        \ end end, 0, Nums),\n\n    if CountOnes > 0 ->\n        N - CountOnes;\n  \
+        \  true ->\n        %% No ones in the array, need to create one.\n        %%\
+        \ Find the shortest subarray whose GCD is 1.\n        MinLenToOne = find_min_len_to_one(Nums,\
+        \ N),\n\n        if MinLenToOne == N + 1 ->\n            -1; %% Impossible to\
+        \ make any element 1\n        true ->\n            %% Operations to create one\
+        \ '1': MinLenToOne - 1\n            %% Operations to convert remaining N-1 elements\
+        \ to '1': N - 1\n            (MinLenToOne - 1) + (N - 1)\n        end\n    end.\n\
+        \nfind_min_len_to_one(Nums, N) ->\n    lists:foldl(fun(I, AccMinLen) ->\n  \
+        \      CurrentGcd = lists:nth(I + 1, Nums),\n        {NewMinLen, _} = lists:foldl(fun(J,\
+        \ {CurrentMinLen, CurrentGcdAcc}) ->\n            NextGcd = gcd(CurrentGcdAcc,\
+        \ lists:nth(J + 1, Nums)),\n            if NextGcd == 1 ->\n               \
+        \ {min(CurrentMinLen, J - I + 1), NextGcd};\n            true ->\n         \
+        \       {CurrentMinLen, NextGcd}\n            end\n        end, {AccMinLen,\
+        \ CurrentGcd}, lists:seq(I + 1, N - 1)),\n        NewMinLen\n    end, N + 1,\
+        \ lists:seq(0, N - 1))."
+      elixir: "defmodule Solution do\n  @spec min_operations(nums :: [integer()]) ::\
+        \ integer()\n  def min_operations(nums) do\n    n = length(nums)\n    count_ones\
+        \ = Enum.count(nums, fn x -> x == 1 end)\n\n    if count_ones > 0 do\n     \
+        \ n - count_ones\n    else\n      # No ones in the array, need to create one.\n\
+        \      # Find the shortest subarray whose GCD is 1.\n      min_len_to_one =\
+        \ find_min_len_to_one(nums, n)\n\n      if min_len_to_one == n + 1 do\n    \
+        \    -1 # Impossible to make any element 1\n      else\n        # Operations\
+        \ to create one '1': min_len_to_one - 1\n        # Operations to convert remaining\
+        \ n-1 elements to '1': n - 1\n        (min_len_to_one - 1) + (n - 1)\n     \
+        \ end\n    end\n  end\n\n  defp find_min_len_to_one(nums, n) do\n    0..(n -\
+        \ 1)\n    |> Enum.reduce(n + 1, fn i, acc_min_len ->\n      current_gcd = Enum.at(nums,\
+        \ i)\n      {new_min_len, _} = (i + 1)..(n - 1)\n      |> Enum.reduce({acc_min_len,\
+        \ current_gcd}, fn j, {current_min_len, current_gcd_acc} ->\n        next_gcd\
+        \ = gcd(current_gcd_acc, Enum.at(nums, j))\n        if next_gcd == 1 do\n  \
+        \        {min(current_min_len, j - i + 1), next_gcd}\n        else\n       \
+        \   {current_min_len, next_gcd}\n        end\n      end)\n      new_min_len\n\
+        \    end)\n  end\n\n  defp gcd(a, 0), do: a\n  defp gcd(a, b), do: gcd(b, rem(a,\
+        \ b))\nend"
+    approach: The problem asks for the minimum number of operations to make all elements
+      in an array equal to 1. An operation involves replacing an element with the GCD
+      of itself and an adjacent element. The key insight is that if the array already
+      contains at least one '1', then all other elements can be converted to '1' in
+      a single operation each by taking their GCD with an adjacent '1'. For example,
+      if `nums[k] = 1`, then `nums[k-1]` can become `gcd(nums[k-1], nums[k]) = gcd(nums[k-1],
+      1) = 1` in one operation. Thus, if there are `count_ones` ones initially, we need
+      `n - count_ones` operations to convert the remaining elements.
+    time_complexity: The time complexity is O(N^2 * log(max_val)). In the worst case,
+      we iterate through all possible subarrays (N^2 subarrays). For each subarray,
+      we compute its GCD, which involves N GCD operations. Each GCD operation takes
+      O(log(max_val)) time, where max_val is the maximum value in `nums`. Since N is
+      small (up to 50), N^2 is 2500, and log(10^6) is about 20, this complexity is well
+      within limits.
+    space_complexity: The space complexity is O(1) as we only use a few variables to
+      store counts, minimum length, and current GCD during the iteration. No auxiliary
+      data structures that scale with input size are used.
+    elapsed_time: 46.570815563201904
+    model: gemini-2.5-flash
+    generated_at: '2025-11-25 00:11:45 '
+  - solutions:
+      cpp: '// Generation failed for C++
+
+        // Reason: HTTP Error 429'
+      java: '// Generation failed for Java
+
+        // Reason: HTTP Error 429'
+      python: '// Generation failed for Python
+
+        // Reason: HTTP Error 429'
+      python3: '// Generation failed for Python3
+
+        // Reason: HTTP Error 429'
+      c: '// Generation failed for C
+
+        // Reason: HTTP Error 429'
+      csharp: '// Generation failed for C#
+
+        // Reason: HTTP Error 429'
+      javascript: '// Generation failed for JavaScript
+
+        // Reason: HTTP Error 429'
+      typescript: '// Generation failed for TypeScript
+
+        // Reason: HTTP Error 429'
+      php: '// Generation failed for PHP
+
+        // Reason: HTTP Error 429'
+      swift: '// Generation failed for Swift
+
+        // Reason: HTTP Error 429'
+      kotlin: '// Generation failed for Kotlin
+
+        // Reason: HTTP Error 429'
+      dart: '// Generation failed for Dart
+
+        // Reason: HTTP Error 429'
+      go: '// Generation failed for Go
+
+        // Reason: HTTP Error 429'
+      ruby: '// Generation failed for Ruby
+
+        // Reason: HTTP Error 429'
+      scala: '// Generation failed for Scala
+
+        // Reason: HTTP Error 429'
+      rust: '// Generation failed for Rust
+
+        // Reason: HTTP Error 429'
+      racket: '// Generation failed for Racket
+
+        // Reason: HTTP Error 429'
+      erlang: '// Generation failed for Erlang
+
+        // Reason: HTTP Error 429'
+      elixir: '// Generation failed for Elixir
+
+        // Reason: HTTP Error 429'
+    elapsed_time: 0.5985558032989502
+    model: llama-3.3-70b-versatile
+    generated_at: '2025-11-25 00:11:46 '
 ---
 
 ## Problem #2654: Minimum Number of Operations to Make All Array Elements Equal to 1
@@ -70,14 +482,14 @@ We've generated solutions using multiple AI models. Click to expand each solutio
 <details class="ai-solution-card" open markdown="1">
 <summary class="ai-solution-header">
   <span class="ai-model-badge">✨ Solution from <strong>gemini-2.5-flash</strong></span>
-  <small class="solution-timestamp">(2025-11-23 00:16:11 )</small>
+  <small class="solution-timestamp">(2025-11-25 00:11:45 )</small>
 </summary>
 
 <div class="ai-solution-content">
 
 ### Approach
 
-First, count existing '1's. If any '1's are present, the minimum operations are `n - count_ones`. Otherwise, find the shortest subarray whose elements' greatest common divisor (GCD) is '1'. If such a subarray has length `L`, it takes `L-1` operations to make one of its elements '1'. Once a '1' is created, it takes `n-1` additional operations to make all other elements '1'. The total is `(L-1) + (n-1)`. If no subarray has a GCD of '1', it's impossible, return -1.
+The problem asks for the minimum number of operations to make all elements in an array equal to 1. An operation involves replacing an element with the GCD of itself and an adjacent element. The key insight is that if the array already contains at least one '1', then all other elements can be converted to '1' in a single operation each by taking their GCD with an adjacent '1'. For example, if `nums[k] = 1`, then `nums[k-1]` can become `gcd(nums[k-1], nums[k]) = gcd(nums[k-1], 1) = 1` in one operation. Thus, if there are `count_ones` ones initially, we need `n - count_ones` operations to convert the remaining elements.
 
 ### Code
 
@@ -135,7 +547,6 @@ class Solution {
 public:
     int minOperations(std::vector<int>& nums) {
         int n = nums.size();
-
         int count_ones = 0;
         for (int x : nums) {
             if (x == 1) {
@@ -147,24 +558,28 @@ public:
             return n - count_ones;
         }
 
-        int min_len_gcd_one = n + 1; 
+        // No ones in the array, need to create one.
+        // Find the shortest subarray whose GCD is 1.
+        int min_len_to_one = n + 1; // Initialize with a value larger than any possible length
 
         for (int i = 0; i < n; ++i) {
             int current_gcd = nums[i];
             for (int j = i + 1; j < n; ++j) {
                 current_gcd = std::gcd(current_gcd, nums[j]);
                 if (current_gcd == 1) {
-                    min_len_gcd_one = std::min(min_len_gcd_one, j - i + 1);
-                    break; 
+                    min_len_to_one = std::min(min_len_to_one, j - i + 1);
+                    break; // Found the shortest subarray starting at i with GCD 1
                 }
             }
         }
 
-        if (min_len_gcd_one == n + 1) {
-            return -1;
+        if (min_len_to_one == n + 1) {
+            return -1; // Impossible to make any element 1
         }
 
-        return (min_len_gcd_one - 1) + (n - 1);
+        // Operations to create one '1': min_len_to_one - 1
+        // Operations to convert remaining n-1 elements to '1': n - 1
+        return (min_len_to_one - 1) + (n - 1);
     }
 };
 {% endraw %}
@@ -176,8 +591,7 @@ public:
 
 {% highlight java %}
 {% raw %}
-import java.util.List;
-import java.util.ArrayList;
+import java.util.Arrays;
 
 class Solution {
     private int gcd(int a, int b) {
@@ -191,36 +605,39 @@ class Solution {
 
     public int minOperations(int[] nums) {
         int n = nums.length;
-
-        int count_ones = 0;
+        int countOnes = 0;
         for (int x : nums) {
             if (x == 1) {
-                count_ones++;
+                countOnes++;
             }
         }
 
-        if (count_ones > 0) {
-            return n - count_ones;
+        if (countOnes > 0) {
+            return n - countOnes;
         }
 
-        int min_len_gcd_one = n + 1; 
+        // No ones in the array, need to create one.
+        // Find the shortest subarray whose GCD is 1.
+        int minLenToOne = n + 1; // Initialize with a value larger than any possible length
 
         for (int i = 0; i < n; ++i) {
-            int current_gcd = nums[i];
+            int currentGcd = nums[i];
             for (int j = i + 1; j < n; ++j) {
-                current_gcd = gcd(current_gcd, nums[j]);
-                if (current_gcd == 1) {
-                    min_len_gcd_one = Math.min(min_len_gcd_one, j - i + 1);
-                    break; 
+                currentGcd = gcd(currentGcd, nums[j]);
+                if (currentGcd == 1) {
+                    minLenToOne = Math.min(minLenToOne, j - i + 1);
+                    break; // Found the shortest subarray starting at i with GCD 1
                 }
             }
         }
 
-        if (min_len_gcd_one == n + 1) {
-            return -1;
+        if (minLenToOne == n + 1) {
+            return -1; // Impossible to make any element 1
         }
 
-        return (min_len_gcd_one - 1) + (n - 1);
+        // Operations to create one '1': minLenToOne - 1
+        // Operations to convert remaining n-1 elements to '1': n - 1
+        return (minLenToOne - 1) + (n - 1);
     }
 }
 {% endraw %}
@@ -237,26 +654,29 @@ import math
 class Solution:
     def minOperations(self, nums: list[int]) -> int:
         n = len(nums)
-
         count_ones = nums.count(1)
 
         if count_ones > 0:
             return n - count_ones
 
-        min_len_gcd_one = float('inf')
+        # No ones in the array, need to create one.
+        # Find the shortest subarray whose GCD is 1.
+        min_len_to_one = n + 1 # Initialize with a value larger than any possible length
 
         for i in range(n):
             current_gcd = nums[i]
             for j in range(i + 1, n):
                 current_gcd = math.gcd(current_gcd, nums[j])
                 if current_gcd == 1:
-                    min_len_gcd_one = min(min_len_gcd_one, j - i + 1)
-                    break
+                    min_len_to_one = min(min_len_to_one, j - i + 1)
+                    break # Found the shortest subarray starting at i with GCD 1
 
-        if min_len_gcd_one == float('inf'):
-            return -1
+        if min_len_to_one == n + 1:
+            return -1 # Impossible to make any element 1
 
-        return (min_len_gcd_one - 1) + (n - 1)
+        # Operations to create one '1': min_len_to_one - 1
+        # Operations to convert remaining n-1 elements to '1': n - 1
+        return (min_len_to_one - 1) + (n - 1)
 {% endraw %}
 {% endhighlight %}
 
@@ -271,26 +691,29 @@ import math
 class Solution:
     def minOperations(self, nums: list[int]) -> int:
         n = len(nums)
-
         count_ones = nums.count(1)
 
         if count_ones > 0:
             return n - count_ones
 
-        min_len_gcd_one = float('inf')
+        # No ones in the array, need to create one.
+        # Find the shortest subarray whose GCD is 1.
+        min_len_to_one = n + 1 # Initialize with a value larger than any possible length
 
         for i in range(n):
             current_gcd = nums[i]
             for j in range(i + 1, n):
                 current_gcd = math.gcd(current_gcd, nums[j])
                 if current_gcd == 1:
-                    min_len_gcd_one = min(min_len_gcd_one, j - i + 1)
-                    break
+                    min_len_to_one = min(min_len_to_one, j - i + 1)
+                    break # Found the shortest subarray starting at i with GCD 1
 
-        if min_len_gcd_one == float('inf'):
-            return -1
+        if min_len_to_one == n + 1:
+            return -1 # Impossible to make any element 1
 
-        return (min_len_gcd_one - 1) + (n - 1)
+        # Operations to create one '1': min_len_to_one - 1
+        # Operations to convert remaining n-1 elements to '1': n - 1
+        return (min_len_to_one - 1) + (n - 1)
 {% endraw %}
 {% endhighlight %}
 
@@ -304,6 +727,7 @@ class Solution:
 #include <stdlib.h>
 #include <limits.h>
 
+// Function to compute GCD
 int gcd(int a, int b) {
     while (b != 0) {
         int temp = b;
@@ -315,7 +739,6 @@ int gcd(int a, int b) {
 
 int minOperations(int* nums, int numsSize) {
     int n = numsSize;
-
     int count_ones = 0;
     for (int i = 0; i < n; ++i) {
         if (nums[i] == 1) {
@@ -327,24 +750,28 @@ int minOperations(int* nums, int numsSize) {
         return n - count_ones;
     }
 
-    int min_len_gcd_one = n + 1; 
+    // No ones in the array, need to create one.
+    // Find the shortest subarray whose GCD is 1.
+    int min_len_to_one = n + 1; // Initialize with a value larger than any possible length
 
     for (int i = 0; i < n; ++i) {
         int current_gcd = nums[i];
         for (int j = i + 1; j < n; ++j) {
             current_gcd = gcd(current_gcd, nums[j]);
             if (current_gcd == 1) {
-                min_len_gcd_one = (min_len_gcd_one < (j - i + 1)) ? min_len_gcd_one : (j - i + 1);
-                break; 
+                min_len_to_one = (min_len_to_one < (j - i + 1)) ? min_len_to_one : (j - i + 1);
+                break; // Found the shortest subarray starting at i with GCD 1
             }
         }
     }
 
-    if (min_len_gcd_one == n + 1) {
-        return -1;
+    if (min_len_to_one == n + 1) {
+        return -1; // Impossible to make any element 1
     }
 
-    return (min_len_gcd_one - 1) + (n - 1);
+    // Operations to create one '1': min_len_to_one - 1
+    // Operations to convert remaining n-1 elements to '1': n - 1
+    return (min_len_to_one - 1) + (n - 1);
 }
 {% endraw %}
 {% endhighlight %}
@@ -370,7 +797,6 @@ public class Solution {
 
     public int MinOperations(int[] nums) {
         int n = nums.Length;
-
         int countOnes = 0;
         foreach (int x in nums) {
             if (x == 1) {
@@ -382,24 +808,28 @@ public class Solution {
             return n - countOnes;
         }
 
-        int minLenGcdOne = n + 1; 
+        // No ones in the array, need to create one.
+        // Find the shortest subarray whose GCD is 1.
+        int minLenToOne = n + 1; // Initialize with a value larger than any possible length
 
         for (int i = 0; i < n; ++i) {
             int currentGcd = nums[i];
             for (int j = i + 1; j < n; ++j) {
                 currentGcd = Gcd(currentGcd, nums[j]);
                 if (currentGcd == 1) {
-                    minLenGcdOne = Math.Min(minLenGcdOne, j - i + 1);
-                    break; 
+                    minLenToOne = Math.Min(minLenToOne, j - i + 1);
+                    break; // Found the shortest subarray starting at i with GCD 1
                 }
             }
         }
 
-        if (minLenGcdOne == n + 1) {
-            return -1;
+        if (minLenToOne == n + 1) {
+            return -1; // Impossible to make any element 1
         }
 
-        return (minLenGcdOne - 1) + (n - 1);
+        // Operations to create one '1': minLenToOne - 1
+        // Operations to convert remaining n-1 elements to '1': n - 1
+        return (minLenToOne - 1) + (n - 1);
     }
 }
 {% endraw %}
@@ -417,16 +847,6 @@ public class Solution {
  */
 var minOperations = function(nums) {
     const n = nums.length;
-
-    const gcd = (a, b) => {
-        while (b !== 0) {
-            let temp = b;
-            b = a % b;
-            a = temp;
-        }
-        return a;
-    };
-
     let countOnes = 0;
     for (const x of nums) {
         if (x === 1) {
@@ -438,24 +858,37 @@ var minOperations = function(nums) {
         return n - countOnes;
     }
 
-    let minLenGcdOne = n + 1; 
+    // No ones in the array, need to create one.
+    // Find the shortest subarray whose GCD is 1.
+    let minLenToOne = n + 1; // Initialize with a value larger than any possible length
+
+    const gcd = (a, b) => {
+        while (b !== 0) {
+            let temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    };
 
     for (let i = 0; i < n; ++i) {
         let currentGcd = nums[i];
         for (let j = i + 1; j < n; ++j) {
             currentGcd = gcd(currentGcd, nums[j]);
             if (currentGcd === 1) {
-                minLenGcdOne = Math.min(minLenGcdOne, j - i + 1);
-                break; 
+                minLenToOne = Math.min(minLenToOne, j - i + 1);
+                break; // Found the shortest subarray starting at i with GCD 1
             }
         }
     }
 
-    if (minLenGcdOne === n + 1) {
-        return -1;
+    if (minLenToOne === n + 1) {
+        return -1; // Impossible to make any element 1
     }
 
-    return (minLenGcdOne - 1) + (n - 1);
+    // Operations to create one '1': minLenToOne - 1
+    // Operations to convert remaining n-1 elements to '1': n - 1
+    return (minLenToOne - 1) + (n - 1);
 };
 {% endraw %}
 {% endhighlight %}
@@ -468,16 +901,6 @@ var minOperations = function(nums) {
 {% raw %}
 function minOperations(nums: number[]): number {
     const n = nums.length;
-
-    const gcd = (a: number, b: number): number => {
-        while (b !== 0) {
-            let temp = b;
-            b = a % b;
-            a = temp;
-        }
-        return a;
-    };
-
     let countOnes = 0;
     for (const x of nums) {
         if (x === 1) {
@@ -489,25 +912,38 @@ function minOperations(nums: number[]): number {
         return n - countOnes;
     }
 
-    let minLenGcdOne = n + 1; 
+    // No ones in the array, need to create one.
+    // Find the shortest subarray whose GCD is 1.
+    let minLenToOne = n + 1; // Initialize with a value larger than any possible length
+
+    const gcd = (a: number, b: number): number => {
+        while (b !== 0) {
+            let temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    };
 
     for (let i = 0; i < n; ++i) {
         let currentGcd = nums[i];
         for (let j = i + 1; j < n; ++j) {
             currentGcd = gcd(currentGcd, nums[j]);
             if (currentGcd === 1) {
-                minLenGcdOne = Math.min(minLenGcdOne, j - i + 1);
-                break; 
+                minLenToOne = Math.min(minLenToOne, j - i + 1);
+                break; // Found the shortest subarray starting at i with GCD 1
             }
         }
     }
 
-    if (minLenGcdOne === n + 1) {
-        return -1;
+    if (minLenToOne === n + 1) {
+        return -1; // Impossible to make any element 1
     }
 
-    return (minLenGcdOne - 1) + (n - 1);
-};
+    // Operations to create one '1': minLenToOne - 1
+    // Operations to convert remaining n-1 elements to '1': n - 1
+    return (minLenToOne - 1) + (n - 1);
+}
 {% endraw %}
 {% endhighlight %}
 
@@ -535,7 +971,6 @@ class Solution {
      */
     function minOperations(array $nums): int {
         $n = count($nums);
-
         $countOnes = 0;
         foreach ($nums as $x) {
             if ($x === 1) {
@@ -547,27 +982,30 @@ class Solution {
             return $n - $countOnes;
         }
 
-        $minLenGcdOne = $n + 1; 
+        // No ones in the array, need to create one.
+        // Find the shortest subarray whose GCD is 1.
+        $minLenToOne = $n + 1; // Initialize with a value larger than any possible length
 
         for ($i = 0; $i < $n; ++$i) {
             $currentGcd = $nums[$i];
             for ($j = $i + 1; $j < $n; ++$j) {
                 $currentGcd = $this->gcd($currentGcd, $nums[$j]);
                 if ($currentGcd === 1) {
-                    $minLenGcdOne = min($minLenGcdOne, $j - $i + 1);
-                    break; 
+                    $minLenToOne = min($minLenToOne, $j - $i + 1);
+                    break; // Found the shortest subarray starting at i with GCD 1
                 }
             }
         }
 
-        if ($minLenGcdOne === $n + 1) {
-            return -1;
+        if ($minLenToOne === $n + 1) {
+            return -1; // Impossible to make any element 1
         }
 
-        return ($minLenGcdOne - 1) + ($n - 1);
+        // Operations to create one '1': minLenToOne - 1
+        // Operations to convert remaining n-1 elements to '1': n - 1
+        return ($minLenToOne - 1) + ($n - 1);
     }
 }
-?>
 {% endraw %}
 {% endhighlight %}
 
@@ -593,7 +1031,6 @@ class Solution {
 
     func minOperations(_ nums: [Int]) -> Int {
         let n = nums.count
-
         var countOnes = 0
         for x in nums {
             if x == 1 {
@@ -605,24 +1042,28 @@ class Solution {
             return n - countOnes
         }
 
-        var minLenGcdOne = n + 1 
+        // No ones in the array, need to create one.
+        // Find the shortest subarray whose GCD is 1.
+        var minLenToOne = n + 1 // Initialize with a value larger than any possible length
 
         for i in 0..<n {
             var currentGcd = nums[i]
             for j in (i + 1)..<n {
                 currentGcd = gcd(currentGcd, nums[j])
                 if currentGcd == 1 {
-                    minLenGcdOne = min(minLenGcdOne, j - i + 1)
-                    break 
+                    minLenToOne = min(minLenToOne, j - i + 1)
+                    break // Found the shortest subarray starting at i with GCD 1
                 }
             }
         }
 
-        if minLenGcdOne == n + 1 {
-            return -1
+        if minLenToOne == n + 1 {
+            return -1 // Impossible to make any element 1
         }
 
-        return (minLenGcdOne - 1) + (n - 1)
+        // Operations to create one '1': minLenToOne - 1
+        // Operations to convert remaining n-1 elements to '1': n - 1
+        return (minLenToOne - 1) + (n - 1)
     }
 }
 {% endraw %}
@@ -638,19 +1079,18 @@ import kotlin.math.min
 
 class Solution {
     private fun gcd(a: Int, b: Int): Int {
-        var a = a
-        var b = b
-        while (b != 0) {
-            val temp = b
-            b = a % b
-            a = temp
+        var num1 = a
+        var num2 = b
+        while (num2 != 0) {
+            val temp = num2
+            num2 = num1 % num2
+            num1 = temp
         }
-        return a
+        return num1
     }
 
     fun minOperations(nums: IntArray): Int {
         val n = nums.size
-
         var countOnes = 0
         for (x in nums) {
             if (x == 1) {
@@ -662,24 +1102,28 @@ class Solution {
             return n - countOnes
         }
 
-        var minLenGcdOne = n + 1 
+        // No ones in the array, need to create one.
+        // Find the shortest subarray whose GCD is 1.
+        var minLenToOne = n + 1 // Initialize with a value larger than any possible length
 
         for (i in 0 until n) {
             var currentGcd = nums[i]
             for (j in i + 1 until n) {
                 currentGcd = gcd(currentGcd, nums[j])
                 if (currentGcd == 1) {
-                    minLenGcdOne = min(minLenGcdOne, j - i + 1)
-                    break 
+                    minLenToOne = min(minLenToOne, j - i + 1)
+                    break // Found the shortest subarray starting at i with GCD 1
                 }
             }
         }
 
-        if (minLenGcdOne == n + 1) {
-            return -1
+        if (minLenToOne == n + 1) {
+            return -1 // Impossible to make any element 1
         }
 
-        return (minLenGcdOne - 1) + (n - 1)
+        // Operations to create one '1': minLenToOne - 1
+        // Operations to convert remaining n-1 elements to '1': n - 1
+        return (minLenToOne - 1) + (n - 1)
     }
 }
 {% endraw %}
@@ -705,7 +1149,6 @@ class Solution {
 
   int minOperations(List<int> nums) {
     final n = nums.length;
-
     int countOnes = 0;
     for (final x in nums) {
       if (x == 1) {
@@ -717,24 +1160,28 @@ class Solution {
       return n - countOnes;
     }
 
-    int minLenGcdOne = n + 1; 
+    // No ones in the array, need to create one.
+    // Find the shortest subarray whose GCD is 1.
+    int minLenToOne = n + 1; // Initialize with a value larger than any possible length
 
     for (int i = 0; i < n; ++i) {
       int currentGcd = nums[i];
       for (int j = i + 1; j < n; ++j) {
         currentGcd = _gcd(currentGcd, nums[j]);
         if (currentGcd == 1) {
-          minLenGcdOne = min(minLenGcdOne, j - i + 1);
-          break; 
+          minLenToOne = min(minLenToOne, j - i + 1);
+          break; // Found the shortest subarray starting at i with GCD 1
         }
       }
     }
 
-    if (minLenGcdOne == n + 1) {
-      return -1;
+    if (minLenToOne == n + 1) {
+      return -1; // Impossible to make any element 1
     }
 
-    return (minLenGcdOne - 1) + (n - 1);
+    // Operations to create one '1': minLenToOne - 1
+    // Operations to convert remaining n-1 elements to '1': n - 1
+    return (minLenToOne - 1) + (n - 1);
   }
 }
 {% endraw %}
@@ -760,37 +1207,40 @@ func gcd(a, b int) int {
 }
 
 func minOperations(nums []int) int {
-    n := len(nums)
+	n := len(nums)
+	countOnes := 0
+	for _, x := range nums {
+		if x == 1 {
+			countOnes++
+		}
+	}
 
-    countOnes := 0
-    for _, x := range nums {
-        if x == 1 {
-            countOnes++
-        }
-    }
+	if countOnes > 0 {
+		return n - countOnes
+	}
 
-    if countOnes > 0 {
-        return n - countOnes
-    }
+	// No ones in the array, need to create one.
+	// Find the shortest subarray whose GCD is 1.
+	minLenToOne := n + 1 // Initialize with a value larger than any possible length
 
-    minLenGcdOne := n + 1 
+	for i := 0; i < n; i++ {
+		currentGcd := nums[i]
+		for j := i + 1; j < n; j++ {
+			currentGcd = gcd(currentGcd, nums[j])
+			if currentGcd == 1 {
+				minLenToOne = int(math.Min(float64(minLenToOne), float64(j-i+1)))
+				break // Found the shortest subarray starting at i with GCD 1
+			}
+		}
+	}
 
-    for i := 0; i < n; i++ {
-        currentGcd := nums[i]
-        for j := i + 1; j < n; j++ {
-            currentGcd = gcd(currentGcd, nums[j])
-            if currentGcd == 1 {
-                minLenGcdOne = int(math.Min(float64(minLenGcdOne), float64(j - i + 1)))
-                break 
-            }
-        }
-    }
+	if minLenToOne == n + 1 {
+		return -1 // Impossible to make any element 1
+	}
 
-    if minLenGcdOne == n + 1 {
-        return -1
-    }
-
-    return (minLenGcdOne - 1) + (n - 1)
+	// Operations to create one '1': minLenToOne - 1
+	// Operations to convert remaining n-1 elements to '1': n - 1
+	return (minLenToOne - 1) + (n - 1)
 }
 {% endraw %}
 {% endhighlight %}
@@ -801,35 +1251,45 @@ func minOperations(nums []int) int {
 
 {% highlight ruby %}
 {% raw %}
-class Solution
-    def min_operations(nums)
-        n = nums.length
+def gcd(a, b)
+  while b != 0
+    a, b = b, a % b
+  end
+  a
+end
 
-        count_ones = nums.count(1)
+# @param {Integer[]} nums
+# @return {Integer}
+def min_operations(nums)
+  n = nums.length
+  count_ones = nums.count(1)
 
-        if count_ones > 0
-            return n - count_ones
-        end
+  if count_ones > 0
+    return n - count_ones
+  end
 
-        min_len_gcd_one = n + 1 
+  # No ones in the array, need to create one.
+  # Find the shortest subarray whose GCD is 1.
+  min_len_to_one = n + 1 # Initialize with a value larger than any possible length
 
-        (0...n).each do |i|
-            current_gcd = nums[i]
-            (i + 1...n).each do |j|
-                current_gcd = current_gcd.gcd(nums[j])
-                if current_gcd == 1
-                    min_len_gcd_one = [min_len_gcd_one, j - i + 1].min
-                    break 
-                end
-            end
-        end
-
-        if min_len_gcd_one == n + 1
-            return -1
-        end
-
-        return (min_len_gcd_one - 1) + (n - 1)
+  (0...n).each do |i|
+    current_gcd = nums[i]
+    (i + 1...n).each do |j|
+      current_gcd = gcd(current_gcd, nums[j])
+      if current_gcd == 1
+        min_len_to_one = [min_len_to_one, j - i + 1].min
+        break # Found the shortest subarray starting at i with GCD 1
+      end
     end
+  end
+
+  if min_len_to_one == n + 1
+    return -1 # Impossible to make any element 1
+  end
+
+  # Operations to create one '1': min_len_to_one - 1
+  # Operations to convert remaining n-1 elements to '1': n - 1
+  (min_len_to_one - 1) + (n - 1)
 end
 {% endraw %}
 {% endhighlight %}
@@ -852,31 +1312,34 @@ object Solution {
 
     def minOperations(nums: Array[Int]): Int = {
         val n = nums.length
-
         val countOnes = nums.count(_ == 1)
 
         if (countOnes > 0) {
             return n - countOnes
         }
 
-        var minLenGcdOne = n + 1 
+        // No ones in the array, need to create one.
+        // Find the shortest subarray whose GCD is 1.
+        var minLenToOne = n + 1 // Initialize with a value larger than any possible length
 
         for (i <- 0 until n) {
             var currentGcd = nums(i)
             for (j <- i + 1 until n) {
                 currentGcd = gcd(currentGcd, nums(j))
                 if (currentGcd == 1) {
-                    minLenGcdOne = min(minLenGcdOne, j - i + 1)
-                    break 
+                    minLenToOne = min(minLenToOne, j - i + 1)
+                    break // Found the shortest subarray starting at i with GCD 1
                 }
             }
         }
 
-        if (minLenGcdOne == n + 1) {
-            return -1
+        if (minLenToOne == n + 1) {
+            return -1 // Impossible to make any element 1
         }
 
-        (minLenGcdOne - 1) + (n - 1)
+        // Operations to create one '1': minLenToOne - 1
+        // Operations to convert remaining n-1 elements to '1': n - 1
+        (minLenToOne - 1) + (n - 1)
     }
 }
 {% endraw %}
@@ -900,7 +1363,6 @@ impl Solution {
 
     pub fn min_operations(nums: Vec<i32>) -> i32 {
         let n = nums.len() as i32;
-
         let mut count_ones = 0;
         for &x in nums.iter() {
             if x == 1 {
@@ -912,24 +1374,28 @@ impl Solution {
             return n - count_ones;
         }
 
-        let mut min_len_gcd_one = n + 1; 
+        // No ones in the array, need to create one.
+        // Find the shortest subarray whose GCD is 1.
+        let mut min_len_to_one = n + 1; // Initialize with a value larger than any possible length
 
         for i in 0..n as usize {
             let mut current_gcd = nums[i];
             for j in (i + 1)..n as usize {
-                current_gcd = Solution::gcd(current_gcd, nums[j]);
+                current_gcd = Self::gcd(current_gcd, nums[j]);
                 if current_gcd == 1 {
-                    min_len_gcd_one = std::cmp::min(min_len_gcd_one, (j - i + 1) as i32);
-                    break; 
+                    min_len_to_one = min_len_to_one.min((j - i + 1) as i32);
+                    break; // Found the shortest subarray starting at i with GCD 1
                 }
             }
         }
 
-        if min_len_gcd_one == n + 1 {
-            return -1;
+        if min_len_to_one == n + 1 {
+            return -1; // Impossible to make any element 1
         }
 
-        (min_len_gcd_one - 1) + (n - 1)
+        // Operations to create one '1': min_len_to_one - 1
+        // Operations to convert remaining n-1 elements to '1': n - 1
+        (min_len_to_one - 1) + (n - 1)
     }
 }
 {% endraw %}
@@ -943,31 +1409,36 @@ impl Solution {
 {% raw %}
 #lang racket
 
-(define (min-operations nums)
+(define (gcd a b)
+  (if (= b 0)
+      a
+      (gcd b (modulo a b))))
+
+(define/public (min-operations nums)
   (define n (vector-length nums))
+  (define count-ones (for/sum ([x (in-vector nums)]) (if (= x 1) 1 0)))
 
-  (define (count-ones)
-    (for/sum ([x (in-vector nums)])
-      (if (= x 1) 1 0)))
+  (when (> count-ones 0)
+    (return (- n count-ones)))
 
-  (define count-ones-val (count-ones))
+  ;; No ones in the array, need to create one.
+  ;; Find the shortest subarray whose GCD is 1.
+  (define min-len-to-one (+ n 1)) ; Initialize with a value larger than any possible length
 
-  (if (> count-ones-val 0)
-      (- n count-ones-val)
-      (let ([actual-min-len-gcd-one
-             (for/fold ([min-len (+ n 1)])
-                       ([i (in-range n)])
-               (let ([current-gcd-val (vector-ref nums i)])
-                 (for/fold ([inner-min-len min-len])
-                           ([j (in-range (+ i 1) n)] #:break (= current-gcd-val 1))
-                   (set! current-gcd-val (gcd current-gcd-val (vector-ref nums j)))
-                   (if (= current-gcd-val 1)
-                       (min inner-min-len (+ (- j i) 1))
-                       inner-min-len))))])
+  (for ([i (in-range n)])
+    (define current-gcd (vector-ref nums i))
+    (for ([j (in-range (+ i 1) n)])
+      (set! current-gcd (gcd current-gcd (vector-ref nums j)))
+      (when (= current-gcd 1)
+        (set! min-len-to-one (min min-len-to-one (+ (- j i) 1)))
+        (break) ; Found the shortest subarray starting at i with GCD 1
+        )))
 
-        (if (= actual-min-len-gcd-one (+ n 1))
-            -1
-            (+ (- actual-min-len-gcd-one 1) (- n 1))))))
+  (if (= min-len-to-one (+ n 1))
+      -1 ; Impossible to make any element 1
+      ;; Operations to create one '1': min-len-to-one - 1
+      ;; Operations to convert remaining n-1 elements to '1': n - 1
+      (+ (- min-len-to-one 1) (- n 1))))
 {% endraw %}
 {% endhighlight %}
 
@@ -980,45 +1451,44 @@ impl Solution {
 -module(solution).
 -export([min_operations/1]).
 
+%% Function to compute GCD
 gcd(A, 0) -> A;
 gcd(A, B) -> gcd(B, A rem B).
 
+-spec min_operations(Nums :: [integer()]) -> integer().
 min_operations(Nums) ->
     N = length(Nums),
-
-    CountOnes = lists:sum([1 || X <- Nums, X == 1]),
+    CountOnes = lists:foldl(fun(X, Acc) -> if X == 1 -> Acc + 1; true -> Acc end end, 0, Nums),
 
     if CountOnes > 0 ->
         N - CountOnes;
     true ->
-        MinLenGcdOne = find_min_len_gcd_one(Nums, N),
+        %% No ones in the array, need to create one.
+        %% Find the shortest subarray whose GCD is 1.
+        MinLenToOne = find_min_len_to_one(Nums, N),
 
-        if MinLenGcdOne == N + 1 ->
-            -1;
+        if MinLenToOne == N + 1 ->
+            -1; %% Impossible to make any element 1
         true ->
-            (MinLenGcdOne - 1) + (N - 1)
+            %% Operations to create one '1': MinLenToOne - 1
+            %% Operations to convert remaining N-1 elements to '1': N - 1
+            (MinLenToOne - 1) + (N - 1)
         end
     end.
 
-find_min_len_gcd_one(Nums, N) ->
-    find_min_len_gcd_one_outer(0, N, Nums, N + 1).
-
-find_min_len_gcd_one_outer(I, N, Nums, AccMinLen) when I < N ->
-    CurrentGcd = lists:nth(I + 1, Nums), % Nth is 1-indexed
-    MinLenForI = find_min_len_gcd_one_inner(I + 1, N, Nums, CurrentGcd, I),
-    find_min_len_gcd_one_outer(I + 1, N, Nums, min(AccMinLen, MinLenForI));
-find_min_len_gcd_one_outer(_, _, _, AccMinLen) ->
-    AccMinLen.
-
-find_min_len_gcd_one_inner(J, N, Nums, CurrentGcd, I) when J < N ->
-    NewGcd = gcd(CurrentGcd, lists:nth(J + 1, Nums)),
-    if NewGcd == 1 ->
-        J - I + 1; % Found 1, this is the shortest for this I, return it
-    true ->
-        find_min_len_gcd_one_inner(J + 1, N, Nums, NewGcd, I)
-    end;
-find_min_len_gcd_one_inner(_, _, _, _, _) ->
-    N + 1. % No GCD 1 found for this I
+find_min_len_to_one(Nums, N) ->
+    lists:foldl(fun(I, AccMinLen) ->
+        CurrentGcd = lists:nth(I + 1, Nums),
+        {NewMinLen, _} = lists:foldl(fun(J, {CurrentMinLen, CurrentGcdAcc}) ->
+            NextGcd = gcd(CurrentGcdAcc, lists:nth(J + 1, Nums)),
+            if NextGcd == 1 ->
+                {min(CurrentMinLen, J - I + 1), NextGcd};
+            true ->
+                {CurrentMinLen, NextGcd}
+            end
+        end, {AccMinLen, CurrentGcd}, lists:seq(I + 1, N - 1)),
+        NewMinLen
+    end, N + 1, lists:seq(0, N - 1)).
 {% endraw %}
 {% endhighlight %}
 
@@ -1029,47 +1499,47 @@ find_min_len_gcd_one_inner(_, _, _, _, _) ->
 {% highlight elixir %}
 {% raw %}
 defmodule Solution do
-  defp gcd(a, 0), do: a
-  defp gcd(a, b), do: gcd(b, rem(a, b))
-
+  @spec min_operations(nums :: [integer()]) :: integer()
   def min_operations(nums) do
     n = length(nums)
-
     count_ones = Enum.count(nums, fn x -> x == 1 end)
 
     if count_ones > 0 do
       n - count_ones
     else
-      min_len_gcd_one = find_min_len_gcd_one(nums, n)
+      # No ones in the array, need to create one.
+      # Find the shortest subarray whose GCD is 1.
+      min_len_to_one = find_min_len_to_one(nums, n)
 
-      if min_len_gcd_one == n + 1 do
-        -1
+      if min_len_to_one == n + 1 do
+        -1 # Impossible to make any element 1
       else
-        (min_len_gcd_one - 1) + (n - 1)
+        # Operations to create one '1': min_len_to_one - 1
+        # Operations to convert remaining n-1 elements to '1': n - 1
+        (min_len_to_one - 1) + (n - 1)
       end
     end
   end
 
-  defp find_min_len_gcd_one(nums, n) do
-    find_min_len_gcd_one_outer(0, n, nums, n + 1)
+  defp find_min_len_to_one(nums, n) do
+    0..(n - 1)
+    |> Enum.reduce(n + 1, fn i, acc_min_len ->
+      current_gcd = Enum.at(nums, i)
+      {new_min_len, _} = (i + 1)..(n - 1)
+      |> Enum.reduce({acc_min_len, current_gcd}, fn j, {current_min_len, current_gcd_acc} ->
+        next_gcd = gcd(current_gcd_acc, Enum.at(nums, j))
+        if next_gcd == 1 do
+          {min(current_min_len, j - i + 1), next_gcd}
+        else
+          {current_min_len, next_gcd}
+        end
+      end)
+      new_min_len
+    end)
   end
 
-  defp find_min_len_gcd_one_outer(i, n, nums, acc_min_len) when i < n do
-    current_gcd = Enum.at(nums, i)
-    min_len_for_i = find_min_len_gcd_one_inner(i + 1, n, nums, current_gcd, i)
-    find_min_len_gcd_one_outer(i + 1, n, nums, min(acc_min_len, min_len_for_i))
-  end
-  defp find_min_len_gcd_one_outer(_i, _n, _nums, acc_min_len), do: acc_min_len
-
-  defp find_min_len_gcd_one_inner(j, n, nums, current_gcd, i) when j < n do
-    new_gcd = gcd(current_gcd, Enum.at(nums, j))
-    if new_gcd == 1 do
-      j - i + 1 # Found 1, this is the shortest for this I, return it
-    else
-      find_min_len_gcd_one_inner(j + 1, n, nums, new_gcd, i)
-    end
-  end
-  defp find_min_len_gcd_one_inner(_j, _n, _nums, _current_gcd, _i), do: n + 1 # No GCD 1 found for this I
+  defp gcd(a, 0), do: a
+  defp gcd(a, b), do: gcd(b, rem(a, b))
 end
 {% endraw %}
 {% endhighlight %}
@@ -1080,9 +1550,9 @@ end
 
 ### Complexity Analysis
 
-- **Time Complexity:** O(N^2 * log(max_val))
+- **Time Complexity:** The time complexity is O(N^2 * log(max_val)). In the worst case, we iterate through all possible subarrays (N^2 subarrays). For each subarray, we compute its GCD, which involves N GCD operations. Each GCD operation takes O(log(max_val)) time, where max_val is the maximum value in `nums`. Since N is small (up to 50), N^2 is 2500, and log(10^6) is about 20, this complexity is well within limits.
 
-- **Space Complexity:** O(1)
+- **Space Complexity:** The space complexity is O(1) as we only use a few variables to store counts, minimum length, and current GCD during the iteration. No auxiliary data structures that scale with input size are used.
 
 </div>
 </details>
@@ -1091,7 +1561,7 @@ end
 <details class="ai-solution-card" markdown="1">
 <summary class="ai-solution-header">
   <span class="ai-model-badge">⚡ Solution from <strong>llama-3.3-70b-versatile</strong></span>
-  <small class="solution-timestamp">(2025-11-23 00:16:27 )</small>
+  <small class="solution-timestamp">(2025-11-25 00:11:46 )</small>
 </summary>
 
 <div class="ai-solution-content">
@@ -1149,7 +1619,7 @@ No approach provided
 {% highlight cpp %}
 {% raw %}
 // Generation failed for C++
-// Reason: HTTP Error 400
+// Reason: HTTP Error 429
 {% endraw %}
 {% endhighlight %}
 
@@ -1160,7 +1630,7 @@ No approach provided
 {% highlight java %}
 {% raw %}
 // Generation failed for Java
-// Reason: HTTP Error 400
+// Reason: HTTP Error 429
 {% endraw %}
 {% endhighlight %}
 
@@ -1171,7 +1641,7 @@ No approach provided
 {% highlight python %}
 {% raw %}
 // Generation failed for Python
-// Reason: HTTP Error 400
+// Reason: HTTP Error 429
 {% endraw %}
 {% endhighlight %}
 
@@ -1182,7 +1652,7 @@ No approach provided
 {% highlight python %}
 {% raw %}
 // Generation failed for Python3
-// Reason: HTTP Error 400
+// Reason: HTTP Error 429
 {% endraw %}
 {% endhighlight %}
 
@@ -1193,7 +1663,7 @@ No approach provided
 {% highlight c %}
 {% raw %}
 // Generation failed for C
-// Reason: HTTP Error 400
+// Reason: HTTP Error 429
 {% endraw %}
 {% endhighlight %}
 
@@ -1204,7 +1674,7 @@ No approach provided
 {% highlight csharp %}
 {% raw %}
 // Generation failed for C#
-// Reason: HTTP Error 400
+// Reason: HTTP Error 429
 {% endraw %}
 {% endhighlight %}
 
@@ -1215,7 +1685,7 @@ No approach provided
 {% highlight javascript %}
 {% raw %}
 // Generation failed for JavaScript
-// Reason: HTTP Error 400
+// Reason: HTTP Error 429
 {% endraw %}
 {% endhighlight %}
 
@@ -1226,7 +1696,7 @@ No approach provided
 {% highlight typescript %}
 {% raw %}
 // Generation failed for TypeScript
-// Reason: HTTP Error 400
+// Reason: HTTP Error 429
 {% endraw %}
 {% endhighlight %}
 
@@ -1237,7 +1707,7 @@ No approach provided
 {% highlight php %}
 {% raw %}
 // Generation failed for PHP
-// Reason: HTTP Error 400
+// Reason: HTTP Error 429
 {% endraw %}
 {% endhighlight %}
 
@@ -1248,7 +1718,7 @@ No approach provided
 {% highlight swift %}
 {% raw %}
 // Generation failed for Swift
-// Reason: HTTP Error 400
+// Reason: HTTP Error 429
 {% endraw %}
 {% endhighlight %}
 
@@ -1259,7 +1729,7 @@ No approach provided
 {% highlight kotlin %}
 {% raw %}
 // Generation failed for Kotlin
-// Reason: HTTP Error 400
+// Reason: HTTP Error 429
 {% endraw %}
 {% endhighlight %}
 
@@ -1270,7 +1740,7 @@ No approach provided
 {% highlight dart %}
 {% raw %}
 // Generation failed for Dart
-// Reason: HTTP Error 400
+// Reason: HTTP Error 429
 {% endraw %}
 {% endhighlight %}
 
@@ -1281,7 +1751,7 @@ No approach provided
 {% highlight go %}
 {% raw %}
 // Generation failed for Go
-// Reason: HTTP Error 400
+// Reason: HTTP Error 429
 {% endraw %}
 {% endhighlight %}
 
@@ -1292,7 +1762,7 @@ No approach provided
 {% highlight ruby %}
 {% raw %}
 // Generation failed for Ruby
-// Reason: HTTP Error 400
+// Reason: HTTP Error 429
 {% endraw %}
 {% endhighlight %}
 
@@ -1303,7 +1773,7 @@ No approach provided
 {% highlight scala %}
 {% raw %}
 // Generation failed for Scala
-// Reason: HTTP Error 400
+// Reason: HTTP Error 429
 {% endraw %}
 {% endhighlight %}
 
@@ -1314,7 +1784,7 @@ No approach provided
 {% highlight rust %}
 {% raw %}
 // Generation failed for Rust
-// Reason: HTTP Error 400
+// Reason: HTTP Error 429
 {% endraw %}
 {% endhighlight %}
 
@@ -1325,7 +1795,7 @@ No approach provided
 {% highlight racket %}
 {% raw %}
 // Generation failed for Racket
-// Reason: HTTP Error 400
+// Reason: HTTP Error 429
 {% endraw %}
 {% endhighlight %}
 
@@ -1336,7 +1806,7 @@ No approach provided
 {% highlight erlang %}
 {% raw %}
 // Generation failed for Erlang
-// Reason: HTTP Error 400
+// Reason: HTTP Error 429
 {% endraw %}
 {% endhighlight %}
 
@@ -1347,7 +1817,7 @@ No approach provided
 {% highlight elixir %}
 {% raw %}
 // Generation failed for Elixir
-// Reason: HTTP Error 400
+// Reason: HTTP Error 429
 {% endraw %}
 {% endhighlight %}
 

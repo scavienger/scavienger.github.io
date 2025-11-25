@@ -6,6 +6,996 @@ categories: [LeetCode, Hard]
 tags: ["Array", "Binary Search", "Greedy", "Queue", "Sliding Window", "Prefix Sum"]
 difficulty: Hard
 leetcode_url: https://leetcode.com/problems/maximize-the-minimum-powered-city/
+ai_solutions:
+  - solutions:
+      cpp: "class Solution {\npublic:\nbool check(long long target_power, int n, int\
+        \ r, long long k, const std::vector<int>& stations) {\nstd::vector<long long>\
+        \ diff_initial(n + 1, 0);\nstd::vector<long long> diff_for_new_stations(n +\
+        \ 1, 0);\n\nfor (int i = 0; i < n; ++i) {\n    long long val = stations[i];\n\
+        \    int start_idx = std::max(0, i - r);\n    int end_idx = std::min(n - 1,\
+        \ i + r);\n\n    diff_initial[start_idx] += val;\n    if (end_idx + 1 < n +\
+        \ 1) {\n        diff_initial[end_idx + 1] -= val;\n    }\n}\n\nlong long current_total_power_sum\
+        \ = 0;\nlong long current_added_power_effect = 0;\nlong long added_k_count =\
+        \ 0;\n\nfor (int i = 0; i < n; ++i) {\n    current_total_power_sum += diff_initial[i];\n\
+        \    current_added_power_effect += diff_for_new_stations[i];\n\n    long long\
+        \ total_power_at_i = current_total_power_sum + current_added_power_effect;\n\
+        \n    if (total_power_at_i < target_power) {\n        long long needed = target_power\
+        \ - total_power_at_i;\n        added_k_count += needed;\n\n        if (added_k_count\
+        \ > k) {\n            return false;\n        }\n\n        diff_for_new_stations[i]\
+        \ += needed;\n        int end_effect_idx = std::min(n - 1, i + 2 * r);\n   \
+        \     if (end_effect_idx + 1 < n + 1) {\n            diff_for_new_stations[end_effect_idx\
+        \ + 1] -= needed;\n        }\n\n        current_added_power_effect += needed;\n\
+        \    }\n}\n\nreturn true;\n}\n\nlong long maxPower(std::vector<int>& stations,\
+        \ int r, long long k) {\nint n = stations.size();\n\nlong long low = 0;\nlong\
+        \ long high = 2LL * 10000000000LL + 1000000000LL; // Max initial power + max\
+        \ k\nlong long ans = 0;\n\nwhile (low <= high) {\n    long long mid = low +\
+        \ (high - low) / 2;\n    if (check(mid, n, r, k, stations)) {\n        ans =\
+        \ mid;\n        low = mid + 1;\n    } else {\n        high = mid - 1;\n    }\n\
+        }\n\nreturn ans;\n}\n};"
+      java: "import java.util.List;\nimport java.util.ArrayList;\nimport java.util.Arrays;\n\
+        \nclass Solution {\n    public long maxPower(int[] stations, int r, long k)\
+        \ {\n        int n = stations.length;\n\n        long low = 0;\n        long\
+        \ high = 2L * 10000000000L + 1000000000L; // Max initial power + max k\n   \
+        \     long ans = 0;\n\n        while (low <= high) {\n            long mid =\
+        \ low + (high - low) / 2;\n            if (check(mid, n, r, k, stations)) {\n\
+        \                ans = mid;\n                low = mid + 1;\n            } else\
+        \ {\n                high = mid - 1;\n            }\n        }\n\n        return\
+        \ ans;\n    }\n\n    private boolean check(long targetPower, int n, int r, long\
+        \ k, int[] stations) {\n        long[] diffInitial = new long[n + 1];\n    \
+        \    long[] diffForNewStations = new long[n + 1];\n\n        for (int i = 0;\
+        \ i < n; ++i) {\n            long val = stations[i];\n            int startIdx\
+        \ = Math.max(0, i - r);\n            int endIdx = Math.min(n - 1, i + r);\n\n\
+        \            diffInitial[startIdx] += val;\n            if (endIdx + 1 < n +\
+        \ 1) {\n                diffInitial[endIdx + 1] -= val;\n            }\n   \
+        \     }\n\n        long currentTotalPowerSum = 0;\n        long currentAddedPowerEffect\
+        \ = 0;\n        long addedKCount = 0;\n\n        for (int i = 0; i < n; ++i)\
+        \ {\n            currentTotalPowerSum += diffInitial[i];\n            currentAddedPowerEffect\
+        \ += diffForNewStations[i];\n\n            long totalPowerAtI = currentTotalPowerSum\
+        \ + currentAddedPowerEffect;\n\n            if (totalPowerAtI < targetPower)\
+        \ {\n                long needed = targetPower - totalPowerAtI;\n          \
+        \      addedKCount += needed;\n\n                if (addedKCount > k) {\n  \
+        \                  return false;\n                }\n\n                diffForNewStations[i]\
+        \ += needed;\n                int endEffectIdx = Math.min(n - 1, i + 2 * r);\n\
+        \                if (endEffectIdx + 1 < n + 1) {\n                    diffForNewStations[endEffectIdx\
+        \ + 1] -= needed;\n                }\n\n                currentAddedPowerEffect\
+        \ += needed;\n            }\n        }\n\n        return true;\n    }\n}"
+      python: "class Solution:\n    def maxPower(self, stations: List[int], r: int,\
+        \ k: int) -> int:\n        n = len(stations)\n\n        def check(target_power:\
+        \ int) -> bool:\n            diff_initial = [0] * (n + 1)\n            diff_for_new_stations\
+        \ = [0] * (n + 1)\n\n            for i in range(n):\n                val = stations[i]\n\
+        \                start_idx = max(0, i - r)\n                end_idx = min(n\
+        \ - 1, i + r)\n\n                diff_initial[start_idx] += val\n          \
+        \      if end_idx + 1 < n + 1:\n                    diff_initial[end_idx + 1]\
+        \ -= val\n\n            current_total_power_sum = 0\n            current_added_power_effect\
+        \ = 0\n            added_k_count = 0\n\n            for i in range(n):\n   \
+        \             current_total_power_sum += diff_initial[i]\n                current_added_power_effect\
+        \ += diff_for_new_stations[i]\n\n                total_power_at_i = current_total_power_sum\
+        \ + current_added_power_effect\n\n                if total_power_at_i < target_power:\n\
+        \                    needed = target_power - total_power_at_i\n            \
+        \        added_k_count += needed\n\n                    if added_k_count > k:\n\
+        \                        return False\n\n                    diff_for_new_stations[i]\
+        \ += needed\n                    end_effect_idx = min(n - 1, i + 2 * r)\n  \
+        \                  if end_effect_idx + 1 < n + 1:\n                        diff_for_new_stations[end_effect_idx\
+        \ + 1] -= needed\n\n                    current_added_power_effect += needed\n\
+        \n            return True\n\n        low = 0\n        high = 2 * 10**10 + 10**9\
+        \ # A sufficiently large upper bound\n        ans = 0\n\n        while low <=\
+        \ high:\n            mid = low + (high - low) // 2\n            if check(mid):\n\
+        \                ans = mid\n                low = mid + 1\n            else:\n\
+        \                high = mid - 1\n\n        return ans"
+      python3: "class Solution:\n    def maxPower(self, stations: List[int], r: int,\
+        \ k: int) -> int:\n        n = len(stations)\n\n        def check(target_power:\
+        \ int) -> bool:\n            diff_initial = [0] * (n + 1)\n            diff_for_new_stations\
+        \ = [0] * (n + 1)\n\n            for i in range(n):\n                val = stations[i]\n\
+        \                start_idx = max(0, i - r)\n                end_idx = min(n\
+        \ - 1, i + r)\n\n                diff_initial[start_idx] += val\n          \
+        \      if end_idx + 1 < n + 1:\n                    diff_initial[end_idx + 1]\
+        \ -= val\n\n            current_total_power_sum = 0\n            current_added_power_effect\
+        \ = 0\n            added_k_count = 0\n\n            for i in range(n):\n   \
+        \             current_total_power_sum += diff_initial[i]\n                current_added_power_effect\
+        \ += diff_for_new_stations[i]\n\n                total_power_at_i = current_total_power_sum\
+        \ + current_added_power_effect\n\n                if total_power_at_i < target_power:\n\
+        \                    needed = target_power - total_power_at_i\n            \
+        \        added_k_count += needed\n\n                    if added_k_count > k:\n\
+        \                        return False\n\n                    diff_for_new_stations[i]\
+        \ += needed\n                    end_effect_idx = min(n - 1, i + 2 * r)\n  \
+        \                  if end_effect_idx + 1 < n + 1:\n                        diff_for_new_stations[end_effect_idx\
+        \ + 1] -= needed\n\n                    current_added_power_effect += needed\n\
+        \n            return True\n\n        low = 0\n        high = 2 * 10**10 + 10**9\
+        \ # A sufficiently large upper bound\n        ans = 0\n\n        while low <=\
+        \ high:\n            mid = low + (high - low) // 2\n            if check(mid):\n\
+        \                ans = mid\n                low = mid + 1\n            else:\n\
+        \                high = mid - 1\n\n        return ans"
+      c: "#include <stdlib.h>\n#include <string.h>\n#include <stdio.h>\n#include <stdbool.h>\n\
+        \n// Helper function for max\nlong long max(long long a, long long b) {\n  \
+        \  return a > b ? a : b;\n}\n\n// Helper function for min\nlong long min(long\
+        \ long a, long long b) {\n    return a < b ? a : b;\n}\n\n// check function\
+        \ to determine if a target_power is achievable\nbool check(long long target_power,\
+        \ int n, int r, long long k, int* stations) {\n    long long* diff_initial =\
+        \ (long long*)calloc(n + 1, sizeof(long long));\n    long long* diff_for_new_stations\
+        \ = (long long*)calloc(n + 1, sizeof(long long));\n\n    if (!diff_initial ||\
+        \ !diff_for_new_stations) {\n        // Handle memory allocation failure\n \
+        \       free(diff_initial);\n        free(diff_for_new_stations);\n        return\
+        \ false; // Or throw an error, depending on context\n    }\n\n    for (int i\
+        \ = 0; i < n; ++i) {\n        long long val = stations[i];\n        int start_idx\
+        \ = max(0, i - r);\n        int end_idx = min(n - 1, i + r);\n\n        diff_initial[start_idx]\
+        \ += val;\n        if (end_idx + 1 < n + 1) {\n            diff_initial[end_idx\
+        \ + 1] -= val;\n        }\n    }\n\n    long long current_total_power_sum =\
+        \ 0;\n    long long current_added_power_effect = 0;\n    long long added_k_count\
+        \ = 0;\n\n    for (int i = 0; i < n; ++i) {\n        current_total_power_sum\
+        \ += diff_initial[i];\n        current_added_power_effect += diff_for_new_stations[i];\n\
+        \n        long long total_power_at_i = current_total_power_sum + current_added_power_effect;\n\
+        \n        if (total_power_at_i < target_power) {\n            long long needed\
+        \ = target_power - total_power_at_i;\n            added_k_count += needed;\n\
+        \n            if (added_k_count > k) {\n                free(diff_initial);\n\
+        \                free(diff_for_new_stations);\n                return false;\n\
+        \            }\n\n            diff_for_new_stations[i] += needed;\n        \
+        \    int end_effect_idx = min(n - 1, i + 2 * r);\n            if (end_effect_idx\
+        \ + 1 < n + 1) {\n                diff_for_new_stations[end_effect_idx + 1]\
+        \ -= needed;\n            }\n\n            current_added_power_effect += needed;\n\
+        \        }\n    }\n\n    free(diff_initial);\n    free(diff_for_new_stations);\n\
+        \    return true;\n}\n\n// Main function for LeetCode problem\nlong long maxPower(int*\
+        \ stations, int stationsSize, int r, long long k) {\n    int n = stationsSize;\n\
+        \n    long long low = 0;\n    long long high = 2LL * 10000000000LL + 1000000000LL;\
+        \ // Max initial power + max k\n    long long ans = 0;\n\n    while (low <=\
+        \ high) {\n        long long mid = low + (high - low) / 2;\n        if (check(mid,\
+        \ n, r, k, stations)) {\n            ans = mid;\n            low = mid + 1;\n\
+        \        } else {\n            high = mid - 1;\n        }\n    }\n\n    return\
+        \ ans;\n}"
+      csharp: "using System;\nusing System.Collections.Generic;\nusing System.Linq;\n\
+        \npublic class Solution {\n    public long MaxPower(int[] stations, int r, long\
+        \ k) {\n        int n = stations.Length;\n\n        long low = 0;\n        long\
+        \ high = 2L * 10_000_000_000L + 1_000_000_000L; // Max initial power + max k\n\
+        \        long ans = 0;\n\n        while (low <= high) {\n            long mid\
+        \ = low + (high - low) / 2;\n            if (Check(mid, n, r, k, stations))\
+        \ {\n                ans = mid;\n                low = mid + 1;\n          \
+        \  } else {\n                high = mid - 1;\n            }\n        }\n\n \
+        \       return ans;\n    }\n\n    private bool Check(long targetPower, int n,\
+        \ int r, long k, int[] stations) {\n        long[] diffInitial = new long[n\
+        \ + 1];\n        long[] diffForNewStations = new long[n + 1];\n\n        for\
+        \ (int i = 0; i < n; ++i) {\n            long val = stations[i];\n         \
+        \   int startIdx = Math.Max(0, i - r);\n            int endIdx = Math.Min(n\
+        \ - 1, i + r);\n\n            diffInitial[startIdx] += val;\n            if\
+        \ (endIdx + 1 < n + 1) {\n                diffInitial[endIdx + 1] -= val;\n\
+        \            }\n        }\n\n        long currentTotalPowerSum = 0;\n      \
+        \  long currentAddedPowerEffect = 0;\n        long addedKCount = 0;\n\n    \
+        \    for (int i = 0; i < n; ++i) {\n            currentTotalPowerSum += diffInitial[i];\n\
+        \            currentAddedPowerEffect += diffForNewStations[i];\n\n         \
+        \   long totalPowerAtI = currentTotalPowerSum + currentAddedPowerEffect;\n\n\
+        \            if (totalPowerAtI < targetPower) {\n                long needed\
+        \ = targetPower - totalPowerAtI;\n                addedKCount += needed;\n\n\
+        \                if (addedKCount > k) {\n                    return false;\n\
+        \                }\n\n                diffForNewStations[i] += needed;\n   \
+        \             int endEffectIdx = Math.Min(n - 1, i + 2 * r);\n             \
+        \   if (endEffectIdx + 1 < n + 1) {\n                    diffForNewStations[endEffectIdx\
+        \ + 1] -= needed;\n                }\n\n                currentAddedPowerEffect\
+        \ += needed;\n            }\n        }\n\n        return true;\n    }\n}"
+      javascript: "/**\n * @param {number[]} stations\n * @param {number} r\n * @param\
+        \ {number} k\n * @return {number}\n */\nvar maxPower = function(stations, r,\
+        \ k) {\n    const n = stations.length;\n\n    const check = (target_power) =>\
+        \ {\n        const diff_initial = new Array(n + 1).fill(0);\n        const diff_for_new_stations\
+        \ = new Array(n + 1).fill(0);\n\n        for (let i = 0; i < n; ++i) {\n   \
+        \         const val = stations[i];\n            const start_idx = Math.max(0,\
+        \ i - r);\n            const end_idx = Math.min(n - 1, i + r);\n\n         \
+        \   diff_initial[start_idx] += val;\n            if (end_idx + 1 < n + 1) {\n\
+        \                diff_initial[end_idx + 1] -= val;\n            }\n        }\n\
+        \n        let current_total_power_sum = 0;\n        let current_added_power_effect\
+        \ = 0;\n        let added_k_count = 0;\n\n        for (let i = 0; i < n; ++i)\
+        \ {\n            current_total_power_sum += diff_initial[i];\n            current_added_power_effect\
+        \ += diff_for_new_stations[i];\n\n            const total_power_at_i = current_total_power_sum\
+        \ + current_added_power_effect;\n\n            if (total_power_at_i < target_power)\
+        \ {\n                const needed = target_power - total_power_at_i;\n     \
+        \           added_k_count += needed;\n\n                if (added_k_count >\
+        \ k) {\n                    return false;\n                }\n\n           \
+        \     diff_for_new_stations[i] += needed;\n                const end_effect_idx\
+        \ = Math.min(n - 1, i + 2 * r);\n                if (end_effect_idx + 1 < n\
+        \ + 1) {\n                    diff_for_new_stations[end_effect_idx + 1] -= needed;\n\
+        \                }\n\n                current_added_power_effect += needed;\n\
+        \            }\n        }\n\n        return true;\n    };\n\n    let low = 0;\n\
+        \    let high = 2 * 10**10 + 10**9; // A sufficiently large upper bound\n  \
+        \  let ans = 0;\n\n    while (low <= high) {\n        const mid = Math.floor(low\
+        \ + (high - low) / 2);\n        if (check(mid)) {\n            ans = mid;\n\
+        \            low = mid + 1;\n        } else {\n            high = mid - 1;\n\
+        \        }\n    }\n\n    return ans;\n};"
+      typescript: "function maxPower(stations: number[], r: number, k: number): number\
+        \ {\n    const n = stations.length;\n\n    const check = (target_power: number):\
+        \ boolean => {\n        const diff_initial: number[] = new Array(n + 1).fill(0);\n\
+        \        const diff_for_new_stations: number[] = new Array(n + 1).fill(0);\n\
+        \n        for (let i = 0; i < n; ++i) {\n            const val = stations[i];\n\
+        \            const start_idx = Math.max(0, i - r);\n            const end_idx\
+        \ = Math.min(n - 1, i + r);\n\n            diff_initial[start_idx] += val;\n\
+        \            if (end_idx + 1 < n + 1) {\n                diff_initial[end_idx\
+        \ + 1] -= val;\n            }\n        }\n\n        let current_total_power_sum\
+        \ = 0;\n        let current_added_power_effect = 0;\n        let added_k_count\
+        \ = 0;\n\n        for (let i = 0; i < n; ++i) {\n            current_total_power_sum\
+        \ += diff_initial[i];\n            current_added_power_effect += diff_for_new_stations[i];\n\
+        \n            const total_power_at_i = current_total_power_sum + current_added_power_effect;\n\
+        \n            if (total_power_at_i < target_power) {\n                const\
+        \ needed = target_power - total_power_at_i;\n                added_k_count +=\
+        \ needed;\n\n                if (added_k_count > k) {\n                    return\
+        \ false;\n                }\n\n                diff_for_new_stations[i] += needed;\n\
+        \                const end_effect_idx = Math.min(n - 1, i + 2 * r);\n      \
+        \          if (end_effect_idx + 1 < n + 1) {\n                    diff_for_new_stations[end_effect_idx\
+        \ + 1] -= needed;\n                }\n\n                current_added_power_effect\
+        \ += needed;\n            }\n        }\n\n        return true;\n    };\n\n \
+        \   let low = 0;\n    let high = 2 * 10**10 + 10**9; // A sufficiently large\
+        \ upper bound\n    let ans = 0;\n\n    while (low <= high) {\n        const\
+        \ mid = Math.floor(low + (high - low) / 2);\n        if (check(mid)) {\n   \
+        \         ans = mid;\n            low = mid + 1;\n        } else {\n       \
+        \     high = mid - 1;\n        }\n    }\n\n    return ans;\n}"
+      php: "class Solution {\n\n    /**\n     * @param Integer[] $stations\n     * @param\
+        \ Integer $r\n     * @param Integer $k\n     * @return Integer\n     */\n  \
+        \  function maxPower($stations, $r, $k) {\n        $n = count($stations);\n\n\
+        \        $check = function($target_power) use ($n, $r, $k, $stations) {\n  \
+        \          $diff_initial = array_fill(0, $n + 1, 0);\n            $diff_for_new_stations\
+        \ = array_fill(0, $n + 1, 0);\n\n            for ($i = 0; $i < $n; ++$i) {\n\
+        \                $val = $stations[$i];\n                $start_idx = max(0,\
+        \ $i - $r);\n                $end_idx = min($n - 1, $i + $r);\n\n          \
+        \      $diff_initial[$start_idx] += $val;\n                if ($end_idx + 1\
+        \ < $n + 1) {\n                    $diff_initial[$end_idx + 1] -= $val;\n  \
+        \              }\n            }\n\n            $current_total_power_sum = 0;\n\
+        \            $current_added_power_effect = 0;\n            $added_k_count =\
+        \ 0;\n\n            for ($i = 0; $i < $n; ++$i) {\n                $current_total_power_sum\
+        \ += $diff_initial[$i];\n                $current_added_power_effect += $diff_for_new_stations[$i];\n\
+        \n                $total_power_at_i = $current_total_power_sum + $current_added_power_effect;\n\
+        \n                if ($total_power_at_i < $target_power) {\n               \
+        \     $needed = $target_power - $total_power_at_i;\n                    $added_k_count\
+        \ += $needed;\n\n                    if ($added_k_count > $k) {\n          \
+        \              return false;\n                    }\n\n                    $diff_for_new_stations[$i]\
+        \ += $needed;\n                    $end_effect_idx = min($n - 1, $i + 2 * $r);\n\
+        \                    if ($end_effect_idx + 1 < $n + 1) {\n                 \
+        \       $diff_for_new_stations[$end_effect_idx + 1] -= $needed;\n          \
+        \          }\n\n                    $current_added_power_effect += $needed;\n\
+        \                }\n            }\n\n            return true;\n        };\n\n\
+        \        $low = 0;\n        $high = 2 * 10**10 + 10**9; // A sufficiently large\
+        \ upper bound\n        $ans = 0;\n\n        while ($low <= $high) {\n      \
+        \      $mid = floor($low + ($high - $low) / 2);\n            if ($check($mid))\
+        \ {\n                $ans = $mid;\n                $low = $mid + 1;\n      \
+        \      } else {\n                $high = $mid - 1;\n            }\n        }\n\
+        \n        return $ans;\n    }\n}"
+      swift: "class Solution {\n    func maxPower(_ stations: [Int], _ r: Int, _ k:\
+        \ Int) -> Int {\n        let n = stations.count\n\n        func check(_ target_power:\
+        \ Int) -> Bool {\n            var diff_initial = Array(repeating: 0, count:\
+        \ n + 1)\n            var diff_for_new_stations = Array(repeating: 0, count:\
+        \ n + 1)\n\n            for i in 0..<n {\n                let val = stations[i]\n\
+        \                let start_idx = max(0, i - r)\n                let end_idx\
+        \ = min(n - 1, i + r)\n\n                diff_initial[start_idx] += val\n  \
+        \              if end_idx + 1 < n + 1 {\n                    diff_initial[end_idx\
+        \ + 1] -= val\n                }\n            }\n\n            var current_total_power_sum\
+        \ = 0\n            var current_added_power_effect = 0\n            var added_k_count\
+        \ = 0\n\n            for i in 0..<n {\n                current_total_power_sum\
+        \ += diff_initial[i]\n                current_added_power_effect += diff_for_new_stations[i]\n\
+        \n                let total_power_at_i = current_total_power_sum + current_added_power_effect\n\
+        \n                if total_power_at_i < target_power {\n                   \
+        \ let needed = target_power - total_power_at_i\n                    added_k_count\
+        \ += needed\n\n                    if added_k_count > k {\n                \
+        \        return false\n                    }\n\n                    diff_for_new_stations[i]\
+        \ += needed\n                    let end_effect_idx = min(n - 1, i + 2 * r)\n\
+        \                    if end_effect_idx + 1 < n + 1 {\n                     \
+        \   diff_for_new_stations[end_effect_idx + 1] -= needed\n                  \
+        \  }\n\n                    current_added_power_effect += needed\n         \
+        \       }\n            }\n\n            return true\n        }\n\n        var\
+        \ low = 0\n        var high = 2 * 10_000_000_000 + 1_000_000_000 // A sufficiently\
+        \ large upper bound\n        var ans = 0\n\n        while low <= high {\n  \
+        \          let mid = low + (high - low) / 2\n            if check(mid) {\n \
+        \               ans = mid\n                low = mid + 1\n            } else\
+        \ {\n                high = mid - 1\n            }\n        }\n\n        return\
+        \ ans\n    }\n}"
+      kotlin: "import kotlin.math.max\nimport kotlin.math.min\n\nclass Solution {\n\
+        \    fun maxPower(stations: IntArray, r: Int, k: Long): Long {\n        val\
+        \ n = stations.size\n\n        fun check(target_power: Long): Boolean {\n  \
+        \          val diffInitial = LongArray(n + 1) { 0L }\n            val diffForNewStations\
+        \ = LongArray(n + 1) { 0L }\n\n            for (i in 0 until n) {\n        \
+        \        val val_ = stations[i].toLong()\n                val start_idx = max(0,\
+        \ i - r)\n                val end_idx = min(n - 1, i + r)\n\n              \
+        \  diffInitial[start_idx] += val_\n                if (end_idx + 1 < n + 1)\
+        \ {\n                    diffInitial[end_idx + 1] -= val_\n                }\n\
+        \            }\n\n            var currentTotalPowerSum = 0L\n            var\
+        \ currentAddedPowerEffect = 0L\n            var addedKCount = 0L\n\n       \
+        \     for (i in 0 until n) {\n                currentTotalPowerSum += diffInitial[i]\n\
+        \                currentAddedPowerEffect += diffForNewStations[i]\n\n      \
+        \          val totalPowerAtI = currentTotalPowerSum + currentAddedPowerEffect\n\
+        \n                if (totalPowerAtI < target_power) {\n                    val\
+        \ needed = target_power - totalPowerAtI\n                    addedKCount +=\
+        \ needed\n\n                    if (addedKCount > k) {\n                   \
+        \     return false\n                    }\n\n                    diffForNewStations[i]\
+        \ += needed\n                    val endEffectIdx = min(n - 1, i + 2 * r)\n\
+        \                    if (endEffectIdx + 1 < n + 1) {\n                     \
+        \   diffForNewStations[endEffectIdx + 1] -= needed\n                    }\n\n\
+        \                    currentAddedPowerEffect += needed\n                }\n\
+        \            }\n\n            return true\n        }\n\n        var low = 0L\n\
+        \        var high = 2L * 10_000_000_000L + 1_000_000_000L // A sufficiently\
+        \ large upper bound\n        var ans = 0L\n\n        while (low <= high) {\n\
+        \            val mid = low + (high - low) / 2\n            if (check(mid)) {\n\
+        \                ans = mid\n                low = mid + 1\n            } else\
+        \ {\n                high = mid - 1\n            }\n        }\n\n        return\
+        \ ans\n    }\n}"
+      dart: "import 'dart:math';\n\nclass Solution {\n  int maxPower(List<int> stations,\
+        \ int r, int k) {\n    final n = stations.length;\n\n    bool check(int targetPower)\
+        \ {\n      final diffInitial = List<int>.filled(n + 1, 0);\n      final diffForNewStations\
+        \ = List<int>.filled(n + 1, 0);\n\n      for (int i = 0; i < n; ++i) {\n   \
+        \     final val = stations[i];\n        final startIdx = max(0, i - r);\n  \
+        \      final endIdx = min(n - 1, i + r);\n\n        diffInitial[startIdx] +=\
+        \ val;\n        if (endIdx + 1 < n + 1) {\n          diffInitial[endIdx + 1]\
+        \ -= val;\n        }\n      }\n\n      int currentTotalPowerSum = 0;\n     \
+        \ int currentAddedPowerEffect = 0;\n      int addedKCount = 0;\n\n      for\
+        \ (int i = 0; i < n; ++i) {\n        currentTotalPowerSum += diffInitial[i];\n\
+        \        currentAddedPowerEffect += diffForNewStations[i];\n\n        final\
+        \ totalPowerAtI = currentTotalPowerSum + currentAddedPowerEffect;\n\n      \
+        \  if (totalPowerAtI < targetPower) {\n          final needed = targetPower\
+        \ - totalPowerAtI;\n          addedKCount += needed;\n\n          if (addedKCount\
+        \ > k) {\n            return false;\n          }\n\n          diffForNewStations[i]\
+        \ += needed;\n          final endEffectIdx = min(n - 1, i + 2 * r);\n      \
+        \    if (endEffectIdx + 1 < n + 1) {\n            diffForNewStations[endEffectIdx\
+        \ + 1] -= needed;\n          }\n\n          currentAddedPowerEffect += needed;\n\
+        \        }\n      }\n\n      return true;\n    }\n\n    int low = 0;\n    int\
+        \ high = 2 * pow(10, 10).toInt() + pow(10, 9).toInt(); // A sufficiently large\
+        \ upper bound\n    int ans = 0;\n\n    while (low <= high) {\n      final mid\
+        \ = low + ((high - low) ~/ 2);\n      if (check(mid)) {\n        ans = mid;\n\
+        \        low = mid + 1;\n      } else {\n        high = mid - 1;\n      }\n\
+        \    }\n\n    return ans;\n  }\n}"
+      go: "package main\n\nimport (\n\t\"math\"\n)\n\nfunc maxPower(stations []int,\
+        \ r int, k int) int {\n\tn := len(stations)\n\n\tcheck := func(targetPower int)\
+        \ bool {\n\t\tdiffInitial := make([]int, n+1)\n\t\tdiffForNewStations := make([]int,\
+        \ n+1)\n\n\t\tfor i := 0; i < n; i++ {\n\t\t\tval := stations[i]\n\t\t\tstartIdx\
+        \ := int(math.Max(0, float64(i-r)))\n\t\t\tendIdx := int(math.Min(float64(n-1),\
+        \ float64(i+r)))\n\n\t\t\tdiffInitial[startIdx] += val\n\t\t\tif endIdx+1 <\
+        \ n+1 {\n\t\t\t\tdiffInitial[endIdx+1] -= val\n\t\t\t}\n\t\t}\n\n\t\tcurrentTotalPowerSum\
+        \ := 0\n\t\tcurrentAddedPowerEffect := 0\n\t\taddedKCount := 0\n\n\t\tfor i\
+        \ := 0; i < n; i++ {\n\t\t\tcurrentTotalPowerSum += diffInitial[i]\n\t\t\tcurrentAddedPowerEffect\
+        \ += diffForNewStations[i]\n\n\t\t\ttotalPowerAtI := currentTotalPowerSum +\
+        \ currentAddedPowerEffect\n\n\t\t\tif totalPowerAtI < targetPower {\n\t\t\t\t\
+        needed := targetPower - totalPowerAtI\n\t\t\t\taddedKCount += needed\n\n\t\t\
+        \t\tif addedKCount > k {\n\t\t\t\t\treturn false\n\t\t\t\t}\n\n\t\t\t\tdiffForNewStations[i]\
+        \ += needed\n\t\t\t\tendEffectIdx := int(math.Min(float64(n-1), float64(i+2*r)))\n\
+        \t\t\t\tif endEffectIdx+1 < n+1 {\n\t\t\t\t\tdiffForNewStations[endEffectIdx+1]\
+        \ -= needed\n\t\t\t\t}\n\n\t\t\t\tcurrentAddedPowerEffect += needed\n\t\t\t\
+        }\n\t\t}\n\n\t\treturn true\n\t}\n\n\tlow := 0\n\thigh := 2*10000000000 + 1000000000\
+        \ // A sufficiently large upper bound\n\tans := 0\n\n\tfor low <= high {\n\t\
+        \tmid := low + (high-low)/2\n\t\tif check(mid) {\n\t\t\tans = mid\n\t\t\tlow\
+        \ = mid + 1\n\t\t} else {\n\t\t\thigh = mid - 1\n\t\t}\n\t}\n\n\treturn ans\n\
+        }"
+      ruby: "class Solution\n    # @param {Integer[]} stations\n    # @param {Integer}\
+        \ r\n    # @param {Integer} k\n    # @return {Integer}\n    def max_power(stations,\
+        \ r, k)\n        n = stations.length\n\n        check = lambda target_power\
+        \ do\n            diff_initial = Array.new(n + 1, 0)\n            diff_for_new_stations\
+        \ = Array.new(n + 1, 0)\n\n            stations.each_with_index do |val, i|\n\
+        \                start_idx = [0, i - r].max\n                end_idx = [n -\
+        \ 1, i + r].min\n\n                diff_initial[start_idx] += val\n        \
+        \        if end_idx + 1 < n + 1\n                    diff_initial[end_idx +\
+        \ 1] -= val\n                end\n            end\n\n            current_total_power_sum\
+        \ = 0\n            current_added_power_effect = 0\n            added_k_count\
+        \ = 0\n\n            n.times do |i|\n                current_total_power_sum\
+        \ += diff_initial[i]\n                current_added_power_effect += diff_for_new_stations[i]\n\
+        \n                total_power_at_i = current_total_power_sum + current_added_power_effect\n\
+        \n                if total_power_at_i < target_power\n                    needed\
+        \ = target_power - total_power_at_i\n                    added_k_count += needed\n\
+        \n                    if added_k_count > k\n                        return false\n\
+        \                    end\n\n                    diff_for_new_stations[i] +=\
+        \ needed\n                    end_effect_idx = [n - 1, i + 2 * r].min\n    \
+        \                if end_effect_idx + 1 < n + 1\n                        diff_for_new_stations[end_effect_idx\
+        \ + 1] -= needed\n                    end\n\n                    current_added_power_effect\
+        \ += needed\n                end\n            end\n\n            true\n    \
+        \    end\n\n        low = 0\n        high = 2 * 10**10 + 10**9 # A sufficiently\
+        \ large upper bound\n        ans = 0\n\n        while low <= high\n        \
+        \    mid = low + (high - low) / 2\n            if check.call(mid)\n        \
+        \        ans = mid\n                low = mid + 1\n            else\n      \
+        \          high = mid - 1\n            end\n        end\n\n        ans\n   \
+        \ end\nend"
+      scala: "import scala.collection.mutable.ArrayBuffer\nimport scala.math.{max, min}\n\
+        \nobject Solution {\n    def maxPower(stations: Array[Int], r: Int, k: Long):\
+        \ Long = {\n        val n = stations.length\n\n        def check(target_power:\
+        \ Long): Boolean = {\n            val diffInitial = ArrayBuffer.fill(n + 1)(0L)\n\
+        \            val diffForNewStations = ArrayBuffer.fill(n + 1)(0L)\n\n      \
+        \      for (i <- 0 until n) {\n                val val_ = stations(i).toLong\n\
+        \                val start_idx = max(0, i - r)\n                val end_idx\
+        \ = min(n - 1, i + r)\n\n                diffInitial(start_idx) += val_\n  \
+        \              if (end_idx + 1 < n + 1) {\n                    diffInitial(end_idx\
+        \ + 1) -= val_\n                }\n            }\n\n            var currentTotalPowerSum\
+        \ = 0L\n            var currentAddedPowerEffect = 0L\n            var addedKCount\
+        \ = 0L\n\n            for (i <- 0 until n) {\n                currentTotalPowerSum\
+        \ += diffInitial(i)\n                currentAddedPowerEffect += diffForNewStations(i)\n\
+        \n                val totalPowerAtI = currentTotalPowerSum + currentAddedPowerEffect\n\
+        \n                if (totalPowerAtI < target_power) {\n                    val\
+        \ needed = target_power - totalPowerAtI\n                    addedKCount +=\
+        \ needed\n\n                    if (addedKCount > k) {\n                   \
+        \     return false\n                    }\n\n                    diffForNewStations(i)\
+        \ += needed\n                    val endEffectIdx = min(n - 1, i + 2 * r)\n\
+        \                    if (endEffectIdx + 1 < n + 1) {\n                     \
+        \   diffForNewStations(endEffectIdx + 1) -= needed\n                    }\n\n\
+        \                    currentAddedPowerEffect += needed\n                }\n\
+        \            }\n\n            true\n        }\n\n        var low = 0L\n    \
+        \    var high = 2L * 10_000_000_000L + 1_000_000_000L // A sufficiently large\
+        \ upper bound\n        var ans = 0L\n\n        while (low <= high) {\n     \
+        \       val mid = low + (high - low) / 2\n            if (check(mid)) {\n  \
+        \              ans = mid\n                low = mid + 1\n            } else\
+        \ {\n                high = mid - 1\n            }\n        }\n\n        ans\n\
+        \    }\n}"
+      rust: "impl Solution {\n    pub fn max_power(stations: Vec<i32>, r: i32, k: i64)\
+        \ -> i64 {\n        let n = stations.len();\n\n        let check = |target_power:\
+        \ i64| -> bool {\n            let mut diff_initial = vec![0i64; n + 1];\n  \
+        \          let mut diff_for_new_stations = vec![0i64; n + 1];\n\n          \
+        \  for i in 0..n {\n                let val = stations[i] as i64;\n        \
+        \        let start_idx = (0).max(i as i32 - r) as usize;\n                let\
+        \ end_idx = (n as i32 - 1).min(i as i32 + r) as usize;\n\n                diff_initial[start_idx]\
+        \ += val;\n                if end_idx + 1 < n + 1 {\n                    diff_initial[end_idx\
+        \ + 1] -= val;\n                }\n            }\n\n            let mut current_total_power_sum\
+        \ = 0i64;\n            let mut current_added_power_effect = 0i64;\n        \
+        \    let mut added_k_count = 0i64;\n\n            for i in 0..n {\n        \
+        \        current_total_power_sum += diff_initial[i];\n                current_added_power_effect\
+        \ += diff_for_new_stations[i];\n\n                let total_power_at_i = current_total_power_sum\
+        \ + current_added_power_effect;\n\n                if total_power_at_i < target_power\
+        \ {\n                    let needed = target_power - total_power_at_i;\n   \
+        \                 added_k_count += needed;\n\n                    if added_k_count\
+        \ > k {\n                        return false;\n                    }\n\n  \
+        \                  diff_for_new_stations[i] += needed;\n                   \
+        \ let end_effect_idx = (n as i32 - 1).min(i as i32 + 2 * r) as usize;\n    \
+        \                if end_effect_idx + 1 < n + 1 {\n                        diff_for_new_stations[end_effect_idx\
+        \ + 1] -= needed;\n                    }\n\n                    current_added_power_effect\
+        \ += needed;\n                }\n            }\n\n            true\n       \
+        \ };\n\n        let mut low = 0i64;\n        let mut high = 2 * 10_000_000_000i64\
+        \ + 1_000_000_000i64; // A sufficiently large upper bound\n        let mut ans\
+        \ = 0i64;\n\n        while low <= high {\n            let mid = low + (high\
+        \ - low) / 2;\n            if check(mid) {\n                ans = mid;\n   \
+        \             low = mid + 1;\n            } else {\n                high = mid\
+        \ - 1;\n            }\n        }\n\n        ans\n    }\n}"
+      racket: "#lang racket\n\n(define (max-power stations r k)\n  (define n (vector-length\
+        \ stations))\n\n  (define (check-fixed target-power)\n    (define diff-initial\
+        \ (make-vector (+ n 1) 0))\n    (define diff-for-new-stations (make-vector (+\
+        \ n 1) 0))\n\n    (for ([i (in-range n)])\n      (define val (vector-ref stations\
+        \ i))\n      (define start-idx (max 0 (- i r)))\n      (define end-idx (min\
+        \ (- n 1) (+ i r)))\n\n      (vector-set! diff-initial start-idx (+ (vector-ref\
+        \ diff-initial start-idx) val))\n      (when (< (+ end-idx 1) (+ n 1))\n   \
+        \     (vector-set! diff-initial (+ end-idx 1) (- (vector-ref diff-initial (+\
+        \ end-idx 1)) val))))\n\n    (define current-total-power-sum 0)\n    (define\
+        \ current-added-power-effect 0)\n    (define added-k-count 0)\n\n    (for ([i\
+        \ (in-range n)])\n      (set! current-total-power-sum (+ current-total-power-sum\
+        \ (vector-ref diff-initial i)))\n      (set! current-added-power-effect (+ current-added-power-effect\
+        \ (vector-ref diff-for-new-stations i)))\n\n      (define total-power-at-i (+\
+        \ current-total-power-sum current-added-power-effect))\n\n      (when (< total-power-at-i\
+        \ target-power)\n        (define needed (- target-power total-power-at-i))\n\
+        \        (set! added-k-count (+ added-k-count needed))\n\n        (when (> added-k-count\
+        \ k)\n          (return-from check-fixed #f)) ; Early exit for false\n\n   \
+        \     (vector-set! diff-for-new-stations i (+ (vector-ref diff-for-new-stations\
+        \ i) needed))\n        (define end-effect-idx (min (- n 1) (+ i (* 2 r))))\n\
+        \        (when (< (+ end-effect-idx 1) (+ n 1))\n          (vector-set! diff-for-new-stations\
+        \ (+ end-effect-idx 1) (- (vector-ref diff-for-new-stations (+ end-effect-idx\
+        \ 1)) needed)))\n\n        (set! current-added-power-effect (+ current-added-power-effect\
+        \ needed))))\n\n    #t)\n\n  (define low 0)\n  (define high (+ (* 2 10000000000)\
+        \ 1000000000)) ; A sufficiently large upper bound\n  (define ans 0)\n\n  (let\
+        \ loop ((l low) (h high) (a ans))\n    (if (<= l h)\n        (let* ((mid (+\
+        \ l (quotient (- h l) 2))))\n          (if (check-fixed mid)\n             \
+        \ (loop (+ mid 1) h mid)\n              (loop l (- mid 1) a)))\n        a)))"
+      erlang: "-module(solution).\n-export([max_power/3]).\n\nmax_power(Stations, R,\
+        \ K) ->\n    N = length(Stations),\n\n    Check = fun(TargetPower) ->\n    \
+        \    DiffInitial = array:new(N + 1, {default, 0}),\n        DiffForNewStations\
+        \ = array:new(N + 1, {default, 0}),\n\n        % Calculate initial power contributions\
+        \ from existing stations\n        DiffInitial1 = lists:foldl(fun(I, AccDiffInitial)\
+        \ ->\n            Val = lists:nth(I + 1, Stations),\n            StartIdx =\
+        \ max(0, I - R),\n            EndIdx = min(N - 1, I + R),\n\n            AccDiffInitial2\
+        \ = array:set(StartIdx, array:get(StartIdx, AccDiffInitial) + Val, AccDiffInitial),\n\
+        \            if (EndIdx + 1 < N + 1) ->\n                array:set(EndIdx +\
+        \ 1, array:get(EndIdx + 1, AccDiffInitial2) - Val, AccDiffInitial2);\n     \
+        \       true ->\n                AccDiffInitial2\n            end\n        end,\
+        \ DiffInitial, lists:seq(0, N - 1)),\n\n        CurrentTotalPowerSum = 0,\n\
+        \        CurrentAddedPowerEffect = 0,\n        AddedKCount = 0,\n\n        {_,\
+        \ _, _, Result} = lists:foldl(fun(I, {AccCurrentTotalPowerSum, AccCurrentAddedPowerEffect,\
+        \ AccAddedKCount, Possible}) ->\n            if not Possible ->\n          \
+        \      {AccCurrentTotalPowerSum, AccCurrentAddedPowerEffect, AccAddedKCount,\
+        \ Possible};\n            true ->\n                NewCurrentTotalPowerSum =\
+        \ AccCurrentTotalPowerSum + array:get(I, DiffInitial1),\n                NewCurrentAddedPowerEffect\
+        \ = AccCurrentAddedPowerEffect + array:get(I, DiffForNewStations),\n\n     \
+        \           TotalPowerAtI = NewCurrentTotalPowerSum + NewCurrentAddedPowerEffect,\n\
+        \n                if (TotalPowerAtI < TargetPower) ->\n                    Needed\
+        \ = TargetPower - TotalPowerAtI,\n                    NewAddedKCount = AccAddedKCount\
+        \ + Needed,\n\n                    if (NewAddedKCount > K) ->\n            \
+        \            {NewCurrentTotalPowerSum, NewCurrentAddedPowerEffect, NewAddedKCount,\
+        \ false};\n                    true ->\n                        DiffForNewStations1\
+        \ = array:set(I, array:get(I, DiffForNewStations) + Needed, DiffForNewStations),\n\
+        \                        EndEffectIdx = min(N - 1, I + 2 * R),\n           \
+        \             DiffForNewStations2 = if (EndEffectIdx + 1 < N + 1) ->\n     \
+        \                       array:set(EndEffectIdx + 1, array:get(EndEffectIdx +\
+        \ 1, DiffForNewStations1) - Needed, DiffForNewStations1);\n                \
+        \        true ->\n                            DiffForNewStations1\n        \
+        \                end,\n                        {NewCurrentTotalPowerSum, NewCurrentAddedPowerEffect\
+        \ + Needed, NewAddedKCount, true}\n                    end;\n              \
+        \  true ->\n                    {NewCurrentTotalPowerSum, NewCurrentAddedPowerEffect,\
+        \ AccAddedKCount, true}\n                end\n            end\n        end,\
+        \ {CurrentTotalPowerSum, CurrentAddedPowerEffect, AddedKCount, true}, lists:seq(0,\
+        \ N - 1)),\n\n        Result\n    end,\n\n    Low = 0,\n    High = 2 * 10000000000\
+        \ + 1000000000, % A sufficiently large upper bound\n    Ans = 0,\n\n    binary_search(Low,\
+        \ High, Ans, Check).\n\nbinary_search(Low, High, Ans, Check) when Low =< High\
+        \ ->\n    Mid = Low + (High - Low) div 2,\n    case Check(Mid) of\n        true\
+        \ ->\n            binary_search(Mid + 1, High, Mid, Check);\n        false ->\n\
+        \            binary_search(Low, Mid - 1, Ans, Check)\n    end;\nbinary_search(_,\
+        \ _, Ans, _) ->\n    Ans.\n\n% Helper functions for max/min\nmax(A, B) when\
+        \ A >= B -> A;\nmax(A, B) -> B.\n\nmin(A, B) when A =< B -> A;\nmin(A, B) ->\
+        \ B."
+      elixir: "defmodule Solution do\n  @spec max_power(stations :: [integer], r ::\
+        \ integer, k :: integer) :: integer\n  def max_power(stations, r, k) do\n  \
+        \  n = length(stations)\n\n    check = fn target_power ->\n      diff_initial\
+        \ = :array.new(n + 1, default: 0)\n      diff_for_new_stations = :array.new(n\
+        \ + 1, default: 0)\n\n      # Calculate initial power contributions from existing\
+        \ stations\n      diff_initial = Enum.reduce(0..(n - 1), diff_initial, fn i,\
+        \ acc_diff_initial ->\n        val = Enum.at(stations, i)\n        start_idx\
+        \ = max(0, i - r)\n        end_idx = min(n - 1, i + r)\n\n        acc_diff_initial_2\
+        \ = :array.set(start_idx, :array.get(start_idx, acc_diff_initial) + val, acc_diff_initial)\n\
+        \        if end_idx + 1 < n + 1 do\n          :array.set(end_idx + 1, :array.get(end_idx\
+        \ + 1, acc_diff_initial_2) - val, acc_diff_initial_2)\n        else\n      \
+        \    acc_diff_initial_2\n        end\n      end)\n\n      current_total_power_sum\
+        \ = 0\n      current_added_power_effect = 0\n      added_k_count = 0\n\n   \
+        \   {_final_sum, _final_effect, _final_k_count, possible} = Enum.reduce_while(0..(n\
+        \ - 1), {current_total_power_sum, current_added_power_effect, added_k_count,\
+        \ true}, fn i, {acc_current_total_power_sum, acc_current_added_power_effect,\
+        \ acc_added_k_count, current_possible} ->\n        if not current_possible do\n\
+        \          {:halt, {acc_current_total_power_sum, acc_current_added_power_effect,\
+        \ acc_added_k_count, current_possible}}\n        else\n          new_current_total_power_sum\
+        \ = acc_current_total_power_sum + :array.get(i, diff_initial)\n          new_current_added_power_effect\
+        \ = acc_current_added_power_effect + :array.get(i, diff_for_new_stations)\n\n\
+        \          total_power_at_i = new_current_total_power_sum + new_current_added_power_effect\n\
+        \n          if total_power_at_i < target_power do\n            needed = target_power\
+        \ - total_power_at_i\n            new_added_k_count = acc_added_k_count + needed\n\
+        \n            if new_added_k_count > k do\n              {:halt, {new_current_total_power_sum,\
+        \ new_current_added_power_effect, new_added_k_count, false}}\n            else\n\
+        \              :array.set(i, :array.get(i, diff_for_new_stations) + needed,\
+        \ diff_for_new_stations)\n              end_effect_idx = min(n - 1, i + 2 *\
+        \ r)\n              if end_effect_idx + 1 < n + 1 do\n                :array.set(end_effect_idx\
+        \ + 1, :array.get(end_effect_idx + 1, diff_for_new_stations) - needed, diff_for_new_stations)\n\
+        \              else\n                :ok # no change to diff_for_new_stations\n\
+        \              end\n              {:cont, {new_current_total_power_sum, new_current_added_power_effect\
+        \ + needed, new_added_k_count, true}}\n            end\n          else\n   \
+        \         {:cont, {new_current_total_power_sum, new_current_added_power_effect,\
+        \ acc_added_k_count, true}}\n          end\n        end\n      end)\n      possible\n\
+        \    end\n\n    low = 0\n    high = 2 * :math.pow(10, 10) |> round() + :math.pow(10,\
+        \ 9) |> round() # A sufficiently large upper bound\n    ans = 0\n\n    binary_search(low,\
+        \ high, ans, check)\n  end\n\n  defp binary_search(low, high, ans, check) when\
+        \ low <= high do\n    mid = low + div(high - low, 2)\n    if check.(mid) do\n\
+        \      binary_search(mid + 1, high, mid, check)\n    else\n      binary_search(low,\
+        \ mid - 1, ans, check)\n    end\n  end\n\n  defp binary_search(_low, _high,\
+        \ ans, _check), do: ans\n\n  defp max(a, b), do: if a >= b, do: a, else: b\n\
+        \  defp min(a, b), do: if a <= b, do: a, else: b\nend"
+    approach: 'The problem asks us to maximize the minimum power of any city by adding
+      at most `k` power stations. This is a classic "maximize the minimum" type problem,
+      which can typically be solved using binary search on the answer. We can binary
+      search for the maximum possible minimum power `X` that can be achieved for all
+      cities. The `check(X)` function will determine if it''s possible to make every
+      city have at least `X` power using at most `k` additional stations.
+
+
+      The `check(X)` function employs a greedy strategy combined with a difference array
+      (or sweep-line) technique for efficient power calculation. First, we need to calculate
+      the initial power provided to each city by the existing `stations`. A naive approach
+      of summing stations within range `r` for each city would be O(N*R), which is too
+      slow. Instead, we use a difference array `diff_initial`. For each station `stations[s_idx]`,
+      it contributes power to cities in the range `[max(0, s_idx - r), min(n-1, s_idx
+      + r)]`. We mark the start of its contribution by adding `stations[s_idx]` at `diff_initial[max(0,
+      s_idx - r)]` and the end by subtracting `stations[s_idx]` at `diff_initial[min(n-1,
+      s_idx + r) + 1]`.
+
+
+      Next, we iterate through each city `i` from `0` to `n-1`. We maintain a running
+      sum of `diff_initial` to get the current power from existing stations. Simultaneously,
+      we maintain another running sum for `diff_for_new_stations`, which tracks the
+      power contributed by stations we''ve added greedily so far. If the total power
+      for city `i` (initial + added) is less than `X`, we must add more stations. To
+      do this optimally, we calculate `needed = X - total_power_at_i`. We then add `needed`
+      to our `added_k_count`. If `added_k_count` exceeds `k`, it''s impossible to achieve
+      `X`, so we return `False`. Otherwise, we place these `needed` stations. The most
+      greedy strategy to cover city `i` and maximize their impact on subsequent cities
+      is to place them as far right as possible while still covering city `i`. This
+      optimal placement is at city `min(n-1, i+r)`. A station placed at `placement_idx`
+      contributes power to cities in the range `[max(0, placement_idx - r), min(n-1,
+      placement_idx + r)]`. With `placement_idx = min(n-1, i+r)`, these `needed` stations
+      will contribute power to cities in the range `[max(0, i), min(n-1, i+2*r)]`. We
+      update `diff_for_new_stations` by adding `needed` at index `i` and subtracting
+      `needed` at index `min(n-1, i+2*r) + 1`. We also immediately update the `current_added_power_effect`
+      for city `i` by adding `needed` to reflect the newly placed stations. After iterating
+      through all cities, if we haven''t exceeded `k` stations, we return `True`.'
+    time_complexity: 'O(N * log(MAX_POWER)).
+
+      - The `check` function iterates through the `n` cities once. Inside the loop,
+      operations are constant time (array access, arithmetic). The initial population
+      of `diff_initial` also takes O(N). Thus, `check` runs in O(N) time.
+
+      - The binary search performs `log(MAX_POWER)` iterations. `MAX_POWER` can be up
+      to approximately `2 * 10^10` (maximum initial power for a city plus maximum power
+      from `k` additional stations). `log(2 * 10^10)` is roughly 34-35 iterations.
+
+      - Therefore, the total time complexity is O(N * log(MAX_POWER)). Given N=10^5,
+      this is roughly 10^5 * 35, which is efficient enough.'
+    space_complexity: 'O(N).
+
+      - We use two difference arrays, `diff_initial` and `diff_for_new_stations`, each
+      of size `n+1`. These arrays store `long long` (or equivalent) values.
+
+      - The space required is directly proportional to `n`.'
+    elapsed_time: 145.3145990371704
+    model: gemini-2.5-flash
+    generated_at: '2025-11-24 20:42:03 '
+  - solutions:
+      cpp: "class Solution {\npublic:\n    int maxPower(vector<int>& stations, int r,\
+        \ int k) {\n        int n = stations.size();\n        vector<int> power(n);\n\
+        \        for (int i = 0; i < n; i++) {\n            for (int j = max(0, i -\
+        \ r); j <= min(n - 1, i + r); j++) {\n                power[i] += stations[j];\n\
+        \            }\n        }\n        int low = *min_element(power.begin(), power.end());\n\
+        \        int high = *max_element(power.begin(), power.end()) + k;\n        while\
+        \ (low < high) {\n            int mid = (low + high + 1) / 2;\n            vector<int>\
+        \ remaining(k);\n            bool possible = true;\n            for (int i =\
+        \ 0; i < n; i++) {\n                if (power[i] < mid) {\n                \
+        \    int need = mid - power[i];\n                    for (int j = max(0, i -\
+        \ r); j <= min(n - 1, i + r); j++) {\n                        if (remaining[j]\
+        \ > 0) {\n                            int give = min(remaining[j], need);\n\
+        \                            power[i] += give;\n                           \
+        \ remaining[j] -= give;\n                            need -= give;\n       \
+        \                 }\n                    }\n                    if (need > 0)\
+        \ {\n                        possible = false;\n                        break;\n\
+        \                    }\n                }\n            }\n            if (possible)\
+        \ {\n                low = mid;\n            } else {\n                high\
+        \ = mid - 1;\n            }\n        }\n        return low;\n    }\n};"
+      java: "class Solution {\n    public int maxPower(int[] stations, int r, int k)\
+        \ {\n        int n = stations.length;\n        int[] power = new int[n];\n \
+        \       for (int i = 0; i < n; i++) {\n            for (int j = Math.max(0,\
+        \ i - r); j <= Math.min(n - 1, i + r); j++) {\n                power[i] += stations[j];\n\
+        \            }\n        }\n        int low = Integer.MAX_VALUE;\n        int\
+        \ high = 0;\n        for (int i = 0; i < n; i++) {\n            low = Math.min(low,\
+        \ power[i]);\n            high = Math.max(high, power[i] + k);\n        }\n\
+        \        while (low < high) {\n            int mid = (low + high + 1) / 2;\n\
+        \            int[] remaining = new int[k];\n            boolean possible = true;\n\
+        \            for (int i = 0; i < n; i++) {\n                if (power[i] < mid)\
+        \ {\n                    int need = mid - power[i];\n                    for\
+        \ (int j = Math.max(0, i - r); j <= Math.min(n - 1, i + r); j++) {\n       \
+        \                 if (remaining[j] > 0) {\n                            int give\
+        \ = Math.min(remaining[j], need);\n                            power[i] += give;\n\
+        \                            remaining[j] -= give;\n                       \
+        \     need -= give;\n                        }\n                    }\n    \
+        \                if (need > 0) {\n                        possible = false;\n\
+        \                        break;\n                    }\n                }\n\
+        \            }\n            if (possible) {\n                low = mid;\n  \
+        \          } else {\n                high = mid - 1;\n            }\n      \
+        \  }\n        return low;\n    }\n};"
+      python: "class Solution:\n    def maxPower(self, stations: list[int], r: int,\
+        \ k: int) -> int:\n        n = len(stations)\n        power = [0] * n\n    \
+        \    for i in range(n):\n            for j in range(max(0, i - r), min(n, i\
+        \ + r + 1)):\n                power[i] += stations[j]\n        low = min(power)\n\
+        \        high = max(power) + k\n        while low < high:\n            mid =\
+        \ (low + high + 1) // 2\n            remaining = [0] * n\n            possible\
+        \ = True\n            for i in range(n):\n                if power[i] < mid:\n\
+        \                    need = mid - power[i]\n                    for j in range(max(0,\
+        \ i - r), min(n, i + r + 1)):\n                        if remaining[j] > 0:\n\
+        \                            give = min(remaining[j], need)\n              \
+        \              power[i] += give\n                            remaining[j] -=\
+        \ give\n                            need -= give\n                    if need\
+        \ > 0:\n                        possible = False\n                        break\n\
+        \            if possible:\n                low = mid\n            else:\n  \
+        \              high = mid - 1\n        return low"
+      python3: "class Solution:\n    def maxPower(self, stations: list[int], r: int,\
+        \ k: int) -> int:\n        n = len(stations)\n        power = [0] * n\n    \
+        \    for i in range(n):\n            for j in range(max(0, i - r), min(n, i\
+        \ + r + 1)):\n                power[i] += stations[j]\n        low = min(power)\n\
+        \        high = max(power) + k\n        while low < high:\n            mid =\
+        \ (low + high + 1) // 2\n            remaining = [0] * n\n            possible\
+        \ = True\n            for i in range(n):\n                if power[i] < mid:\n\
+        \                    need = mid - power[i]\n                    for j in range(max(0,\
+        \ i - r), min(n, i + r + 1)):\n                        if remaining[j] > 0:\n\
+        \                            give = min(remaining[j], need)\n              \
+        \              power[i] += give\n                            remaining[j] -=\
+        \ give\n                            need -= give\n                    if need\
+        \ > 0:\n                        possible = False\n                        break\n\
+        \            if possible:\n                low = mid\n            else:\n  \
+        \              high = mid - 1\n        return low"
+      c: "#include <stdio.h>\n#include <stdlib.h>\n\nint maxPower(int* stations, int\
+        \ stationsSize, int r, int k) {\n    int n = stationsSize;\n    int* power =\
+        \ (int*)malloc(n * sizeof(int));\n    for (int i = 0; i < n; i++) {\n      \
+        \  power[i] = 0;\n        for (int j = i - r; j <= i + r; j++) {\n         \
+        \   if (j >= 0 && j < n) {\n                power[i] += stations[j];\n     \
+        \       }\n        }\n    }\n    int low = power[0];\n    int high = power[0]\
+        \ + k;\n    for (int i = 1; i < n; i++) {\n        low = (low < power[i]) ?\
+        \ low : power[i];\n        high = (high > power[i] + k) ? high : power[i] +\
+        \ k;\n    }\n    while (low < high) {\n        int mid = (low + high + 1) /\
+        \ 2;\n        int* remaining = (int*)malloc(n * sizeof(int));\n        for (int\
+        \ i = 0; i < n; i++) {\n            remaining[i] = 0;\n        }\n        int\
+        \ possible = 1;\n        for (int i = 0; i < n; i++) {\n            if (power[i]\
+        \ < mid) {\n                int need = mid - power[i];\n                for\
+        \ (int j = i - r; j <= i + r; j++) {\n                    if (j >= 0 && j <\
+        \ n) {\n                        if (remaining[j] > 0) {\n                  \
+        \          int give = (remaining[j] < need) ? remaining[j] : need;\n       \
+        \                     power[i] += give;\n                            remaining[j]\
+        \ -= give;\n                            need -= give;\n                    \
+        \    }\n                    }\n                }\n                if (need >\
+        \ 0) {\n                    possible = 0;\n                    break;\n    \
+        \            }\n            }\n        }\n        if (possible) {\n        \
+        \    low = mid;\n        } else {\n            high = mid - 1;\n        }\n\
+        \        free(remaining);\n    }\n    free(power);\n    return low;\n};"
+      csharp: "using System;\n\npublic class Solution {\n    public int MaxPower(int[]\
+        \ stations, int r, int k) {\n        int n = stations.Length;\n        int[]\
+        \ power = new int[n];\n        for (int i = 0; i < n; i++) {\n            for\
+        \ (int j = Math.Max(0, i - r); j <= Math.Min(n - 1, i + r); j++) {\n       \
+        \         power[i] += stations[j];\n            }\n        }\n        int low\
+        \ = int.MaxValue;\n        int high = 0;\n        for (int i = 0; i < n; i++)\
+        \ {\n            low = Math.Min(low, power[i]);\n            high = Math.Max(high,\
+        \ power[i] + k);\n        }\n        while (low < high) {\n            int mid\
+        \ = (low + high + 1) / 2;\n            int[] remaining = new int[n];\n     \
+        \       bool possible = true;\n            for (int i = 0; i < n; i++) {\n \
+        \               if (power[i] < mid) {\n                    int need = mid -\
+        \ power[i];\n                    for (int j = Math.Max(0, i - r); j <= Math.Min(n\
+        \ - 1, i + r); j++) {\n                        if (remaining[j] > 0) {\n   \
+        \                         int give = Math.Min(remaining[j], need);\n       \
+        \                     power[i] += give;\n                            remaining[j]\
+        \ -= give;\n                            need -= give;\n                    \
+        \    }\n                    }\n                    if (need > 0) {\n       \
+        \                 possible = false;\n                        break;\n      \
+        \              }\n                }\n            }\n            if (possible)\
+        \ {\n                low = mid;\n            } else {\n                high\
+        \ = mid - 1;\n            }\n        }\n        return low;\n    }\n};"
+      javascript: "function maxPower(stations, r, k) {\n    let n = stations.length;\n\
+        \    let power = new Array(n).fill(0);\n    for (let i = 0; i < n; i++) {\n\
+        \        for (let j = Math.max(0, i - r); j <= Math.min(n - 1, i + r); j++)\
+        \ {\n            power[i] += stations[j];\n        }\n    }\n    let low = Math.min(...power);\n\
+        \    let high = Math.max(...power) + k;\n    while (low < high) {\n        let\
+        \ mid = Math.floor((low + high + 1) / 2);\n        let remaining = new Array(n).fill(0);\n\
+        \        let possible = true;\n        for (let i = 0; i < n; i++) {\n     \
+        \       if (power[i] < mid) {\n                let need = mid - power[i];\n\
+        \                for (let j = Math.max(0, i - r); j <= Math.min(n - 1, i + r);\
+        \ j++) {\n                    if (remaining[j] > 0) {\n                    \
+        \    let give = Math.min(remaining[j], need);\n                        power[i]\
+        \ += give;\n                        remaining[j] -= give;\n                \
+        \        need -= give;\n                    }\n                }\n         \
+        \       if (need > 0) {\n                    possible = false;\n           \
+        \         break;\n                }\n            }\n        }\n        if (possible)\
+        \ {\n            low = mid;\n        } else {\n            high = mid - 1;\n\
+        \        }\n    }\n    return low;\n};"
+      typescript: "function maxPower(stations: number[], r: number, k: number): number\
+        \ {\n    let n = stations.length;\n    let power: number[] = new Array(n).fill(0);\n\
+        \    for (let i = 0; i < n; i++) {\n        for (let j = Math.max(0, i - r);\
+        \ j <= Math.min(n - 1, i + r); j++) {\n            power[i] += stations[j];\n\
+        \        }\n    }\n    let low = Math.min(...power);\n    let high = Math.max(...power)\
+        \ + k;\n    while (low < high) {\n        let mid = Math.floor((low + high +\
+        \ 1) / 2);\n        let remaining: number[] = new Array(n).fill(0);\n      \
+        \  let possible = true;\n        for (let i = 0; i < n; i++) {\n           \
+        \ if (power[i] < mid) {\n                let need = mid - power[i];\n      \
+        \          for (let j = Math.max(0, i - r); j <= Math.min(n - 1, i + r); j++)\
+        \ {\n                    if (remaining[j] > 0) {\n                        let\
+        \ give = Math.min(remaining[j], need);\n                        power[i] +=\
+        \ give;\n                        remaining[j] -= give;\n                   \
+        \     need -= give;\n                    }\n                }\n            \
+        \    if (need > 0) {\n                    possible = false;\n              \
+        \      break;\n                }\n            }\n        }\n        if (possible)\
+        \ {\n            low = mid;\n        } else {\n            high = mid - 1;\n\
+        \        }\n    }\n    return low;\n};"
+      php: "function maxPower($stations, $r, $k) {\n    $n = count($stations);\n   \
+        \ $power = array_fill(0, $n, 0);\n    for ($i = 0; $i < $n; $i++) {\n      \
+        \  for ($j = max(0, $i - $r); $j <= min($n - 1, $i + $r); $j++) {\n        \
+        \    $power[$i] += $stations[$j];\n        }\n    }\n    $low = min($power);\n\
+        \    $high = max($power) + $k;\n    while ($low < $high) {\n        $mid = floor(($low\
+        \ + $high + 1) / 2);\n        $remaining = array_fill(0, $n, 0);\n        $possible\
+        \ = true;\n        for ($i = 0; $i < $n; $i++) {\n            if ($power[$i]\
+        \ < $mid) {\n                $need = $mid - $power[$i];\n                for\
+        \ ($j = max(0, $i - $r); $j <= min($n - 1, $i + $r); $j++) {\n             \
+        \       if ($remaining[$j] > 0) {\n                        $give = min($remaining[$j],\
+        \ $need);\n                        $power[$i] += $give;\n                  \
+        \      $remaining[$j] -= $give;\n                        $need -= $give;\n \
+        \                   }\n                }\n                if ($need > 0) {\n\
+        \                    $possible = false;\n                    break;\n      \
+        \          }\n            }\n        }\n        if ($possible) {\n         \
+        \   $low = $mid;\n        } else {\n            $high = $mid - 1;\n        }\n\
+        \    }\n    return $low;\n};"
+      swift: "func maxPower(_ stations: [Int], _ r: Int, _ k: Int) -> Int {\n    let\
+        \ n = stations.count\n    var power = [Int](repeating: 0, count: n)\n    for\
+        \ i in 0..<n {\n        for j in max(0, i - r)...min(n - 1, i + r) {\n     \
+        \       power[i] += stations[j]\n        }\n    }\n    var low = power.min()!\n\
+        \    var high = power.max()! + k\n    while low < high {\n        let mid =\
+        \ (low + high + 1) / 2\n        var remaining = [Int](repeating: 0, count: n)\n\
+        \        var possible = true\n        for i in 0..<n {\n            if power[i]\
+        \ < mid {\n                var need = mid - power[i]\n                for j\
+        \ in max(0, i - r)...min(n - 1, i + r) {\n                    if remaining[j]\
+        \ > 0 {\n                        let give = min(remaining[j], need)\n      \
+        \                  power[i] += give\n                        remaining[j] -=\
+        \ give\n                        need -= give\n                    }\n      \
+        \          }\n                if need > 0 {\n                    possible =\
+        \ false\n                    break\n                }\n            }\n     \
+        \   }\n        if possible {\n            low = mid\n        } else {\n    \
+        \        high = mid - 1\n        }\n    }\n    return low\n};"
+      kotlin: "fun maxPower(stations: IntArray, r: Int, k: Int): Int {\n    val n =\
+        \ stations.size\n    val power = IntArray(n)\n    for (i in 0 until n) {\n \
+        \       for (j in maxOf(0, i - r) until minOf(n - 1, i + r + 1)) {\n       \
+        \     power[i] += stations[j]\n        }\n    }\n    var low = power.minOrNull()!!\n\
+        \    var high = power.maxOrNull()!! + k\n    while (low < high) {\n        val\
+        \ mid = (low + high + 1) / 2\n        val remaining = IntArray(n)\n        var\
+        \ possible = true\n        for (i in 0 until n) {\n            if (power[i]\
+        \ < mid) {\n                var need = mid - power[i]\n                for (j\
+        \ in maxOf(0, i - r) until minOf(n - 1, i + r + 1)) {\n                    if\
+        \ (remaining[j] > 0) {\n                        val give = minOf(remaining[j],\
+        \ need)\n                        power[i] += give\n                        remaining[j]\
+        \ -= give\n                        need -= give\n                    }\n   \
+        \             }\n                if (need > 0) {\n                    possible\
+        \ = false\n                    break\n                }\n            }\n   \
+        \     }\n        if (possible) {\n            low = mid\n        } else {\n\
+        \            high = mid - 1\n        }\n    }\n    return low\n};"
+      dart: "int maxPower(List<int> stations, int r, int k) {\n    int n = stations.length;\n\
+        \    List<int> power = List<int>.filled(n, 0);\n    for (int i = 0; i < n; i++)\
+        \ {\n        for (int j = max(0, i - r); j <= min(n - 1, i + r); j++) {\n  \
+        \          power[i] += stations[j];\n        }\n    }\n    int low = power.reduce((a,\
+        \ b) => a < b ? a : b);\n    int high = power.reduce((a, b) => a > b ? a : b)\
+        \ + k;\n    while (low < high) {\n        int mid = (low + high + 1) ~/ 2;\n\
+        \        List<int> remaining = List<int>.filled(n, 0);\n        bool possible\
+        \ = true;\n        for (int i = 0; i < n; i++) {\n            if (power[i] <\
+        \ mid) {\n                int need = mid - power[i];\n                for (int\
+        \ j = max(0, i - r); j <= min(n - 1, i + r); j++) {\n                    if\
+        \ (remaining[j] > 0) {\n                        int give = min(remaining[j],\
+        \ need);\n                        power[i] += give;\n                      \
+        \  remaining[j] -= give;\n                        need -= give;\n          \
+        \          }\n                }\n                if (need > 0) {\n         \
+        \           possible = false;\n                    break;\n                }\n\
+        \            }\n        }\n        if (possible) {\n            low = mid;\n\
+        \        } else {\n            high = mid - 1;\n        }\n    }\n    return\
+        \ low;\n};"
+      go: "package main\n\nimport (\n    \"fmt\"\n)\n\nfunc maxPower(stations []int,\
+        \ r int, k int) int {\n    n := len(stations)\n    power := make([]int, n)\n\
+        \    for i := 0; i < n; i++ {\n        for j := max(0, i-r); j <= min(n-1, i+r);\
+        \ j++ {\n            power[i] += stations[j]\n        }\n    }\n    low := power[0]\n\
+        \    high := power[0] + k\n    for i := 1; i < n; i++ {\n        if power[i]\
+        \ < low {\n            low = power[i]\n        }\n        if power[i]+k > high\
+        \ {\n            high = power[i] + k\n        }\n    }\n    for low < high {\n\
+        \        mid := (low + high + 1) / 2\n        remaining := make([]int, n)\n\
+        \        possible := true\n        for i := 0; i < n; i++ {\n            if\
+        \ power[i] < mid {\n                need := mid - power[i]\n               \
+        \ for j := max(0, i-r); j <= min(n-1, i+r); j++ {\n                    if remaining[j]\
+        \ > 0 {\n                        give := min(remaining[j], need)\n         \
+        \               power[i] += give\n                        remaining[j] -= give\n\
+        \                        need -= give\n                    }\n             \
+        \   }\n                if need > 0 {\n                    possible = false\n\
+        \                    break\n                }\n            }\n        }\n  \
+        \      if possible {\n            low = mid\n        } else {\n            high\
+        \ = mid - 1\n        }\n    }\n    return low\n}\n\nfunc max(a, b int) int {\n\
+        \    if a > b {\n        return a\n    }\n    return b\n}\n\nfunc min(a, b int)\
+        \ int {\n    if a < b {\n        return a\n    }\n    return b\n};"
+      ruby: "def max_power(stations, r, k)\n    n = stations.size\n    power = Array.new(n,\
+        \ 0)\n    for i in 0...n\n        for j in [i - r, 0].max...[i + r + 1, n].min\n\
+        \            power[i] += stations[j]\n        end\n    end\n    low = power.min\n\
+        \    high = power.max + k\n    while low < high\n        mid = (low + high +\
+        \ 1) / 2\n        remaining = Array.new(n, 0)\n        possible = true\n   \
+        \     for i in 0...n\n            if power[i] < mid\n                need =\
+        \ mid - power[i]\n                for j in [i - r, 0].max...[i + r, n - 1].min\n\
+        \                    if remaining[j] > 0\n                        give = [remaining[j],\
+        \ need].min\n                        power[i] += give\n                    \
+        \    remaining[j] -= give\n                        need -= give\n          \
+        \          end\n                end\n                if need > 0\n         \
+        \           possible = false\n                    break\n                end\n\
+        \            end\n        end\n        if possible\n            low = mid\n\
+        \        else\n            high = mid - 1\n        end\n    end\n    low\nend;"
+      scala: "object Solution {\n    def maxPower(stations: Array[Int], r: Int, k: Int):\
+        \ Int = {\n        val n = stations.length\n        val power = Array.fill(n)(0)\n\
+        \        for (i <- 0 until n) {\n            for (j <- math.max(0, i - r) to\
+        \ math.min(n - 1, i + r)) {\n                power(i) += stations(j)\n     \
+        \       }\n        }\n        var low = power.min\n        var high = power.max\
+        \ + k\n        while (low < high) {\n            val mid = (low + high + 1)\
+        \ / 2\n            val remaining = Array.fill(n)(0)\n            var possible\
+        \ = true\n            for (i <- 0 until n) {\n                if (power(i) <\
+        \ mid) {\n                    var need = mid - power(i)\n                  \
+        \  for (j <- math.max(0, i - r) to math.min(n - 1, i + r)) {\n             \
+        \           if (remaining(j) > 0) {\n                            val give =\
+        \ math.min(remaining(j), need)\n                            power(i) += give\n\
+        \                            remaining(j) -= give\n                        \
+        \    need -= give\n                        }\n                    }\n      \
+        \              if (need > 0) {\n                        possible = false\n \
+        \                       break\n                    }\n                }\n  \
+        \          }\n            if (possible) {\n                low = mid\n     \
+        \       } else {\n                high = mid - 1\n            }\n        }\n\
+        \        low\n    }\n};"
+      rust: "fn max_power(stations: Vec<i32>, r: i32, k: i32) -> i32 {\n    let n =\
+        \ stations.len();\n    let mut power: Vec<i32> = vec![0; n];\n    for i in 0..n\
+        \ {\n        for j in (i as i32 - r).max(0)..=(i as i32 + r).min(n as i32 -\
+        \ 1) {\n            power[i] += stations[j as usize];\n        }\n    }\n  \
+        \  let mut low = *power.iter().min().unwrap();\n    let mut high = *power.iter().max().unwrap()\
+        \ + k;\n    while low < high {\n        let mid = (low + high + 1) / 2;\n  \
+        \      let mut remaining: Vec<i32> = vec![0; n];\n        let mut possible =\
+        \ true;\n        for i in 0..n {\n            if power[i] < mid {\n        \
+        \        let mut need = mid - power[i];\n                for j in (i as i32\
+        \ - r).max(0)..=(i as i32 + r).min(n as i32 - 1) {\n                    if remaining[j\
+        \ as usize] > 0 {\n                        let give = remaining[j as usize].min(need);\n\
+        \                        power[i] += give;\n                        remaining[j\
+        \ as usize] -= give;\n                        need -= give;\n              \
+        \      }\n                }\n                if need > 0 {\n               \
+        \     possible = false;\n                    break;\n                }\n   \
+        \         }\n        }\n        if possible {\n            low = mid;\n    \
+        \    } else {\n            high = mid - 1;\n        }\n    }\n    low\n};"
+      racket: "#lang racket\n(define (max-power stations r k)\n  (let* ((n (length stations))\n\
+        \         (power (make-list n 0)))\n    (for ((i (range n)))\n      (for ((j\
+        \ (range (max 0 (- i r)) (min n (+ i r 1))))\n        (set! power (list-set\
+        \ power i (+ (list-ref power i) (list-ref stations j))))))\n    (let loop ((low\
+        \ (apply min power)) (high (+ (apply max power) k)))\n      (if (< low high)\n\
+        \          (let ((mid (quotient (+ low high 1) 2)))\n            (let* ((remaining\
+        \ (make-list n 0))\n                   (possible #t))\n              (for ((i\
+        \ (range n)))\n                (when (< (list-ref power i) mid)\n          \
+        \        (let ((need (- mid (list-ref power i))))\n                    (for\
+        \ ((j (range (max 0 (- i r)) (min n (+ i r 1))))\n                      (when\
+        \ (> (list-ref remaining j) 0)\n                        (let ((give (min (list-ref\
+        \ remaining j) need)))\n                          (set! power (list-set power\
+        \ i (+ (list-ref power i) give)))\n                          (set! remaining\
+        \ (list-set remaining j (- (list-ref remaining j) give)))\n                \
+        \          (set! need (- need give))))))\n                    (unless (zero?\
+        \ need)\n                      (set! possible #f)\n                      (break))))\n\
+        \                (when (not possible)\n                  (break)))\n       \
+        \       (if possible\n                  (loop mid high)\n                  (loop\
+        \ low (- mid 1)))))\n          low))));"
+      erlang: "-module(max_power).\n-export([max_power/3]).\n\nmax_power(Stations, R,\
+        \ K) ->\n    N = length(Stations),\n    Power = lists:duplicate(N, 0),\n   \
+        \ lists:foldl(\n      fun(I, Acc) ->\n          lists:foldl(\n            fun(J,\
+        \ Acc1) ->\n                lists:update(I, Acc1, element(I, Acc1) + lists:nth(J\
+        \ + 1, Stations))\n            end,\n            Acc,\n            lists:seq(max(0,\
+        \ I - R), min(N - 1, I + R)))\n      end,\n      Power,\n      lists:seq(0,\
+        \ N - 1)),\n    Low = lists:min(Power),\n    High = lists:max(Power) + K,\n\
+        \    loop(Low, High, Power, Stations, R, K).\n\nloop(Low, High, Power, Stations,\
+        \ R, K) when Low < High ->\n    Mid = (Low + High + 1) div 2,\n    Remaining\
+        \ = lists:duplicate(length(Power), 0),\n    case possible(Mid, Power, Remaining,\
+        \ Stations, R, K) of\n        true -> loop(Mid, High, Power, Stations, R, K);\n\
+        \        false -> loop(Low, Mid - 1, Power, Stations, R, K)\n    end;\nloop(Low,\
+        \ _High, _Power, _Stations, _R, _K) ->\n    Low.\n\npossible(Mid, Power, Remaining,\
+        \ Stations, R, K) ->\n    lists:foldl(\n      fun(I, Acc) ->\n          case\
+        \ Acc of\n              false -> false;\n              true ->\n           \
+        \       case element(I, Power) < Mid of\n                      true ->\n   \
+        \                       Need = Mid - element(I, Power),\n                  \
+        \        case lists:foldl(\n                                 fun(J, Acc1) ->\n\
+        \                                     case Acc1 of\n                       \
+        \                  {need, remaining} ->\n                                  \
+        \           case element(J, remaining) of\n                                \
+        \                 0 -> {need, remaining};\n                                \
+        \                 _ ->\n                                                   \
+        \  Give = min(element(J, remaining), need),\n                              \
+        \                       {need - Give, lists:update(J, remaining, element(J,\
+        \ remaining) - Give)}\n                                             end\n  \
+        \                               end,\n                                 {Need,\
+        \ Remaining},\n                                 lists:seq(max(0, I - R), min(length(Power)\
+        \ - 1, I + R)))\n                           of\n                           \
+        \   {0, _} -> true;\n                              _ -> false\n            \
+        \              end;\n                      false -> true\n                 \
+        \ end\n          end\n      end,\n      true,\n      lists:seq(0, length(Power)\
+        \ - 1)).\n\nmax(A, B) when A > B -> A;\nmax(_A, B) -> B.\n\nmin(A, B) when A\
+        \ < B -> A;\nmin(_A, B) -> B."
+      elixir: "defmodule MaxPower do\n  def max_power(stations, r, k) do\n    n = length(stations)\n\
+        \    power = Enum.to_list(0..n-1) |> Enum.map(fn _ -> 0 end)\n    power = Enum.reduce(0..n-1,\
+        \ power, fn i, power ->\n      Enum.reduce(max(0, i - r)..min(n - 1, i + r),\
+        \ power, fn j, power ->\n        List.update_at(power, i, &(&1 + Enum.at(stations,\
+        \ j)))\n      end)\n    end)\n    low = Enum.min(power)\n    high = Enum.max(power)\
+        \ + k\n    loop(low, high, power, stations, r, k)\n  end\n\n  defp loop(low,\
+        \ high, power, stations, r, k) when low < high do\n    mid = div(low + high\
+        \ + 1, 2)\n    remaining = Enum.to_list(0..length(power)-1) |> Enum.map(fn _\
+        \ -> 0 end)\n    case possible(mid, power, remaining, stations, r, k) do\n \
+        \     true -> loop(mid, high, power, stations, r, k)\n      false -> loop(low,\
+        \ mid - 1, power, stations, r, k)\n    end\n  end\n\n  defp loop(low, _high,\
+        \ _power, _stations, _r, _k), do: low\n\n  defp possible(mid, power, remaining,\
+        \ stations, r, k) do\n    Enum.reduce(0..length(power)-1, true, fn i, acc ->\n\
+        \      case acc do\n        false -> false\n        true ->\n          case\
+        \ Enum.at(power, i) < mid do\n            true ->\n              need = mid\
+        \ - Enum.at(power, i)\n              {need, remaining} = Enum.reduce(max(0,\
+        \ i - r)..min(length(power) - 1, i + r), {need, remaining}, fn j, {need, remaining}\
+        \ ->\n                case Enum.at(remaining, j) do\n                  0 ->\
+        \ {need, remaining}\n                  _ ->\n                    give = min(Enum.at(remaining,\
+        \ j), need)\n                    {need - give, List.update_at(remaining, j,\
+        \ &(&1 - give))}\n                end\n              end)\n              case\
+        \ need do\n                0 -> true\n                _ -> false\n         \
+        \     end\n            false -> true\n          end\n      end\n    end)\n \
+        \ end\n\n  defp max(a, b) when a > b, do: a\n  defp max(_a, b), do: b\n\n  defp\
+        \ min(a, b) when a < b, do: a\n  defp min(_a, b), do: b"
+    approach: The problem can be solved using a combination of line sweep and binary
+      search. First, we calculate the initial power of each city by considering the
+      existing power stations. Then, we use binary search to find the maximum possible
+      minimum power of a city. In each iteration of the binary search, we check if it's
+      possible to achieve the current minimum power by building the additional power
+      stations. If it's possible, we update the minimum power and continue the binary
+      search. If it's not possible, we decrease the minimum power and continue the binary
+      search. The process continues until we find the maximum possible minimum power
+      of a city.
+    time_complexity: O(n log m) where n is the number of cities and m is the maximum
+      possible minimum power of a city. The time complexity is dominated by the binary
+      search, which takes O(log m) time. Inside the binary search, we iterate over the
+      cities to check if it's possible to achieve the current minimum power, which takes
+      O(n) time.
+    space_complexity: O(n) where n is the number of cities. We need to store the initial
+      power of each city and the additional power stations that can be built in each
+      city.
+    elapsed_time: 15.919591665267944
+    model: llama-3.3-70b-versatile
+    generated_at: '2025-11-24 20:42:19 '
 ---
 
 ## Problem #2528: Maximize the Minimum Powered City
@@ -85,14 +1075,18 @@ We've generated solutions using multiple AI models. Click to expand each solutio
 <details class="ai-solution-card" open markdown="1">
 <summary class="ai-solution-header">
   <span class="ai-model-badge">✨ Solution from <strong>gemini-2.5-flash</strong></span>
-  <small class="solution-timestamp">(2025-11-23 00:00:21 )</small>
+  <small class="solution-timestamp">(2025-11-24 20:42:03 )</small>
 </summary>
 
 <div class="ai-solution-content">
 
 ### Approach
 
-This problem is solved using binary search on the answer (the maximum possible minimum power). The `check` function determines if a given `target_min_power` is achievable. Inside `check`, we first calculate the initial power for each city using a difference array (line sweep). Then, we iterate through cities, greedily adding power stations at `i+r` if city `i`'s current power is below `target_min_power`, updating `k` and power contributions using another difference array.
+The problem asks us to maximize the minimum power of any city by adding at most `k` power stations. This is a classic "maximize the minimum" type problem, which can typically be solved using binary search on the answer. We can binary search for the maximum possible minimum power `X` that can be achieved for all cities. The `check(X)` function will determine if it's possible to make every city have at least `X` power using at most `k` additional stations.
+
+The `check(X)` function employs a greedy strategy combined with a difference array (or sweep-line) technique for efficient power calculation. First, we need to calculate the initial power provided to each city by the existing `stations`. A naive approach of summing stations within range `r` for each city would be O(N*R), which is too slow. Instead, we use a difference array `diff_initial`. For each station `stations[s_idx]`, it contributes power to cities in the range `[max(0, s_idx - r), min(n-1, s_idx + r)]`. We mark the start of its contribution by adding `stations[s_idx]` at `diff_initial[max(0, s_idx - r)]` and the end by subtracting `stations[s_idx]` at `diff_initial[min(n-1, s_idx + r) + 1]`.
+
+Next, we iterate through each city `i` from `0` to `n-1`. We maintain a running sum of `diff_initial` to get the current power from existing stations. Simultaneously, we maintain another running sum for `diff_for_new_stations`, which tracks the power contributed by stations we've added greedily so far. If the total power for city `i` (initial + added) is less than `X`, we must add more stations. To do this optimally, we calculate `needed = X - total_power_at_i`. We then add `needed` to our `added_k_count`. If `added_k_count` exceeds `k`, it's impossible to achieve `X`, so we return `False`. Otherwise, we place these `needed` stations. The most greedy strategy to cover city `i` and maximize their impact on subsequent cities is to place them as far right as possible while still covering city `i`. This optimal placement is at city `min(n-1, i+r)`. A station placed at `placement_idx` contributes power to cities in the range `[max(0, placement_idx - r), min(n-1, placement_idx + r)]`. With `placement_idx = min(n-1, i+r)`, these `needed` stations will contribute power to cities in the range `[max(0, i), min(n-1, i+2*r)]`. We update `diff_for_new_stations` by adding `needed` at index `i` and subtracting `needed` at index `min(n-1, i+2*r) + 1`. We also immediately update the `current_added_power_effect` for city `i` by adding `needed` to reflect the newly placed stations. After iterating through all cities, if we haven't exceeded `k` stations, we return `True`.
 
 ### Code
 
@@ -142,52 +1136,51 @@ This problem is solved using binary search on the answer (the maximum possible m
 
 {% highlight cpp %}
 {% raw %}
-#include <vector>
-#include <numeric>
-#include <algorithm>
-
 class Solution {
 public:
-    bool check(long long target_min_power, int n, int r, long long k, const std::vector<int>& stations) {
-        std::vector<long long> initial_power(n);
+    bool check(long long target_power, int n, int r, long long k, const std::vector<int>& stations) {
         std::vector<long long> diff_initial(n + 1, 0);
-
-        for (int idx = 0; idx < n; ++idx) {
-            int left_bound = std::max(0, idx - r);
-            int right_bound = std::min(n - 1, idx + r);
-            diff_initial[left_bound] += stations[idx];
-            diff_initial[right_bound + 1] -= stations[idx];
-        }
-
-        long long current_sum_initial = 0;
-        for (int i = 0; i < n; ++i) {
-            current_sum_initial += diff_initial[i];
-            initial_power[i] = current_sum_initial;
-        }
-
-        long long k_remaining = k;
-        std::vector<long long> diff_added_power_contribution(n + 1, 0);
-        long long current_added_power_sum = 0;
+        std::vector<long long> diff_for_new_stations(n + 1, 0);
 
         for (int i = 0; i < n; ++i) {
-            current_added_power_sum += diff_added_power_contribution[i];
-            long long total_power_at_i = initial_power[i] + current_added_power_sum;
+            long long val = stations[i];
+            int start_idx = std::max(0, i - r);
+            int end_idx = std::min(n - 1, i + r);
 
-            if (total_power_at_i < target_min_power) {
-                long long needed = target_min_power - total_power_at_i;
-                k_remaining -= needed;
-                if (k_remaining < 0) {
+            diff_initial[start_idx] += val;
+            if (end_idx + 1 < n + 1) {
+                diff_initial[end_idx + 1] -= val;
+            }
+        }
+
+        long long current_total_power_sum = 0;
+        long long current_added_power_effect = 0;
+        long long added_k_count = 0;
+
+        for (int i = 0; i < n; ++i) {
+            current_total_power_sum += diff_initial[i];
+            current_added_power_effect += diff_for_new_stations[i];
+
+            long long total_power_at_i = current_total_power_sum + current_added_power_effect;
+
+            if (total_power_at_i < target_power) {
+                long long needed = target_power - total_power_at_i;
+                added_k_count += needed;
+
+                if (added_k_count > k) {
                     return false;
                 }
 
-                diff_added_power_contribution[i] += needed;
-                int end_idx_for_contribution = std::min(n - 1, i + 2 * r);
-                if (end_idx_for_contribution + 1 < n + 1) {
-                    diff_added_power_contribution[end_idx_for_contribution + 1] -= needed;
+                diff_for_new_stations[i] += needed;
+                int end_effect_idx = std::min(n - 1, i + 2 * r);
+                if (end_effect_idx + 1 < n + 1) {
+                    diff_for_new_stations[end_effect_idx + 1] -= needed;
                 }
-                current_added_power_sum += needed;
+
+                current_added_power_effect += needed;
             }
         }
+
         return true;
     }
 
@@ -195,9 +1188,9 @@ public:
         int n = stations.size();
 
         long long low = 0;
-        long long high = 2e10 + 1e9 + 7; // Max possible power for a city
-
+        long long high = 2LL * 10000000000LL + 1000000000LL; // Max initial power + max k
         long long ans = 0;
+
         while (low <= high) {
             long long mid = low + (high - low) / 2;
             if (check(mid, n, r, k, stations)) {
@@ -207,6 +1200,7 @@ public:
                 high = mid - 1;
             }
         }
+
         return ans;
     }
 };
@@ -219,6 +1213,8 @@ public:
 
 {% highlight java %}
 {% raw %}
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 class Solution {
@@ -226,9 +1222,9 @@ class Solution {
         int n = stations.length;
 
         long low = 0;
-        long high = 2L * (long)1e10 + (long)1e9 + 7; // Max possible power for a city
-
+        long high = 2L * 10000000000L + 1000000000L; // Max initial power + max k
         long ans = 0;
+
         while (low <= high) {
             long mid = low + (high - low) / 2;
             if (check(mid, n, r, k, stations)) {
@@ -238,49 +1234,53 @@ class Solution {
                 high = mid - 1;
             }
         }
+
         return ans;
     }
 
-    private boolean check(long target_min_power, int n, int r, long k_initial, int[] stations) {
-        long[] initial_power = new long[n];
-        long[] diff_initial = new long[n + 1];
-
-        for (int idx = 0; idx < n; ++idx) {
-            int left_bound = Math.max(0, idx - r);
-            int right_bound = Math.min(n - 1, idx + r);
-            diff_initial[left_bound] += stations[idx];
-            diff_initial[right_bound + 1] -= stations[idx];
-        }
-
-        long current_sum_initial = 0;
-        for (int i = 0; i < n; ++i) {
-            current_sum_initial += diff_initial[i];
-            initial_power[i] = current_sum_initial;
-        }
-
-        long k_remaining = k_initial;
-        long[] diff_added_power_contribution = new long[n + 1];
-        long current_added_power_sum = 0;
+    private boolean check(long targetPower, int n, int r, long k, int[] stations) {
+        long[] diffInitial = new long[n + 1];
+        long[] diffForNewStations = new long[n + 1];
 
         for (int i = 0; i < n; ++i) {
-            current_added_power_sum += diff_added_power_contribution[i];
-            long total_power_at_i = initial_power[i] + current_added_power_sum;
+            long val = stations[i];
+            int startIdx = Math.max(0, i - r);
+            int endIdx = Math.min(n - 1, i + r);
 
-            if (total_power_at_i < target_min_power) {
-                long needed = target_min_power - total_power_at_i;
-                k_remaining -= needed;
-                if (k_remaining < 0) {
+            diffInitial[startIdx] += val;
+            if (endIdx + 1 < n + 1) {
+                diffInitial[endIdx + 1] -= val;
+            }
+        }
+
+        long currentTotalPowerSum = 0;
+        long currentAddedPowerEffect = 0;
+        long addedKCount = 0;
+
+        for (int i = 0; i < n; ++i) {
+            currentTotalPowerSum += diffInitial[i];
+            currentAddedPowerEffect += diffForNewStations[i];
+
+            long totalPowerAtI = currentTotalPowerSum + currentAddedPowerEffect;
+
+            if (totalPowerAtI < targetPower) {
+                long needed = targetPower - totalPowerAtI;
+                addedKCount += needed;
+
+                if (addedKCount > k) {
                     return false;
                 }
 
-                diff_added_power_contribution[i] += needed;
-                int end_idx_for_contribution = Math.min(n - 1, i + 2 * r);
-                if (end_idx_for_contribution + 1 < n + 1) {
-                    diff_added_power_contribution[end_idx_for_contribution + 1] -= needed;
+                diffForNewStations[i] += needed;
+                int endEffectIdx = Math.min(n - 1, i + 2 * r);
+                if (endEffectIdx + 1 < n + 1) {
+                    diffForNewStations[endEffectIdx + 1] -= needed;
                 }
-                current_added_power_sum += needed;
+
+                currentAddedPowerEffect += needed;
             }
         }
+
         return true;
     }
 }
@@ -297,47 +1297,49 @@ class Solution:
     def maxPower(self, stations: List[int], r: int, k: int) -> int:
         n = len(stations)
 
-        def check(target_min_power: int) -> bool:
-            initial_power = [0] * n
+        def check(target_power: int) -> bool:
             diff_initial = [0] * (n + 1)
-            for idx in range(n):
-                left_bound = max(0, idx - r)
-                right_bound = min(n - 1, idx + r)
-                diff_initial[left_bound] += stations[idx]
-                diff_initial[right_bound + 1] -= stations[idx]
-
-            current_sum_initial = 0
-            for i in range(n):
-                current_sum_initial += diff_initial[i]
-                initial_power[i] = current_sum_initial
-
-            k_remaining = k
-            diff_added_power_contribution = [0] * (n + 1)
-            current_added_power_sum = 0
+            diff_for_new_stations = [0] * (n + 1)
 
             for i in range(n):
-                current_added_power_sum += diff_added_power_contribution[i]
-                total_power_at_i = initial_power[i] + current_added_power_sum
+                val = stations[i]
+                start_idx = max(0, i - r)
+                end_idx = min(n - 1, i + r)
 
-                if total_power_at_i < target_min_power:
-                    needed = target_min_power - total_power_at_i
-                    k_remaining -= needed
-                    if k_remaining < 0:
+                diff_initial[start_idx] += val
+                if end_idx + 1 < n + 1:
+                    diff_initial[end_idx + 1] -= val
+
+            current_total_power_sum = 0
+            current_added_power_effect = 0
+            added_k_count = 0
+
+            for i in range(n):
+                current_total_power_sum += diff_initial[i]
+                current_added_power_effect += diff_for_new_stations[i]
+
+                total_power_at_i = current_total_power_sum + current_added_power_effect
+
+                if total_power_at_i < target_power:
+                    needed = target_power - total_power_at_i
+                    added_k_count += needed
+
+                    if added_k_count > k:
                         return False
 
-                    diff_added_power_contribution[i] += needed
-                    end_idx_for_contribution = min(n - 1, i + 2 * r)
-                    if end_idx_for_contribution + 1 < n + 1:
-                        diff_added_power_contribution[end_idx_for_contribution + 1] -= needed
+                    diff_for_new_stations[i] += needed
+                    end_effect_idx = min(n - 1, i + 2 * r)
+                    if end_effect_idx + 1 < n + 1:
+                        diff_for_new_stations[end_effect_idx + 1] -= needed
 
-                    current_added_power_sum += needed
+                    current_added_power_effect += needed
 
             return True
 
         low = 0
-        high = 2 * 10**10 + 10**9 + 7 # A safe upper bound for max possible power
-
+        high = 2 * 10**10 + 10**9 # A sufficiently large upper bound
         ans = 0
+
         while low <= high:
             mid = low + (high - low) // 2
             if check(mid):
@@ -360,47 +1362,49 @@ class Solution:
     def maxPower(self, stations: List[int], r: int, k: int) -> int:
         n = len(stations)
 
-        def check(target_min_power: int) -> bool:
-            initial_power = [0] * n
+        def check(target_power: int) -> bool:
             diff_initial = [0] * (n + 1)
-            for idx in range(n):
-                left_bound = max(0, idx - r)
-                right_bound = min(n - 1, idx + r)
-                diff_initial[left_bound] += stations[idx]
-                diff_initial[right_bound + 1] -= stations[idx]
-
-            current_sum_initial = 0
-            for i in range(n):
-                current_sum_initial += diff_initial[i]
-                initial_power[i] = current_sum_initial
-
-            k_remaining = k
-            diff_added_power_contribution = [0] * (n + 1)
-            current_added_power_sum = 0
+            diff_for_new_stations = [0] * (n + 1)
 
             for i in range(n):
-                current_added_power_sum += diff_added_power_contribution[i]
-                total_power_at_i = initial_power[i] + current_added_power_sum
+                val = stations[i]
+                start_idx = max(0, i - r)
+                end_idx = min(n - 1, i + r)
 
-                if total_power_at_i < target_min_power:
-                    needed = target_min_power - total_power_at_i
-                    k_remaining -= needed
-                    if k_remaining < 0:
+                diff_initial[start_idx] += val
+                if end_idx + 1 < n + 1:
+                    diff_initial[end_idx + 1] -= val
+
+            current_total_power_sum = 0
+            current_added_power_effect = 0
+            added_k_count = 0
+
+            for i in range(n):
+                current_total_power_sum += diff_initial[i]
+                current_added_power_effect += diff_for_new_stations[i]
+
+                total_power_at_i = current_total_power_sum + current_added_power_effect
+
+                if total_power_at_i < target_power:
+                    needed = target_power - total_power_at_i
+                    added_k_count += needed
+
+                    if added_k_count > k:
                         return False
 
-                    diff_added_power_contribution[i] += needed
-                    end_idx_for_contribution = min(n - 1, i + 2 * r)
-                    if end_idx_for_contribution + 1 < n + 1:
-                        diff_added_power_contribution[end_idx_for_contribution + 1] -= needed
+                    diff_for_new_stations[i] += needed
+                    end_effect_idx = min(n - 1, i + 2 * r)
+                    if end_effect_idx + 1 < n + 1:
+                        diff_for_new_stations[end_effect_idx + 1] -= needed
 
-                    current_added_power_sum += needed
+                    current_added_power_effect += needed
 
             return True
 
         low = 0
-        high = 2 * 10**10 + 10**9 + 7 # A safe upper bound for max possible power
-
+        high = 2 * 10**10 + 10**9 # A sufficiently large upper bound
         ans = 0
+
         while low <= high:
             mid = low + (high - low) // 2
             if check(mid):
@@ -420,72 +1424,86 @@ class Solution:
 {% highlight c %}
 {% raw %}
 #include <stdlib.h>
-#include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdbool.h>
 
-// Helper function for max and min
-long long max_ll(long long a, long long b) { return a > b ? a : b; }
-long long min_ll(long long a, long long b) { return a < b ? a : b; }
-int max_int(int a, int b) { return a > b ? a : b; }
-int min_int(int a, int b) { return a < b ? a : b; }
+// Helper function for max
+long long max(long long a, long long b) {
+    return a > b ? a : b;
+}
 
-bool check(long long target_min_power, int n, int r, long long k_initial, int* stations) {
-    long long* initial_power = (long long*)calloc(n, sizeof(long long));
+// Helper function for min
+long long min(long long a, long long b) {
+    return a < b ? a : b;
+}
+
+// check function to determine if a target_power is achievable
+bool check(long long target_power, int n, int r, long long k, int* stations) {
     long long* diff_initial = (long long*)calloc(n + 1, sizeof(long long));
+    long long* diff_for_new_stations = (long long*)calloc(n + 1, sizeof(long long));
 
-    for (int idx = 0; idx < n; ++idx) {
-        int left_bound = max_int(0, idx - r);
-        int right_bound = min_int(n - 1, idx + r);
-        diff_initial[left_bound] += stations[idx];
-        diff_initial[right_bound + 1] -= stations[idx];
+    if (!diff_initial || !diff_for_new_stations) {
+        // Handle memory allocation failure
+        free(diff_initial);
+        free(diff_for_new_stations);
+        return false; // Or throw an error, depending on context
     }
 
-    long long current_sum_initial = 0;
     for (int i = 0; i < n; ++i) {
-        current_sum_initial += diff_initial[i];
-        initial_power[i] = current_sum_initial;
+        long long val = stations[i];
+        int start_idx = max(0, i - r);
+        int end_idx = min(n - 1, i + r);
+
+        diff_initial[start_idx] += val;
+        if (end_idx + 1 < n + 1) {
+            diff_initial[end_idx + 1] -= val;
+        }
     }
 
-    long long k_remaining = k_initial;
-    long long* diff_added_power_contribution = (long long*)calloc(n + 1, sizeof(long long));
-    long long current_added_power_sum = 0;
+    long long current_total_power_sum = 0;
+    long long current_added_power_effect = 0;
+    long long added_k_count = 0;
 
     for (int i = 0; i < n; ++i) {
-        current_added_power_sum += diff_added_power_contribution[i];
-        long long total_power_at_i = initial_power[i] + current_added_power_sum;
+        current_total_power_sum += diff_initial[i];
+        current_added_power_effect += diff_for_new_stations[i];
 
-        if (total_power_at_i < target_min_power) {
-            long long needed = target_min_power - total_power_at_i;
-            k_remaining -= needed;
-            if (k_remaining < 0) {
-                free(initial_power);
+        long long total_power_at_i = current_total_power_sum + current_added_power_effect;
+
+        if (total_power_at_i < target_power) {
+            long long needed = target_power - total_power_at_i;
+            added_k_count += needed;
+
+            if (added_k_count > k) {
                 free(diff_initial);
-                free(diff_added_power_contribution);
+                free(diff_for_new_stations);
                 return false;
             }
 
-            diff_added_power_contribution[i] += needed;
-            int end_idx_for_contribution = min_int(n - 1, i + 2 * r);
-            if (end_idx_for_contribution + 1 < n + 1) {
-                diff_added_power_contribution[end_idx_for_contribution + 1] -= needed;
+            diff_for_new_stations[i] += needed;
+            int end_effect_idx = min(n - 1, i + 2 * r);
+            if (end_effect_idx + 1 < n + 1) {
+                diff_for_new_stations[end_effect_idx + 1] -= needed;
             }
-            current_added_power_sum += needed;
+
+            current_added_power_effect += needed;
         }
     }
-    free(initial_power);
+
     free(diff_initial);
-    free(diff_added_power_contribution);
+    free(diff_for_new_stations);
     return true;
 }
 
+// Main function for LeetCode problem
 long long maxPower(int* stations, int stationsSize, int r, long long k) {
     int n = stationsSize;
 
     long long low = 0;
-    long long high = 20000000000LL + 1000000000LL + 7; // Max possible power for a city
-
+    long long high = 2LL * 10000000000LL + 1000000000LL; // Max initial power + max k
     long long ans = 0;
+
     while (low <= high) {
         long long mid = low + (high - low) / 2;
         if (check(mid, n, r, k, stations)) {
@@ -495,6 +1513,7 @@ long long maxPower(int* stations, int stationsSize, int r, long long k) {
             high = mid - 1;
         }
     }
+
     return ans;
 }
 {% endraw %}
@@ -507,17 +1526,17 @@ long long maxPower(int* stations, int stationsSize, int r, long long k) {
 {% highlight csharp %}
 {% raw %}
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Solution {
     public long MaxPower(int[] stations, int r, long k) {
         int n = stations.Length;
 
         long low = 0;
-        long high = 2L * (long)1e10 + (long)1e9 + 7; // Max possible power for a city
-
+        long high = 2L * 10_000_000_000L + 1_000_000_000L; // Max initial power + max k
         long ans = 0;
+
         while (low <= high) {
             long mid = low + (high - low) / 2;
             if (Check(mid, n, r, k, stations)) {
@@ -527,49 +1546,53 @@ public class Solution {
                 high = mid - 1;
             }
         }
+
         return ans;
     }
 
-    private bool Check(long target_min_power, int n, int r, long k_initial, int[] stations) {
-        long[] initial_power = new long[n];
-        long[] diff_initial = new long[n + 1];
-
-        for (int idx = 0; idx < n; ++idx) {
-            int left_bound = Math.Max(0, idx - r);
-            int right_bound = Math.Min(n - 1, idx + r);
-            diff_initial[left_bound] += stations[idx];
-            diff_initial[right_bound + 1] -= stations[idx];
-        }
-
-        long current_sum_initial = 0;
-        for (int i = 0; i < n; ++i) {
-            current_sum_initial += diff_initial[i];
-            initial_power[i] = current_sum_initial;
-        }
-
-        long k_remaining = k_initial;
-        long[] diff_added_power_contribution = new long[n + 1];
-        long current_added_power_sum = 0;
+    private bool Check(long targetPower, int n, int r, long k, int[] stations) {
+        long[] diffInitial = new long[n + 1];
+        long[] diffForNewStations = new long[n + 1];
 
         for (int i = 0; i < n; ++i) {
-            current_added_power_sum += diff_added_power_contribution[i];
-            long total_power_at_i = initial_power[i] + current_added_power_sum;
+            long val = stations[i];
+            int startIdx = Math.Max(0, i - r);
+            int endIdx = Math.Min(n - 1, i + r);
 
-            if (total_power_at_i < target_min_power) {
-                long needed = target_min_power - total_power_at_i;
-                k_remaining -= needed;
-                if (k_remaining < 0) {
+            diffInitial[startIdx] += val;
+            if (endIdx + 1 < n + 1) {
+                diffInitial[endIdx + 1] -= val;
+            }
+        }
+
+        long currentTotalPowerSum = 0;
+        long currentAddedPowerEffect = 0;
+        long addedKCount = 0;
+
+        for (int i = 0; i < n; ++i) {
+            currentTotalPowerSum += diffInitial[i];
+            currentAddedPowerEffect += diffForNewStations[i];
+
+            long totalPowerAtI = currentTotalPowerSum + currentAddedPowerEffect;
+
+            if (totalPowerAtI < targetPower) {
+                long needed = targetPower - totalPowerAtI;
+                addedKCount += needed;
+
+                if (addedKCount > k) {
                     return false;
                 }
 
-                diff_added_power_contribution[i] += needed;
-                int end_idx_for_contribution = Math.Min(n - 1, i + 2 * r);
-                if (end_idx_for_contribution + 1 < n + 1) {
-                    diff_added_power_contribution[end_idx_for_contribution + 1] -= needed;
+                diffForNewStations[i] += needed;
+                int endEffectIdx = Math.Min(n - 1, i + 2 * r);
+                if (endEffectIdx + 1 < n + 1) {
+                    diffForNewStations[endEffectIdx + 1] -= needed;
                 }
-                current_added_power_sum += needed;
+
+                currentAddedPowerEffect += needed;
             }
         }
+
         return true;
     }
 }
@@ -591,53 +1614,56 @@ public class Solution {
 var maxPower = function(stations, r, k) {
     const n = stations.length;
 
-    const check = (target_min_power) => {
-        const initial_power = new Array(n).fill(0);
+    const check = (target_power) => {
         const diff_initial = new Array(n + 1).fill(0);
-
-        for (let idx = 0; idx < n; ++idx) {
-            const left_bound = Math.max(0, idx - r);
-            const right_bound = Math.min(n - 1, idx + r);
-            diff_initial[left_bound] += stations[idx];
-            diff_initial[right_bound + 1] -= stations[idx];
-        }
-
-        let current_sum_initial = 0;
-        for (let i = 0; i < n; ++i) {
-            current_sum_initial += diff_initial[i];
-            initial_power[i] = current_sum_initial;
-        }
-
-        let k_remaining = k;
-        const diff_added_power_contribution = new Array(n + 1).fill(0);
-        let current_added_power_sum = 0;
+        const diff_for_new_stations = new Array(n + 1).fill(0);
 
         for (let i = 0; i < n; ++i) {
-            current_added_power_sum += diff_added_power_contribution[i];
-            let total_power_at_i = initial_power[i] + current_added_power_sum;
+            const val = stations[i];
+            const start_idx = Math.max(0, i - r);
+            const end_idx = Math.min(n - 1, i + r);
 
-            if (total_power_at_i < target_min_power) {
-                const needed = target_min_power - total_power_at_i;
-                k_remaining -= needed;
-                if (k_remaining < 0) {
+            diff_initial[start_idx] += val;
+            if (end_idx + 1 < n + 1) {
+                diff_initial[end_idx + 1] -= val;
+            }
+        }
+
+        let current_total_power_sum = 0;
+        let current_added_power_effect = 0;
+        let added_k_count = 0;
+
+        for (let i = 0; i < n; ++i) {
+            current_total_power_sum += diff_initial[i];
+            current_added_power_effect += diff_for_new_stations[i];
+
+            const total_power_at_i = current_total_power_sum + current_added_power_effect;
+
+            if (total_power_at_i < target_power) {
+                const needed = target_power - total_power_at_i;
+                added_k_count += needed;
+
+                if (added_k_count > k) {
                     return false;
                 }
 
-                diff_added_power_contribution[i] += needed;
-                const end_idx_for_contribution = Math.min(n - 1, i + 2 * r);
-                if (end_idx_for_contribution + 1 < n + 1) {
-                    diff_added_power_contribution[end_idx_for_contribution + 1] -= needed;
+                diff_for_new_stations[i] += needed;
+                const end_effect_idx = Math.min(n - 1, i + 2 * r);
+                if (end_effect_idx + 1 < n + 1) {
+                    diff_for_new_stations[end_effect_idx + 1] -= needed;
                 }
-                current_added_power_sum += needed;
+
+                current_added_power_effect += needed;
             }
         }
+
         return true;
     };
 
     let low = 0;
-    let high = 2 * 10**10 + 10**9 + 7; // Max possible power for a city
-
+    let high = 2 * 10**10 + 10**9; // A sufficiently large upper bound
     let ans = 0;
+
     while (low <= high) {
         const mid = Math.floor(low + (high - low) / 2);
         if (check(mid)) {
@@ -647,6 +1673,7 @@ var maxPower = function(stations, r, k) {
             high = mid - 1;
         }
     }
+
     return ans;
 };
 {% endraw %}
@@ -661,53 +1688,56 @@ var maxPower = function(stations, r, k) {
 function maxPower(stations: number[], r: number, k: number): number {
     const n = stations.length;
 
-    const check = (target_min_power: number): boolean => {
-        const initial_power: number[] = new Array(n).fill(0);
+    const check = (target_power: number): boolean => {
         const diff_initial: number[] = new Array(n + 1).fill(0);
-
-        for (let idx = 0; idx < n; ++idx) {
-            const left_bound = Math.max(0, idx - r);
-            const right_bound = Math.min(n - 1, idx + r);
-            diff_initial[left_bound] += stations[idx];
-            diff_initial[right_bound + 1] -= stations[idx];
-        }
-
-        let current_sum_initial = 0;
-        for (let i = 0; i < n; ++i) {
-            current_sum_initial += diff_initial[i];
-            initial_power[i] = current_sum_initial;
-        }
-
-        let k_remaining = k;
-        const diff_added_power_contribution: number[] = new Array(n + 1).fill(0);
-        let current_added_power_sum = 0;
+        const diff_for_new_stations: number[] = new Array(n + 1).fill(0);
 
         for (let i = 0; i < n; ++i) {
-            current_added_power_sum += diff_added_power_contribution[i];
-            let total_power_at_i = initial_power[i] + current_added_power_sum;
+            const val = stations[i];
+            const start_idx = Math.max(0, i - r);
+            const end_idx = Math.min(n - 1, i + r);
 
-            if (total_power_at_i < target_min_power) {
-                const needed = target_min_power - total_power_at_i;
-                k_remaining -= needed;
-                if (k_remaining < 0) {
+            diff_initial[start_idx] += val;
+            if (end_idx + 1 < n + 1) {
+                diff_initial[end_idx + 1] -= val;
+            }
+        }
+
+        let current_total_power_sum = 0;
+        let current_added_power_effect = 0;
+        let added_k_count = 0;
+
+        for (let i = 0; i < n; ++i) {
+            current_total_power_sum += diff_initial[i];
+            current_added_power_effect += diff_for_new_stations[i];
+
+            const total_power_at_i = current_total_power_sum + current_added_power_effect;
+
+            if (total_power_at_i < target_power) {
+                const needed = target_power - total_power_at_i;
+                added_k_count += needed;
+
+                if (added_k_count > k) {
                     return false;
                 }
 
-                diff_added_power_contribution[i] += needed;
-                const end_idx_for_contribution = Math.min(n - 1, i + 2 * r);
-                if (end_idx_for_contribution + 1 < n + 1) {
-                    diff_added_power_contribution[end_idx_for_contribution + 1] -= needed;
+                diff_for_new_stations[i] += needed;
+                const end_effect_idx = Math.min(n - 1, i + 2 * r);
+                if (end_effect_idx + 1 < n + 1) {
+                    diff_for_new_stations[end_effect_idx + 1] -= needed;
                 }
-                current_added_power_sum += needed;
+
+                current_added_power_effect += needed;
             }
         }
+
         return true;
     };
 
     let low = 0;
-    let high = 2 * 10**10 + 10**9 + 7; // Max possible power for a city
-
+    let high = 2 * 10**10 + 10**9; // A sufficiently large upper bound
     let ans = 0;
+
     while (low <= high) {
         const mid = Math.floor(low + (high - low) / 2);
         if (check(mid)) {
@@ -717,6 +1747,7 @@ function maxPower(stations: number[], r: number, k: number): number {
             high = mid - 1;
         }
     }
+
     return ans;
 }
 {% endraw %}
@@ -728,8 +1759,6 @@ function maxPower(stations: number[], r: number, k: number): number {
 
 {% highlight php %}
 {% raw %}
-<?php
-
 class Solution {
 
     /**
@@ -738,56 +1767,59 @@ class Solution {
      * @param Integer $k
      * @return Integer
      */
-    function maxPower(array $stations, int $r, int $k): int {
+    function maxPower($stations, $r, $k) {
         $n = count($stations);
 
-        $check = function(int $target_min_power) use ($n, $r, $k, $stations): bool {
-            $initial_power = array_fill(0, $n, 0);
+        $check = function($target_power) use ($n, $r, $k, $stations) {
             $diff_initial = array_fill(0, $n + 1, 0);
-
-            for ($idx = 0; $idx < $n; ++$idx) {
-                $left_bound = max(0, $idx - $r);
-                $right_bound = min($n - 1, $idx + $r);
-                $diff_initial[$left_bound] += $stations[$idx];
-                $diff_initial[$right_bound + 1] -= $stations[$idx];
-            }
-
-            $current_sum_initial = 0;
-            for ($i = 0; $i < $n; ++$i) {
-                $current_sum_initial += $diff_initial[$i];
-                $initial_power[$i] = $current_sum_initial;
-            }
-
-            $k_remaining = $k;
-            $diff_added_power_contribution = array_fill(0, $n + 1, 0);
-            $current_added_power_sum = 0;
+            $diff_for_new_stations = array_fill(0, $n + 1, 0);
 
             for ($i = 0; $i < $n; ++$i) {
-                $current_added_power_sum += $diff_added_power_contribution[$i];
-                $total_power_at_i = $initial_power[$i] + $current_added_power_sum;
+                $val = $stations[$i];
+                $start_idx = max(0, $i - $r);
+                $end_idx = min($n - 1, $i + $r);
 
-                if ($total_power_at_i < $target_min_power) {
-                    $needed = $target_min_power - $total_power_at_i;
-                    $k_remaining -= $needed;
-                    if ($k_remaining < 0) {
+                $diff_initial[$start_idx] += $val;
+                if ($end_idx + 1 < $n + 1) {
+                    $diff_initial[$end_idx + 1] -= $val;
+                }
+            }
+
+            $current_total_power_sum = 0;
+            $current_added_power_effect = 0;
+            $added_k_count = 0;
+
+            for ($i = 0; $i < $n; ++$i) {
+                $current_total_power_sum += $diff_initial[$i];
+                $current_added_power_effect += $diff_for_new_stations[$i];
+
+                $total_power_at_i = $current_total_power_sum + $current_added_power_effect;
+
+                if ($total_power_at_i < $target_power) {
+                    $needed = $target_power - $total_power_at_i;
+                    $added_k_count += $needed;
+
+                    if ($added_k_count > $k) {
                         return false;
                     }
 
-                    $diff_added_power_contribution[$i] += $needed;
-                    $end_idx_for_contribution = min($n - 1, $i + 2 * $r);
-                    if ($end_idx_for_contribution + 1 < $n + 1) {
-                        $diff_added_power_contribution[$end_idx_for_contribution + 1] -= $needed;
+                    $diff_for_new_stations[$i] += $needed;
+                    $end_effect_idx = min($n - 1, $i + 2 * $r);
+                    if ($end_effect_idx + 1 < $n + 1) {
+                        $diff_for_new_stations[$end_effect_idx + 1] -= $needed;
                     }
-                    $current_added_power_sum += $needed;
+
+                    $current_added_power_effect += $needed;
                 }
             }
+
             return true;
         };
 
         $low = 0;
-        $high = 2 * 10**10 + 10**9 + 7; // Max possible power for a city
-
+        $high = 2 * 10**10 + 10**9; // A sufficiently large upper bound
         $ans = 0;
+
         while ($low <= $high) {
             $mid = floor($low + ($high - $low) / 2);
             if ($check($mid)) {
@@ -797,6 +1829,7 @@ class Solution {
                 $high = $mid - 1;
             }
         }
+
         return $ans;
     }
 }
@@ -809,59 +1842,60 @@ class Solution {
 
 {% highlight swift %}
 {% raw %}
-import Foundation
-
 class Solution {
     func maxPower(_ stations: [Int], _ r: Int, _ k: Int) -> Int {
         let n = stations.count
 
-        func check(_ target_min_power: Int) -> Bool {
-            var initial_power = Array(repeating: 0, count: n)
+        func check(_ target_power: Int) -> Bool {
             var diff_initial = Array(repeating: 0, count: n + 1)
-
-            for idx in 0..<n {
-                let left_bound = max(0, idx - r)
-                let right_bound = min(n - 1, idx + r)
-                diff_initial[left_bound] += stations[idx]
-                diff_initial[right_bound + 1] -= stations[idx]
-            }
-
-            var current_sum_initial = 0
-            for i in 0..<n {
-                current_sum_initial += diff_initial[i]
-                initial_power[i] = current_sum_initial
-            }
-
-            var k_remaining = k
-            var diff_added_power_contribution = Array(repeating: 0, count: n + 1)
-            var current_added_power_sum = 0
+            var diff_for_new_stations = Array(repeating: 0, count: n + 1)
 
             for i in 0..<n {
-                current_added_power_sum += diff_added_power_contribution[i]
-                let total_power_at_i = initial_power[i] + current_added_power_sum
+                let val = stations[i]
+                let start_idx = max(0, i - r)
+                let end_idx = min(n - 1, i + r)
 
-                if total_power_at_i < target_min_power {
-                    let needed = target_min_power - total_power_at_i
-                    k_remaining -= needed
-                    if k_remaining < 0 {
+                diff_initial[start_idx] += val
+                if end_idx + 1 < n + 1 {
+                    diff_initial[end_idx + 1] -= val
+                }
+            }
+
+            var current_total_power_sum = 0
+            var current_added_power_effect = 0
+            var added_k_count = 0
+
+            for i in 0..<n {
+                current_total_power_sum += diff_initial[i]
+                current_added_power_effect += diff_for_new_stations[i]
+
+                let total_power_at_i = current_total_power_sum + current_added_power_effect
+
+                if total_power_at_i < target_power {
+                    let needed = target_power - total_power_at_i
+                    added_k_count += needed
+
+                    if added_k_count > k {
                         return false
                     }
 
-                    diff_added_power_contribution[i] += needed
-                    let end_idx_for_contribution = min(n - 1, i + 2 * r)
-                    if end_idx_for_contribution + 1 < n + 1 {
-                        diff_added_power_contribution[end_idx_for_contribution + 1] -= needed
+                    diff_for_new_stations[i] += needed
+                    let end_effect_idx = min(n - 1, i + 2 * r)
+                    if end_effect_idx + 1 < n + 1 {
+                        diff_for_new_stations[end_effect_idx + 1] -= needed
                     }
-                    current_added_power_sum += needed
+
+                    current_added_power_effect += needed
                 }
             }
+
             return true
         }
 
         var low = 0
-        var high = 2 * 10_000_000_000 + 1_000_000_000 + 7 // Max possible power for a city
-
+        var high = 2 * 10_000_000_000 + 1_000_000_000 // A sufficiently large upper bound
         var ans = 0
+
         while low <= high {
             let mid = low + (high - low) / 2
             if check(mid) {
@@ -871,6 +1905,7 @@ class Solution {
                 high = mid - 1
             }
         }
+
         return ans
     }
 }
@@ -890,53 +1925,56 @@ class Solution {
     fun maxPower(stations: IntArray, r: Int, k: Long): Long {
         val n = stations.size
 
-        fun check(target_min_power: Long): Boolean {
-            val initial_power = LongArray(n) { 0L }
-            val diff_initial = LongArray(n + 1) { 0L }
-
-            for (idx in 0 until n) {
-                val left_bound = max(0, idx - r)
-                val right_bound = min(n - 1, idx + r)
-                diff_initial[left_bound] += stations[idx]
-                diff_initial[right_bound + 1] -= stations[idx]
-            }
-
-            var current_sum_initial = 0L
-            for (i in 0 until n) {
-                current_sum_initial += diff_initial[i]
-                initial_power[i] = current_sum_initial
-            }
-
-            var k_remaining = k
-            val diff_added_power_contribution = LongArray(n + 1) { 0L }
-            var current_added_power_sum = 0L
+        fun check(target_power: Long): Boolean {
+            val diffInitial = LongArray(n + 1) { 0L }
+            val diffForNewStations = LongArray(n + 1) { 0L }
 
             for (i in 0 until n) {
-                current_added_power_sum += diff_added_power_contribution[i]
-                val total_power_at_i = initial_power[i] + current_added_power_sum
+                val val_ = stations[i].toLong()
+                val start_idx = max(0, i - r)
+                val end_idx = min(n - 1, i + r)
 
-                if (total_power_at_i < target_min_power) {
-                    val needed = target_min_power - total_power_at_i
-                    k_remaining -= needed
-                    if (k_remaining < 0) {
+                diffInitial[start_idx] += val_
+                if (end_idx + 1 < n + 1) {
+                    diffInitial[end_idx + 1] -= val_
+                }
+            }
+
+            var currentTotalPowerSum = 0L
+            var currentAddedPowerEffect = 0L
+            var addedKCount = 0L
+
+            for (i in 0 until n) {
+                currentTotalPowerSum += diffInitial[i]
+                currentAddedPowerEffect += diffForNewStations[i]
+
+                val totalPowerAtI = currentTotalPowerSum + currentAddedPowerEffect
+
+                if (totalPowerAtI < target_power) {
+                    val needed = target_power - totalPowerAtI
+                    addedKCount += needed
+
+                    if (addedKCount > k) {
                         return false
                     }
 
-                    diff_added_power_contribution[i] += needed
-                    val end_idx_for_contribution = min(n - 1, i + 2 * r)
-                    if (end_idx_for_contribution + 1 < n + 1) {
-                        diff_added_power_contribution[end_idx_for_contribution + 1] -= needed
+                    diffForNewStations[i] += needed
+                    val endEffectIdx = min(n - 1, i + 2 * r)
+                    if (endEffectIdx + 1 < n + 1) {
+                        diffForNewStations[endEffectIdx + 1] -= needed
                     }
-                    current_added_power_sum += needed
+
+                    currentAddedPowerEffect += needed
                 }
             }
+
             return true
         }
 
         var low = 0L
-        var high = 2L * 10_000_000_000L + 1_000_000_000L + 7L // Max possible power for a city
-
+        var high = 2L * 10_000_000_000L + 1_000_000_000L // A sufficiently large upper bound
         var ans = 0L
+
         while (low <= high) {
             val mid = low + (high - low) / 2
             if (check(mid)) {
@@ -946,6 +1984,7 @@ class Solution {
                 high = mid - 1
             }
         }
+
         return ans
     }
 }
@@ -964,57 +2003,58 @@ class Solution {
   int maxPower(List<int> stations, int r, int k) {
     final n = stations.length;
 
-    bool check(int targetMinPower) {
-      final initialPower = List<int>.filled(n, 0);
+    bool check(int targetPower) {
       final diffInitial = List<int>.filled(n + 1, 0);
-
-      for (int idx = 0; idx < n; ++idx) {
-        final leftBound = max(0, idx - r);
-        final rightBound = min(n - 1, idx + r);
-        diffInitial[leftBound] += stations[idx];
-        diffInitial[rightBound + 1] -= stations[idx];
-      }
-
-      int currentSumInitial = 0;
-      for (int i = 0; i < n; ++i) {
-        currentSumInitial += diffInitial[i];
-        initialPower[i] = currentSumInitial;
-      }
-
-      int kRemaining = k;
-      final diffAddedPowerContribution = List<int>.filled(n + 1, 0);
-      int currentAddedPowerSum = 0;
+      final diffForNewStations = List<int>.filled(n + 1, 0);
 
       for (int i = 0; i < n; ++i) {
-        currentAddedPowerSum += diffAddedPowerContribution[i];
-        int totalPowerAtI = initialPower[i] + currentAddedPowerSum;
+        final val = stations[i];
+        final startIdx = max(0, i - r);
+        final endIdx = min(n - 1, i + r);
 
-        if (totalPowerAtI < targetMinPower) {
-          final needed = targetMinPower - totalPowerAtI;
-          kRemaining -= needed;
-          if (kRemaining < 0) {
+        diffInitial[startIdx] += val;
+        if (endIdx + 1 < n + 1) {
+          diffInitial[endIdx + 1] -= val;
+        }
+      }
+
+      int currentTotalPowerSum = 0;
+      int currentAddedPowerEffect = 0;
+      int addedKCount = 0;
+
+      for (int i = 0; i < n; ++i) {
+        currentTotalPowerSum += diffInitial[i];
+        currentAddedPowerEffect += diffForNewStations[i];
+
+        final totalPowerAtI = currentTotalPowerSum + currentAddedPowerEffect;
+
+        if (totalPowerAtI < targetPower) {
+          final needed = targetPower - totalPowerAtI;
+          addedKCount += needed;
+
+          if (addedKCount > k) {
             return false;
           }
 
-          diffAddedPowerContribution[i] += needed;
-          final endIdxForContribution = min(n - 1, i + 2 * r);
-          if (endIdxForContribution + 1 < n + 1) {
-            diffAddedPowerContribution[endIdxForContribution + 1] -= needed;
+          diffForNewStations[i] += needed;
+          final endEffectIdx = min(n - 1, i + 2 * r);
+          if (endEffectIdx + 1 < n + 1) {
+            diffForNewStations[endEffectIdx + 1] -= needed;
           }
-          currentAddedPowerSum += needed;
+
+          currentAddedPowerEffect += needed;
         }
       }
+
       return true;
     }
 
     int low = 0;
-    // Dart's int type can handle large numbers up to 2^63 - 1 on 64-bit platforms.
-    // 2 * 10^10 + 10^9 + 7 is within this range.
-    int high = 2 * pow(10, 10).toInt() + pow(10, 9).toInt() + 7;
-
+    int high = 2 * pow(10, 10).toInt() + pow(10, 9).toInt(); // A sufficiently large upper bound
     int ans = 0;
+
     while (low <= high) {
-      final mid = low + (high - low) ~/ 2;
+      final mid = low + ((high - low) ~/ 2);
       if (check(mid)) {
         ans = mid;
         low = mid + 1;
@@ -1022,6 +2062,7 @@ class Solution {
         high = mid - 1;
       }
     }
+
     return ans;
   }
 }
@@ -1041,71 +2082,69 @@ import (
 )
 
 func maxPower(stations []int, r int, k int) int {
-    n := len(stations)
+	n := len(stations)
 
-    check := func(targetMinPower int) bool {
-        initialPower := make([]int, n)
-        diffInitial := make([]int, n + 1)
+	check := func(targetPower int) bool {
+		diffInitial := make([]int, n+1)
+		diffForNewStations := make([]int, n+1)
 
-        for idx := 0; idx < n; idx++ {
-            leftBound := int(math.Max(float64(0), float64(idx - r)))
-            rightBound := int(math.Min(float64(n - 1), float64(idx + r)))
-            diffInitial[leftBound] += stations[idx]
-            diffInitial[rightBound + 1] -= stations[idx]
-        }
+		for i := 0; i < n; i++ {
+			val := stations[i]
+			startIdx := int(math.Max(0, float64(i-r)))
+			endIdx := int(math.Min(float64(n-1), float64(i+r)))
 
-        currentSumInitial := 0
-        for i := 0; i < n; i++ {
-            currentSumInitial += diffInitial[i]
-            initialPower[i] = currentSumInitial
-        }
+			diffInitial[startIdx] += val
+			if endIdx+1 < n+1 {
+				diffInitial[endIdx+1] -= val
+			}
+		}
 
-        kRemaining := k
-        diffAddedPowerContribution := make([]int, n + 1)
-        currentAddedPowerSum := 0
+		currentTotalPowerSum := 0
+		currentAddedPowerEffect := 0
+		addedKCount := 0
 
-        for i := 0; i < n; i++ {
-            currentAddedPowerSum += diffAddedPowerContribution[i]
-            totalPowerAtI := initialPower[i] + currentAddedPowerSum
+		for i := 0; i < n; i++ {
+			currentTotalPowerSum += diffInitial[i]
+			currentAddedPowerEffect += diffForNewStations[i]
 
-            if totalPowerAtI < targetMinPower {
-                needed := targetMinPower - totalPowerAtI
-                kRemaining -= needed
-                if kRemaining < 0 {
-                    return false
-                }
+			totalPowerAtI := currentTotalPowerSum + currentAddedPowerEffect
 
-                diffAddedPowerContribution[i] += needed;
-                endIdxForContribution := int(math.Min(float64(n - 1), float64(i + 2 * r)))
-                if endIdxForContribution + 1 < n + 1 {
-                    diffAddedPowerContribution[endIdxForContribution + 1] -= needed;
-                }
-                currentAddedPowerSum += needed;
-            }
-        }
-        return true
-    }
+			if totalPowerAtI < targetPower {
+				needed := targetPower - totalPowerAtI
+				addedKCount += needed
 
-    low := 0
-    // Go's int type is usually 32-bit or 64-bit depending on the system.
-    // For competitive programming, it's often 64-bit on typical platforms.
-    // However, to be safe with large numbers, we should use int64 for powers and k.
-    // The problem statement implies k is int, but it can be 10^9. stations[i] is int.
-    // Sums can exceed int32. Let's assume int is 64-bit for now, or use int64 explicitly.
-    // LeetCode Go environment typically uses 64-bit int for `int` type.
-    high := 2 * int(math.Pow10(10)) + int(math.Pow10(9)) + 7 // Max possible power for a city
+				if addedKCount > k {
+					return false
+				}
 
-    ans := 0
-    for low <= high {
-        mid := low + (high - low) / 2
-        if check(mid) {
-            ans = mid
-            low = mid + 1
-        } else {
-            high = mid - 1
-        }
-    }
-    return ans
+				diffForNewStations[i] += needed
+				endEffectIdx := int(math.Min(float64(n-1), float64(i+2*r)))
+				if endEffectIdx+1 < n+1 {
+					diffForNewStations[endEffectIdx+1] -= needed
+				}
+
+				currentAddedPowerEffect += needed
+			}
+		}
+
+		return true
+	}
+
+	low := 0
+	high := 2*10000000000 + 1000000000 // A sufficiently large upper bound
+	ans := 0
+
+	for low <= high {
+		mid := low + (high-low)/2
+		if check(mid) {
+			ans = mid
+			low = mid + 1
+		} else {
+			high = mid - 1
+		}
+	}
+
+	return ans
 }
 {% endraw %}
 {% endhighlight %}
@@ -1116,68 +2155,75 @@ func maxPower(stations []int, r int, k int) int {
 
 {% highlight ruby %}
 {% raw %}
-# @param {Integer[]} stations
-# @param {Integer} r
-# @param {Integer} k
-# @return {Integer}
-def max_power(stations, r, k)
-    n = stations.length
+class Solution
+    # @param {Integer[]} stations
+    # @param {Integer} r
+    # @param {Integer} k
+    # @return {Integer}
+    def max_power(stations, r, k)
+        n = stations.length
 
-    check = ->(target_min_power) do
-        initial_power = Array.new(n, 0)
-        diff_initial = Array.new(n + 1, 0)
+        check = lambda target_power do
+            diff_initial = Array.new(n + 1, 0)
+            diff_for_new_stations = Array.new(n + 1, 0)
 
-        stations.each_with_index do |s_val, idx|
-            left_bound = [0, idx - r].max
-            right_bound = [n - 1, idx + r].min
-            diff_initial[left_bound] += s_val
-            diff_initial[right_bound + 1] -= s_val
-        end
+            stations.each_with_index do |val, i|
+                start_idx = [0, i - r].max
+                end_idx = [n - 1, i + r].min
 
-        current_sum_initial = 0
-        n.times do |i|
-            current_sum_initial += diff_initial[i]
-            initial_power[i] = current_sum_initial
-        end
-
-        k_remaining = k
-        diff_added_power_contribution = Array.new(n + 1, 0)
-        current_added_power_sum = 0
-
-        n.times do |i|
-            current_added_power_sum += diff_added_power_contribution[i]
-            total_power_at_i = initial_power[i] + current_added_power_sum
-
-            if total_power_at_i < target_min_power
-                needed = target_min_power - total_power_at_i
-                k_remaining -= needed
-                return false if k_remaining < 0
-
-                diff_added_power_contribution[i] += needed
-                end_idx_for_contribution = [n - 1, i + 2 * r].min
-                if end_idx_for_contribution + 1 < n + 1
-                    diff_added_power_contribution[end_idx_for_contribution + 1] -= needed
+                diff_initial[start_idx] += val
+                if end_idx + 1 < n + 1
+                    diff_initial[end_idx + 1] -= val
                 end
-                current_added_power_sum += needed
+            end
+
+            current_total_power_sum = 0
+            current_added_power_effect = 0
+            added_k_count = 0
+
+            n.times do |i|
+                current_total_power_sum += diff_initial[i]
+                current_added_power_effect += diff_for_new_stations[i]
+
+                total_power_at_i = current_total_power_sum + current_added_power_effect
+
+                if total_power_at_i < target_power
+                    needed = target_power - total_power_at_i
+                    added_k_count += needed
+
+                    if added_k_count > k
+                        return false
+                    end
+
+                    diff_for_new_stations[i] += needed
+                    end_effect_idx = [n - 1, i + 2 * r].min
+                    if end_effect_idx + 1 < n + 1
+                        diff_for_new_stations[end_effect_idx + 1] -= needed
+                    end
+
+                    current_added_power_effect += needed
+                end
+            end
+
+            true
+        end
+
+        low = 0
+        high = 2 * 10**10 + 10**9 # A sufficiently large upper bound
+        ans = 0
+
+        while low <= high
+            mid = low + (high - low) / 2
+            if check.call(mid)
+                ans = mid
+                low = mid + 1
+            else
+                high = mid - 1
             end
         end
-        true
-    end
 
-    low = 0
-    high = 2 * (10**10) + (10**9) + 7 # Max possible power for a city
-
-    ans = 0
-    while low <= high
-        mid = low + (high - low) / 2
-        if check.call(mid)
-            ans = mid
-            low = mid + 1
-        else
-            high = mid - 1
-        end
+        ans
     end
-    ans
 end
 {% endraw %}
 {% endhighlight %}
@@ -1195,53 +2241,56 @@ object Solution {
     def maxPower(stations: Array[Int], r: Int, k: Long): Long = {
         val n = stations.length
 
-        def check(target_min_power: Long): Boolean = {
-            val initial_power = Array.ofDim[Long](n)
-            val diff_initial = Array.ofDim[Long](n + 1)
-
-            for (idx <- 0 until n) {
-                val left_bound = max(0, idx - r)
-                val right_bound = min(n - 1, idx + r)
-                diff_initial(left_bound) += stations(idx)
-                diff_initial(right_bound + 1) -= stations(idx)
-            }
-
-            var current_sum_initial = 0L
-            for (i <- 0 until n) {
-                current_sum_initial += diff_initial(i)
-                initial_power(i) = current_sum_initial
-            }
-
-            var k_remaining = k
-            val diff_added_power_contribution = Array.ofDim[Long](n + 1)
-            var current_added_power_sum = 0L
+        def check(target_power: Long): Boolean = {
+            val diffInitial = ArrayBuffer.fill(n + 1)(0L)
+            val diffForNewStations = ArrayBuffer.fill(n + 1)(0L)
 
             for (i <- 0 until n) {
-                current_added_power_sum += diff_added_power_contribution(i)
-                val total_power_at_i = initial_power(i) + current_added_power_sum
+                val val_ = stations(i).toLong
+                val start_idx = max(0, i - r)
+                val end_idx = min(n - 1, i + r)
 
-                if (total_power_at_i < target_min_power) {
-                    val needed = target_min_power - total_power_at_i
-                    k_remaining -= needed
-                    if (k_remaining < 0) {
+                diffInitial(start_idx) += val_
+                if (end_idx + 1 < n + 1) {
+                    diffInitial(end_idx + 1) -= val_
+                }
+            }
+
+            var currentTotalPowerSum = 0L
+            var currentAddedPowerEffect = 0L
+            var addedKCount = 0L
+
+            for (i <- 0 until n) {
+                currentTotalPowerSum += diffInitial(i)
+                currentAddedPowerEffect += diffForNewStations(i)
+
+                val totalPowerAtI = currentTotalPowerSum + currentAddedPowerEffect
+
+                if (totalPowerAtI < target_power) {
+                    val needed = target_power - totalPowerAtI
+                    addedKCount += needed
+
+                    if (addedKCount > k) {
                         return false
                     }
 
-                    diff_added_power_contribution(i) += needed
-                    val end_idx_for_contribution = min(n - 1, i + 2 * r)
-                    if (end_idx_for_contribution + 1 < n + 1) {
-                        diff_added_power_contribution(end_idx_for_contribution + 1) -= needed
+                    diffForNewStations(i) += needed
+                    val endEffectIdx = min(n - 1, i + 2 * r)
+                    if (endEffectIdx + 1 < n + 1) {
+                        diffForNewStations(endEffectIdx + 1) -= needed
                     }
-                    current_added_power_sum += needed
+
+                    currentAddedPowerEffect += needed
                 }
             }
+
             true
         }
 
         var low = 0L
-        var high = 2L * 10_000_000_000L + 1_000_000_000L + 7L // Max possible power for a city
-
+        var high = 2L * 10_000_000_000L + 1_000_000_000L // A sufficiently large upper bound
         var ans = 0L
+
         while (low <= high) {
             val mid = low + (high - low) / 2
             if (check(mid)) {
@@ -1251,6 +2300,7 @@ object Solution {
                 high = mid - 1
             }
         }
+
         ans
     }
 }
@@ -1263,59 +2313,60 @@ object Solution {
 
 {% highlight rust %}
 {% raw %}
-use std::cmp::{max, min};
-
 impl Solution {
     pub fn max_power(stations: Vec<i32>, r: i32, k: i64) -> i64 {
         let n = stations.len();
 
-        let check = |target_min_power: i64| -> bool {
-            let mut initial_power = vec![0i64; n];
+        let check = |target_power: i64| -> bool {
             let mut diff_initial = vec![0i64; n + 1];
-
-            for (idx, &s_val) in stations.iter().enumerate() {
-                let left_bound = max(0, idx as i32 - r) as usize;
-                let right_bound = min(n as i32 - 1, idx as i32 + r) as usize;
-                diff_initial[left_bound] += s_val as i64;
-                diff_initial[right_bound + 1] -= s_val as i64;
-            }
-
-            let mut current_sum_initial = 0i64;
-            for i in 0..n {
-                current_sum_initial += diff_initial[i];
-                initial_power[i] = current_sum_initial;
-            }
-
-            let mut k_remaining = k;
-            let mut diff_added_power_contribution = vec![0i64; n + 1];
-            let mut current_added_power_sum = 0i64;
+            let mut diff_for_new_stations = vec![0i64; n + 1];
 
             for i in 0..n {
-                current_added_power_sum += diff_added_power_contribution[i];
-                let total_power_at_i = initial_power[i] + current_added_power_sum;
+                let val = stations[i] as i64;
+                let start_idx = (0).max(i as i32 - r) as usize;
+                let end_idx = (n as i32 - 1).min(i as i32 + r) as usize;
 
-                if total_power_at_i < target_min_power {
-                    let needed = target_min_power - total_power_at_i;
-                    k_remaining -= needed;
-                    if k_remaining < 0 {
+                diff_initial[start_idx] += val;
+                if end_idx + 1 < n + 1 {
+                    diff_initial[end_idx + 1] -= val;
+                }
+            }
+
+            let mut current_total_power_sum = 0i64;
+            let mut current_added_power_effect = 0i64;
+            let mut added_k_count = 0i64;
+
+            for i in 0..n {
+                current_total_power_sum += diff_initial[i];
+                current_added_power_effect += diff_for_new_stations[i];
+
+                let total_power_at_i = current_total_power_sum + current_added_power_effect;
+
+                if total_power_at_i < target_power {
+                    let needed = target_power - total_power_at_i;
+                    added_k_count += needed;
+
+                    if added_k_count > k {
                         return false;
                     }
 
-                    diff_added_power_contribution[i] += needed;
-                    let end_idx_for_contribution = min(n as i32 - 1, i as i32 + 2 * r) as usize;
-                    if end_idx_for_contribution + 1 < n + 1 {
-                        diff_added_power_contribution[end_idx_for_contribution + 1] -= needed;
+                    diff_for_new_stations[i] += needed;
+                    let end_effect_idx = (n as i32 - 1).min(i as i32 + 2 * r) as usize;
+                    if end_effect_idx + 1 < n + 1 {
+                        diff_for_new_stations[end_effect_idx + 1] -= needed;
                     }
-                    current_added_power_sum += needed;
+
+                    current_added_power_effect += needed;
                 }
             }
+
             true
         };
 
         let mut low = 0i64;
-        let mut high = 2 * 10_i64.pow(10) + 10_i64.pow(9) + 7; // Max possible power for a city
-
+        let mut high = 2 * 10_000_000_000i64 + 1_000_000_000i64; // A sufficiently large upper bound
         let mut ans = 0i64;
+
         while low <= high {
             let mid = low + (high - low) / 2;
             if check(mid) {
@@ -1325,6 +2376,7 @@ impl Solution {
                 high = mid - 1;
             }
         }
+
         ans
     }
 }
@@ -1342,56 +2394,56 @@ impl Solution {
 (define (max-power stations r k)
   (define n (vector-length stations))
 
-  (define (check target-min-power)
-    (define initial-power (make-vector n 0))
+  (define (check-fixed target-power)
     (define diff-initial (make-vector (+ n 1) 0))
-
-    (for ([idx (in-range n)])
-      (define left-bound (max 0 (- idx r)))
-      (define right-bound (min (- n 1) (+ idx r)))
-      (vector-set! diff-initial left-bound (+ (vector-ref diff-initial left-bound) (vector-ref stations idx)))
-      (vector-set! diff-initial (+ right-bound 1) (- (vector-ref diff-initial (+ right-bound 1)) (vector-ref stations idx))))
-
-    (define current-sum-initial (make-box 0))
-    (for ([i (in-range n)])
-      (set-box! current-sum-initial (+ (unbox current-sum-initial) (vector-ref diff-initial i)))
-      (vector-set! initial-power i (unbox current-sum-initial)))
-
-    (define k-remaining (make-box k))
-    (define diff-added-power-contribution (make-vector (+ n 1) 0))
-    (define current-added-power-sum (make-box 0))
+    (define diff-for-new-stations (make-vector (+ n 1) 0))
 
     (for ([i (in-range n)])
-      (set-box! current-added-power-sum (+ (unbox current-added-power-sum) (vector-ref diff-added-power-contribution i)))
-      (define total-power-at-i (+ (vector-ref initial-power i) (unbox current-added-power-sum)))
+      (define val (vector-ref stations i))
+      (define start-idx (max 0 (- i r)))
+      (define end-idx (min (- n 1) (+ i r)))
 
-      (when (< total-power-at-i target-min-power)
-        (define needed (- target-min-power total-power-at-i))
-        (set-box! k-remaining (- (unbox k-remaining) needed))
-        (when (< (unbox k-remaining) 0)
-          (error 'check "k_remaining became negative")) ; This should be handled by returning #f
+      (vector-set! diff-initial start-idx (+ (vector-ref diff-initial start-idx) val))
+      (when (< (+ end-idx 1) (+ n 1))
+        (vector-set! diff-initial (+ end-idx 1) (- (vector-ref diff-initial (+ end-idx 1)) val))))
 
-        (vector-set! diff-added-power-contribution i (+ (vector-ref diff-added-power-contribution i) needed))
-        (define end-idx-for-contribution (min (- n 1) (+ i (* 2 r))))
-        (when (< (+ end-idx-for-contribution 1) (+ n 1))
-          (vector-set! diff-added-power-contribution (+ end-idx-for-contribution 1) (- (vector-ref diff-added-power-contribution (+ end-idx-for-contribution 1)) needed)))
-        (set-box! current-added-power-sum (+ (unbox current-added-power-sum) needed))))
+    (define current-total-power-sum 0)
+    (define current-added-power-effect 0)
+    (define added-k-count 0)
 
-    (>= (unbox k-remaining) 0))
+    (for ([i (in-range n)])
+      (set! current-total-power-sum (+ current-total-power-sum (vector-ref diff-initial i)))
+      (set! current-added-power-effect (+ current-added-power-effect (vector-ref diff-for-new-stations i)))
+
+      (define total-power-at-i (+ current-total-power-sum current-added-power-effect))
+
+      (when (< total-power-at-i target-power)
+        (define needed (- target-power total-power-at-i))
+        (set! added-k-count (+ added-k-count needed))
+
+        (when (> added-k-count k)
+          (return-from check-fixed #f)) ; Early exit for false
+
+        (vector-set! diff-for-new-stations i (+ (vector-ref diff-for-new-stations i) needed))
+        (define end-effect-idx (min (- n 1) (+ i (* 2 r))))
+        (when (< (+ end-effect-idx 1) (+ n 1))
+          (vector-set! diff-for-new-stations (+ end-effect-idx 1) (- (vector-ref diff-for-new-stations (+ end-effect-idx 1)) needed)))
+
+        (set! current-added-power-effect (+ current-added-power-effect needed))))
+
+    #t)
 
   (define low 0)
-  (define high (+ (* 2 (expt 10 10)) (expt 10 9) 7)) ; Max possible power for a city
-
+  (define high (+ (* 2 10000000000) 1000000000)) ; A sufficiently large upper bound
   (define ans 0)
-  (let loop ([l low] [h high] [a ans])
+
+  (let loop ((l low) (h high) (a ans))
     (if (<= l h)
-        (let ([mid (+ l (quotient (- h l) 2))])
-          (if (check mid)
+        (let* ((mid (+ l (quotient (- h l) 2))))
+          (if (check-fixed mid)
               (loop (+ mid 1) h mid)
               (loop l (- mid 1) a)))
         a)))
-
-(provide (rename-out [max-power Solution-maxPower]))
 {% endraw %}
 {% endhighlight %}
 
@@ -1407,92 +2459,85 @@ impl Solution {
 max_power(Stations, R, K) ->
     N = length(Stations),
 
-    Check = fun(TargetMinPower) ->
-        InitialPower = array:new(N, {default, 0}),
+    Check = fun(TargetPower) ->
         DiffInitial = array:new(N + 1, {default, 0}),
+        DiffForNewStations = array:new(N + 1, {default, 0}),
 
-        lists:foldl(fun(Idx, AccDiffInitial) ->
-            StationVal = lists:nth(Idx + 1, Stations),
-            LeftBound = max(0, Idx - R),
-            RightBound = min(N - 1, Idx + R),
-            AccDiffInitial1 = array:set(LeftBound, array:get(LeftBound, AccDiffInitial) + StationVal, AccDiffInitial),
-            array:set(RightBound + 1, array:get(RightBound + 1, AccDiffInitial1) - StationVal, AccDiffInitial1)
+        % Calculate initial power contributions from existing stations
+        DiffInitial1 = lists:foldl(fun(I, AccDiffInitial) ->
+            Val = lists:nth(I + 1, Stations),
+            StartIdx = max(0, I - R),
+            EndIdx = min(N - 1, I + R),
+
+            AccDiffInitial2 = array:set(StartIdx, array:get(StartIdx, AccDiffInitial) + Val, AccDiffInitial),
+            if (EndIdx + 1 < N + 1) ->
+                array:set(EndIdx + 1, array:get(EndIdx + 1, AccDiffInitial2) - Val, AccDiffInitial2);
+            true ->
+                AccDiffInitial2
+            end
         end, DiffInitial, lists:seq(0, N - 1)),
 
-        CurrentSumInitial = {0},
-        InitialPowerFinal = lists:foldl(fun(I, AccInitialPower) ->
-            CurrentSum = element(1, CurrentSumInitial) + array:get(I, DiffInitial),
-            element(1, CurrentSumInitial, CurrentSum),
-            array:set(I, CurrentSum, AccInitialPower)
-        end, InitialPower, lists:seq(0, N - 1)),
+        CurrentTotalPowerSum = 0,
+        CurrentAddedPowerEffect = 0,
+        AddedKCount = 0,
 
-        KRemaining = {K},
-        DiffAddedPowerContribution = array:new(N + 1, {default, 0}),
-        CurrentAddedPowerSum = {0},
-
-        lists:foldl(fun(I, AccDiffAdded) ->
-            CurrentAddedSum = element(1, CurrentAddedPowerSum) + array:get(I, AccDiffAdded),
-            element(1, CurrentAddedPowerSum, CurrentAddedSum),
-            TotalPowerAtI = array:get(I, InitialPowerFinal) + CurrentAddedSum,
-
-            if TotalPowerAtI < TargetMinPower ->
-                Needed = TargetMinPower - TotalPowerAtI,
-                KR = element(1, KRemaining) - Needed,
-                element(1, KRemaining, KR),
-                if KR < 0 ->
-                    throw(false) % Use throw to exit early
-                else
-                    AccDiffAdded1 = array:set(I, array:get(I, AccDiffAdded) + Needed, AccDiffAdded),
-                    EndIdxForContribution = min(N - 1, I + 2 * R),
-                    if EndIdxForContribution + 1 < N + 1 ->
-                        array:set(EndIdxForContribution + 1, array:get(EndIdxForContribution + 1, AccDiffAdded1) - Needed, AccDiffAdded1)
-                    else
-                        AccDiffAdded1
-                    end
-                end;
+        {_, _, _, Result} = lists:foldl(fun(I, {AccCurrentTotalPowerSum, AccCurrentAddedPowerEffect, AccAddedKCount, Possible}) ->
+            if not Possible ->
+                {AccCurrentTotalPowerSum, AccCurrentAddedPowerEffect, AccAddedKCount, Possible};
             true ->
-                AccDiffAdded
-            end
-        end, DiffAddedPowerContribution, lists:seq(0, N - 1)),
+                NewCurrentTotalPowerSum = AccCurrentTotalPowerSum + array:get(I, DiffInitial1),
+                NewCurrentAddedPowerEffect = AccCurrentAddedPowerEffect + array:get(I, DiffForNewStations),
 
-        element(1, KRemaining) >= 0
+                TotalPowerAtI = NewCurrentTotalPowerSum + NewCurrentAddedPowerEffect,
+
+                if (TotalPowerAtI < TargetPower) ->
+                    Needed = TargetPower - TotalPowerAtI,
+                    NewAddedKCount = AccAddedKCount + Needed,
+
+                    if (NewAddedKCount > K) ->
+                        {NewCurrentTotalPowerSum, NewCurrentAddedPowerEffect, NewAddedKCount, false};
+                    true ->
+                        DiffForNewStations1 = array:set(I, array:get(I, DiffForNewStations) + Needed, DiffForNewStations),
+                        EndEffectIdx = min(N - 1, I + 2 * R),
+                        DiffForNewStations2 = if (EndEffectIdx + 1 < N + 1) ->
+                            array:set(EndEffectIdx + 1, array:get(EndEffectIdx + 1, DiffForNewStations1) - Needed, DiffForNewStations1);
+                        true ->
+                            DiffForNewStations1
+                        end,
+                        {NewCurrentTotalPowerSum, NewCurrentAddedPowerEffect + Needed, NewAddedKCount, true}
+                    end;
+                true ->
+                    {NewCurrentTotalPowerSum, NewCurrentAddedPowerEffect, AccAddedKCount, true}
+                end
+            end
+        end, {CurrentTotalPowerSum, CurrentAddedPowerEffect, AddedKCount, true}, lists:seq(0, N - 1)),
+
+        Result
     end,
 
     Low = 0,
-    High = 2 * 10000000000 + 1000000000 + 7, % Max possible power for a city
-
+    High = 2 * 10000000000 + 1000000000, % A sufficiently large upper bound
     Ans = 0,
-    try
-        binary_search(Low, High, Ans, Check)
-    catch
-        throw:false -> 0 % If check throws false, it means 0 is the answer or something went wrong.
-                        % This needs to be handled carefully. The binary search should return the last true.
-                        % Re-implementing binary search to handle throw.
-    end.
 
-% Helper for binary search
+    binary_search(Low, High, Ans, Check).
+
 binary_search(Low, High, Ans, Check) when Low =< High ->
     Mid = Low + (High - Low) div 2,
-    try
-        if Check(Mid) ->
-            binary_search(Mid + 1, High, Mid, Check)
-        else
-            binary_search(Low, Mid - 1, Ans, Check)
-        end
-    catch
-        throw:false -> % If check(Mid) throws false, it means Mid is not achievable.
-                       % We need to search in the lower half.
+    case Check(Mid) of
+        true ->
+            binary_search(Mid + 1, High, Mid, Check);
+        false ->
             binary_search(Low, Mid - 1, Ans, Check)
     end;
 binary_search(_, _, Ans, _) ->
     Ans.
 
-% Helper functions for min/max (Erlang has built-in min/max, but for clarity)
-min(A, B) when A < B -> A;
-min(A, B) -> B.
-
-max(A, B) when A > B -> A;
+% Helper functions for max/min
+max(A, B) when A >= B -> A;
 max(A, B) -> B.
+
+min(A, B) when A =< B -> A;
+min(A, B) -> B.
 {% endraw %}
 {% endhighlight %}
 
@@ -1507,54 +2552,65 @@ defmodule Solution do
   def max_power(stations, r, k) do
     n = length(stations)
 
-    check = fn target_min_power ->
-      initial_power = :array.new(n, [{:default, 0}])
-      diff_initial = :array.new(n + 1, [{:default, 0}])
+    check = fn target_power ->
+      diff_initial = :array.new(n + 1, default: 0)
+      diff_for_new_stations = :array.new(n + 1, default: 0)
 
-      diff_initial = Enum.reduce(0..(n - 1), diff_initial, fn idx, acc_diff_initial ->
-        station_val = Enum.at(stations, idx)
-        left_bound = max(0, idx - r)
-        right_bound = min(n - 1, idx + r)
-        acc_diff_initial
-        |> :array.set(left_bound, :array.get(left_bound, acc_diff_initial) + station_val)
-        |> :array.set(right_bound + 1, :array.get(right_bound + 1, acc_diff_initial) - station_val)
-      end)
+      # Calculate initial power contributions from existing stations
+      diff_initial = Enum.reduce(0..(n - 1), diff_initial, fn i, acc_diff_initial ->
+        val = Enum.at(stations, i)
+        start_idx = max(0, i - r)
+        end_idx = min(n - 1, i + r)
 
-      {_current_sum_initial, initial_power_final} = Enum.reduce(0..(n - 1), {0, initial_power}, fn i, {acc_sum, acc_initial_power} ->
-        new_sum = acc_sum + :array.get(i, diff_initial)
-        {new_sum, :array.set(i, new_sum, acc_initial_power)}
-      end)
-
-      {_final_k_remaining, _final_diff_added_power_contribution, _final_current_added_power_sum, possible} = Enum.reduce_while(0..(n - 1), {k, :array.new(n + 1, [{:default, 0}]), 0, true}, fn i, {kr_acc, dac_acc, cas_acc, p_acc} ->
-        new_cas_acc = cas_acc + :array.get(i, dac_acc)
-        total_power_at_i = :array.get(i, initial_power_final) + new_cas_acc
-
-        if total_power_at_i < target_min_power do
-          needed = target_min_power - total_power_at_i
-          new_kr = kr_acc - needed
-          if new_kr < 0 do
-            {:halt, {new_kr, dac_acc, new_cas_acc, false}}
-          else
-            new_dac = :array.set(i, :array.get(i, dac_acc) + needed, dac_acc)
-            end_idx_for_contribution = min(n - 1, i + 2 * r)
-            new_dac = if end_idx_for_contribution + 1 < n + 1 do
-              :array.set(end_idx_for_contribution + 1, :array.get(end_idx_for_contribution + 1, new_dac) - needed, new_dac)
-            else
-              new_dac
-            end
-            {:cont, {new_kr, new_dac, new_cas_acc + needed, true}}
-          end
+        acc_diff_initial_2 = :array.set(start_idx, :array.get(start_idx, acc_diff_initial) + val, acc_diff_initial)
+        if end_idx + 1 < n + 1 do
+          :array.set(end_idx + 1, :array.get(end_idx + 1, acc_diff_initial_2) - val, acc_diff_initial_2)
         else
-          {:cont, {kr_acc, dac_acc, new_cas_acc, p_acc}}
+          acc_diff_initial_2
+        end
+      end)
+
+      current_total_power_sum = 0
+      current_added_power_effect = 0
+      added_k_count = 0
+
+      {_final_sum, _final_effect, _final_k_count, possible} = Enum.reduce_while(0..(n - 1), {current_total_power_sum, current_added_power_effect, added_k_count, true}, fn i, {acc_current_total_power_sum, acc_current_added_power_effect, acc_added_k_count, current_possible} ->
+        if not current_possible do
+          {:halt, {acc_current_total_power_sum, acc_current_added_power_effect, acc_added_k_count, current_possible}}
+        else
+          new_current_total_power_sum = acc_current_total_power_sum + :array.get(i, diff_initial)
+          new_current_added_power_effect = acc_current_added_power_effect + :array.get(i, diff_for_new_stations)
+
+          total_power_at_i = new_current_total_power_sum + new_current_added_power_effect
+
+          if total_power_at_i < target_power do
+            needed = target_power - total_power_at_i
+            new_added_k_count = acc_added_k_count + needed
+
+            if new_added_k_count > k do
+              {:halt, {new_current_total_power_sum, new_current_added_power_effect, new_added_k_count, false}}
+            else
+              :array.set(i, :array.get(i, diff_for_new_stations) + needed, diff_for_new_stations)
+              end_effect_idx = min(n - 1, i + 2 * r)
+              if end_effect_idx + 1 < n + 1 do
+                :array.set(end_effect_idx + 1, :array.get(end_effect_idx + 1, diff_for_new_stations) - needed, diff_for_new_stations)
+              else
+                :ok # no change to diff_for_new_stations
+              end
+              {:cont, {new_current_total_power_sum, new_current_added_power_effect + needed, new_added_k_count, true}}
+            end
+          else
+            {:cont, {new_current_total_power_sum, new_current_added_power_effect, acc_added_k_count, true}}
+          end
         end
       end)
       possible
     end
 
     low = 0
-    high = 2 * :math.pow(10, 10) |> round |> trunc + :math.pow(10, 9) |> round |> trunc + 7
-
+    high = 2 * :math.pow(10, 10) |> round() + :math.pow(10, 9) |> round() # A sufficiently large upper bound
     ans = 0
+
     binary_search(low, high, ans, check)
   end
 
@@ -1566,10 +2622,11 @@ defmodule Solution do
       binary_search(low, mid - 1, ans, check)
     end
   end
+
   defp binary_search(_low, _high, ans, _check), do: ans
 
-  defp min(a, b), do: if a < b, do: a, else: b
-  defp max(a, b), do: if a > b, do: a, else: b
+  defp max(a, b), do: if a >= b, do: a, else: b
+  defp min(a, b), do: if a <= b, do: a, else: b
 end
 {% endraw %}
 {% endhighlight %}
@@ -1580,9 +2637,14 @@ end
 
 ### Complexity Analysis
 
-- **Time Complexity:** O(N * log(MAX_POWER))
+- **Time Complexity:** O(N * log(MAX_POWER)).
+- The `check` function iterates through the `n` cities once. Inside the loop, operations are constant time (array access, arithmetic). The initial population of `diff_initial` also takes O(N). Thus, `check` runs in O(N) time.
+- The binary search performs `log(MAX_POWER)` iterations. `MAX_POWER` can be up to approximately `2 * 10^10` (maximum initial power for a city plus maximum power from `k` additional stations). `log(2 * 10^10)` is roughly 34-35 iterations.
+- Therefore, the total time complexity is O(N * log(MAX_POWER)). Given N=10^5, this is roughly 10^5 * 35, which is efficient enough.
 
-- **Space Complexity:** O(N)
+- **Space Complexity:** O(N).
+- We use two difference arrays, `diff_initial` and `diff_for_new_stations`, each of size `n+1`. These arrays store `long long` (or equivalent) values.
+- The space required is directly proportional to `n`.
 
 </div>
 </details>
@@ -1591,14 +2653,14 @@ end
 <details class="ai-solution-card" markdown="1">
 <summary class="ai-solution-header">
   <span class="ai-model-badge">⚡ Solution from <strong>llama-3.3-70b-versatile</strong></span>
-  <small class="solution-timestamp">(2025-11-23 00:00:35 )</small>
+  <small class="solution-timestamp">(2025-11-24 20:42:19 )</small>
 </summary>
 
 <div class="ai-solution-content">
 
 ### Approach
 
-This problem can be solved by using a binary search approach to find the maximum possible minimum power of a city. The power of each city is calculated by considering the range of the power stations and the additional power stations that can be built.
+The problem can be solved using a combination of line sweep and binary search. First, we calculate the initial power of each city by considering the existing power stations. Then, we use binary search to find the maximum possible minimum power of a city. In each iteration of the binary search, we check if it's possible to achieve the current minimum power by building the additional power stations. If it's possible, we update the minimum power and continue the binary search. If it's not possible, we decrease the minimum power and continue the binary search. The process continues until we find the maximum possible minimum power of a city.
 
 ### Code
 
@@ -1648,47 +2710,48 @@ This problem can be solved by using a binary search approach to find the maximum
 
 {% highlight cpp %}
 {% raw %}
-#include <iostream>
-      #include <vector>
-      #include <algorithm>
-      using namespace std;
-      class Solution {
-      public:
-         int maxPower(vector<int>& stations, int r, int k) {
-            int n = stations.size();
-            vector<int> power(n);
+class Solution {
+public:
+    int maxPower(vector<int>& stations, int r, int k) {
+        int n = stations.size();
+        vector<int> power(n);
+        for (int i = 0; i < n; i++) {
+            for (int j = max(0, i - r); j <= min(n - 1, i + r); j++) {
+                power[i] += stations[j];
+            }
+        }
+        int low = *min_element(power.begin(), power.end());
+        int high = *max_element(power.begin(), power.end()) + k;
+        while (low < high) {
+            int mid = (low + high + 1) / 2;
+            vector<int> remaining(k);
+            bool possible = true;
             for (int i = 0; i < n; i++) {
-               for (int j = max(0, i - r); j <= min(n - 1, i + r); j++) {
-                  power[j] += stations[i];
-               }
-            }
-            int low = *min_element(power.begin(), power.end());
-            int high = *max_element(power.begin(), power.end()) + k;
-            while (low < high) {
-               int mid = low + (high - low + 1) / 2;
-               vector<int> temp = power;
-               int count = 0;
-               for (int i = 0; i < n; i++) {
-                  if (temp[i] < mid) {
-                     int add = mid - temp[i];
-                     count += add;
-                     temp[i] += add;
-                     for (int j = max(0, i - r); j <= min(n - 1, i + r); j++) {
-                        if (j != i) {
-                           temp[j] += add;
+                if (power[i] < mid) {
+                    int need = mid - power[i];
+                    for (int j = max(0, i - r); j <= min(n - 1, i + r); j++) {
+                        if (remaining[j] > 0) {
+                            int give = min(remaining[j], need);
+                            power[i] += give;
+                            remaining[j] -= give;
+                            need -= give;
                         }
-                     }
-                  }
-               }
-               if (count <= k) {
-                  low = mid;
-               } else {
-                  high = mid - 1;
-               }
+                    }
+                    if (need > 0) {
+                        possible = false;
+                        break;
+                    }
+                }
             }
-            return low;
-         }
-      };
+            if (possible) {
+                low = mid;
+            } else {
+                high = mid - 1;
+            }
+        }
+        return low;
+    }
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -1698,48 +2761,51 @@ This problem can be solved by using a binary search approach to find the maximum
 
 {% highlight java %}
 {% raw %}
-import java.util.*;
-      public class Solution {
-         public int maxPower(int[] stations, int r, int k) {
-            int n = stations.length;
-            int[] power = new int[n];
-            for (int i = 0; i < n; i++) {
-               for (int j = Math.max(0, i - r); j <= Math.min(n - 1, i + r); j++) {
-                  power[j] += stations[i];
-               }
+class Solution {
+    public int maxPower(int[] stations, int r, int k) {
+        int n = stations.length;
+        int[] power = new int[n];
+        for (int i = 0; i < n; i++) {
+            for (int j = Math.max(0, i - r); j <= Math.min(n - 1, i + r); j++) {
+                power[i] += stations[j];
             }
-            int low = Integer.MAX_VALUE;
-            int high = Integer.MIN_VALUE;
+        }
+        int low = Integer.MAX_VALUE;
+        int high = 0;
+        for (int i = 0; i < n; i++) {
+            low = Math.min(low, power[i]);
+            high = Math.max(high, power[i] + k);
+        }
+        while (low < high) {
+            int mid = (low + high + 1) / 2;
+            int[] remaining = new int[k];
+            boolean possible = true;
             for (int i = 0; i < n; i++) {
-               low = Math.min(low, power[i]);
-               high = Math.max(high, power[i]);
-            }
-            high += k;
-            while (low < high) {
-               int mid = low + (high - low + 1) / 2;
-               int[] temp = power.clone();
-               int count = 0;
-               for (int i = 0; i < n; i++) {
-                  if (temp[i] < mid) {
-                     int add = mid - temp[i];
-                     count += add;
-                     temp[i] += add;
-                     for (int j = Math.max(0, i - r); j <= Math.min(n - 1, i + r); j++) {
-                        if (j != i) {
-                           temp[j] += add;
+                if (power[i] < mid) {
+                    int need = mid - power[i];
+                    for (int j = Math.max(0, i - r); j <= Math.min(n - 1, i + r); j++) {
+                        if (remaining[j] > 0) {
+                            int give = Math.min(remaining[j], need);
+                            power[i] += give;
+                            remaining[j] -= give;
+                            need -= give;
                         }
-                     }
-                  }
-               }
-               if (count <= k) {
-                  low = mid;
-               } else {
-                  high = mid - 1;
-               }
+                    }
+                    if (need > 0) {
+                        possible = false;
+                        break;
+                    }
+                }
             }
-            return low;
-         }
-      }
+            if (possible) {
+                low = mid;
+            } else {
+                high = mid - 1;
+            }
+        }
+        return low;
+    }
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -1750,31 +2816,35 @@ import java.util.*;
 {% highlight python %}
 {% raw %}
 class Solution:
-  def maxPower(self, stations: list[int], r: int, k: int) -> int:
-     n = len(stations)
-     power = [0] * n
-     for i in range(n):
-        for j in range(max(0, i - r), min(n, i + r + 1)):
-           power[j] += stations[i]
-     low = min(power)
-     high = max(power) + k
-     while low < high:
-        mid = low + (high - low + 1) // 2
-        temp = power[:]
-        count = 0
+    def maxPower(self, stations: list[int], r: int, k: int) -> int:
+        n = len(stations)
+        power = [0] * n
         for i in range(n):
-           if temp[i] < mid:
-              add = mid - temp[i]
-              count += add
-              temp[i] += add
-              for j in range(max(0, i - r), min(n, i + r + 1)):
-                 if j != i:
-                    temp[j] += add
-        if count <= k:
-           low = mid
-        else:
-           high = mid - 1
-     return low
+            for j in range(max(0, i - r), min(n, i + r + 1)):
+                power[i] += stations[j]
+        low = min(power)
+        high = max(power) + k
+        while low < high:
+            mid = (low + high + 1) // 2
+            remaining = [0] * n
+            possible = True
+            for i in range(n):
+                if power[i] < mid:
+                    need = mid - power[i]
+                    for j in range(max(0, i - r), min(n, i + r + 1)):
+                        if remaining[j] > 0:
+                            give = min(remaining[j], need)
+                            power[i] += give
+                            remaining[j] -= give
+                            need -= give
+                    if need > 0:
+                        possible = False
+                        break
+            if possible:
+                low = mid
+            else:
+                high = mid - 1
+        return low
 {% endraw %}
 {% endhighlight %}
 
@@ -1785,31 +2855,35 @@ class Solution:
 {% highlight python %}
 {% raw %}
 class Solution:
-  def maxPower(self, stations: list[int], r: int, k: int) -> int:
-     n = len(stations)
-     power = [0] * n
-     for i in range(n):
-        for j in range(max(0, i - r), min(n, i + r + 1)):
-           power[j] += stations[i]
-     low = min(power)
-     high = max(power) + k
-     while low < high:
-        mid = low + (high - low + 1) // 2
-        temp = power[:]
-        count = 0
+    def maxPower(self, stations: list[int], r: int, k: int) -> int:
+        n = len(stations)
+        power = [0] * n
         for i in range(n):
-           if temp[i] < mid:
-              add = mid - temp[i]
-              count += add
-              temp[i] += add
-              for j in range(max(0, i - r), min(n, i + r + 1)):
-                 if j != i:
-                    temp[j] += add
-        if count <= k:
-           low = mid
-        else:
-           high = mid - 1
-     return low
+            for j in range(max(0, i - r), min(n, i + r + 1)):
+                power[i] += stations[j]
+        low = min(power)
+        high = max(power) + k
+        while low < high:
+            mid = (low + high + 1) // 2
+            remaining = [0] * n
+            possible = True
+            for i in range(n):
+                if power[i] < mid:
+                    need = mid - power[i]
+                    for j in range(max(0, i - r), min(n, i + r + 1)):
+                        if remaining[j] > 0:
+                            give = min(remaining[j], need)
+                            power[i] += give
+                            remaining[j] -= give
+                            need -= give
+                    if need > 0:
+                        possible = False
+                        break
+            if possible:
+                low = mid
+            else:
+                high = mid - 1
+        return low
 {% endraw %}
 {% endhighlight %}
 
@@ -1820,54 +2894,61 @@ class Solution:
 {% highlight c %}
 {% raw %}
 #include <stdio.h>
-      #include <stdlib.h>
-      #include <string.h>
-      #define MAX(a, b) ((a) > (b) ? (a) : (b))
-      #define MIN(a, b) ((a) < (b) ? (a) : (b))
-      int maxPower(int* stations, int stationsSize, int r, int k) {
-         int* power = (int*)malloc(stationsSize * sizeof(int));
-         for (int i = 0; i < stationsSize; i++) {
-            power[i] = 0;
-         }
-         for (int i = 0; i < stationsSize; i++) {
-            for (int j = MAX(0, i - r); j <= MIN(stationsSize - 1, i + r); j++) {
-               power[j] += stations[i];
+#include <stdlib.h>
+
+int maxPower(int* stations, int stationsSize, int r, int k) {
+    int n = stationsSize;
+    int* power = (int*)malloc(n * sizeof(int));
+    for (int i = 0; i < n; i++) {
+        power[i] = 0;
+        for (int j = i - r; j <= i + r; j++) {
+            if (j >= 0 && j < n) {
+                power[i] += stations[j];
             }
-         }
-         int low = power[0];
-         int high = power[0];
-         for (int i = 1; i < stationsSize; i++) {
-            low = MIN(low, power[i]);
-            high = MAX(high, power[i]);
-         }
-         high += k;
-         while (low < high) {
-            int mid = low + (high - low + 1) / 2;
-            int* temp = (int*)malloc(stationsSize * sizeof(int));
-            memcpy(temp, power, stationsSize * sizeof(int));
-            int count = 0;
-            for (int i = 0; i < stationsSize; i++) {
-               if (temp[i] < mid) {
-                  int add = mid - temp[i];
-                  count += add;
-                  temp[i] += add;
-                  for (int j = MAX(0, i - r); j <= MIN(stationsSize - 1, i + r); j++) {
-                     if (j != i) {
-                        temp[j] += add;
-                     }
-                  }
-               }
+        }
+    }
+    int low = power[0];
+    int high = power[0] + k;
+    for (int i = 1; i < n; i++) {
+        low = (low < power[i]) ? low : power[i];
+        high = (high > power[i] + k) ? high : power[i] + k;
+    }
+    while (low < high) {
+        int mid = (low + high + 1) / 2;
+        int* remaining = (int*)malloc(n * sizeof(int));
+        for (int i = 0; i < n; i++) {
+            remaining[i] = 0;
+        }
+        int possible = 1;
+        for (int i = 0; i < n; i++) {
+            if (power[i] < mid) {
+                int need = mid - power[i];
+                for (int j = i - r; j <= i + r; j++) {
+                    if (j >= 0 && j < n) {
+                        if (remaining[j] > 0) {
+                            int give = (remaining[j] < need) ? remaining[j] : need;
+                            power[i] += give;
+                            remaining[j] -= give;
+                            need -= give;
+                        }
+                    }
+                }
+                if (need > 0) {
+                    possible = 0;
+                    break;
+                }
             }
-            if (count <= k) {
-               low = mid;
-            } else {
-               high = mid - 1;
-            }
-            free(temp);
-         }
-         free(power);
-         return low;
-      }
+        }
+        if (possible) {
+            low = mid;
+        } else {
+            high = mid - 1;
+        }
+        free(remaining);
+    }
+    free(power);
+    return low;
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -1878,47 +2959,52 @@ class Solution:
 {% highlight csharp %}
 {% raw %}
 using System;
-      public class Solution {
-         public int MaxPower(int[] stations, int r, int k) {
-            int n = stations.Length;
-            int[] power = new int[n];
+
+public class Solution {
+    public int MaxPower(int[] stations, int r, int k) {
+        int n = stations.Length;
+        int[] power = new int[n];
+        for (int i = 0; i < n; i++) {
+            for (int j = Math.Max(0, i - r); j <= Math.Min(n - 1, i + r); j++) {
+                power[i] += stations[j];
+            }
+        }
+        int low = int.MaxValue;
+        int high = 0;
+        for (int i = 0; i < n; i++) {
+            low = Math.Min(low, power[i]);
+            high = Math.Max(high, power[i] + k);
+        }
+        while (low < high) {
+            int mid = (low + high + 1) / 2;
+            int[] remaining = new int[n];
+            bool possible = true;
             for (int i = 0; i < n; i++) {
-               for (int j = Math.Max(0, i - r); j <= Math.Min(n - 1, i + r); j++) {
-                  power[j] += stations[i];
-               }
-            }
-            int low = power[0];
-            int high = power[0];
-            for (int i = 1; i < n; i++) {
-               low = Math.Min(low, power[i]);
-               high = Math.Max(high, power[i]);
-            }
-            high += k;
-            while (low < high) {
-               int mid = low + (high - low + 1) / 2;
-               int[] temp = (int[])power.Clone();
-               int count = 0;
-               for (int i = 0; i < n; i++) {
-                  if (temp[i] < mid) {
-                     int add = mid - temp[i];
-                     count += add;
-                     temp[i] += add;
-                     for (int j = Math.Max(0, i - r); j <= Math.Min(n - 1, i + r); j++) {
-                        if (j != i) {
-                           temp[j] += add;
+                if (power[i] < mid) {
+                    int need = mid - power[i];
+                    for (int j = Math.Max(0, i - r); j <= Math.Min(n - 1, i + r); j++) {
+                        if (remaining[j] > 0) {
+                            int give = Math.Min(remaining[j], need);
+                            power[i] += give;
+                            remaining[j] -= give;
+                            need -= give;
                         }
-                     }
-                  }
-               }
-               if (count <= k) {
-                  low = mid;
-               } else {
-                  high = mid - 1;
-               }
+                    }
+                    if (need > 0) {
+                        possible = false;
+                        break;
+                    }
+                }
             }
-            return low;
-         }
-      }
+            if (possible) {
+                low = mid;
+            } else {
+                high = mid - 1;
+            }
+        }
+        return low;
+    }
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -1928,44 +3014,44 @@ using System;
 
 {% highlight javascript %}
 {% raw %}
-var maxPower = function(stations, r, k) {
-  let n = stations.length;
-  let power = new Array(n).fill(0);
-  for (let i = 0; i < n; i++) {
-     for (let j = Math.max(0, i - r); j <= Math.min(n - 1, i + r); j++) {
-        power[j] += stations[i];
-     }
-  }
-  let low = power[0];
-  let high = power[0];
-  for (let i = 1; i < n; i++) {
-     low = Math.min(low, power[i]);
-     high = Math.max(high, power[i]);
-  }
-  high += k;
-  while (low < high) {
-     let mid = low + Math.floor((high - low + 1) / 2);
-     let temp = power.slice();
-     let count = 0;
-     for (let i = 0; i < n; i++) {
-        if (temp[i] < mid) {
-           let add = mid - temp[i];
-           count += add;
-           temp[i] += add;
-           for (let j = Math.max(0, i - r); j <= Math.min(n - 1, i + r); j++) {
-              if (j != i) {
-                 temp[j] += add;
-              }
-           }
+function maxPower(stations, r, k) {
+    let n = stations.length;
+    let power = new Array(n).fill(0);
+    for (let i = 0; i < n; i++) {
+        for (let j = Math.max(0, i - r); j <= Math.min(n - 1, i + r); j++) {
+            power[i] += stations[j];
         }
-     }
-     if (count <= k) {
-        low = mid;
-     } else {
-        high = mid - 1;
-     }
-  }
-  return low;
+    }
+    let low = Math.min(...power);
+    let high = Math.max(...power) + k;
+    while (low < high) {
+        let mid = Math.floor((low + high + 1) / 2);
+        let remaining = new Array(n).fill(0);
+        let possible = true;
+        for (let i = 0; i < n; i++) {
+            if (power[i] < mid) {
+                let need = mid - power[i];
+                for (let j = Math.max(0, i - r); j <= Math.min(n - 1, i + r); j++) {
+                    if (remaining[j] > 0) {
+                        let give = Math.min(remaining[j], need);
+                        power[i] += give;
+                        remaining[j] -= give;
+                        need -= give;
+                    }
+                }
+                if (need > 0) {
+                    possible = false;
+                    break;
+                }
+            }
+        }
+        if (possible) {
+            low = mid;
+        } else {
+            high = mid - 1;
+        }
+    }
+    return low;
 };
 {% endraw %}
 {% endhighlight %}
@@ -1977,44 +3063,44 @@ var maxPower = function(stations, r, k) {
 {% highlight typescript %}
 {% raw %}
 function maxPower(stations: number[], r: number, k: number): number {
-  let n = stations.length;
-  let power: number[] = new Array(n).fill(0);
-  for (let i = 0; i < n; i++) {
-     for (let j = Math.max(0, i - r); j <= Math.min(n - 1, i + r); j++) {
-        power[j] += stations[i];
-     }
-  }
-  let low = power[0];
-  let high = power[0];
-  for (let i = 1; i < n; i++) {
-     low = Math.min(low, power[i]);
-     high = Math.max(high, power[i]);
-  }
-  high += k;
-  while (low < high) {
-     let mid = low + Math.floor((high - low + 1) / 2);
-     let temp = power.slice();
-     let count = 0;
-     for (let i = 0; i < n; i++) {
-        if (temp[i] < mid) {
-           let add = mid - temp[i];
-           count += add;
-           temp[i] += add;
-           for (let j = Math.max(0, i - r); j <= Math.min(n - 1, i + r); j++) {
-              if (j != i) {
-                 temp[j] += add;
-              }
-           }
+    let n = stations.length;
+    let power: number[] = new Array(n).fill(0);
+    for (let i = 0; i < n; i++) {
+        for (let j = Math.max(0, i - r); j <= Math.min(n - 1, i + r); j++) {
+            power[i] += stations[j];
         }
-     }
-     if (count <= k) {
-        low = mid;
-     } else {
-        high = mid - 1;
-     }
-  }
-  return low;
-}
+    }
+    let low = Math.min(...power);
+    let high = Math.max(...power) + k;
+    while (low < high) {
+        let mid = Math.floor((low + high + 1) / 2);
+        let remaining: number[] = new Array(n).fill(0);
+        let possible = true;
+        for (let i = 0; i < n; i++) {
+            if (power[i] < mid) {
+                let need = mid - power[i];
+                for (let j = Math.max(0, i - r); j <= Math.min(n - 1, i + r); j++) {
+                    if (remaining[j] > 0) {
+                        let give = Math.min(remaining[j], need);
+                        power[i] += give;
+                        remaining[j] -= give;
+                        need -= give;
+                    }
+                }
+                if (need > 0) {
+                    possible = false;
+                    break;
+                }
+            }
+        }
+        if (possible) {
+            low = mid;
+        } else {
+            high = mid - 1;
+        }
+    }
+    return low;
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -2025,44 +3111,44 @@ function maxPower(stations: number[], r: number, k: number): number {
 {% highlight php %}
 {% raw %}
 function maxPower($stations, $r, $k) {
-  $n = count($stations);
-  $power = array_fill(0, $n, 0);
-  for ($i = 0; $i < $n; $i++) {
-     for ($j = max(0, $i - $r); $j <= min($n - 1, $i + $r); $j++) {
-        $power[$j] += $stations[$i];
-     }
-  }
-  $low = $power[0];
-  $high = $power[0];
-  for ($i = 1; $i < $n; $i++) {
-     $low = min($low, $power[$i]);
-     $high = max($high, $power[$i]);
-  }
-  $high += $k;
-  while ($low < $high) {
-     $mid = $low + floor(($high - $low + 1) / 2);
-     $temp = $power;
-     $count = 0;
-     for ($i = 0; $i < $n; $i++) {
-        if ($temp[$i] < $mid) {
-           $add = $mid - $temp[$i];
-           $count += $add;
-           $temp[$i] += $add;
-           for ($j = max(0, $i - $r); $j <= min($n - 1, $i + $r); $j++) {
-              if ($j != $i) {
-                 $temp[$j] += $add;
-              }
-           }
+    $n = count($stations);
+    $power = array_fill(0, $n, 0);
+    for ($i = 0; $i < $n; $i++) {
+        for ($j = max(0, $i - $r); $j <= min($n - 1, $i + $r); $j++) {
+            $power[$i] += $stations[$j];
         }
-     }
-     if ($count <= $k) {
-        $low = $mid;
-     } else {
-        $high = $mid - 1;
-     }
-  }
-  return $low;
-}
+    }
+    $low = min($power);
+    $high = max($power) + $k;
+    while ($low < $high) {
+        $mid = floor(($low + $high + 1) / 2);
+        $remaining = array_fill(0, $n, 0);
+        $possible = true;
+        for ($i = 0; $i < $n; $i++) {
+            if ($power[$i] < $mid) {
+                $need = $mid - $power[$i];
+                for ($j = max(0, $i - $r); $j <= min($n - 1, $i + $r); $j++) {
+                    if ($remaining[$j] > 0) {
+                        $give = min($remaining[$j], $need);
+                        $power[$i] += $give;
+                        $remaining[$j] -= $give;
+                        $need -= $give;
+                    }
+                }
+                if ($need > 0) {
+                    $possible = false;
+                    break;
+                }
+            }
+        }
+        if ($possible) {
+            $low = $mid;
+        } else {
+            $high = $mid - 1;
+        }
+    }
+    return $low;
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -2073,44 +3159,44 @@ function maxPower($stations, $r, $k) {
 {% highlight swift %}
 {% raw %}
 func maxPower(_ stations: [Int], _ r: Int, _ k: Int) -> Int {
-  let n = stations.count
-  var power = [Int](repeating: 0, count: n)
-  for i in 0..<n {
-     for j in max(0, i - r)...min(n - 1, i + r) {
-        power[j] += stations[i]
-     }
-  }
-  var low = power[0]
-  var high = power[0]
-  for i in 1..<n {
-     low = min(low, power[i])
-     high = max(high, power[i])
-  }
-  high += k
-  while low < high {
-     let mid = low + (high - low + 1) / 2
-     var temp = power
-     var count = 0
-     for i in 0..<n {
-        if temp[i] < mid {
-           let add = mid - temp[i]
-           count += add
-           temp[i] += add
-           for j in max(0, i - r)...min(n - 1, i + r) {
-              if j != i {
-                 temp[j] += add
-              }
-           }
+    let n = stations.count
+    var power = [Int](repeating: 0, count: n)
+    for i in 0..<n {
+        for j in max(0, i - r)...min(n - 1, i + r) {
+            power[i] += stations[j]
         }
-     }
-     if count <= k {
-        low = mid
-     } else {
-        high = mid - 1
-     }
-  }
-  return low
-}
+    }
+    var low = power.min()!
+    var high = power.max()! + k
+    while low < high {
+        let mid = (low + high + 1) / 2
+        var remaining = [Int](repeating: 0, count: n)
+        var possible = true
+        for i in 0..<n {
+            if power[i] < mid {
+                var need = mid - power[i]
+                for j in max(0, i - r)...min(n - 1, i + r) {
+                    if remaining[j] > 0 {
+                        let give = min(remaining[j], need)
+                        power[i] += give
+                        remaining[j] -= give
+                        need -= give
+                    }
+                }
+                if need > 0 {
+                    possible = false
+                    break
+                }
+            }
+        }
+        if possible {
+            low = mid
+        } else {
+            high = mid - 1
+        }
+    }
+    return low
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -2120,47 +3206,45 @@ func maxPower(_ stations: [Int], _ r: Int, _ k: Int) -> Int {
 
 {% highlight kotlin %}
 {% raw %}
-class Solution {
-  fun maxPower(stations: IntArray, r: Int, k: Int): Int {
-     val n = stations.size
-     val power = IntArray(n)
-     for (i in 0 until n) {
-        for (j in maxOf(0, i - r)..minOf(n - 1, i + r)) {
-           power[j] += stations[i]
+fun maxPower(stations: IntArray, r: Int, k: Int): Int {
+    val n = stations.size
+    val power = IntArray(n)
+    for (i in 0 until n) {
+        for (j in maxOf(0, i - r) until minOf(n - 1, i + r + 1)) {
+            power[i] += stations[j]
         }
-     }
-     var low = power[0]
-     var high = power[0]
-     for (i in 1 until n) {
-        low = minOf(low, power[i])
-        high = maxOf(high, power[i])
-     }
-     high += k
-     while (low < high) {
-        val mid = low + (high - low + 1) / 2
-        val temp = power.copyOf()
-        var count = 0
+    }
+    var low = power.minOrNull()!!
+    var high = power.maxOrNull()!! + k
+    while (low < high) {
+        val mid = (low + high + 1) / 2
+        val remaining = IntArray(n)
+        var possible = true
         for (i in 0 until n) {
-           if (temp[i] < mid) {
-              val add = mid - temp[i]
-              count += add
-              temp[i] += add
-              for (j in maxOf(0, i - r)..minOf(n - 1, i + r)) {
-                 if (j != i) {
-                    temp[j] += add
-                 }
-              }
-           }
+            if (power[i] < mid) {
+                var need = mid - power[i]
+                for (j in maxOf(0, i - r) until minOf(n - 1, i + r + 1)) {
+                    if (remaining[j] > 0) {
+                        val give = minOf(remaining[j], need)
+                        power[i] += give
+                        remaining[j] -= give
+                        need -= give
+                    }
+                }
+                if (need > 0) {
+                    possible = false
+                    break
+                }
+            }
         }
-        if (count <= k) {
-           low = mid
+        if (possible) {
+            low = mid
         } else {
-           high = mid - 1
+            high = mid - 1
         }
-     }
-     return low
-  }
-}
+    }
+    return low
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -2170,47 +3254,45 @@ class Solution {
 
 {% highlight dart %}
 {% raw %}
-class Solution {
-  int maxPower(List<int> stations, int r, int k) {
-     int n = stations.length;
-     List<int> power = List<int>.filled(n, 0);
-     for (int i = 0; i < n; i++) {
+int maxPower(List<int> stations, int r, int k) {
+    int n = stations.length;
+    List<int> power = List<int>.filled(n, 0);
+    for (int i = 0; i < n; i++) {
         for (int j = max(0, i - r); j <= min(n - 1, i + r); j++) {
-           power[j] += stations[i];
+            power[i] += stations[j];
         }
-     }
-     int low = power[0];
-     int high = power[0];
-     for (int i = 1; i < n; i++) {
-        low = min(low, power[i]);
-        high = max(high, power[i]);
-     }
-     high += k;
-     while (low < high) {
-        int mid = low + (high - low + 1) ~/ 2;
-        List<int> temp = List<int>.from(power);
-        int count = 0;
+    }
+    int low = power.reduce((a, b) => a < b ? a : b);
+    int high = power.reduce((a, b) => a > b ? a : b) + k;
+    while (low < high) {
+        int mid = (low + high + 1) ~/ 2;
+        List<int> remaining = List<int>.filled(n, 0);
+        bool possible = true;
         for (int i = 0; i < n; i++) {
-           if (temp[i] < mid) {
-              int add = mid - temp[i];
-              count += add;
-              temp[i] += add;
-              for (int j = max(0, i - r); j <= min(n - 1, i + r); j++) {
-                 if (j != i) {
-                    temp[j] += add;
-                 }
-              }
-           }
+            if (power[i] < mid) {
+                int need = mid - power[i];
+                for (int j = max(0, i - r); j <= min(n - 1, i + r); j++) {
+                    if (remaining[j] > 0) {
+                        int give = min(remaining[j], need);
+                        power[i] += give;
+                        remaining[j] -= give;
+                        need -= give;
+                    }
+                }
+                if (need > 0) {
+                    possible = false;
+                    break;
+                }
+            }
         }
-        if (count <= k) {
-           low = mid;
+        if (possible) {
+            low = mid;
         } else {
-           high = mid - 1;
+            high = mid - 1;
         }
-     }
-     return low;
-  }
-}
+    }
+    return low;
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -2221,67 +3303,72 @@ class Solution {
 {% highlight go %}
 {% raw %}
 package main
-      import (
-         "fmt"
-      )
-      func maxPower(stations []int, r int, k int) int {
-         n := len(stations)
-         power := make([]int, n)
-         for i := 0; i < n; i++ {
-            for j := max(0, i-r); j <= min(n-1, i+r); j++ {
-               power[j] += stations[i]
+
+import (
+    "fmt"
+)
+
+func maxPower(stations []int, r int, k int) int {
+    n := len(stations)
+    power := make([]int, n)
+    for i := 0; i < n; i++ {
+        for j := max(0, i-r); j <= min(n-1, i+r); j++ {
+            power[i] += stations[j]
+        }
+    }
+    low := power[0]
+    high := power[0] + k
+    for i := 1; i < n; i++ {
+        if power[i] < low {
+            low = power[i]
+        }
+        if power[i]+k > high {
+            high = power[i] + k
+        }
+    }
+    for low < high {
+        mid := (low + high + 1) / 2
+        remaining := make([]int, n)
+        possible := true
+        for i := 0; i < n; i++ {
+            if power[i] < mid {
+                need := mid - power[i]
+                for j := max(0, i-r); j <= min(n-1, i+r); j++ {
+                    if remaining[j] > 0 {
+                        give := min(remaining[j], need)
+                        power[i] += give
+                        remaining[j] -= give
+                        need -= give
+                    }
+                }
+                if need > 0 {
+                    possible = false
+                    break
+                }
             }
-         }
-         low := power[0]
-         high := power[0]
-         for i := 1; i < n; i++ {
-            low = min(low, power[i])
-            high = max(high, power[i])
-         }
-         high += k
-         for low < high {
-            mid := low + (high-low+1)/2
-            temp := make([]int, n)
-            copy(temp, power)
-            count := 0
-            for i := 0; i < n; i++ {
-               if temp[i] < mid {
-                  add := mid - temp[i]
-                  count += add
-                  temp[i] += add
-                  for j := max(0, i-r); j <= min(n-1, i+r); j++ {
-                     if j != i {
-                        temp[j] += add
-                     }
-                  }
-               }
-            }
-            if count <= k {
-               low = mid
-            } else {
-               high = mid - 1
-            }
-         }
-         return low
-      }
-      func max(a, b int) int {
-         if a > b {
-            return a
-         }
-         return b
-      }
-      func min(a, b int) int {
-         if a < b {
-            return a
-         }
-         return b
-      }
-      func main() {
-         stations := []int{1, 2, 4, 5, 0}
-         r := 1
-         k := 2
-         fmt.Println(maxPower(stations, r, k))
-      }
+        }
+        if possible {
+            low = mid
+        } else {
+            high = mid - 1
+        }
+    }
+    return low
+}
+
+func max(a, b int) int {
+    if a > b {
+        return a
+    }
+    return b
+}
+
+func min(a, b int) int {
+    if a < b {
+        return a
+    }
+    return b
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -2292,44 +3379,44 @@ package main
 {% highlight ruby %}
 {% raw %}
 def max_power(stations, r, k)
-  n = stations.size
-  power = Array.new(n, 0)
-  for i in 0...n
-     for j in [0, i - r].max..[n - 1, i + r].min
-        power[j] += stations[i]
-     end
-  end
-  low = power[0]
-  high = power[0]
-  for i in 1...n
-     low = [low, power[i]].min
-     high = [high, power[i]].max
-  end
-  high += k
-  while low < high
-     mid = low + (high - low + 1) / 2
-     temp = power.dup
-     count = 0
-     for i in 0...n
-        if temp[i] < mid
-           add = mid - temp[i]
-           count += add
-           temp[i] += add
-           for j in [0, i - r].max..[n - 1, i + r].min
-              if j != i
-                 temp[j] += add
-              end
-           end
+    n = stations.size
+    power = Array.new(n, 0)
+    for i in 0...n
+        for j in [i - r, 0].max...[i + r + 1, n].min
+            power[i] += stations[j]
         end
-     end
-     if count <= k
-        low = mid
-     else
-        high = mid - 1
-     end
-  end
-  low
-end
+    end
+    low = power.min
+    high = power.max + k
+    while low < high
+        mid = (low + high + 1) / 2
+        remaining = Array.new(n, 0)
+        possible = true
+        for i in 0...n
+            if power[i] < mid
+                need = mid - power[i]
+                for j in [i - r, 0].max...[i + r, n - 1].min
+                    if remaining[j] > 0
+                        give = [remaining[j], need].min
+                        power[i] += give
+                        remaining[j] -= give
+                        need -= give
+                    end
+                end
+                if need > 0
+                    possible = false
+                    break
+                end
+            end
+        end
+        if possible
+            low = mid
+        else
+            high = mid - 1
+        end
+    end
+    low
+end;
 {% endraw %}
 {% endhighlight %}
 
@@ -2340,46 +3427,46 @@ end
 {% highlight scala %}
 {% raw %}
 object Solution {
-  def maxPower(stations: Array[Int], r: Int, k: Int): Int = {
-     val n = stations.length
-     val power = new Array[Int](n)
-     for (i <- 0 until n) {
-        for (j <- math.max(0, i - r) to math.min(n - 1, i + r)) {
-           power(j) += stations(i)
-        }
-     }
-     var low = power(0)
-     var high = power(0)
-     for (i <- 1 until n) {
-        low = math.min(low, power(i))
-        high = math.max(high, power(i))
-     }
-     high += k
-     while (low < high) {
-        val mid = low + (high - low + 1) / 2
-        val temp = power.clone()
-        var count = 0
+    def maxPower(stations: Array[Int], r: Int, k: Int): Int = {
+        val n = stations.length
+        val power = Array.fill(n)(0)
         for (i <- 0 until n) {
-           if (temp(i) < mid) {
-              val add = mid - temp(i)
-              count += add
-              temp(i) += add
-              for (j <- math.max(0, i - r) to math.min(n - 1, i + r)) {
-                 if (j != i) {
-                    temp(j) += add
-                 }
-              }
-           }
+            for (j <- math.max(0, i - r) to math.min(n - 1, i + r)) {
+                power(i) += stations(j)
+            }
         }
-        if (count <= k) {
-           low = mid
-        } else {
-           high = mid - 1
+        var low = power.min
+        var high = power.max + k
+        while (low < high) {
+            val mid = (low + high + 1) / 2
+            val remaining = Array.fill(n)(0)
+            var possible = true
+            for (i <- 0 until n) {
+                if (power(i) < mid) {
+                    var need = mid - power(i)
+                    for (j <- math.max(0, i - r) to math.min(n - 1, i + r)) {
+                        if (remaining(j) > 0) {
+                            val give = math.min(remaining(j), need)
+                            power(i) += give
+                            remaining(j) -= give
+                            need -= give
+                        }
+                    }
+                    if (need > 0) {
+                        possible = false
+                        break
+                    }
+                }
+            }
+            if (possible) {
+                low = mid
+            } else {
+                high = mid - 1
+            }
         }
-     }
-     low
-  }
-}
+        low
+    }
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -2390,44 +3477,44 @@ object Solution {
 {% highlight rust %}
 {% raw %}
 fn max_power(stations: Vec<i32>, r: i32, k: i32) -> i32 {
-  let n = stations.len();
-  let mut power = vec![0; n];
-  for i in 0..n {
-     for j in (i as i32 - r).max(0)..=(i as i32 + r).min((n - 1) as i32) {
-        power[j as usize] += stations[i];
-     }
-  }
-  let mut low = power[0];
-  let mut high = power[0];
-  for i in 1..n {
-     low = low.min(power[i]);
-     high = high.max(power[i]);
-  }
-  high += k;
-  while low < high {
-     let mid = low + (high - low + 1) / 2;
-     let mut temp = power.clone();
-     let mut count = 0;
-     for i in 0..n {
-        if temp[i] < mid {
-           let add = mid - temp[i];
-           count += add;
-           temp[i] += add;
-           for j in (i as i32 - r).max(0)..=(i as i32 + r).min((n - 1) as i32) {
-              if j as usize != i {
-                 temp[j as usize] += add;
-              }
-           }
+    let n = stations.len();
+    let mut power: Vec<i32> = vec![0; n];
+    for i in 0..n {
+        for j in (i as i32 - r).max(0)..=(i as i32 + r).min(n as i32 - 1) {
+            power[i] += stations[j as usize];
         }
-     }
-     if count <= k {
-        low = mid;
-     } else {
-        high = mid - 1;
-     }
-  }
-  low
-}
+    }
+    let mut low = *power.iter().min().unwrap();
+    let mut high = *power.iter().max().unwrap() + k;
+    while low < high {
+        let mid = (low + high + 1) / 2;
+        let mut remaining: Vec<i32> = vec![0; n];
+        let mut possible = true;
+        for i in 0..n {
+            if power[i] < mid {
+                let mut need = mid - power[i];
+                for j in (i as i32 - r).max(0)..=(i as i32 + r).min(n as i32 - 1) {
+                    if remaining[j as usize] > 0 {
+                        let give = remaining[j as usize].min(need);
+                        power[i] += give;
+                        remaining[j as usize] -= give;
+                        need -= give;
+                    }
+                }
+                if need > 0 {
+                    possible = false;
+                    break;
+                }
+            }
+        }
+        if possible {
+            low = mid;
+        } else {
+            high = mid - 1;
+        }
+    }
+    low
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -2438,35 +3525,35 @@ fn max_power(stations: Vec<i32>, r: i32, k: i32) -> i32 {
 {% highlight racket %}
 {% raw %}
 #lang racket
-      (define (max-power stations r k)
-        (define n (length stations))
-        (define power (make-list n 0))
-        (for ([i (range n)])
-          (for ([j (range (max 0 (- i r)) (add1 (min (- n 1) (+ i r))))])
-            (set! (list-ref power j) (+ (list-ref power j) (list-ref stations i)))))
-        (define low (list-ref power 0))
-        (define high (list-ref power 0))
-        (for ([i (range 1 n)])
-          (set! low (min low (list-ref power i)))
-          (set! high (max high (list-ref power i))))
-        (set! high (+ high k))
-        (let loop ([low low] [high high])
-          (if (< low high)
-              (let* ([mid (+ low (quotient (+ high low) 2))]
-                     [temp (map (λ(x) x) power)]
-                     [count 0])
-                (for ([i (range n)])
-                  (when (< (list-ref temp i) mid)
-                    (let ([add (- mid (list-ref temp i)))])
-                      (set! count (+ count add))
-                      (set! (list-ref temp i) (+ (list-ref temp i) add))
-                      (for ([j (range (max 0 (- i r)) (add1 (min (- n 1) (+ i r))))])
-                        (when (not (= j i))
-                          (set! (list-ref temp j) (+ (list-ref temp j) add)))))))
-                (if (<= count k)
-                    (loop mid high)
-                    (loop low (- mid 1))))
-              low)))
+(define (max-power stations r k)
+  (let* ((n (length stations))
+         (power (make-list n 0)))
+    (for ((i (range n)))
+      (for ((j (range (max 0 (- i r)) (min n (+ i r 1))))
+        (set! power (list-set power i (+ (list-ref power i) (list-ref stations j))))))
+    (let loop ((low (apply min power)) (high (+ (apply max power) k)))
+      (if (< low high)
+          (let ((mid (quotient (+ low high 1) 2)))
+            (let* ((remaining (make-list n 0))
+                   (possible #t))
+              (for ((i (range n)))
+                (when (< (list-ref power i) mid)
+                  (let ((need (- mid (list-ref power i))))
+                    (for ((j (range (max 0 (- i r)) (min n (+ i r 1))))
+                      (when (> (list-ref remaining j) 0)
+                        (let ((give (min (list-ref remaining j) need)))
+                          (set! power (list-set power i (+ (list-ref power i) give)))
+                          (set! remaining (list-set remaining j (- (list-ref remaining j) give)))
+                          (set! need (- need give))))))
+                    (unless (zero? need)
+                      (set! possible #f)
+                      (break))))
+                (when (not possible)
+                  (break)))
+              (if possible
+                  (loop mid high)
+                  (loop low (- mid 1)))))
+          low))));
 {% endraw %}
 {% endhighlight %}
 
@@ -2476,44 +3563,75 @@ fn max_power(stations: Vec<i32>, r: i32, k: i32) -> i32 {
 
 {% highlight erlang %}
 {% raw %}
--module(solution).
-      -export([max_power/3]).
-      max_power(Stations, R, K) ->
-         N = length(Stations),
-         Power = lists:duplicate(N, 0),
-         lists:foldl(
-           fun(I, Acc) ->
-             lists:foldl(
-               fun(J, Acc1) ->
-                 lists:update(J, Acc1, Acc1 + lists:nth(I + 1, Stations))
-               end, Acc, lists:seq(max(0, I - R), min(N - 1, I + R)))
-           end, Power, lists:seq(0, N - 1)),
-         Low = lists:nth(1, Power),
-         High = lists:nth(1, Power),
-         {Low1, High1} = lists:foldl(
-           fun(I, {Low0, High0}) ->
-             {min(Low0, lists:nth(I + 1, Power)), max(High0, lists:nth(I + 1, Power))}
-           end, {Low, High}, lists:seq(0, N - 1)),
-         High1 + K,
-         loop(Low1, High1 + K).
-      loop(Low, High) when Low < High ->
-         Mid = Low + (High - Low) div 2,
-         Temp = lists:duplicate(length(Power), 0),
-         {Count, Temp1} = lists:foldl(
-           fun(I, {Count0, Temp0}) ->
-             case lists:nth(I + 1, Temp0) < Mid of
-               true ->
-                 Add = Mid - lists:nth(I + 1, Temp0),
-                 {Count0 + Add, lists:update(I, Temp0, lists:nth(I + 1, Temp0) + Add)};
-               false ->
-                 {Count0, Temp0}
-             end
-           end, {0, Power}, lists:seq(0, length(Power) - 1)),
-         case Count =< K of
-           true -> loop(Mid, High);
-           false -> loop(Low, Mid - 1)
-         end;
-      loop(Low, High) -> Low.
+-module(max_power).
+-export([max_power/3]).
+
+max_power(Stations, R, K) ->
+    N = length(Stations),
+    Power = lists:duplicate(N, 0),
+    lists:foldl(
+      fun(I, Acc) ->
+          lists:foldl(
+            fun(J, Acc1) ->
+                lists:update(I, Acc1, element(I, Acc1) + lists:nth(J + 1, Stations))
+            end,
+            Acc,
+            lists:seq(max(0, I - R), min(N - 1, I + R)))
+      end,
+      Power,
+      lists:seq(0, N - 1)),
+    Low = lists:min(Power),
+    High = lists:max(Power) + K,
+    loop(Low, High, Power, Stations, R, K).
+
+loop(Low, High, Power, Stations, R, K) when Low < High ->
+    Mid = (Low + High + 1) div 2,
+    Remaining = lists:duplicate(length(Power), 0),
+    case possible(Mid, Power, Remaining, Stations, R, K) of
+        true -> loop(Mid, High, Power, Stations, R, K);
+        false -> loop(Low, Mid - 1, Power, Stations, R, K)
+    end;
+loop(Low, _High, _Power, _Stations, _R, _K) ->
+    Low.
+
+possible(Mid, Power, Remaining, Stations, R, K) ->
+    lists:foldl(
+      fun(I, Acc) ->
+          case Acc of
+              false -> false;
+              true ->
+                  case element(I, Power) < Mid of
+                      true ->
+                          Need = Mid - element(I, Power),
+                          case lists:foldl(
+                                 fun(J, Acc1) ->
+                                     case Acc1 of
+                                         {need, remaining} ->
+                                             case element(J, remaining) of
+                                                 0 -> {need, remaining};
+                                                 _ ->
+                                                     Give = min(element(J, remaining), need),
+                                                     {need - Give, lists:update(J, remaining, element(J, remaining) - Give)}
+                                             end
+                                 end,
+                                 {Need, Remaining},
+                                 lists:seq(max(0, I - R), min(length(Power) - 1, I + R)))
+                           of
+                              {0, _} -> true;
+                              _ -> false
+                          end;
+                      false -> true
+                  end
+          end
+      end,
+      true,
+      lists:seq(0, length(Power) - 1)).
+
+max(A, B) when A > B -> A;
+max(_A, B) -> B.
+
+min(A, B) when A < B -> A;
+min(_A, B) -> B.
 {% endraw %}
 {% endhighlight %}
 
@@ -2523,44 +3641,62 @@ fn max_power(stations: Vec<i32>, r: i32, k: i32) -> i32 {
 
 {% highlight elixir %}
 {% raw %}
-defmodule Solution do
-def max_power(stations, r, k) do
-  n = length(stations)
-  power = Enum.to_list(0..n-1)
-  |> Enum.map(fn _ -> 0 end)
-  Enum.reduce(0..n-1, power, fn i, acc ->
-    Enum.reduce(max(0, i - r)..min(n - 1, i + r), acc, fn j, acc1 ->
-      List.update_at(acc1, j, &(&1 + Enum.at(stations, i)))
+defmodule MaxPower do
+  def max_power(stations, r, k) do
+    n = length(stations)
+    power = Enum.to_list(0..n-1) |> Enum.map(fn _ -> 0 end)
+    power = Enum.reduce(0..n-1, power, fn i, power ->
+      Enum.reduce(max(0, i - r)..min(n - 1, i + r), power, fn j, power ->
+        List.update_at(power, i, &(&1 + Enum.at(stations, j)))
+      end)
     end)
-  end)
-  low = Enum.at(power, 0)
-  high = Enum.at(power, 0)
-  {low1, high1} = Enum.reduce(1..n-1, {low, high}, fn i, {low0, high0} ->
-    {min(low0, Enum.at(power, i)), max(high0, Enum.at(power, i))}
-  end)
-  high1 + k
-  loop(low1, high1 + k)
-end
-defp loop(low, high) when low < high do
-  mid = low + div(high - low + 1, 2)
-  temp = Enum.to_list(0..length(power)-1)
-  |> Enum.map(fn _ -> 0 end)
-  {count, temp1} = Enum.reduce(0..length(power)-1, {0, power}, fn i, {count0, temp0} ->
-    if Enum.at(temp0, i) < mid do
-      add = mid - Enum.at(temp0, i)
-      {count0 + add, List.update_at(temp0, i, &(&1 + add))}
-    else
-      {count0, temp0}
-    end
-  end)
-  if count <= k do
-    loop(mid, high)
-  else
-    loop(low, mid - 1)
+    low = Enum.min(power)
+    high = Enum.max(power) + k
+    loop(low, high, power, stations, r, k)
   end
-end
-defp loop(low, high), do: low
-end
+
+  defp loop(low, high, power, stations, r, k) when low < high do
+    mid = div(low + high + 1, 2)
+    remaining = Enum.to_list(0..length(power)-1) |> Enum.map(fn _ -> 0 end)
+    case possible(mid, power, remaining, stations, r, k) do
+      true -> loop(mid, high, power, stations, r, k)
+      false -> loop(low, mid - 1, power, stations, r, k)
+    end
+  end
+
+  defp loop(low, _high, _power, _stations, _r, _k), do: low
+
+  defp possible(mid, power, remaining, stations, r, k) do
+    Enum.reduce(0..length(power)-1, true, fn i, acc ->
+      case acc do
+        false -> false
+        true ->
+          case Enum.at(power, i) < mid do
+            true ->
+              need = mid - Enum.at(power, i)
+              {need, remaining} = Enum.reduce(max(0, i - r)..min(length(power) - 1, i + r), {need, remaining}, fn j, {need, remaining} ->
+                case Enum.at(remaining, j) do
+                  0 -> {need, remaining}
+                  _ ->
+                    give = min(Enum.at(remaining, j), need)
+                    {need - give, List.update_at(remaining, j, &(&1 - give))}
+                end
+              end)
+              case need do
+                0 -> true
+                _ -> false
+              end
+            false -> true
+          end
+      end
+    end)
+  end
+
+  defp max(a, b) when a > b, do: a
+  defp max(_a, b), do: b
+
+  defp min(a, b) when a < b, do: a
+  defp min(_a, b), do: b
 {% endraw %}
 {% endhighlight %}
 
@@ -2570,9 +3706,9 @@ end
 
 ### Complexity Analysis
 
-- **Time Complexity:** O(n log m)
+- **Time Complexity:** O(n log m) where n is the number of cities and m is the maximum possible minimum power of a city. The time complexity is dominated by the binary search, which takes O(log m) time. Inside the binary search, we iterate over the cities to check if it's possible to achieve the current minimum power, which takes O(n) time.
 
-- **Space Complexity:** O(n)
+- **Space Complexity:** O(n) where n is the number of cities. We need to store the initial power of each city and the additional power stations that can be built in each city.
 
 </div>
 </details>

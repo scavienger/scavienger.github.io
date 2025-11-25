@@ -65,20 +65,18 @@ We've generated solutions using multiple AI models. Click to expand each solutio
 <details class="ai-solution-card" open markdown="1">
 <summary class="ai-solution-header">
   <span class="ai-model-badge">✨ Solution from <strong>gemini-2.5-flash</strong></span>
-  <small class="solution-timestamp">(2025-11-20 16:10:28 )</small>
+  <small class="solution-timestamp">(2025-11-25 04:03:51 UTC)</small>
 </summary>
 
 <div class="ai-solution-content">
 
 ### Approach
 
-The problem asks us to determine if the last character in a given binary array `bits` must be a one-bit character, given that the array always ends with a `0`. A one-bit character is represented by `0`, and a two-bit character is represented by `10` or `11`. This is essentially a decoding problem where we need to trace the parsing of the `bits` array.
+The problem asks us to determine if the last character in a given binary array `bits` must be a one-bit character. We are given two types of characters: a one-bit character represented by `0`, and a two-bit character represented by `10` or `11`. A crucial constraint is that the input array `bits` always ends with `0`. This simplifies the problem as we don't need to consider cases where the array ends with an incomplete two-bit character (e.g., ending with `1`).
 
-Our strategy is to simulate the decoding process from the beginning of the `bits` array to its end. We maintain an index, let's call it `i`, which points to the start of the current character being decoded. We iterate through the array, advancing `i` based on the character type we encounter. If `bits[i]` is `0`, it signifies a one-bit character, and we advance `i` by `1`. If `bits[i]` is `1`, it signifies the start of a two-bit character (either `10` or `11`), and we advance `i` by `2` to consume both bits of that character.
+We can solve this problem by simulating the decoding process from left to right. We maintain an index `i` that points to the beginning of the current character we are trying to decode. We iterate through the `bits` array, advancing `i` based on the character type. If `bits[i]` is `0`, it represents a one-bit character, so we advance `i` by `1`. If `bits[i]` is `1`, it must represent the start of a two-bit character (either `10` or `11`), so we advance `i` by `2` (consuming `bits[i]` and `bits[i+1]`).
 
-The crucial insight for this problem lies in how we handle the very last character. The problem guarantees that `bits[bits.length - 1]` is `0`. This `0` could either be a standalone one-bit character, or it could be the second bit of a two-bit character (e.g., `10`). We need to determine which scenario *must* occur based on the preceding bits. We continue our simulation until `i` reaches or surpasses `bits.length - 1`. The loop condition `i < bits.length - 1` is key; it ensures we process all characters up to, but not including, the very last bit `bits[bits.length - 1]` itself. This allows us to check the state of `i` precisely when it's time to evaluate the last character.
-
-After the loop finishes, we check the final value of `i`. If `i` is exactly equal to `bits.length - 1`, it means that our decoding process has successfully consumed all characters up to `bits.length - 2`, and the character starting at `bits.length - 1` (which is `0`) is a one-bit character. In this case, the last character must be a one-bit character, and we return `true`. If `i` is greater than `bits.length - 1` (which implies `i` is equal to `bits.length`, as `i` increments by 1 or 2), it means that the character starting at `i-2` (if `bits[i-2]` was `1`) or `i-1` (if `bits[i-1]` was `0`) consumed `bits[bits.length - 1]` as part of a two-bit character. Specifically, if `i` lands at `bits.length`, it implies the last character was a two-bit character whose second bit was `bits[bits.length - 1]`. Therefore, the last character is not a one-bit character, and we return `false`. This greedy approach works because the encoding rules are unambiguous and there's no backtracking required; a `0` always means a one-bit char, and a `1` always means a two-bit char starting there.
+The loop continues as long as `i` is less than `n-1`, where `n` is the total length of the `bits` array. This means we stop when `i` points to the second-to-last element or beyond. After the loop terminates, we check the final value of `i`. If `i` is exactly equal to `n-1`, it means the character starting at `n-1` (which must be `0` according to the problem constraints) was decoded as a one-bit character. In this scenario, the last character is a one-bit character, and we return `true`. If `i` is equal to `n` (meaning it has gone past the end of the array), it implies that the character starting at `n-2` was a two-bit character (`10`), consuming `bits[n-2]` and `bits[n-1]`. In this case, the last character was a two-bit character, and we return `false`.
 
 ### Code
 
@@ -127,11 +125,12 @@ After the loop finishes, we check the final value of `i`. If `i` is exactly equa
   <div class="tab-panel" data-lang="cpp">
 
 {% highlight cpp %}
+{% raw %}
 class Solution {
 public:
     bool isOneBitCharacter(std::vector<int>& bits) {
-        int i = 0;
         int n = bits.size();
+        int i = 0;
         while (i < n - 1) {
             if (bits[i] == 0) {
                 i += 1;
@@ -139,11 +138,10 @@ public:
                 i += 2;
             }
         }
-        // If i lands exactly on n-1, it means the last character is a one-bit character (0).
-        // If i jumps past n-1 (i.e., i == n), it means the last character (0) was part of a two-bit character.
         return i == n - 1;
     }
 };
+{% endraw %}
 {% endhighlight %}
 
   </div>
@@ -151,10 +149,11 @@ public:
   <div class="tab-panel" data-lang="java">
 
 {% highlight java %}
+{% raw %}
 class Solution {
     public boolean isOneBitCharacter(int[] bits) {
-        int i = 0;
         int n = bits.length;
+        int i = 0;
         while (i < n - 1) {
             if (bits[i] == 0) {
                 i += 1;
@@ -162,11 +161,10 @@ class Solution {
                 i += 2;
             }
         }
-        // If i lands exactly on n-1, it means the last character is a one-bit character (0).
-        // If i jumps past n-1 (i.e., i == n), it means the last character (0) was part of a two-bit character.
         return i == n - 1;
     }
 }
+{% endraw %}
 {% endhighlight %}
 
   </div>
@@ -174,19 +172,18 @@ class Solution {
   <div class="tab-panel" data-lang="python">
 
 {% highlight python %}
+{% raw %}
 class Solution:
     def isOneBitCharacter(self, bits: list[int]) -> bool:
-        i = 0
         n = len(bits)
+        i = 0
         while i < n - 1:
             if bits[i] == 0:
                 i += 1
-            else:  # bits[i] == 1
+            else: # bits[i] == 1
                 i += 2
-        
-        # If i lands exactly on n-1, it means the last character is a one-bit character (0).
-        # If i jumps past n-1 (i.e., i == n), it means the last character (0) was part of a two-bit character.
         return i == n - 1
+{% endraw %}
 {% endhighlight %}
 
   </div>
@@ -194,19 +191,18 @@ class Solution:
   <div class="tab-panel" data-lang="python3">
 
 {% highlight python %}
+{% raw %}
 class Solution:
     def isOneBitCharacter(self, bits: list[int]) -> bool:
-        i = 0
         n = len(bits)
+        i = 0
         while i < n - 1:
             if bits[i] == 0:
                 i += 1
-            else:  # bits[i] == 1
+            else: # bits[i] == 1
                 i += 2
-        
-        # If i lands exactly on n-1, it means the last character is a one-bit character (0).
-        # If i jumps past n-1 (i.e., i == n), it means the last character (0) was part of a two-bit character.
         return i == n - 1
+{% endraw %}
 {% endhighlight %}
 
   </div>
@@ -214,22 +210,19 @@ class Solution:
   <div class="tab-panel" data-lang="c">
 
 {% highlight c %}
-#include <stdbool.h>
-
+{% raw %}
 bool isOneBitCharacter(int* bits, int bitsSize) {
     int i = 0;
-    int n = bitsSize;
-    while (i < n - 1) {
+    while (i < bitsSize - 1) {
         if (bits[i] == 0) {
             i += 1;
         } else { // bits[i] == 1
             i += 2;
         }
     }
-    // If i lands exactly on n-1, it means the last character is a one-bit character (0).
-    // If i jumps past n-1 (i.e., i == n), it means the last character (0) was part of a two-bit character.
-    return i == n - 1;
+    return i == bitsSize - 1;
 }
+{% endraw %}
 {% endhighlight %}
 
   </div>
@@ -237,10 +230,11 @@ bool isOneBitCharacter(int* bits, int bitsSize) {
   <div class="tab-panel" data-lang="csharp">
 
 {% highlight csharp %}
+{% raw %}
 public class Solution {
     public bool IsOneBitCharacter(int[] bits) {
-        int i = 0;
         int n = bits.Length;
+        int i = 0;
         while (i < n - 1) {
             if (bits[i] == 0) {
                 i += 1;
@@ -248,11 +242,10 @@ public class Solution {
                 i += 2;
             }
         }
-        // If i lands exactly on n-1, it means the last character is a one-bit character (0).
-        // If i jumps past n-1 (i.e., i == n), it means the last character (0) was part of a two-bit character.
         return i == n - 1;
     }
 }
+{% endraw %}
 {% endhighlight %}
 
   </div>
@@ -260,13 +253,14 @@ public class Solution {
   <div class="tab-panel" data-lang="javascript">
 
 {% highlight javascript %}
+{% raw %}
 /**
  * @param {number[]} bits
  * @return {boolean}
  */
 var isOneBitCharacter = function(bits) {
+    let n = bits.length;
     let i = 0;
-    const n = bits.length;
     while (i < n - 1) {
         if (bits[i] === 0) {
             i += 1;
@@ -274,10 +268,9 @@ var isOneBitCharacter = function(bits) {
             i += 2;
         }
     }
-    // If i lands exactly on n-1, it means the last character is a one-bit character (0).
-    // If i jumps past n-1 (i.e., i === n), it means the last character (0) was part of a two-bit character.
     return i === n - 1;
 };
+{% endraw %}
 {% endhighlight %}
 
   </div>
@@ -285,9 +278,10 @@ var isOneBitCharacter = function(bits) {
   <div class="tab-panel" data-lang="typescript">
 
 {% highlight typescript %}
+{% raw %}
 function isOneBitCharacter(bits: number[]): boolean {
+    let n: number = bits.length;
     let i: number = 0;
-    const n: number = bits.length;
     while (i < n - 1) {
         if (bits[i] === 0) {
             i += 1;
@@ -295,10 +289,9 @@ function isOneBitCharacter(bits: number[]): boolean {
             i += 2;
         }
     }
-    // If i lands exactly on n-1, it means the last character is a one-bit character (0).
-    // If i jumps past n-1 (i.e., i === n), it means the last character (0) was part of a two-bit character.
     return i === n - 1;
-};
+}
+{% endraw %}
 {% endhighlight %}
 
   </div>
@@ -306,14 +299,15 @@ function isOneBitCharacter(bits: number[]): boolean {
   <div class="tab-panel" data-lang="php">
 
 {% highlight php %}
+{% raw %}
 class Solution {
     /**
      * @param Integer[] $bits
      * @return Boolean
      */
     function isOneBitCharacter($bits) {
-        $i = 0;
         $n = count($bits);
+        $i = 0;
         while ($i < $n - 1) {
             if ($bits[$i] == 0) {
                 $i += 1;
@@ -321,11 +315,10 @@ class Solution {
                 $i += 2;
             }
         }
-        // If i lands exactly on n-1, it means the last character is a one-bit character (0).
-        // If i jumps past n-1 (i.e., i == n), it means the last character (0) was part of a two-bit character.
         return $i == $n - 1;
     }
 }
+{% endraw %}
 {% endhighlight %}
 
   </div>
@@ -333,10 +326,11 @@ class Solution {
   <div class="tab-panel" data-lang="swift">
 
 {% highlight swift %}
+{% raw %}
 class Solution {
     func isOneBitCharacter(_ bits: [Int]) -> Bool {
-        var i = 0
         let n = bits.count
+        var i = 0
         while i < n - 1 {
             if bits[i] == 0 {
                 i += 1
@@ -344,11 +338,10 @@ class Solution {
                 i += 2
             }
         }
-        // If i lands exactly on n-1, it means the last character is a one-bit character (0).
-        // If i jumps past n-1 (i.e., i == n), it means the last character (0) was part of a two-bit character.
         return i == n - 1
     }
 }
+{% endraw %}
 {% endhighlight %}
 
   </div>
@@ -356,10 +349,11 @@ class Solution {
   <div class="tab-panel" data-lang="kotlin">
 
 {% highlight kotlin %}
+{% raw %}
 class Solution {
     fun isOneBitCharacter(bits: IntArray): Boolean {
-        var i = 0
         val n = bits.size
+        var i = 0
         while (i < n - 1) {
             if (bits[i] == 0) {
                 i += 1
@@ -367,11 +361,10 @@ class Solution {
                 i += 2
             }
         }
-        // If i lands exactly on n-1, it means the last character is a one-bit character (0).
-        // If i jumps past n-1 (i.e., i == n), it means the last character (0) was part of a two-bit character.
         return i == n - 1
     }
 }
+{% endraw %}
 {% endhighlight %}
 
   </div>
@@ -379,10 +372,11 @@ class Solution {
   <div class="tab-panel" data-lang="dart">
 
 {% highlight dart %}
+{% raw %}
 class Solution {
   bool isOneBitCharacter(List<int> bits) {
-    int i = 0;
     int n = bits.length;
+    int i = 0;
     while (i < n - 1) {
       if (bits[i] == 0) {
         i += 1;
@@ -390,11 +384,10 @@ class Solution {
         i += 2;
       }
     }
-    // If i lands exactly on n-1, it means the last character is a one-bit character (0).
-    // If i jumps past n-1 (i.e., i == n), it means the last character (0) was part of a two-bit character.
     return i == n - 1;
   }
 }
+{% endraw %}
 {% endhighlight %}
 
   </div>
@@ -402,9 +395,10 @@ class Solution {
   <div class="tab-panel" data-lang="go">
 
 {% highlight go %}
+{% raw %}
 func isOneBitCharacter(bits []int) bool {
-    i := 0
     n := len(bits)
+    i := 0
     for i < n - 1 {
         if bits[i] == 0 {
             i += 1
@@ -412,10 +406,9 @@ func isOneBitCharacter(bits []int) bool {
             i += 2
         }
     }
-    // If i lands exactly on n-1, it means the last character is a one-bit character (0).
-    // If i jumps past n-1 (i.e., i == n), it means the last character (0) was part of a two-bit character.
     return i == n - 1
 }
+{% endraw %}
 {% endhighlight %}
 
   </div>
@@ -423,12 +416,15 @@ func isOneBitCharacter(bits []int) bool {
   <div class="tab-panel" data-lang="ruby">
 
 {% highlight ruby %}
+{% raw %}
 class Solution
-    # @param {Integer[]} bits
-    # @return {Boolean}
+    /**
+     * @param {Integer[]} bits
+     * @return {Boolean}
+     */
     def is_one_bit_character(bits)
-        i = 0
         n = bits.length
+        i = 0
         while i < n - 1
             if bits[i] == 0
                 i += 1
@@ -436,11 +432,10 @@ class Solution
                 i += 2
             end
         end
-        # If i lands exactly on n-1, it means the last character is a one-bit character (0).
-        # If i jumps past n-1 (i.e., i == n), it means the last character (0) was part of a two-bit character.
         return i == n - 1
     end
 end
+{% endraw %}
 {% endhighlight %}
 
   </div>
@@ -448,10 +443,11 @@ end
   <div class="tab-panel" data-lang="scala">
 
 {% highlight scala %}
+{% raw %}
 object Solution {
     def isOneBitCharacter(bits: Array[Int]): Boolean = {
-        var i = 0
         val n = bits.length
+        var i = 0
         while (i < n - 1) {
             if (bits(i) == 0) {
                 i += 1
@@ -459,11 +455,10 @@ object Solution {
                 i += 2
             }
         }
-        // If i lands exactly on n-1, it means the last character is a one-bit character (0).
-        // If i jumps past n-1 (i.e., i == n), it means the last character (0) was part of a two-bit character.
         i == n - 1
     }
 }
+{% endraw %}
 {% endhighlight %}
 
   </div>
@@ -471,10 +466,11 @@ object Solution {
   <div class="tab-panel" data-lang="rust">
 
 {% highlight rust %}
+{% raw %}
 impl Solution {
     pub fn is_one_bit_character(bits: Vec<i32>) -> bool {
-        let mut i = 0;
         let n = bits.len();
+        let mut i = 0;
         while i < n - 1 {
             if bits[i] == 0 {
                 i += 1;
@@ -482,11 +478,10 @@ impl Solution {
                 i += 2;
             }
         }
-        // If i lands exactly on n-1, it means the last character is a one-bit character (0).
-        // If i jumps past n-1 (i.e., i == n), it means the last character (0) was part of a two-bit character.
         i == n - 1
     }
 }
+{% endraw %}
 {% endhighlight %}
 
   </div>
@@ -494,16 +489,21 @@ impl Solution {
   <div class="tab-panel" data-lang="racket">
 
 {% highlight racket %}
+{% raw %}
 #lang racket
-(define/contract (is-one-bit-character bits) 
+(define/contract (is-one-bit-character bits)
   (-> (listof exact-integer?) boolean?)
-  (let* ((n (length bits))
-         (i (let loop ((idx 0))
-              (cond
-                ((>= idx (- n 1)) idx) ; Stop when idx reaches or surpasses n-1
-                ((zero? (list-ref bits idx)) (loop (+ idx 1)))
-                (else (loop (+ idx 2)))))))
-    (= i (- n 1))))
+  (let* ([n (length bits)]
+         [bits-vec (list->vector bits)])
+    (let loop ([i 0])
+      (cond
+        [(>= i (- n 1)) ; If i is at or past the second-to-last element
+         (= i (- n 1))] ; Return true if i landed exactly on n-1
+        [(zero? (vector-ref bits-vec i))
+         (loop (+ i 1))]
+        [else ; (vector-ref bits-vec i) is 1
+         (loop (+ i 2))]))))
+{% endraw %}
 {% endhighlight %}
 
   </div>
@@ -511,20 +511,22 @@ impl Solution {
   <div class="tab-panel" data-lang="erlang">
 
 {% highlight erlang %}
--module(solution).
--export([is_one_bit_character/1]).
-
+{% raw %}
+-spec is_one_bit_character(Bits :: [0 | 1]) -> boolean().
 is_one_bit_character(Bits) ->
     N = length(Bits),
-    is_one_bit_character_recursive(Bits, 0, N).
+    is_one_bit_character_recursive(Bits, N, 0).
 
-is_one_bit_character_recursive(_Bits, I, N) when I >= N - 1 ->
-    I == N - 1;
-is_one_bit_character_recursive(Bits, I, N) ->
-    case lists:nth(I + 1, Bits) of % Erlang lists are 1-indexed for nth
-        0 -> is_one_bit_character_recursive(Bits, I + 1, N);
-        1 -> is_one_bit_character_recursive(Bits, I + 2, N)
+is_one_bit_character_recursive(_Bits, N, I) when I == N - 1 ->
+    true;
+is_one_bit_character_recursive(_Bits, N, I) when I >= N ->
+    false;
+is_one_bit_character_recursive(Bits, N, I) ->
+    case lists:nth(I + 1, Bits) of % lists:nth is 1-indexed
+        0 -> is_one_bit_character_recursive(Bits, N, I + 1);
+        1 -> is_one_bit_character_recursive(Bits, N, I + 2)
     end.
+{% endraw %}
 {% endhighlight %}
 
   </div>
@@ -532,24 +534,24 @@ is_one_bit_character_recursive(Bits, I, N) ->
   <div class="tab-panel" data-lang="elixir">
 
 {% highlight elixir %}
+{% raw %}
 defmodule Solution do
-  @spec is_one_bit_character(bits :: [integer]) :: boolean
+  @spec is_one_bit_character(bits :: [0 | 1]) :: boolean
   def is_one_bit_character(bits) do
-    n = length(bits)
-    is_one_bit_character_recursive(bits, 0, n)
+    n = Enum.count(bits)
+    do_check(bits, n, 0)
   end
 
-  defp is_one_bit_character_recursive(_bits, i, n) when i >= n - 1 do
-    i == n - 1
-  end
-
-  defp is_one_bit_character_recursive(bits, i, n) do
-    case Enum.at(bits, i) do
-      0 -> is_one_bit_character_recursive(bits, i + 1, n)
-      1 -> is_one_bit_character_recursive(bits, i + 2, n)
+  defp do_check(_bits, n, idx) when idx == n - 1, do: true
+  defp do_check(_bits, n, idx) when idx >= n, do: false
+  defp do_check(bits, n, idx) do
+    case Enum.at(bits, idx) do
+      0 -> do_check(bits, n, idx + 1)
+      1 -> do_check(bits, n, idx + 2)
     end
   end
 end
+{% endraw %}
 {% endhighlight %}
 
   </div>
@@ -558,9 +560,9 @@ end
 
 ### Complexity Analysis
 
-- **Time Complexity:** O(N)
+- **Time Complexity:** O(N) with detailed explanation
 
-- **Space Complexity:** O(1)
+- **Space Complexity:** O(1) with detailed explanation
 
 </div>
 </details>
@@ -569,449 +571,312 @@ end
 <details class="ai-solution-card" markdown="1">
 <summary class="ai-solution-header">
   <span class="ai-model-badge">⚡ Solution from <strong>llama-3.3-70b-versatile</strong></span>
-  <small class="solution-timestamp">(2025-11-20 16:10:33 )</small>
+  <small class="solution-timestamp">(2025-11-25 04:03:56 UTC)</small>
 </summary>
 
 <div class="ai-solution-content">
 
 ### Approach
 
-
-   The problem requires determining whether the last character in a binary array must be a one-bit character. 
-   To solve this problem, we can use a simple iterative approach. We will iterate through the array from left to right, 
-   keeping track of the current position. If we encounter a 0, we move one step forward. If we encounter a 1, 
-   we move two steps forward because the next character is a two-bit character. 
-   At the end of the iteration, if the current position is at the second last element, 
-   it means the last character must be a one-bit character.
-
-   The problem-solving strategy involves iterating through the array and keeping track of the current position. 
-   We start at the beginning of the array and move forward based on the value of the current element. 
-   If the current element is 0, we move one step forward. If the current element is 1, we move two steps forward. 
-   This is because a 1 is always followed by another bit (either 0 or 1) to form a two-bit character. 
-   By the end of the iteration, we should be at the second last element if the last character is a one-bit character.
-
-   The algorithm logic is straightforward. We initialize a variable to keep track of the current position. 
-   We then iterate through the array, updating the current position based on the value of the current element. 
-   If the current element is 0, we increment the current position by 1. If the current element is 1, 
-   we increment the current position by 2. After the iteration, we check if the current position is at the second last element. 
-   If it is, we return True, indicating that the last character must be a one-bit character. Otherwise, we return False.
-
-   For example, consider the array [1,0,0]. We start at the beginning of the array. 
-   The first element is 1, so we move two steps forward to the third element. 
-   The third element is 0, so we move one step forward to the fourth element. 
-   However, since the array only has three elements, we are now at the end of the array. 
-   Since we are at the second last element (the third element is the last element), 
-   we return True, indicating that the last character must be a one-bit character.
-
-   Another example is the array [1,1,1,0]. We start at the beginning of the array. 
-   The first element is 1, so we move two steps forward to the third element. 
-   The third element is 1, so we move two steps forward to the fifth element. 
-   However, since the array only has four elements, we are now at the end of the array. 
-   Since we are not at the second last element, we return False, indicating that the last character is not a one-bit character.
-   
+Failed to parse AI response
 
 ### Code
 
 <div class="code-tabs" markdown="0">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-cpp-llama-3-3-70b-versatile" checked>
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-java-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-python-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-python3-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-c-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-csharp-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-javascript-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-typescript-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-php-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-swift-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-kotlin-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-dart-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-go-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-ruby-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-scala-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-rust-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-racket-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-erlang-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-elixir-llama-3-3-70b-versatile">
+  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-python-llama-3-3-70b-versatile" checked>
   <div class="tab-labels">
-    <label for="lang-cpp-llama-3-3-70b-versatile">C++</label>
-    <label for="lang-java-llama-3-3-70b-versatile">Java</label>
     <label for="lang-python-llama-3-3-70b-versatile">Python</label>
-    <label for="lang-python3-llama-3-3-70b-versatile">Python3</label>
-    <label for="lang-c-llama-3-3-70b-versatile">C</label>
-    <label for="lang-csharp-llama-3-3-70b-versatile">C#</label>
-    <label for="lang-javascript-llama-3-3-70b-versatile">JavaScript</label>
-    <label for="lang-typescript-llama-3-3-70b-versatile">TypeScript</label>
-    <label for="lang-php-llama-3-3-70b-versatile">PHP</label>
-    <label for="lang-swift-llama-3-3-70b-versatile">Swift</label>
-    <label for="lang-kotlin-llama-3-3-70b-versatile">Kotlin</label>
-    <label for="lang-dart-llama-3-3-70b-versatile">Dart</label>
-    <label for="lang-go-llama-3-3-70b-versatile">Go</label>
-    <label for="lang-ruby-llama-3-3-70b-versatile">Ruby</label>
-    <label for="lang-scala-llama-3-3-70b-versatile">Scala</label>
-    <label for="lang-rust-llama-3-3-70b-versatile">Rust</label>
-    <label for="lang-racket-llama-3-3-70b-versatile">Racket</label>
-    <label for="lang-erlang-llama-3-3-70b-versatile">Erlang</label>
-    <label for="lang-elixir-llama-3-3-70b-versatile">Elixir</label>
-  </div>
-
-  <div class="tab-panel" data-lang="cpp">
-
-{% highlight cpp %}
-#include <vector>
-       class Solution {
-       public:
-           bool isOneBitCharacter(std::vector<int>& bits) {
-               int i = 0;
-               while (i < bits.size() - 1) {
-                   if (bits[i] == 0) {
-                       i += 1;
-                   } else {
-                       i += 2;
-                   }
-               }
-               return i == bits.size() - 1;
-           }
-       };
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="java">
-
-{% highlight java %}
-class Solution {
-           public boolean isOneBitCharacter(int[] bits) {
-               int i = 0;
-               while (i < bits.length - 1) {
-                   if (bits[i] == 0) {
-                       i += 1;
-                   } else {
-                       i += 2;
-                   }
-               }
-               return i == bits.length - 1;
-           }
-       }
-{% endhighlight %}
-
   </div>
 
   <div class="tab-panel" data-lang="python">
 
 {% highlight python %}
-class Solution:
-           def isOneBitCharacter(self, bits: list[int]) -> bool:
-               i = 0
-               while i < len(bits) - 1:
-                   if bits[i] == 0:
-                       i += 1
-                   else:
-                       i += 2
-               return i == len(bits) - 1
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="python3">
-
-{% highlight python %}
-class Solution:
-           def isOneBitCharacter(self, bits: list[int]) -> bool:
-               i = 0
-               while i < len(bits) - 1:
-                   if bits[i] == 0:
-                       i += 1
-                   else:
-                       i += 2
-               return i == len(bits) - 1
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="c">
-
-{% highlight c %}
-#include <stdbool.h>
-       bool isOneBitCharacter(int* bits, int bitsSize){
-           int i = 0;
-           while (i < bitsSize - 1) {
-               if (bits[i] == 0) {
-                   i += 1;
-               } else {
-                   i += 2;
-               }
-           }
-           return i == bitsSize - 1;
-       }
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="csharp">
-
-{% highlight csharp %}
-public class Solution {
-           public bool IsOneBitCharacter(int[] bits) {
-               int i = 0;
-               while (i < bits.Length - 1) {
-                   if (bits[i] == 0) {
-                       i += 1;
-                   } else {
-                       i += 2;
-                   }
-               }
-               return i == bits.Length - 1;
-           }
-       }
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="javascript">
-
-{% highlight javascript %}
-var isOneBitCharacter = function(bits) {
-           let i = 0;
-           while (i < bits.length - 1) {
-               if (bits[i] == 0) {
-                   i += 1;
-               } else {
-                   i += 2;
-               }
-           }
-           return i == bits.length - 1;
-       };
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="typescript">
-
-{% highlight typescript %}
-function isOneBitCharacter(bits: number[]): boolean {
-           let i: number = 0;
-           while (i < bits.length - 1) {
-               if (bits[i] == 0) {
-                   i += 1;
-               } else {
-                   i += 2;
-               }
-           }
-           return i == bits.length - 1;
-       }
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="php">
-
-{% highlight php %}
-class Solution {
-           function isOneBitCharacter($bits) {
-               $i = 0;
-               while ($i < count($bits) - 1) {
-                   if ($bits[$i] == 0) {
-                       $i += 1;
-                   } else {
-                       $i += 2;
-                   }
-               }
-               return $i == count($bits) - 1;
-           }
-       }
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="swift">
-
-{% highlight swift %}
-class Solution {
-           func isOneBitCharacter(_ bits: [Int]) -> Bool {
-               var i = 0
-               while i < bits.count - 1 {
-                   if bits[i] == 0 {
-                       i += 1
-                   } else {
-                       i += 2
-                   }
-               }
-               return i == bits.count - 1
-           }
-       }
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="kotlin">
-
-{% highlight kotlin %}
-class Solution {
-           fun isOneBitCharacter(bits: IntArray): Boolean {
-               var i = 0
-               while (i < bits.size - 1) {
-                   if (bits[i] == 0) {
-                       i += 1
-                   } else {
-                       i += 2
-                   }
-               }
-               return i == bits.size - 1
-           }
-       }
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="dart">
-
-{% highlight dart %}
-class Solution {
-           bool isOneBitCharacter(List<int> bits) {
-               int i = 0;
-               while (i < bits.length - 1) {
-                   if (bits[i] == 0) {
-                       i += 1;
-                   } else {
-                       i += 2;
-                   }
-               }
-               return i == bits.length - 1;
-           }
-       }
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="go">
-
-{% highlight go %}
-func isOneBitCharacter(bits []int) bool {
-           i := 0
-           for i < len(bits)-1 {
-               if bits[i] == 0 {
-                   i += 1
-               } else {
-                   i += 2
-               }
-           }
-           return i == len(bits)-1
-       }
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="ruby">
-
-{% highlight ruby %}
-# @param {Integer[]} bits
-       # @return {Boolean}
-       def is_one_bit_character(bits)
-           i = 0
-           while i < bits.size - 1
-               if bits[i] == 0
-                   i += 1
-               else
-                   i += 2
-               end
-           end
-           i == bits.size - 1
-       end
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="scala">
-
-{% highlight scala %}
-object Solution {
-           def isOneBitCharacter(bits: Array[Int]): Boolean = {
-               var i = 0
-               while (i < bits.length - 1) {
-                   if (bits(i) == 0) {
-                       i += 1
-                   } else {
-                       i += 2
-                   }
-               }
-               i == bits.length - 1
-           }
-       }
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="rust">
-
-{% highlight rust %}
-impl Solution {
-           pub fn is_one_bit_character(bits: Vec<i32>) -> bool {
-               let mut i = 0;
-               while i < bits.len() - 1 {
-                   if bits[i] == 0 {
-                       i += 1;
-                   } else {
-                       i += 2;
-                   }
-               }
-               i == bits.len() - 1
-           }
-       }
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="racket">
-
-{% highlight racket %}
-#lang racket
-       (define (is-one-bit-character bits)
-           (let loop ((i 0))
-             (cond
-               ((>= i (sub1 (length bits))) (= i (sub1 (length bits))))
-               ((= (list-ref bits i) 0) (loop (add1 i)))
-               (else (loop (+ i 2))))))
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="erlang">
-
-{% highlight erlang %}
--module(solution).
-       -export([is_one_bit_character/1]).
-       is_one_bit_character(Bits) ->
-           is_one_bit_character(Bits, 0).
-       is_one_bit_character([0|T], I) ->
-           is_one_bit_character(T, I + 1);
-       is_one_bit_character([1,_|T], I) ->
-           is_one_bit_character(T, I + 2);
-       is_one_bit_character([], I) ->
-           I == -1.
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="elixir">
-
-{% highlight elixir %}
-defmodule Solution do
-           def is_one_bit_character(bits) do
-               is_one_bit_character(bits, 0)
-           end
-
-           defp is_one_bit_character([0|t], i) do
-               is_one_bit_character(t, i + 1)
-           end
-
-           defp is_one_bit_character([1, _|t], i) do
-               is_one_bit_character(t, i + 2)
-           end
-
-           defp is_one_bit_character([], i) do
-               i == length([]) - 1
-           end
-       end
+{% raw %}
+# Failed to parse response
+# Check logs for full output.
+# Full Response:
+'''
+{
+  "approach": "The problem can be solved by iterating through the binary array from left to right. We keep track of the index where the next character starts. If the current bit is 0, it represents a one-bit character, so we move to the next index. If the current bit is 1, it represents a two-bit character, so we move two indices forward. At the end, we check if the last character is a one-bit character by checking if the index is at the second last position.",
+  
+  "The algorithm logic is as follows: we start at the beginning of the array and iterate through it. For each bit, we check if it is 0 or 1. If it is 0, we move to the next index. If it is 1, we move two indices forward because the current bit and the next bit represent a two-bit character. We continue this process until we reach the end of the array. If the last index we visited is the second last index, it means the last character is a one-bit character, so we return True. Otherwise, we return False.",
+  
+  "The time complexity of this algorithm is O(n), where n is the length of the binary array, because we make a single pass through the array. The space complexity is O(1), because we only use a constant amount of space to store the index and the result.",
+  
+  "time_complexity": "O(n) where n is the length of the binary array, because we make a single pass through the array.",
+  "space_complexity": "O(1) because we only use a constant amount of space to store the index and the result.",
+  "solutions": {
+    "cpp": "
+    class Solution {
+    public:
+        bool isOneBitCharacter(vector<int>& bits) {
+            int i = 0;
+            while (i < bits.size() - 1) {
+                if (bits[i] == 0) {
+                    i++;
+                } else {
+                    i += 2;
+                }
+            }
+            return i == bits.size() - 1;
+        }
+    };
+    ",
+    "java": "
+    class Solution {
+        public boolean isOneBitCharacter(int[] bits) {
+            int i = 0;
+            while (i < bits.length - 1) {
+                if (bits[i] == 0) {
+                    i++;
+                } else {
+                    i += 2;
+                }
+            }
+            return i == bits.length - 1;
+        }
+    }
+    ",
+    "python": "
+    class Solution:
+        def isOneBitCharacter(self, bits: list[int]) -> bool:
+            i = 0
+            while i < len(bits) - 1:
+                if bits[i] == 0:
+                    i += 1
+                else:
+                    i += 2
+            return i == len(bits) - 1
+    ",
+    "python3": "
+    class Solution:
+        def isOneBitCharacter(self, bits: list[int]) -> bool:
+            i = 0
+            while i < len(bits) - 1:
+                if bits[i] == 0:
+                    i += 1
+                else:
+                    i += 2
+            return i == len(bits) - 1
+    ",
+    "c": "
+    bool isOneBitCharacter(int* bits, int bitsSize) {
+        int i = 0;
+        while (i < bitsSize - 1) {
+            if (bits[i] == 0) {
+                i++;
+            } else {
+                i += 2;
+            }
+        }
+        return i == bitsSize - 1;
+    }
+    ",
+    "csharp": "
+    public class Solution {
+        public bool IsOneBitCharacter(int[] bits) {
+            int i = 0;
+            while (i < bits.Length - 1) {
+                if (bits[i] == 0) {
+                    i++;
+                } else {
+                    i += 2;
+                }
+            }
+            return i == bits.Length - 1;
+        }
+    }
+    ",
+    "javascript": "
+    var isOneBitCharacter = function(bits) {
+        let i = 0;
+        while (i < bits.length - 1) {
+            if (bits[i] == 0) {
+                i++;
+            } else {
+                i += 2;
+            }
+        }
+        return i == bits.length - 1;
+    };
+    ",
+    "typescript": "
+    function isOneBitCharacter(bits: number[]): boolean {
+        let i: number = 0;
+        while (i < bits.length - 1) {
+            if (bits[i] == 0) {
+                i++;
+            } else {
+                i += 2;
+            }
+        }
+        return i == bits.length - 1;
+    }
+    ",
+    "php": "
+    class Solution {
+        function isOneBitCharacter($bits) {
+            $i = 0;
+            while ($i < count($bits) - 1) {
+                if ($bits[$i] == 0) {
+                    $i++;
+                } else {
+                    $i += 2;
+                }
+            }
+            return $i == count($bits) - 1;
+        }
+    }
+    ",
+    "swift": "
+    class Solution {
+        func isOneBitCharacter(_ bits: [Int]) -> Bool {
+            var i = 0
+            while i < bits.count - 1 {
+                if bits[i] == 0 {
+                    i += 1
+                } else {
+                    i += 2
+                }
+            }
+            return i == bits.count - 1
+        }
+    }
+    ",
+    "kotlin": "
+    class Solution {
+        fun isOneBitCharacter(bits: IntArray): Boolean {
+            var i = 0
+            while (i < bits.size - 1) {
+                if (bits[i] == 0) {
+                    i++
+                } else {
+                    i += 2
+                }
+            }
+            return i == bits.size - 1
+        }
+    }
+    ",
+    "dart": "
+    class Solution {
+        bool isOneBitCharacter(List<int> bits) {
+            int i = 0;
+            while (i < bits.length - 1) {
+                if (bits[i] == 0) {
+                    i++;
+                } else {
+                    i += 2;
+                }
+            }
+            return i == bits.length - 1;
+        }
+    }
+    ",
+    "go": "
+    func isOneBitCharacter(bits []int) bool {
+        i := 0
+        for i < len(bits)-1 {
+            if bits[i] == 0 {
+                i++
+            } else {
+                i += 2
+            }
+        }
+        return i == len(bits)-1
+    }
+    ",
+    "ruby": "
+    # @param {Integer[]} bits
+    # @return {Boolean}
+    def is_one_bit_character(bits)
+        i = 0
+        while i < bits.size - 1
+            if bits[i] == 0
+                i += 1
+            else
+                i += 2
+            end
+        end
+        i == bits.size - 1
+    end
+    ",
+    "scala": "
+    object Solution {
+        def isOneBitCharacter(bits: Array[Int]): Boolean = {
+            var i = 0
+            while (i < bits.length - 1) {
+                if (bits(i) == 0) {
+                    i += 1
+                } else {
+                    i += 2
+                }
+            }
+            i == bits.length - 1
+        }
+    }
+    ",
+    "rust": "
+    impl Solution {
+        pub fn is_one_bit_character(bits: Vec<i32>) -> bool {
+            let mut i: usize = 0;
+            while i < bits.len() - 1 {
+                if bits[i] == 0 {
+                    i += 1;
+                } else {
+                    i += 2;
+                }
+            }
+            i == bits.len() - 1
+        }
+    }
+    ",
+    "racket": "
+    #lang racket
+    (define (is-one-bit-character bits)
+        (let loop ((i 0))
+            (cond
+                ((>= i (sub1 (length bits))) (= i (sub1 (length bits))))
+                ((= (list-ref bits i) 0) (loop (add1 i)))
+                (else (loop (+ i 2))))))
+    ",
+    "erlang": "
+    -module(solution).
+    -export([is_one_bit_character/1]).
+    
+    is_one_bit_character(Bits) ->
+        is_one_bit_character(Bits, 0).
+    
+    is_one_bit_character([0 | T], I) ->
+        is_one_bit_character(T, I + 1);
+    is_one_bit_character([1, _ | T], I) ->
+        is_one_bit_character(T, I + 2);
+    is_one_bit_character([], I) ->
+        I == length([]) - 1.
+    ",
+    "elixir": "
+    defmodule Solution do
+        def is_one_bit_character(bits) do
+            is_one_bit_character(bits, 0)
+        end
+        
+        defp is_one_bit_character([0 | t], i) do
+            is_one_bit_character(t, i + 1)
+        end
+        
+        defp is_one_bit_character([1, _ | t], i) do
+            is_one_bit_character(t, i + 2)
+        end
+        
+        defp is_one_bit_character([], i) do
+            i == length([]) - 1
+        end
+    end
+    "
+  }
+}
+'''
+{% endraw %}
 {% endhighlight %}
 
   </div>
@@ -1020,18 +885,9 @@ defmodule Solution do
 
 ### Complexity Analysis
 
-- **Time Complexity:** 
-   The time complexity of the solution is O(n), where n is the number of elements in the array. 
-   This is because we are iterating through the array once, and each operation (comparing the current element and updating the current position) takes constant time. 
-   The space complexity is O(1), which means the space required does not change with the size of the input array, 
-   making it very efficient in terms of memory usage.
-   
+- **Time Complexity:** N/A
 
-- **Space Complexity:** 
-   The space complexity of the solution is O(1), which means the space required does not change with the size of the input array. 
-   This is because we are only using a constant amount of space to store the current position and the array itself, 
-   making it very efficient in terms of memory usage.
-   
+- **Space Complexity:** N/A
 
 </div>
 </details>

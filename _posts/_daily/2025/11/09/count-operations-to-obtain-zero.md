@@ -6,6 +6,232 @@ categories: [LeetCode, Easy]
 tags: ["Math", "Simulation"]
 difficulty: Easy
 leetcode_url: https://leetcode.com/problems/count-operations-to-obtain-zero/
+ai_solutions:
+  - solutions:
+      cpp: "class Solution {\npublic:\n    int countOperations(int num1, int num2) {\n\
+        \        int operations = 0;\n        while (num1 > 0 && num2 > 0) {\n     \
+        \       if (num1 >= num2) {\n                num1 -= num2;\n            } else\
+        \ {\n                num2 -= num1;\n            }\n            operations++;\n\
+        \        }\n        return operations;\n    }\n};"
+      java: "class Solution {\n    public int countOperations(int num1, int num2) {\n\
+        \        int operations = 0;\n        while (num1 > 0 && num2 > 0) {\n     \
+        \       if (num1 >= num2) {\n                num1 -= num2;\n            } else\
+        \ {\n                num2 -= num1;\n            }\n            operations++;\n\
+        \        }\n        return operations;\n    }\n}"
+      python: "class Solution:\n    def countOperations(self, num1: int, num2: int)\
+        \ -> int:\n        operations = 0\n        while num1 > 0 and num2 > 0:\n  \
+        \          if num1 >= num2:\n                num1 -= num2\n            else:\n\
+        \                num2 -= num1\n            operations += 1\n        return operations"
+      python3: "class Solution:\n    def countOperations(self, num1: int, num2: int)\
+        \ -> int:\n        operations = 0\n        while num1 > 0 and num2 > 0:\n  \
+        \          if num1 >= num2:\n                num1 -= num2\n            else:\n\
+        \                num2 -= num1\n            operations += 1\n        return operations"
+      c: "int countOperations(int num1, int num2) {\n    int operations = 0;\n    while\
+        \ (num1 > 0 && num2 > 0) {\n        if (num1 >= num2) {\n            num1 -=\
+        \ num2;\n        } else {\n            num2 -= num1;\n        }\n        operations++;\n\
+        \    }\n    return operations;\n}"
+      csharp: "public class Solution {\n    public int CountOperations(int num1, int\
+        \ num2) {\n        int operations = 0;\n        while (num1 > 0 && num2 > 0)\
+        \ {\n            if (num1 >= num2) {\n                num1 -= num2;\n      \
+        \      } else {\n                num2 -= num1;\n            }\n            operations++;\n\
+        \        }\n        return operations;\n    }\n}"
+      javascript: "/**\n * @param {number} num1\n * @param {number} num2\n * @return\
+        \ {number}\n */\nvar countOperations = function(num1, num2) {\n    let operations\
+        \ = 0;\n    while (num1 > 0 && num2 > 0) {\n        if (num1 >= num2) {\n  \
+        \          num1 -= num2;\n        } else {\n            num2 -= num1;\n    \
+        \    }\n        operations++;\n    }\n    return operations;\n};"
+      typescript: "function countOperations(num1: number, num2: number): number {\n\
+        \    let operations: number = 0;\n    while (num1 > 0 && num2 > 0) {\n     \
+        \   if (num1 >= num2) {\n            num1 -= num2;\n        } else {\n     \
+        \       num2 -= num1;\n        }\n        operations++;\n    }\n    return operations;\n\
+        };"
+      php: "class Solution {\n\n    /**\n     * @param Integer $num1\n     * @param\
+        \ Integer $num2\n     * @return Integer\n     */\n    function countOperations($num1,\
+        \ $num2) {\n        $operations = 0;\n        while ($num1 > 0 && $num2 > 0)\
+        \ {\n            if ($num1 >= $num2) {\n                $num1 -= $num2;\n  \
+        \          } else {\n                $num2 -= $num1;\n            }\n      \
+        \      $operations++;\n        }\n        return $operations;\n    }\n}"
+      swift: "class Solution {\n    func countOperations(_ num1: Int, _ num2: Int) ->\
+        \ Int {\n        var n1 = num1\n        var n2 = num2\n        var operations\
+        \ = 0\n        while n1 > 0 && n2 > 0 {\n            if n1 >= n2 {\n       \
+        \         n1 -= n2\n            } else {\n                n2 -= n1\n       \
+        \     }\n            operations += 1\n        }\n        return operations\n\
+        \    }\n}"
+      kotlin: "class Solution {\n    fun countOperations(num1: Int, num2: Int): Int\
+        \ {\n        var n1 = num1\n        var n2 = num2\n        var operations =\
+        \ 0\n        while (n1 > 0 && n2 > 0) {\n            if (n1 >= n2) {\n     \
+        \           n1 -= n2\n            } else {\n                n2 -= n1\n     \
+        \       }\n            operations++\n        }\n        return operations\n\
+        \    }\n}"
+      dart: "class Solution {\n  int countOperations(int num1, int num2) {\n    int\
+        \ operations = 0;\n    while (num1 > 0 && num2 > 0) {\n      if (num1 >= num2)\
+        \ {\n        num1 -= num2;\n      } else {\n        num2 -= num1;\n      }\n\
+        \      operations++;\n    }\n    return operations;\n  }\n}"
+      go: "func countOperations(num1 int, num2 int) int {\n    operations := 0\n   \
+        \ for num1 > 0 && num2 > 0 {\n        if num1 >= num2 {\n            num1 -=\
+        \ num2\n        } else {\n            num2 -= num1\n        }\n        operations++\n\
+        \    }\n    return operations\n}"
+      ruby: "# @param {Integer} num1\n# @param {Integer} num2\n# @return {Integer}\n\
+        def count_operations(num1, num2)\n    operations = 0\n    while num1 > 0 &&\
+        \ num2 > 0\n        if num1 >= num2\n            num1 -= num2\n        else\n\
+        \            num2 -= num1\n        end\n        operations += 1\n    end\n \
+        \   return operations\nend"
+      scala: "object Solution {\n    def countOperations(num1: Int, num2: Int): Int\
+        \ = {\n        var n1 = num1\n        var n2 = num2\n        var operations\
+        \ = 0\n        while (n1 > 0 && n2 > 0) {\n            if (n1 >= n2) {\n   \
+        \             n1 -= n2\n            } else {\n                n2 -= n1\n   \
+        \         }\n            operations += 1\n        }\n        operations\n  \
+        \  }\n}"
+      rust: "impl Solution {\n    pub fn count_operations(mut num1: i32, mut num2: i32)\
+        \ -> i32 {\n        let mut operations = 0;\n        while num1 > 0 && num2\
+        \ > 0 {\n            if num1 >= num2 {\n                num1 -= num2;\n    \
+        \        } else {\n                num2 -= num1;\n            }\n          \
+        \  operations += 1;\n        }\n        operations\n    }\n}"
+      racket: "(define/contract (count-operations num1 num2)\n  (-> exact-integer? exact-integer?\
+        \ exact-integer?)\n  (let loop ((n1 num1) (n2 num2) (ops 0))\n    (cond\n  \
+        \    ((or (= n1 0) (= n2 0)) ops)\n      ((>= n1 n2) (loop (- n1 n2) n2 (+ ops\
+        \ 1)))\n      (else (loop n1 (- n2 n1) (+ ops 1))))))"
+      erlang: "-spec count_operations(Num1 :: integer(), Num2 :: integer()) -> integer().\n\
+        count_operations(Num1, Num2) ->\n    count_operations_recursive(Num1, Num2,\
+        \ 0).\n\ncount_operations_recursive(N1, N2, Ops) when N1 == 0; N2 == 0 ->\n\
+        \    Ops;\ncount_operations_recursive(N1, N2, Ops) when N1 >= N2 ->\n    count_operations_recursive(N1\
+        \ - N2, N2, Ops + 1);\ncount_operations_recursive(N1, N2, Ops) -> % N1 < N2\n\
+        \    count_operations_recursive(N1, N2 - N1, Ops + 1)."
+      elixir: "defmodule Solution do\n  @spec count_operations(num1 :: integer(), num2\
+        \ :: integer()) :: integer()\n  def count_operations(num1, num2) do\n    do_count_operations(num1,\
+        \ num2, 0)\n  end\n\n  defp do_count_operations(n1, n2, ops) when n1 == 0 or\
+        \ n2 == 0, do: ops\n  defp do_count_operations(n1, n2, ops) when n1 >= n2, do:\
+        \ do_count_operations(n1 - n2, n2, ops + 1)\n  defp do_count_operations(n1,\
+        \ n2, ops), do: do_count_operations(n1, n2 - n1, ops + 1)\nend"
+    approach: The problem asks us to count the number of operations required to make
+      either of two non-negative integers, `num1` or `num2`, equal to zero. An operation
+      consists of subtracting the smaller number from the larger number. This process
+      is a direct simulation of the Euclidean algorithm for finding the greatest common
+      divisor (GCD) using repeated subtraction. The core idea is to continuously apply
+      the given rule until one of the numbers reaches zero, incrementing a counter with
+      each operation.
+    time_complexity: O(max(num1, num2)) with detailed explanation. The algorithm simulates
+      the Euclidean algorithm using subtraction. In the worst-case scenario, if one
+      number is significantly larger than the other (e.g., `num1 = N` and `num2 = 1`),
+      the larger number will be reduced by 1 in each step. This would lead to `N` operations.
+      For example, if `num1 = 10^5` and `num2 = 1`, it would take `10^5` operations.
+      Since the maximum value for `num1` and `num2` is `10^5`, the number of operations
+      can be up to `10^5`, making the time complexity linear with respect to the maximum
+      of the input numbers. This is efficient enough given the constraints.
+    space_complexity: O(1) with detailed explanation. The algorithm uses a constant
+      amount of extra space. It only requires a few variables to store the current values
+      of `num1`, `num2`, and the `operations` count. These variables occupy a fixed
+      amount of memory regardless of the magnitude of the input integers. No additional
+      data structures are used that would scale with the input size.
+    elapsed_time: 24.210477590560913
+    model: gemini-2.5-flash
+    generated_at: '2025-11-24 21:01:13 '
+  - solutions:
+      cpp: "class Solution {\n    public:\n        int countOperations(int num1, int\
+        \ num2) {\n            int count = 0;\n            while (num1 > 0 && num2 >\
+        \ 0) {\n                if (num1 >= num2) {\n                    num1 -= num2;\n\
+        \                } else {\n                    num2 -= num1;\n             \
+        \   }\n                count++;\n            }\n            return count;\n\
+        \        }\n    };"
+      java: "class Solution {\npublic int countOperations(int num1, int num2) {\n  \
+        \  int count = 0;\n    while (num1 > 0 && num2 > 0) {\n        if (num1 >= num2)\
+        \ {\n            num1 -= num2;\n        } else {\n            num2 -= num1;\n\
+        \        }\n        count++;\n    }\n    return count;\n}\n};"
+      python: "class Solution:\ndef countOperations(self, num1: int, num2: int) -> int:\n\
+        \    count = 0\n    while num1 > 0 and num2 > 0:\n        if num1 >= num2:\n\
+        \            num1 -= num2\n        else:\n            num2 -= num1\n       \
+        \ count += 1\n    return count"
+      python3: "class Solution:\ndef countOperations(self, num1: int, num2: int) ->\
+        \ int:\n    count = 0\n    while num1 > 0 and num2 > 0:\n        if num1 >=\
+        \ num2:\n            num1 -= num2\n        else:\n            num2 -= num1\n\
+        \        count += 1\n    return count"
+      c: "int countOperations(int num1, int num2) {\nint count = 0;\nwhile (num1 > 0\
+        \ && num2 > 0) {\n    if (num1 >= num2) {\n        num1 -= num2;\n    } else\
+        \ {\n        num2 -= num1;\n    }\n    count++;\n}\nreturn count;\n};"
+      csharp: "public class Solution {\npublic int CountOperations(int num1, int num2)\
+        \ {\n    int count = 0;\n    while (num1 > 0 && num2 > 0) {\n        if (num1\
+        \ >= num2) {\n            num1 -= num2;\n        } else {\n            num2\
+        \ -= num1;\n        }\n        count++;\n    }\n    return count;\n}\n};"
+      javascript: "var countOperations = function(num1, num2) {\nlet count = 0;\nwhile\
+        \ (num1 > 0 && num2 > 0) {\n    if (num1 >= num2) {\n        num1 -= num2;\n\
+        \    } else {\n        num2 -= num1;\n    }\n    count++;\n}\nreturn count;\n\
+        };"
+      typescript: "function countOperations(num1: number, num2: number): number {\n\
+        let count: number = 0;\nwhile (num1 > 0 && num2 > 0) {\n    if (num1 >= num2)\
+        \ {\n        num1 -= num2;\n    } else {\n        num2 -= num1;\n    }\n   \
+        \ count++;\n}\nreturn count;\n};"
+      php: "class Solution {\nfunction countOperations($num1, $num2) {\n    $count =\
+        \ 0;\n    while ($num1 > 0 && $num2 > 0) {\n        if ($num1 >= $num2) {\n\
+        \            $num1 -= $num2;\n        } else {\n            $num2 -= $num1;\n\
+        \        }\n        $count++;\n    }\n    return $count;\n}\n};"
+      swift: "class Solution {\nfunc countOperations(_ num1: Int, _ num2: Int) -> Int\
+        \ {\n    var count = 0\n    var num1 = num1\n    var num2 = num2\n    while\
+        \ num1 > 0 && num2 > 0 {\n        if num1 >= num2 {\n            num1 -= num2\n\
+        \        } else {\n            num2 -= num1\n        }\n        count += 1\n\
+        \    }\n    return count\n}\n};"
+      kotlin: "class Solution {\nfun countOperations(num1: Int, num2: Int): Int {\n\
+        \    var count = 0\n    var num1 = num1\n    var num2 = num2\n    while (num1\
+        \ > 0 && num2 > 0) {\n        if (num1 >= num2) {\n            num1 -= num2\n\
+        \        } else {\n            num2 -= num1\n        }\n        count++\n  \
+        \  }\n    return count\n}\n};"
+      dart: "class Solution {\nint countOperations(int num1, int num2) {\n    int count\
+        \ = 0;\n    while (num1 > 0 && num2 > 0) {\n        if (num1 >= num2) {\n  \
+        \          num1 -= num2;\n        } else {\n            num2 -= num1;\n    \
+        \    }\n        count++;\n    }\n    return count;\n}\n};"
+      go: "func countOperations(num1 int, num2 int) int {\ncount := 0\nfor num1 > 0\
+        \ && num2 > 0 {\n    if num1 >= num2 {\n        num1 -= num2\n    } else {\n\
+        \        num2 -= num1\n    }\n    count++\n}\nreturn count\n};"
+      ruby: "def count_operations(num1, num2)\ncount = 0\nwhile num1 > 0 && num2 > 0\n\
+        \    if num1 >= num2\n        num1 -= num2\n    else\n        num2 -= num1\n\
+        \    end\n    count += 1\nend\ncount\nend;"
+      scala: "object Solution {\ndef countOperations(num1: Int, num2: Int): Int = {\n\
+        \    var count = 0\n    var num1 = num1\n    var num2 = num2\n    while (num1\
+        \ > 0 && num2 > 0) {\n        if (num1 >= num2) {\n            num1 -= num2\n\
+        \        } else {\n            num2 -= num1\n        }\n        count += 1\n\
+        \    }\n    count\n}\n};"
+      rust: "struct Solution;\n    impl Solution {\n        pub fn count_operations(num1:\
+        \ i32, num2: i32) -> i32 {\n            let mut count = 0;\n            let\
+        \ mut num1 = num1;\n            let mut num2 = num2;\n            while num1\
+        \ > 0 && num2 > 0 {\n                if num1 >= num2 {\n                   \
+        \ num1 -= num2;\n                } else {\n                    num2 -= num1;\n\
+        \                }\n                count += 1;\n            }\n           \
+        \ count\n        }\n    };"
+      racket: "(define (count-operations num1 num2)\n(let loop ((count 0) (num1 num1)\
+        \ (num2 num2))\n    (if (or (= num1 0) (= num2 0))\n        count\n        (loop\
+        \ (+ count 1)\n              (if (>= num1 num2)\n                  (- num1 num2)\n\
+        \                  num1)\n              (if (>= num1 num2)\n               \
+        \   num2\n                  (- num2 num1))))))"
+      erlang: "-module(solution).\n    -export([count_operations/2]).\n    count_operations(Num1,\
+        \ Num2) when Num1 =:= 0; Num2 =:= 0 ->\n        0;\n    count_operations(Num1,\
+        \ Num2) when Num1 >= Num2 ->\n        1 + count_operations(Num1 - Num2, Num2);\n\
+        \    count_operations(Num1, Num2) ->\n        1 + count_operations(Num1, Num2\
+        \ - Num1)."
+      elixir: "defmodule Solution do\n        def count_operations(num1, num2) when\
+        \ num1 == 0 or num2 == 0, do: 0\n        def count_operations(num1, num2) when\
+        \ num1 >= num2, do: 1 + count_operations(num1 - num2, num2)\n        def count_operations(num1,\
+        \ num2), do: 1 + count_operations(num1, num2 - num1)\n    end;"
+    approach: The problem can be solved by simulating the process until either of the
+      two integers is zero. We start by checking if num1 is greater than or equal to
+      num2. If it is, we subtract num2 from num1. Otherwise, we subtract num1 from num2.
+      We repeat this process until either num1 or num2 becomes zero. The number of operations
+      required is the number of times we perform the subtraction. This approach ensures
+      that we always subtract the smaller number from the larger number, which minimizes
+      the number of operations required. For example, if num1 = 5 and num2 = 4, we subtract
+      num2 from num1 to get num1 = 1 and num2 = 4. Then, we subtract num1 from num2
+      to get num1 = 1 and num2 = 3. We repeat this process until either num1 or num2
+      becomes zero.
+    time_complexity: The time complexity of this approach is O(log min(num1, num2))
+      because in the worst-case scenario, we are effectively performing a series of
+      subtractions that reduce the smaller number to zero. The number of operations
+      required is proportional to the number of times we can divide the smaller number
+      by 2 until it becomes zero, which is logarithmic in the size of the smaller number.
+    space_complexity: The space complexity of this approach is O(1) because we only
+      use a constant amount of space to store the input numbers and the count of operations.
+      We do not use any data structures that grow with the size of the input, so the
+      space complexity is constant.
+    elapsed_time: 4.656049728393555
+    model: llama-3.3-70b-versatile
+    generated_at: '2025-11-24 21:01:18 '
 ---
 
 ## Problem #2169: Count Operations to Obtain Zero
@@ -73,14 +299,14 @@ We've generated solutions using multiple AI models. Click to expand each solutio
 <details class="ai-solution-card" open markdown="1">
 <summary class="ai-solution-header">
   <span class="ai-model-badge">✨ Solution from <strong>gemini-2.5-flash</strong></span>
-  <small class="solution-timestamp">(2025-11-23 00:03:44 )</small>
+  <small class="solution-timestamp">(2025-11-24 21:01:13 )</small>
 </summary>
 
 <div class="ai-solution-content">
 
 ### Approach
 
-Simulate the operations described in the problem statement in a loop, incrementing a counter in each step, until either `num1` or `num2` becomes zero. In each step, subtract the smaller number from the larger one.
+The problem asks us to count the number of operations required to make either of two non-negative integers, `num1` or `num2`, equal to zero. An operation consists of subtracting the smaller number from the larger number. This process is a direct simulation of the Euclidean algorithm for finding the greatest common divisor (GCD) using repeated subtraction. The core idea is to continuously apply the given rule until one of the numbers reaches zero, incrementing a counter with each operation.
 
 ### Code
 
@@ -134,7 +360,7 @@ class Solution {
 public:
     int countOperations(int num1, int num2) {
         int operations = 0;
-        while (num1 != 0 && num2 != 0) {
+        while (num1 > 0 && num2 > 0) {
             if (num1 >= num2) {
                 num1 -= num2;
             } else {
@@ -157,7 +383,7 @@ public:
 class Solution {
     public int countOperations(int num1, int num2) {
         int operations = 0;
-        while (num1 != 0 && num2 != 0) {
+        while (num1 > 0 && num2 > 0) {
             if (num1 >= num2) {
                 num1 -= num2;
             } else {
@@ -180,7 +406,7 @@ class Solution {
 class Solution:
     def countOperations(self, num1: int, num2: int) -> int:
         operations = 0
-        while num1 != 0 and num2 != 0:
+        while num1 > 0 and num2 > 0:
             if num1 >= num2:
                 num1 -= num2
             else:
@@ -199,7 +425,7 @@ class Solution:
 class Solution:
     def countOperations(self, num1: int, num2: int) -> int:
         operations = 0
-        while num1 != 0 and num2 != 0:
+        while num1 > 0 and num2 > 0:
             if num1 >= num2:
                 num1 -= num2
             else:
@@ -217,7 +443,7 @@ class Solution:
 {% raw %}
 int countOperations(int num1, int num2) {
     int operations = 0;
-    while (num1 != 0 && num2 != 0) {
+    while (num1 > 0 && num2 > 0) {
         if (num1 >= num2) {
             num1 -= num2;
         } else {
@@ -239,7 +465,7 @@ int countOperations(int num1, int num2) {
 public class Solution {
     public int CountOperations(int num1, int num2) {
         int operations = 0;
-        while (num1 != 0 && num2 != 0) {
+        while (num1 > 0 && num2 > 0) {
             if (num1 >= num2) {
                 num1 -= num2;
             } else {
@@ -266,7 +492,7 @@ public class Solution {
  */
 var countOperations = function(num1, num2) {
     let operations = 0;
-    while (num1 !== 0 && num2 !== 0) {
+    while (num1 > 0 && num2 > 0) {
         if (num1 >= num2) {
             num1 -= num2;
         } else {
@@ -287,7 +513,7 @@ var countOperations = function(num1, num2) {
 {% raw %}
 function countOperations(num1: number, num2: number): number {
     let operations: number = 0;
-    while (num1 !== 0 && num2 !== 0) {
+    while (num1 > 0 && num2 > 0) {
         if (num1 >= num2) {
             num1 -= num2;
         } else {
@@ -315,7 +541,7 @@ class Solution {
      */
     function countOperations($num1, $num2) {
         $operations = 0;
-        while ($num1 != 0 && $num2 != 0) {
+        while ($num1 > 0 && $num2 > 0) {
             if ($num1 >= $num2) {
                 $num1 -= $num2;
             } else {
@@ -340,7 +566,7 @@ class Solution {
         var n1 = num1
         var n2 = num2
         var operations = 0
-        while n1 != 0 && n2 != 0 {
+        while n1 > 0 && n2 > 0 {
             if n1 >= n2 {
                 n1 -= n2
             } else {
@@ -365,7 +591,7 @@ class Solution {
         var n1 = num1
         var n2 = num2
         var operations = 0
-        while (n1 != 0 && n2 != 0) {
+        while (n1 > 0 && n2 > 0) {
             if (n1 >= n2) {
                 n1 -= n2
             } else {
@@ -388,7 +614,7 @@ class Solution {
 class Solution {
   int countOperations(int num1, int num2) {
     int operations = 0;
-    while (num1 != 0 && num2 != 0) {
+    while (num1 > 0 && num2 > 0) {
       if (num1 >= num2) {
         num1 -= num2;
       } else {
@@ -410,7 +636,7 @@ class Solution {
 {% raw %}
 func countOperations(num1 int, num2 int) int {
     operations := 0
-    for num1 != 0 && num2 != 0 {
+    for num1 > 0 && num2 > 0 {
         if num1 >= num2 {
             num1 -= num2
         } else {
@@ -434,7 +660,7 @@ func countOperations(num1 int, num2 int) int {
 # @return {Integer}
 def count_operations(num1, num2)
     operations = 0
-    while num1 != 0 && num2 != 0
+    while num1 > 0 && num2 > 0
         if num1 >= num2
             num1 -= num2
         else
@@ -458,7 +684,7 @@ object Solution {
         var n1 = num1
         var n2 = num2
         var operations = 0
-        while (n1 != 0 && n2 != 0) {
+        while (n1 > 0 && n2 > 0) {
             if (n1 >= n2) {
                 n1 -= n2
             } else {
@@ -481,7 +707,7 @@ object Solution {
 impl Solution {
     pub fn count_operations(mut num1: i32, mut num2: i32) -> i32 {
         let mut operations = 0;
-        while num1 != 0 && num2 != 0 {
+        while num1 > 0 && num2 > 0 {
             if num1 >= num2 {
                 num1 -= num2;
             } else {
@@ -521,12 +747,12 @@ impl Solution {
 count_operations(Num1, Num2) ->
     count_operations_recursive(Num1, Num2, 0).
 
-count_operations_recursive(0, _, Operations) -> Operations;
-count_operations_recursive(_, 0, Operations) -> Operations;
-count_operations_recursive(Num1, Num2, Operations) when Num1 >= Num2 ->
-    count_operations_recursive(Num1 - Num2, Num2, Operations + 1);
-count_operations_recursive(Num1, Num2, Operations) when Num1 < Num2 ->
-    count_operations_recursive(Num1, Num2 - Num1, Operations + 1).
+count_operations_recursive(N1, N2, Ops) when N1 == 0; N2 == 0 ->
+    Ops;
+count_operations_recursive(N1, N2, Ops) when N1 >= N2 ->
+    count_operations_recursive(N1 - N2, N2, Ops + 1);
+count_operations_recursive(N1, N2, Ops) -> % N1 < N2
+    count_operations_recursive(N1, N2 - N1, Ops + 1).
 {% endraw %}
 {% endhighlight %}
 
@@ -537,19 +763,14 @@ count_operations_recursive(Num1, Num2, Operations) when Num1 < Num2 ->
 {% highlight elixir %}
 {% raw %}
 defmodule Solution do
-  @spec count_operations(num1 :: integer, num2 :: integer) :: integer
+  @spec count_operations(num1 :: integer(), num2 :: integer()) :: integer()
   def count_operations(num1, num2) do
-    count_operations_recursive(num1, num2, 0)
+    do_count_operations(num1, num2, 0)
   end
 
-  defp count_operations_recursive(0, _num2, operations), do: operations
-  defp count_operations_recursive(_num1, 0, operations), do: operations
-  defp count_operations_recursive(num1, num2, operations) when num1 >= num2 do
-    count_operations_recursive(num1 - num2, num2, operations + 1)
-  end
-  defp count_operations_recursive(num1, num2, operations) when num1 < num2 do
-    count_operations_recursive(num1, num2 - num1, operations + 1)
-  end
+  defp do_count_operations(n1, n2, ops) when n1 == 0 or n2 == 0, do: ops
+  defp do_count_operations(n1, n2, ops) when n1 >= n2, do: do_count_operations(n1 - n2, n2, ops + 1)
+  defp do_count_operations(n1, n2, ops), do: do_count_operations(n1, n2 - n1, ops + 1)
 end
 {% endraw %}
 {% endhighlight %}
@@ -560,9 +781,9 @@ end
 
 ### Complexity Analysis
 
-- **Time Complexity:** O(max(num1, num2))
+- **Time Complexity:** O(max(num1, num2)) with detailed explanation. The algorithm simulates the Euclidean algorithm using subtraction. In the worst-case scenario, if one number is significantly larger than the other (e.g., `num1 = N` and `num2 = 1`), the larger number will be reduced by 1 in each step. This would lead to `N` operations. For example, if `num1 = 10^5` and `num2 = 1`, it would take `10^5` operations. Since the maximum value for `num1` and `num2` is `10^5`, the number of operations can be up to `10^5`, making the time complexity linear with respect to the maximum of the input numbers. This is efficient enough given the constraints.
 
-- **Space Complexity:** O(1)
+- **Space Complexity:** O(1) with detailed explanation. The algorithm uses a constant amount of extra space. It only requires a few variables to store the current values of `num1`, `num2`, and the `operations` count. These variables occupy a fixed amount of memory regardless of the magnitude of the input integers. No additional data structures are used that would scale with the input size.
 
 </div>
 </details>
@@ -571,14 +792,14 @@ end
 <details class="ai-solution-card" markdown="1">
 <summary class="ai-solution-header">
   <span class="ai-model-badge">⚡ Solution from <strong>llama-3.3-70b-versatile</strong></span>
-  <small class="solution-timestamp">(2025-11-23 00:03:45 )</small>
+  <small class="solution-timestamp">(2025-11-24 21:01:18 )</small>
 </summary>
 
 <div class="ai-solution-content">
 
 ### Approach
 
-No approach provided
+The problem can be solved by simulating the process until either of the two integers is zero. We start by checking if num1 is greater than or equal to num2. If it is, we subtract num2 from num1. Otherwise, we subtract num1 from num2. We repeat this process until either num1 or num2 becomes zero. The number of operations required is the number of times we perform the subtraction. This approach ensures that we always subtract the smaller number from the larger number, which minimizes the number of operations required. For example, if num1 = 5 and num2 = 4, we subtract num2 from num1 to get num1 = 1 and num2 = 4. Then, we subtract num1 from num2 to get num1 = 1 and num2 = 3. We repeat this process until either num1 or num2 becomes zero.
 
 ### Code
 
@@ -628,8 +849,21 @@ No approach provided
 
 {% highlight cpp %}
 {% raw %}
-// Generation failed for C++
-// Reason: HTTP Error 429
+class Solution {
+    public:
+        int countOperations(int num1, int num2) {
+            int count = 0;
+            while (num1 > 0 && num2 > 0) {
+                if (num1 >= num2) {
+                    num1 -= num2;
+                } else {
+                    num2 -= num1;
+                }
+                count++;
+            }
+            return count;
+        }
+    };
 {% endraw %}
 {% endhighlight %}
 
@@ -639,8 +873,20 @@ No approach provided
 
 {% highlight java %}
 {% raw %}
-// Generation failed for Java
-// Reason: HTTP Error 429
+class Solution {
+public int countOperations(int num1, int num2) {
+    int count = 0;
+    while (num1 > 0 && num2 > 0) {
+        if (num1 >= num2) {
+            num1 -= num2;
+        } else {
+            num2 -= num1;
+        }
+        count++;
+    }
+    return count;
+}
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -650,8 +896,16 @@ No approach provided
 
 {% highlight python %}
 {% raw %}
-// Generation failed for Python
-// Reason: HTTP Error 429
+class Solution:
+def countOperations(self, num1: int, num2: int) -> int:
+    count = 0
+    while num1 > 0 and num2 > 0:
+        if num1 >= num2:
+            num1 -= num2
+        else:
+            num2 -= num1
+        count += 1
+    return count
 {% endraw %}
 {% endhighlight %}
 
@@ -661,8 +915,16 @@ No approach provided
 
 {% highlight python %}
 {% raw %}
-// Generation failed for Python3
-// Reason: HTTP Error 429
+class Solution:
+def countOperations(self, num1: int, num2: int) -> int:
+    count = 0
+    while num1 > 0 and num2 > 0:
+        if num1 >= num2:
+            num1 -= num2
+        else:
+            num2 -= num1
+        count += 1
+    return count
 {% endraw %}
 {% endhighlight %}
 
@@ -672,8 +934,18 @@ No approach provided
 
 {% highlight c %}
 {% raw %}
-// Generation failed for C
-// Reason: HTTP Error 429
+int countOperations(int num1, int num2) {
+int count = 0;
+while (num1 > 0 && num2 > 0) {
+    if (num1 >= num2) {
+        num1 -= num2;
+    } else {
+        num2 -= num1;
+    }
+    count++;
+}
+return count;
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -683,8 +955,20 @@ No approach provided
 
 {% highlight csharp %}
 {% raw %}
-// Generation failed for C#
-// Reason: HTTP Error 429
+public class Solution {
+public int CountOperations(int num1, int num2) {
+    int count = 0;
+    while (num1 > 0 && num2 > 0) {
+        if (num1 >= num2) {
+            num1 -= num2;
+        } else {
+            num2 -= num1;
+        }
+        count++;
+    }
+    return count;
+}
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -694,8 +978,18 @@ No approach provided
 
 {% highlight javascript %}
 {% raw %}
-// Generation failed for JavaScript
-// Reason: HTTP Error 429
+var countOperations = function(num1, num2) {
+let count = 0;
+while (num1 > 0 && num2 > 0) {
+    if (num1 >= num2) {
+        num1 -= num2;
+    } else {
+        num2 -= num1;
+    }
+    count++;
+}
+return count;
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -705,8 +999,18 @@ No approach provided
 
 {% highlight typescript %}
 {% raw %}
-// Generation failed for TypeScript
-// Reason: HTTP Error 429
+function countOperations(num1: number, num2: number): number {
+let count: number = 0;
+while (num1 > 0 && num2 > 0) {
+    if (num1 >= num2) {
+        num1 -= num2;
+    } else {
+        num2 -= num1;
+    }
+    count++;
+}
+return count;
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -716,8 +1020,20 @@ No approach provided
 
 {% highlight php %}
 {% raw %}
-// Generation failed for PHP
-// Reason: HTTP Error 429
+class Solution {
+function countOperations($num1, $num2) {
+    $count = 0;
+    while ($num1 > 0 && $num2 > 0) {
+        if ($num1 >= $num2) {
+            $num1 -= $num2;
+        } else {
+            $num2 -= $num1;
+        }
+        $count++;
+    }
+    return $count;
+}
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -727,8 +1043,22 @@ No approach provided
 
 {% highlight swift %}
 {% raw %}
-// Generation failed for Swift
-// Reason: HTTP Error 429
+class Solution {
+func countOperations(_ num1: Int, _ num2: Int) -> Int {
+    var count = 0
+    var num1 = num1
+    var num2 = num2
+    while num1 > 0 && num2 > 0 {
+        if num1 >= num2 {
+            num1 -= num2
+        } else {
+            num2 -= num1
+        }
+        count += 1
+    }
+    return count
+}
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -738,8 +1068,22 @@ No approach provided
 
 {% highlight kotlin %}
 {% raw %}
-// Generation failed for Kotlin
-// Reason: HTTP Error 429
+class Solution {
+fun countOperations(num1: Int, num2: Int): Int {
+    var count = 0
+    var num1 = num1
+    var num2 = num2
+    while (num1 > 0 && num2 > 0) {
+        if (num1 >= num2) {
+            num1 -= num2
+        } else {
+            num2 -= num1
+        }
+        count++
+    }
+    return count
+}
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -749,8 +1093,20 @@ No approach provided
 
 {% highlight dart %}
 {% raw %}
-// Generation failed for Dart
-// Reason: HTTP Error 429
+class Solution {
+int countOperations(int num1, int num2) {
+    int count = 0;
+    while (num1 > 0 && num2 > 0) {
+        if (num1 >= num2) {
+            num1 -= num2;
+        } else {
+            num2 -= num1;
+        }
+        count++;
+    }
+    return count;
+}
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -760,8 +1116,18 @@ No approach provided
 
 {% highlight go %}
 {% raw %}
-// Generation failed for Go
-// Reason: HTTP Error 429
+func countOperations(num1 int, num2 int) int {
+count := 0
+for num1 > 0 && num2 > 0 {
+    if num1 >= num2 {
+        num1 -= num2
+    } else {
+        num2 -= num1
+    }
+    count++
+}
+return count
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -771,8 +1137,18 @@ No approach provided
 
 {% highlight ruby %}
 {% raw %}
-// Generation failed for Ruby
-// Reason: HTTP Error 429
+def count_operations(num1, num2)
+count = 0
+while num1 > 0 && num2 > 0
+    if num1 >= num2
+        num1 -= num2
+    else
+        num2 -= num1
+    end
+    count += 1
+end
+count
+end;
 {% endraw %}
 {% endhighlight %}
 
@@ -782,8 +1158,22 @@ No approach provided
 
 {% highlight scala %}
 {% raw %}
-// Generation failed for Scala
-// Reason: HTTP Error 429
+object Solution {
+def countOperations(num1: Int, num2: Int): Int = {
+    var count = 0
+    var num1 = num1
+    var num2 = num2
+    while (num1 > 0 && num2 > 0) {
+        if (num1 >= num2) {
+            num1 -= num2
+        } else {
+            num2 -= num1
+        }
+        count += 1
+    }
+    count
+}
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -793,8 +1183,23 @@ No approach provided
 
 {% highlight rust %}
 {% raw %}
-// Generation failed for Rust
-// Reason: HTTP Error 429
+struct Solution;
+    impl Solution {
+        pub fn count_operations(num1: i32, num2: i32) -> i32 {
+            let mut count = 0;
+            let mut num1 = num1;
+            let mut num2 = num2;
+            while num1 > 0 && num2 > 0 {
+                if num1 >= num2 {
+                    num1 -= num2;
+                } else {
+                    num2 -= num1;
+                }
+                count += 1;
+            }
+            count
+        }
+    };
 {% endraw %}
 {% endhighlight %}
 
@@ -804,8 +1209,17 @@ No approach provided
 
 {% highlight racket %}
 {% raw %}
-// Generation failed for Racket
-// Reason: HTTP Error 429
+(define (count-operations num1 num2)
+(let loop ((count 0) (num1 num1) (num2 num2))
+    (if (or (= num1 0) (= num2 0))
+        count
+        (loop (+ count 1)
+              (if (>= num1 num2)
+                  (- num1 num2)
+                  num1)
+              (if (>= num1 num2)
+                  num2
+                  (- num2 num1))))))
 {% endraw %}
 {% endhighlight %}
 
@@ -815,8 +1229,14 @@ No approach provided
 
 {% highlight erlang %}
 {% raw %}
-// Generation failed for Erlang
-// Reason: HTTP Error 429
+-module(solution).
+    -export([count_operations/2]).
+    count_operations(Num1, Num2) when Num1 =:= 0; Num2 =:= 0 ->
+        0;
+    count_operations(Num1, Num2) when Num1 >= Num2 ->
+        1 + count_operations(Num1 - Num2, Num2);
+    count_operations(Num1, Num2) ->
+        1 + count_operations(Num1, Num2 - Num1).
 {% endraw %}
 {% endhighlight %}
 
@@ -826,8 +1246,11 @@ No approach provided
 
 {% highlight elixir %}
 {% raw %}
-// Generation failed for Elixir
-// Reason: HTTP Error 429
+defmodule Solution do
+        def count_operations(num1, num2) when num1 == 0 or num2 == 0, do: 0
+        def count_operations(num1, num2) when num1 >= num2, do: 1 + count_operations(num1 - num2, num2)
+        def count_operations(num1, num2), do: 1 + count_operations(num1, num2 - num1)
+    end;
 {% endraw %}
 {% endhighlight %}
 
@@ -837,9 +1260,9 @@ No approach provided
 
 ### Complexity Analysis
 
-- **Time Complexity:** N/A
+- **Time Complexity:** The time complexity of this approach is O(log min(num1, num2)) because in the worst-case scenario, we are effectively performing a series of subtractions that reduce the smaller number to zero. The number of operations required is proportional to the number of times we can divide the smaller number by 2 until it becomes zero, which is logarithmic in the size of the smaller number.
 
-- **Space Complexity:** N/A
+- **Space Complexity:** The space complexity of this approach is O(1) because we only use a constant amount of space to store the input numbers and the count of operations. We do not use any data structures that grow with the size of the input, so the space complexity is constant.
 
 </div>
 </details>
