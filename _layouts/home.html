@@ -28,7 +28,7 @@ layout: default
   <section class="stats-section">
     <h2 class="section-title">Problem Statistics</h2>
     <div class="stats-container">
-      {% assign all_posts = site.posts | concat: site.daily | concat: site.weekly | sort: 'date' | reverse %}
+      {% assign all_posts = site.posts | concat: site.daily | sort: 'date' | reverse %}
       {% assign total_posts = all_posts | size %}
       {% assign easy_posts = all_posts | where_exp: "post", "post.difficulty == 'Easy'" | size %}
       {% assign medium_posts = all_posts | where_exp: "post", "post.difficulty == 'Medium'" | size %}

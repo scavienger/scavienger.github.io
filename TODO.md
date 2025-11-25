@@ -3,11 +3,11 @@
 ## 작업 완료 현황 (2025-11-15 기준)
 
 ### ✅ 완료된 주요 기능
-1. **Jekyll 블로그 기본 셋업** - Phase 1 완료
-2. **Archive & Tag Pages** - 문제 탐색 기능 완료
-3. **Visual Improvements** - 다크모드, 반응형 디자인 완료
-4. **AI Solution Generation** - Gemini/Groq 자동 솔루션 생성 완료
-5. **GitHub Actions 자동화** - 매일 00:00 UTC 자동 실행
+- [x] **Jekyll 블로그 기본 셋업** - Phase 1 완료
+- [x] **Archive & Tag Pages** - 문제 탐색 기능 완료
+- [x] **Visual Improvements** - 다크모드, 반응형 디자인 완료
+- [x] **AI Solution Generation** - Gemini/Groq 자동 솔루션 생성 완료
+- [x] **GitHub Actions 자동화** - 매일 00:00 UTC 자동 실행
 
 ---
 
@@ -190,4 +190,7 @@
 - 테스트 후 master에 반영
 - API 키는 GitHub Secrets로 관리
 - 설정 값은 워크플로우 파일에서 관리
-## Sass import migration (planned)\n- Replace @import with @use/@forward in assets/main.scss and partials (custom.scss, dark-mode.scss, minima integration).\n- Verify minima entry points; add wrapper if needed.\n- After changes, run bundle exec jekyll build to ensure no warnings.\n
+- Sass import migration (planned)
+  - Replace @import with @use/@forward in assets/main.scss and partials (custom.scss, dark-mode.scss, minima integration).
+  - Verify minima entry points; add wrapper if needed.
+  - After changes, run `bundle exec jekyll build` to ensure no warnings.

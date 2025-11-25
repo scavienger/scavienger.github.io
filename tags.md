@@ -8,7 +8,7 @@ permalink: /topics/
 
 Browse LeetCode problems organized by topic/tag.
 
-{% assign all_posts = site.posts | concat: site.daily | concat: site.weekly %}
+{% assign all_posts = site.posts | concat: site.daily %}
 {% assign all_tags = "" | split: "" %}
 {% for post in all_posts %}
   {% if post.tags %}
