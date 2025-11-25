@@ -12,7 +12,7 @@ Browse LeetCode problems organized by difficulty level.
 
 ## Easy
 
-{% assign all_posts = site.posts | concat: site.daily | concat: site.weekly %}
+{% assign all_posts = site.posts | concat: site.daily %}
 {% assign easy_posts = all_posts | where: "difficulty", "Easy" %}
 {% if easy_posts.size > 0 %}
 <ul class="post-list">
