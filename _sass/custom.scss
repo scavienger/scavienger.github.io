@@ -1403,14 +1403,13 @@ html {
    Pure CSS Code Tabs
    =========================== */
 .code-tabs {
-  margin: 24px 0 16px;
+  margin: 20px 0;
   border-radius: 12px;
-  overflow: visible;
+  overflow: hidden;
   background-color: var(--card-bg);
   border: 1px solid var(--border-color);
-  box-shadow: 0 8px 18px var(--shadow);
+  box-shadow: 0 6px 14px var(--shadow);
   position: relative;
-  padding-top: 8px;
 }
 
 /* Hide radio buttons */
@@ -1422,12 +1421,11 @@ html {
 .code-tabs .tab-labels {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: 2px;
   justify-content: flex-start;
   background: var(--card-bg);
   border-bottom: 1px solid var(--border-color);
   border-radius: 10px 10px 0 0;
-  padding: 4px 8px 0;
   position: relative;
   z-index: 1;
 }
@@ -1435,12 +1433,12 @@ html {
 /* Individual tab label */
 .code-tabs .tab-labels label {
   /* Desktop: 7 tabs per row, all equal size */
-  flex: 0 0 calc((100% - 24px) / 7);
-  /* 7 tabs, 6 gaps of 4px each */
+  flex: 0 0 calc((100% - 12px) / 7);
+  /* 7 tabs, 6 gaps of 2px each */
   box-sizing: border-box;
   /* Include border and padding in width calculation */
 
-  padding: 9px 12px;
+  padding: 10px 14px;
   text-align: center;
   font-weight: 600;
   font-size: 13px;
@@ -1573,8 +1571,8 @@ html {
 /* Tablet: 5 tabs per row */
 @media screen and (max-width: 768px) {
   .code-tabs .tab-labels label {
-    flex: 0 0 calc((100% - 16px) / 5);
-    /* 5 tabs, 4 gaps of 4px each */
+    flex: 0 0 calc((100% - 8px) / 5);
+    /* 5 tabs, 4 gaps of 2px each */
     padding: 12px 10px;
     font-size: 12px;
   }
@@ -1583,8 +1581,8 @@ html {
 /* Mobile: 3 tabs per row */
 @media screen and (max-width: 480px) {
   .code-tabs .tab-labels label {
-    flex: 0 0 calc((100% - 8px) / 3);
-    /* 3 tabs, 2 gaps of 4px each */
+    flex: 0 0 calc((100% - 4px) / 3);
+    /* 3 tabs, 2 gaps of 2px each */
     padding: 10px 8px;
     font-size: 11px;
   }
