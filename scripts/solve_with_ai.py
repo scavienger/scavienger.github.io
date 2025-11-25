@@ -12,7 +12,7 @@ import textwrap
 import re
 import time
 from typing import Dict, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 import requests
 from google import generativeai as genai
 
@@ -85,6 +85,35 @@ class AISolutionGenerator:
             self.groq_api_key = os.getenv('GROQ_API_KEY')
 
     
+    def _extract_detail_message(self, response) -> Optional[str]:
+        """Extract a human-readable error/detail message from an HTTP response."""
+        if not response or not getattr(response, "text", ""):
+            return None
+        try:
+            data = response.json()
+        except ValueError:
+            return None
+
+        def _from_obj(obj):
+            if isinstance(obj, str):
+                return obj
+            if isinstance(obj, dict):
+                for key in ("detail", "message", "error"):
+                    val = obj.get(key)
+                    if isinstance(val, str):
+                        return val
+                    if isinstance(val, dict):
+                        inner = _from_obj(val)
+                        if inner:
+                            return inner
+            if isinstance(obj, list):
+                for item in obj:
+                    inner = _from_obj(item)
+                    if inner:
+                        return inner
+            return None
+
+        return _from_obj(data)
 
     def create_prompt(self, problem_data: Dict, target_languages: list) -> str:
         """Create a prompt for the AI models for specific languages"""
@@ -125,6 +154,20 @@ Problem Description:
         langs_str = ", ".join(target_languages)
         prompt += f"""Please provide solutions ONLY for these languages (match this list exactly): {langs_str}
 
+OUTPUT RULES (CRITICAL):
+- Return a single valid JSON object that matches the schema below.
+- Do not include markdown, code fences, or any text outside the JSON object.
+- Prefer ASCII characters; use Unicode only when necessary (e.g., in comments or string literals).
+- Each code string must contain code only (technical comments allowed, but no explanatory narration).
+- Use actual line breaks in code strings (they will be automatically escaped to \\n when serialized to JSON).
+- CRITICAL: ALL backslashes in code MUST be escaped as \\\\ (double backslash). This is MANDATORY.
+  - Example: "int* ptr;" should be "int* ptr;" (no escaping needed for forward context)
+  - Example: Use "newline" for line breaks, NOT backslash-space continuation "\\    // comment"
+  - Only valid JSON escape sequences allowed: \\", \\\\, \\/, \\b, \\f, \\n, \\r, \\t, \\uXXXX
+  - NEVER use backslash followed by space or other invalid characters (e.g., "\\    " is INVALID)
+- Properly escape special characters: use \\" for quotes inside strings.
+- Avoid HTML entities (like \\u003c); use actual characters instead.
+
 APPROACH REQUIREMENTS:
 - Provide a DETAILED explanation of your approach (maximum 3 paragraphs)
 - Explain the problem-solving strategy step by step
@@ -136,19 +179,19 @@ CODE FORMATTING REQUIREMENTS (CRITICAL):
 - Each code solution MUST include proper line breaks and indentation
 - DO NOT write code in a single line - use multiple lines with proper formatting
 - Follow standard formatting conventions for each language
-- Use newlines (\n) to separate statements, function definitions, and control structures
 - Properly indent nested blocks (loops, conditionals, functions)
 - Add blank lines between logical sections for readability
 
 COMPLEXITY ANALYSIS:
 - Provide detailed time and space complexity with explanations
 - Explain why the complexity is what it is
+- Be thorough and educational in your analysis
 
 Format your response as JSON:
 {{
-  "approach": "Detailed explanation here",
-  "time_complexity": "O(...) with explanation",
-  "space_complexity": "O(...) with explanation",
+  "approach": "Detailed explanation here (up to 3 paragraphs)",
+  "time_complexity": "O(...) with detailed explanation",
+  "space_complexity": "O(...) with detailed explanation",
   "solutions": {{
 {sample_solutions}
   }}
@@ -578,8 +621,7 @@ Provide ONLY the JSON response, no additional text."""
                             {"role": "user", "content": prompt}
                         ],
                         "temperature": 0.2,
-                        "max_tokens": 8192,  # Increased to prevent truncation
-                        "response_format": {"type": "json_object"}
+                        "max_completion_tokens": 32768  # Increased to prevent truncation
                     },
                     timeout=60
                 )
@@ -588,12 +630,22 @@ Provide ONLY the JSON response, no additional text."""
                 total_elapsed_time += batch_time
                 
                 if not response.ok:
+                    detail_msg = self._extract_detail_message(response)
                     if response.status_code == 429:
                         print(f"[Groq] Batch {i+1} Error: Rate limit exceeded (429).", file=sys.stderr)
+                        if detail_msg:
+                            print(f"[Groq] Detail: {detail_msg}", file=sys.stderr)
                     else:
-                        print(f"[Groq] Batch {i+1} HTTP {response.status_code} Error. Full Body:\n{response.text}", file=sys.stderr)
-                    
-                    self._fill_failed_batch(final_solution, batch, f"HTTP Error {response.status_code}")
+                        print(f"[Groq] Batch {i+1} HTTP {response.status_code} Error.", file=sys.stderr)
+                        if detail_msg:
+                            print(f"[Groq] Detail: {detail_msg}", file=sys.stderr)
+                        else:
+                            print(f"[Groq] Full Body:\n{response.text}", file=sys.stderr)
+
+                    error_reason = f"HTTP Error {response.status_code}"
+                    if detail_msg:
+                        error_reason = f"{error_reason} - {detail_msg}"
+                    self._fill_failed_batch(final_solution, batch, error_reason)
                     continue
 
                 data = response.json()
@@ -658,7 +710,7 @@ def main():
         # Add solution to problem data with timestamp
         problem_data['ai_solution'] = {
             'model': generator.model_name,
-            'generated_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S %z'),
+            'generated_at': datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC'),
             **solution
         }
     else:
