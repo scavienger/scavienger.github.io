@@ -1403,11 +1403,14 @@ html {
    Pure CSS Code Tabs
    =========================== */
 .code-tabs {
-  margin: 20px 0;
-  border-radius: 8px;
-  overflow: hidden;
+  margin: 24px 0 16px;
+  border-radius: 12px;
+  overflow: visible;
   background-color: var(--card-bg);
-  box-shadow: 0 4px 6px var(--shadow);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 8px 18px var(--shadow);
+  position: relative;
+  padding-top: 8px;
 }
 
 /* Hide radio buttons */
@@ -1419,21 +1422,25 @@ html {
 .code-tabs .tab-labels {
   display: flex;
   flex-wrap: wrap;
-  gap: 2px;
+  gap: 4px;
   justify-content: flex-start;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  border-bottom: 2px solid var(--border-color);
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border-color);
+  border-radius: 10px 10px 0 0;
+  padding: 4px 8px 0;
+  position: relative;
+  z-index: 1;
 }
 
 /* Individual tab label */
 .code-tabs .tab-labels label {
   /* Desktop: 7 tabs per row, all equal size */
-  flex: 0 0 calc((100% - 12px) / 7);
-  /* 7 tabs, 6 gaps of 2px each */
+  flex: 0 0 calc((100% - 24px) / 7);
+  /* 7 tabs, 6 gaps of 4px each */
   box-sizing: border-box;
   /* Include border and padding in width calculation */
 
-  padding: 10px 14px;
+  padding: 9px 12px;
   text-align: center;
   font-weight: 600;
   font-size: 13px;
@@ -1442,10 +1449,12 @@ html {
   cursor: pointer;
   transition: var(--transition);
   border: 1px solid var(--border-color);
-  border-radius: 4px 4px 0 0;
-  margin-bottom: -2px;
+  border-radius: 6px;
+  margin-bottom: 0;
   user-select: none;
   white-space: nowrap;
+  background: var(--card-bg);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
 }
 
 .code-tabs .tab-labels label:hover {
@@ -1480,9 +1489,9 @@ html {
   opacity: 1;
   color: white;
   background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
-  border-bottom: 3px solid var(--primary-color);
-  margin-bottom: -3px;
-  z-index: 1;
+  border-bottom: 2px solid var(--primary-color);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.14);
+  z-index: 2;
 }
 
 /* Tab panels - hide all by default */
@@ -1490,6 +1499,8 @@ html {
   display: none;
   padding: 0;
   animation: fadeIn 0.3s ease-in;
+  border-top: 1px solid var(--border-color);
+  background-color: var(--card-bg);
 }
 
 /* Show active panel - support both exact IDs and suffixed IDs */
@@ -1537,7 +1548,7 @@ html {
 /* Code block styling within tabs */
 .code-tabs .tab-panel pre {
   margin: 0;
-  border-radius: 0 0 8px 8px;
+  border-radius: 0 0 12px 12px;
   border: none;
 }
 
@@ -1562,8 +1573,8 @@ html {
 /* Tablet: 5 tabs per row */
 @media screen and (max-width: 768px) {
   .code-tabs .tab-labels label {
-    flex: 0 0 calc((100% - 8px) / 5);
-    /* 5 tabs, 4 gaps of 2px each */
+    flex: 0 0 calc((100% - 16px) / 5);
+    /* 5 tabs, 4 gaps of 4px each */
     padding: 12px 10px;
     font-size: 12px;
   }
@@ -1572,8 +1583,8 @@ html {
 /* Mobile: 3 tabs per row */
 @media screen and (max-width: 480px) {
   .code-tabs .tab-labels label {
-    flex: 0 0 calc((100% - 4px) / 3);
-    /* 3 tabs, 2 gaps of 2px each */
+    flex: 0 0 calc((100% - 8px) / 3);
+    /* 3 tabs, 2 gaps of 4px each */
     padding: 10px 8px;
     font-size: 11px;
   }
