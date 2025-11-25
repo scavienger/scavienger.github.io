@@ -16,6 +16,14 @@
 
   // Apply theme to body
   function applyTheme(theme) {
+    // Body can be null if this runs in <head> before <body> is parsed.
+    if (!document.body) {
+      document.addEventListener('DOMContentLoaded', function onReady() {
+        document.removeEventListener('DOMContentLoaded', onReady);
+        applyTheme(theme);
+      });
+      return;
+    }
     document.body.classList.remove(DARK_MODE_CLASS, LIGHT_MODE_CLASS);
     if (theme === 'dark') {
       document.body.classList.add(DARK_MODE_CLASS);

@@ -422,6 +422,12 @@ pre code {
   text-transform: uppercase;
   letter-spacing: 0.5px;
   font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid transparent;
   box-shadow: 0 1px 3px var(--shadow);
 }
 
