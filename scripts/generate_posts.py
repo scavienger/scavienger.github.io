@@ -29,35 +29,26 @@ from generate_post import PostGenerator
 SUPPORTED_MODELS = ['gemini-2.5-flash', 'llama-3.3-70b-versatile', 'groq/compound']
 DEFAULT_MODELS = ['gemini-2.5-flash', 'llama-3.3-70b-versatile']
 CACHE_PATH = os.path.join("data", "daily_challenges.json")
-WEEKLY_CACHE_PATH = os.path.join("data", "weekly_challenges.json")
 DAILY_POSTS_DIR = os.path.join("_posts", "_daily")
-WEEKLY_POSTS_DIR = os.path.join("_posts", "_weekly")
 
 
 def ensure_cache_dir():
     os.makedirs(os.path.dirname(CACHE_PATH), exist_ok=True)
-    os.makedirs(os.path.dirname(WEEKLY_CACHE_PATH), exist_ok=True)
 
 
 def ensure_posts_dirs():
     os.makedirs(DAILY_POSTS_DIR, exist_ok=True)
-    os.makedirs(WEEKLY_POSTS_DIR, exist_ok=True)
 
 
-def fetch_daily_challenges_v2(year: int, month: int) -> Dict[str, Dict[str, Dict[str, str]]]:
+def fetch_daily_challenges_v2(year: int, month: int) -> Dict[str, Dict[str, str]]:
     """
-    Fetch daily/weekly challenges for a given year/month via GraphQL dailyCodingChallengeV2.
+    Fetch daily challenges for a given year/month via GraphQL dailyCodingChallengeV2.
     """
     graphql_url = "https://leetcode.com/graphql"
     query = """
     query dailyChallenges($year: Int!, $month: Int!) {
       dailyCodingChallengeV2(year: $year, month: $month) {
         challenges {
-          date
-          link
-          question { titleSlug }
-        }
-        weeklyChallenges {
           date
           link
           question { titleSlug }
@@ -77,32 +68,21 @@ def fetch_daily_challenges_v2(year: int, month: int) -> Dict[str, Dict[str, Dict
         raise RuntimeError(f"GraphQL errors: {data['errors']}")
     root = data.get("data", {}).get("dailyCodingChallengeV2", {}) or {}
     challenges = root.get("challenges", []) or []
-    weekly = root.get("weeklyChallenges", []) or []
 
-    def to_map(items):
-        out = {}
-        for ch in items:
-            date = ch.get("date")
-            link = ch.get("link")
-            slug = ch.get("question", {}).get("titleSlug")
-            if date and link and slug:
-                out[date] = {"link": link, "titleSlug": slug}
-        return out
-
-    return {"daily": to_map(challenges), "weekly": to_map(weekly)}
+    out = {}
+    for ch in challenges:
+        date = ch.get("date")
+        link = ch.get("link")
+        slug = ch.get("question", {}).get("titleSlug")
+        if date and link and slug:
+            out[date] = {"link": link, "titleSlug": slug}
+    return out
 
 
 def load_cache() -> Dict[str, Dict[str, str]]:
     if not os.path.exists(CACHE_PATH):
         return {}
     with open(CACHE_PATH, "r", encoding="utf-8") as f:
-        return json.load(f)
-
-
-def load_weekly_cache() -> Dict[str, Dict[str, str]]:
-    if not os.path.exists(WEEKLY_CACHE_PATH):
-        return {}
-    with open(WEEKLY_CACHE_PATH, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -117,7 +97,6 @@ def update_cache_if_needed(target_dates: List[str]) -> Dict[str, Dict[str, str]]
     Load cache and refresh from network if any target date is missing.
     """
     cache = load_cache()
-    weekly_cache = load_weekly_cache()
     missing = [d for d in target_dates if d not in cache]
     if not missing:
         return cache
@@ -128,14 +107,10 @@ def update_cache_if_needed(target_dates: List[str]) -> Dict[str, Dict[str, str]]
     fetched_any = False
     for year, month in months:
         try:
-            fetched = fetch_daily_challenges_v2(year, month)
-            daily_map = fetched.get("daily", {})
-            weekly_map = fetched.get("weekly", {})
+            daily_map = fetch_daily_challenges_v2(year, month)
             if daily_map:
                 cache.update(daily_map)
                 fetched_any = True
-            if weekly_map:
-                weekly_cache.update(weekly_map)
         except Exception as e:
             print(f"Warning: failed to fetch challenges for {year}-{month:02d}: {e}", file=sys.stderr)
 
@@ -144,9 +119,6 @@ def update_cache_if_needed(target_dates: List[str]) -> Dict[str, Dict[str, str]]
         return cache
 
     save_cache(cache)
-    ensure_cache_dir()
-    with open(WEEKLY_CACHE_PATH, "w", encoding="utf-8") as f:
-        json.dump(weekly_cache, f, ensure_ascii=False, indent=2)
     return cache
 
 
@@ -263,7 +235,8 @@ def generate_ai_solutions(problem_data: Dict, model_names: List[str]) -> List[Di
             elapsed = sol.get("elapsed_time", 0.0)
             print(f"✅ Generated with {model} -> {elapsed:.2f}s", file=sys.stderr)
         else:
-            print(f"⚠️ Failed to generate with {model}", file=sys.stderr)
+            # Use ❌ to clearly indicate failure in logs
+            print(f"❌ Failed to generate with {model}", file=sys.stderr)
     return solutions
 
 
@@ -379,7 +352,7 @@ def process_date(date_str: str, link: str, slug: str, model_names: List[str], po
 
 def main():
     import argparse
-    parser = argparse.ArgumentParser(description="Generate LeetCode daily/weekly posts.")
+    parser = argparse.ArgumentParser(description="Generate LeetCode daily challenge posts.")
     parser.add_argument("start_date", help="YYYY-MM-DD")
     parser.add_argument("end_date", nargs="?", help="YYYY-MM-DD (optional)")
     parser.add_argument("models", nargs="*", help="Model names to use (default: all supported)")
@@ -416,26 +389,16 @@ def main():
         print(f"Update‑only models: {', '.join(update_models)}", file=sys.stderr)
 
     cache = update_cache_if_needed(dates)
-    weekly_cache = load_weekly_cache()
 
     overall_success = True
     for i, d in enumerate(dates):
         info = cache.get(d)
-        weekly_info = weekly_cache.get(d)
 
-        # Daily
         if info:
             ok = process_date(d, info["link"], info["titleSlug"], models, DAILY_POSTS_DIR, update_models)
             overall_success = overall_success and ok
         else:
-            print(f"ℹ️ No daily challenge for {d} in cache. Skipping daily.", file=sys.stderr)
-
-        # Weekly (optional)
-        if weekly_info:
-            ok_w = process_date(d, weekly_info["link"], weekly_info["titleSlug"], models, WEEKLY_POSTS_DIR, update_models)
-            overall_success = overall_success and ok_w
-        else:
-            print(f"ℹ️ No weekly challenge for {d} in cache. Skipping weekly.", file=sys.stderr)
+            print(f"ℹ️ No daily challenge for {d} in cache. Skipping.", file=sys.stderr)
 
         # Wait between dates (except after last)
         if i < len(dates) - 1:
