@@ -94,5 +94,9 @@
   "2025-11-24": {
     "link": "/problems/binary-prefix-divisible-by-5/",
     "titleSlug": "binary-prefix-divisible-by-5"
+  },
+  "2025-11-25": {
+    "link": "/problems/smallest-integer-divisible-by-k/",
+    "titleSlug": "smallest-integer-divisible-by-k"
   }
 }
