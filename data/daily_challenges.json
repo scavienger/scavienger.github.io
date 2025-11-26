@@ -98,5 +98,9 @@
   "2025-11-25": {
     "link": "/problems/smallest-integer-divisible-by-k/",
     "titleSlug": "smallest-integer-divisible-by-k"
+  },
+  "2025-11-26": {
+    "link": "/problems/paths-in-matrix-whose-sum-is-divisible-by-k/",
+    "titleSlug": "paths-in-matrix-whose-sum-is-divisible-by-k"
   }
 }
