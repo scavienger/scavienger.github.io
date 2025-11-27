@@ -102,5 +102,9 @@
   "2025-11-26": {
     "link": "/problems/paths-in-matrix-whose-sum-is-divisible-by-k/",
     "titleSlug": "paths-in-matrix-whose-sum-is-divisible-by-k"
+  },
+  "2025-11-27": {
+    "link": "/problems/maximum-subarray-sum-with-length-divisible-by-k/",
+    "titleSlug": "maximum-subarray-sum-with-length-divisible-by-k"
   }
 }
