@@ -106,5 +106,9 @@
   "2025-11-27": {
     "link": "/problems/maximum-subarray-sum-with-length-divisible-by-k/",
     "titleSlug": "maximum-subarray-sum-with-length-divisible-by-k"
+  },
+  "2025-11-28": {
+    "link": "/problems/maximum-number-of-k-divisible-components/",
+    "titleSlug": "maximum-number-of-k-divisible-components"
   }
 }
