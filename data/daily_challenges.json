@@ -114,5 +114,9 @@
   "2025-11-29": {
     "link": "/problems/minimum-operations-to-make-array-sum-divisible-by-k/",
     "titleSlug": "minimum-operations-to-make-array-sum-divisible-by-k"
+  },
+  "2025-11-30": {
+    "link": "/problems/make-sum-divisible-by-p/",
+    "titleSlug": "make-sum-divisible-by-p"
   }
 }
