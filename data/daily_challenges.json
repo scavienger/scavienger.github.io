@@ -118,5 +118,9 @@
   "2025-11-30": {
     "link": "/problems/make-sum-divisible-by-p/",
     "titleSlug": "make-sum-divisible-by-p"
+  },
+  "2025-12-01": {
+    "link": "/problems/maximum-running-time-of-n-computers/",
+    "titleSlug": "maximum-running-time-of-n-computers"
   }
 }
