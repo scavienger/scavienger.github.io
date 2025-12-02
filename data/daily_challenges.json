@@ -122,5 +122,9 @@
   "2025-12-01": {
     "link": "/problems/maximum-running-time-of-n-computers/",
     "titleSlug": "maximum-running-time-of-n-computers"
+  },
+  "2025-12-02": {
+    "link": "/problems/count-number-of-trapezoids-i/",
+    "titleSlug": "count-number-of-trapezoids-i"
   }
 }
