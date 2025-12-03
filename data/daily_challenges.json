@@ -126,5 +126,9 @@
   "2025-12-02": {
     "link": "/problems/count-number-of-trapezoids-i/",
     "titleSlug": "count-number-of-trapezoids-i"
+  },
+  "2025-12-03": {
+    "link": "/problems/count-number-of-trapezoids-ii/",
+    "titleSlug": "count-number-of-trapezoids-ii"
   }
 }
