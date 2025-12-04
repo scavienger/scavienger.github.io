@@ -130,5 +130,9 @@
   "2025-12-03": {
     "link": "/problems/count-number-of-trapezoids-ii/",
     "titleSlug": "count-number-of-trapezoids-ii"
+  },
+  "2025-12-04": {
+    "link": "/problems/count-collisions-on-a-road/",
+    "titleSlug": "count-collisions-on-a-road"
   }
 }
