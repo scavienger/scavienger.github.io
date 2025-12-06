@@ -138,5 +138,9 @@
   "2025-12-05": {
     "link": "/problems/count-partitions-with-even-sum-difference/",
     "titleSlug": "count-partitions-with-even-sum-difference"
+  },
+  "2025-12-06": {
+    "link": "/problems/count-partitions-with-max-min-difference-at-most-k/",
+    "titleSlug": "count-partitions-with-max-min-difference-at-most-k"
   }
 }
