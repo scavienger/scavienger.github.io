@@ -129,6 +129,37 @@ body.light-mode {
     color: #8fb7ff;
   }
 
+  @media screen and (max-width: 600px) {
+    .site-nav {
+      background-color: #0f172a;
+      border-color: rgba(255, 255, 255, 0.16);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    .site-nav label[for="nav-trigger"] {
+      background: #111a2d;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #d8e1ff;
+    }
+
+    .site-nav .menu-icon {
+      fill: #d8e1ff;
+    }
+
+    .site-nav .trigger {
+      background: #0f172a;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .site-nav .page-link {
+      color: #d8e1ff;
+    }
+
+    .site-nav .page-link:hover {
+      color: #8fb7ff;
+    }
+  }
+
   /* Cards */
   .stat-card {
     background-color: var(--card-bg);
@@ -325,12 +356,15 @@ body.light-mode {
   }
 
   .hero-btn.secondary {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.5);
+    background: rgba(143, 183, 255, 0.12);
+    border-color: rgba(143, 183, 255, 0.45);
+    color: #f4f7ff;
   }
 
   .hero-btn.secondary:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(143, 183, 255, 0.2);
+    color: #ffffff;
+    border-color: rgba(143, 183, 255, 0.65);
   }
 
   /* Features section dark mode */
@@ -583,6 +617,18 @@ body.light-mode {
    AI Solution Tabs Dark Mode (Manual dark-mode class)
    =========================== */
 .dark-mode {
+  .hero-btn.secondary {
+    background: rgba(143, 183, 255, 0.12);
+    border-color: rgba(143, 183, 255, 0.45);
+    color: #f4f7ff;
+  }
+
+  .hero-btn.secondary:hover {
+    background: rgba(143, 183, 255, 0.2);
+    color: #ffffff;
+    border-color: rgba(143, 183, 255, 0.65);
+  }
+
   /* Header in manual dark mode */
   .site-header {
     background-color: #0f172a;
@@ -603,6 +649,37 @@ body.light-mode {
 
   .site-nav .page-link:hover {
     color: #8fb7ff;
+  }
+
+  @media screen and (max-width: 600px) {
+    .site-nav {
+      background-color: #0f172a;
+      border-color: rgba(255, 255, 255, 0.16);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    .site-nav label[for="nav-trigger"] {
+      background: #111a2d;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #d8e1ff;
+    }
+
+    .site-nav .menu-icon {
+      fill: #d8e1ff;
+    }
+
+    .site-nav .trigger {
+      background: #0f172a;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .site-nav .page-link {
+      color: #d8e1ff;
+    }
+
+    .site-nav .page-link:hover {
+      color: #8fb7ff;
+    }
   }
 
   /* AI Solution Tabs */
