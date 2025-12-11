@@ -44,6 +44,18 @@
   --cta-shadow: 0 10px 24px rgba(0, 123, 255, 0.25);
   --cta-shadow-hover: 0 14px 30px rgba(0, 123, 255, 0.35);
   --cta-border: rgba(0, 0, 0, 0.08);
+  --stat-bg: #ffffff;
+  --stat-border: #e6eaf5;
+  --stat-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+  --stat-label: #5a6275;
+  --stat-total-bg: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+  --stat-total-border: #d5ddff;
+  --stat-easy-bg: linear-gradient(135deg, #ecfdf3 0%, #d6f7e6 100%);
+  --stat-easy-border: #c3f0d8;
+  --stat-medium-bg: linear-gradient(135deg, #fff7ea 0%, #ffe8cc 100%);
+  --stat-medium-border: #ffd8aa;
+  --stat-hard-bg: linear-gradient(135deg, #fff0f2 0%, #ffd9df 100%);
+  --stat-hard-border: #ffc3cb;
 }
 
 /* ===========================
@@ -495,14 +507,16 @@ pre code {
   padding: 25px;
   border-radius: 12px;
   text-align: center;
-  box-shadow: 0 4px 6px var(--shadow);
+  background: var(--stat-bg);
+  border: 1px solid var(--stat-border);
+  box-shadow: var(--stat-shadow);
   transition: var(--transition);
-  border: none;
+  color: var(--stat-label);
 }
 
 .stat-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 12px var(--shadow);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.12);
 }
 
 .stat-number {
@@ -533,6 +547,50 @@ pre code {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+.stat-card.total {
+  background: var(--stat-total-bg);
+  border-color: var(--stat-total-border);
+  color: #1f2a44;
+}
+
+.stat-card.total .stat-number {
+  background: linear-gradient(135deg, #1e5bff, #4299ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-card.total .stat-label {
+  color: #344063;
+}
+
+.stat-card.easy {
+  background: var(--stat-easy-bg);
+  border-color: var(--stat-easy-border);
+}
+
+.stat-card.easy .stat-label {
+  color: #1f5134;
+}
+
+.stat-card.medium {
+  background: var(--stat-medium-bg);
+  border-color: var(--stat-medium-border);
+}
+
+.stat-card.medium .stat-label {
+  color: #7b4b11;
+}
+
+.stat-card.hard {
+  background: var(--stat-hard-bg);
+  border-color: var(--stat-hard-border);
+}
+
+.stat-card.hard .stat-label {
+  color: #7c1f2c;
 }
 
 /* ===========================

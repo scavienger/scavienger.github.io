@@ -153,6 +153,40 @@ body.light-mode {
     border-color: rgba(143, 183, 255, 0.65);
   }
 
+  .stat-card.easy .stat-label {
+    color: #c8ffe8;
+  }
+
+  .stat-card.medium .stat-label {
+    color: #ffe9b5;
+  }
+
+  .stat-card.hard .stat-label {
+    color: #ffc4cb;
+  }
+
+  .stat-card.easy .stat-label,
+  .stat-card.medium .stat-label,
+  .stat-card.hard .stat-label {
+    opacity: 1;
+  }
+
+  /* Stronger specificity to beat light styles when manual dark-mode class is set */
+  body.dark-mode .stat-card.easy .stat-label {
+    color: #c8ffe8;
+    opacity: 1;
+  }
+
+  body.dark-mode .stat-card.medium .stat-label {
+    color: #ffe9b5;
+    opacity: 1;
+  }
+
+  body.dark-mode .stat-card.hard .stat-label {
+    color: #ffc4cb;
+    opacity: 1;
+  }
+
   @media screen and (max-width: 600px) {
     .site-nav {
       background-color: #0f172a;
@@ -231,6 +265,30 @@ body.light-mode {
 
   .stat-card.total .stat-label {
     color: #d9e4ff;
+  }
+
+  /* Ensure label text stays bright in auto dark */
+  .stat-card.easy .stat-label,
+  .stat-card.medium .stat-label,
+  .stat-card.hard .stat-label {
+    color: inherit;
+    opacity: 1;
+  }
+
+  /* Stronger specificity to beat light styles */
+  body.dark-mode .stat-card.easy .stat-label {
+    color: #c8ffe8;
+    opacity: 1;
+  }
+
+  body.dark-mode .stat-card.medium .stat-label {
+    color: #ffe9b5;
+    opacity: 1;
+  }
+
+  body.dark-mode .stat-card.hard .stat-label {
+    color: #ffc4cb;
+    opacity: 1;
   }
 
   /* Post lists */
@@ -459,7 +517,7 @@ body.light-mode {
     background: var(--viewall-bg);
     box-shadow: var(--viewall-shadow);
     border-color: var(--viewall-border);
-    color: #e8eeff;
+    color: #f5f8ff;
   }
 
   .view-all-link:hover {
@@ -679,6 +737,22 @@ body.light-mode {
     border-color: rgba(143, 183, 255, 0.65);
   }
 
+  /* Stat labels stay bright in manual dark mode (system light) */
+  .stat-card.easy .stat-label {
+    color: #c8ffe8;
+    opacity: 1;
+  }
+
+  .stat-card.medium .stat-label {
+    color: #ffe9b5;
+    opacity: 1;
+  }
+
+  .stat-card.hard .stat-label {
+    color: #ffc4cb;
+    opacity: 1;
+  }
+
   /* Header in manual dark mode */
   .site-header {
     background-color: #0f172a;
@@ -699,6 +773,10 @@ body.light-mode {
 
   .site-nav .page-link:hover {
     color: #8fb7ff;
+  }
+
+  .view-all-link {
+    color: #f5f8ff;
   }
 
   .hero-btn.primary {
