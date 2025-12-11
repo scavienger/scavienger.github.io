@@ -21,17 +21,17 @@
   --code-bg: #f5f5f5;
   --shadow: rgba(0, 0, 0, 0.1);
   --transition: all 0.3s ease;
-  --hero-bg: linear-gradient(135deg, #0f172a 0%, #122240 100%);
-  --hero-text-color: #e8eeff;
-  --hero-border: rgba(143, 183, 255, 0.3);
-  --hero-shadow: 0 16px 34px rgba(0, 0, 0, 0.45);
-  --viewall-bg: #122240;
-  --viewall-bg-hover: #19305a;
-  --viewall-text: #e8eeff;
-  --viewall-text-hover: #ffffff;
-  --viewall-border: rgba(143, 183, 255, 0.45);
-  --viewall-shadow: 0 12px 26px rgba(0, 0, 0, 0.4);
-  --viewall-shadow-hover: 0 16px 32px rgba(0, 0, 0, 0.5);
+  --hero-bg: linear-gradient(135deg, #eef3ff 0%, #dbe8ff 100%);
+  --hero-text-color: #0f172a;
+  --hero-border: #d6e4ff;
+  --hero-shadow: 0 12px 30px rgba(0, 40, 120, 0.1);
+  --viewall-bg: #f8fbff;
+  --viewall-bg-hover: #edf3ff;
+  --viewall-text: #0b3a7a;
+  --viewall-text-hover: #004aad;
+  --viewall-border: #d7e3ff;
+  --viewall-shadow: 0 12px 26px rgba(0, 86, 179, 0.12);
+  --viewall-shadow-hover: 0 16px 32px rgba(0, 86, 179, 0.18);
   --feature-surface-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   --feature-card-bg: #ffffff;
   --feature-card-border: #e5e9f2;
@@ -748,38 +748,33 @@ html {
   text-decoration: none;
   border-radius: 50px;
   transition: var(--transition);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  background: var(--viewall-bg);
+  color: var(--viewall-text);
+  border: 2px solid var(--viewall-border);
+  box-shadow: var(--viewall-shadow);
 }
 
 .hero-btn.primary {
-  background: #122240;
-  color: #e8eeff;
-  border: 2px solid rgba(143, 183, 255, 0.45);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.45);
 }
 
 .hero-btn.secondary {
-  background: #122240;
-  color: #e8eeff;
-  border: 2px solid rgba(143, 183, 255, 0.45);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.45);
 }
 
 .hero-btn:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--viewall-shadow-hover);
 }
 
 .hero-btn.primary:hover {
-  background: #19305a;
-  color: #ffffff;
-  border-color: rgba(143, 183, 255, 0.7);
+  background: var(--viewall-bg-hover);
+  color: var(--viewall-text-hover);
+  border-color: var(--viewall-border);
 }
 
 .hero-btn.secondary:hover {
-  background: #19305a;
-  color: #ffffff;
-  border-color: rgba(143, 183, 255, 0.7);
+  background: var(--viewall-bg-hover);
+  color: var(--viewall-text-hover);
+  border-color: var(--viewall-border);
 }
 
 /* ===========================
