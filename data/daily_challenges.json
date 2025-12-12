@@ -162,5 +162,9 @@
   "2025-12-11": {
     "link": "/problems/count-covered-buildings/",
     "titleSlug": "count-covered-buildings"
+  },
+  "2025-12-12": {
+    "link": "/problems/count-mentions-per-user/",
+    "titleSlug": "count-mentions-per-user"
   }
 }
