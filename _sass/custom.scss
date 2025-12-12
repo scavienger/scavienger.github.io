@@ -1524,11 +1524,11 @@ html {
 /* Tab labels container */
 .code-tabs .tab-labels {
   display: grid;
-  gap: 8px;
-  /* Increased gap to prevent collision */
+  gap: 2px;
+  /* Minimal gap as requested */
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  padding: 16px;
-  /* Consistent uniform padding */
+  padding: 4px;
+  /* Minimal padding */
   background: var(--card-bg);
   border-bottom: 1px solid var(--border-color);
   border-radius: 10px 10px 0 0;
@@ -1545,7 +1545,7 @@ html {
   height: 36px;
   /* Fixed height for consistency */
   padding: 0 4px;
-  /* Minimal side padding to maximize text space */
+  /* Minimal side padding */
 
   display: flex;
   align-items: center;
@@ -1561,12 +1561,13 @@ html {
   transition: var(--transition);
   border: 1px solid transparent;
   /* Changed from var(--border-color) to transparent for cleaner look */
-  border-radius: 6px;
+  border-radius: 4px;
+  /* Slightly sharper corners for tighter layout */
   margin-bottom: 0;
   user-select: none;
   background: var(--card-bg);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  /* Slightly softer shadow */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  /* Reduced shadow for cleaner tight layout */
 }
 
 .code-tabs .tab-labels label:hover {
