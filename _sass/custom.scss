@@ -1158,6 +1158,14 @@ html {
   .feature-icon {
     font-size: 48px;
   }
+
+  .leetcode-button {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+    font-size: 15px;
+    padding: 14px 20px;
+  }
 }
 
 /* ===========================
@@ -1236,7 +1244,8 @@ html {
 .post-tag {
   display: inline-block;
   padding: 6px 14px;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  /* Blue to match LeetCode button in Light Mode */
   color: white;
   font-size: 12px;
   font-weight: 600;
@@ -1261,7 +1270,8 @@ html {
   align-items: center;
   gap: 10px;
   padding: 14px 28px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  /* Light Mode: Blue Theme */
   color: white;
   font-weight: 600;
   font-size: 16px;
