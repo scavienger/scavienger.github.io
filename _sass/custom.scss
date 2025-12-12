@@ -812,11 +812,9 @@ html {
   box-shadow: var(--viewall-shadow);
 }
 
-.hero-btn.primary {
-}
+.hero-btn.primary {}
 
-.hero-btn.secondary {
-}
+.hero-btn.secondary {}
 
 .hero-btn:hover {
   transform: translateY(-3px);
@@ -1544,7 +1542,8 @@ html {
   box-sizing: border-box;
   /* Include border and padding in width calculation */
 
-  padding: 10px 14px;
+  padding: 10px 2px;
+  /* Reduced side padding to 2px to fit text */
   text-align: center;
   font-weight: 600;
   font-size: 13px;
