@@ -1524,11 +1524,9 @@ html {
 /* Tab labels container */
 .code-tabs .tab-labels {
   display: grid;
-  gap: 8px;
-  /* Increased gap to prevent collision */
+  gap: 6px;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  padding: 16px;
-  /* Consistent uniform padding */
+  padding: 12px;
   background: var(--card-bg);
   border-bottom: 1px solid var(--border-color);
   border-radius: 10px 10px 0 0;
@@ -1542,31 +1540,26 @@ html {
 /* Individual tab label */
 .code-tabs .tab-labels label {
   width: 100%;
-  height: 36px;
-  /* Fixed height for consistency */
-  padding: 0 4px;
-  /* Minimal side padding to maximize text space */
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
+  padding: 10px 4px;
+  /* Reduced side padding */
   text-align: center;
   font-weight: 600;
   font-size: 13px;
-  /* Font size preserved */
   color: var(--text-color);
   opacity: 0.7;
   cursor: pointer;
   transition: var(--transition);
   border: 1px solid transparent;
-  /* Changed from var(--border-color) to transparent for cleaner look */
   border-radius: 6px;
+  /* Full rounded corners */
   margin-bottom: 0;
   user-select: none;
   background: var(--card-bg);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  /* Slightly softer shadow */
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .code-tabs .tab-labels label:hover {
