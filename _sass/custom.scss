@@ -812,9 +812,11 @@ html {
   box-shadow: var(--viewall-shadow);
 }
 
-.hero-btn.primary {}
+.hero-btn.primary {
+}
 
-.hero-btn.secondary {}
+.hero-btn.secondary {
+}
 
 .hero-btn:hover {
   transform: translateY(-3px);
@@ -1537,13 +1539,12 @@ html {
 /* Individual tab label */
 .code-tabs .tab-labels label {
   /* Desktop: 7 tabs per row, all equal size */
-  flex: 0 0 auto;
-  /* Don't grow or shrink, base size on content */
+  flex: 0 0 calc((100% - 12px) / 7);
+  /* 7 tabs, 6 gaps of 2px each */
   box-sizing: border-box;
   /* Include border and padding in width calculation */
 
-  padding: 10px 4px;
-  /* Reduced side padding to fit longer text */
+  padding: 10px 14px;
   text-align: center;
   font-weight: 600;
   font-size: 13px;
