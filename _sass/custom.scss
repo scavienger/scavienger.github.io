@@ -812,11 +812,9 @@ html {
   box-shadow: var(--viewall-shadow);
 }
 
-.hero-btn.primary {
-}
+.hero-btn.primary {}
 
-.hero-btn.secondary {
-}
+.hero-btn.secondary {}
 
 .hero-btn:hover {
   transform: translateY(-3px);
@@ -1525,40 +1523,43 @@ html {
 
 /* Tab labels container */
 .code-tabs .tab-labels {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2px;
-  justify-content: flex-start;
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  padding: 12px;
   background: var(--card-bg);
   border-bottom: 1px solid var(--border-color);
   border-radius: 10px 10px 0 0;
-  position: relative;
-  z-index: 1;
+
+  /* Desktop: Force 7 columns for the 7/7/5 balance */
+  @media screen and (min-width: 768px) {
+    grid-template-columns: repeat(7, 1fr);
+  }
 }
 
 /* Individual tab label */
 .code-tabs .tab-labels label {
-  /* Desktop: 7 tabs per row, all equal size */
-  flex: 0 0 calc((100% - 12px) / 7);
-  /* 7 tabs, 6 gaps of 2px each */
-  box-sizing: border-box;
-  /* Include border and padding in width calculation */
-
-  padding: 10px 14px;
+  width: 100%;
+  padding: 10px 4px;
+  /* Reduced side padding */
   text-align: center;
   font-weight: 600;
   font-size: 13px;
   color: var(--text-color);
-  opacity: 0.6;
+  opacity: 0.7;
   cursor: pointer;
   transition: var(--transition);
-  border: 1px solid var(--border-color);
+  border: 1px solid transparent;
   border-radius: 6px;
+  /* Full rounded corners */
   margin-bottom: 0;
   user-select: none;
-  white-space: nowrap;
   background: var(--card-bg);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .code-tabs .tab-labels label:hover {
@@ -1593,8 +1594,7 @@ html {
   opacity: 1;
   color: white;
   background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
-  border-bottom: 2px solid var(--primary-color);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.14);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 2;
 }
 
@@ -1675,24 +1675,7 @@ html {
 
 /* Mobile responsive */
 /* Tablet: 5 tabs per row */
-@media screen and (max-width: 768px) {
-  .code-tabs .tab-labels label {
-    flex: 0 0 calc((100% - 8px) / 5);
-    /* 5 tabs, 4 gaps of 2px each */
-    padding: 12px 10px;
-    font-size: 12px;
-  }
-}
 
-/* Mobile: 3 tabs per row */
-@media screen and (max-width: 480px) {
-  .code-tabs .tab-labels label {
-    flex: 0 0 calc((100% - 4px) / 3);
-    /* 3 tabs, 2 gaps of 2px each */
-    padding: 10px 8px;
-    font-size: 11px;
-  }
-}
 
 /* ===========================
    Collapsible AI Solutions
