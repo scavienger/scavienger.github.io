@@ -166,5 +166,9 @@
   "2025-12-12": {
     "link": "/problems/count-mentions-per-user/",
     "titleSlug": "count-mentions-per-user"
+  },
+  "2025-12-13": {
+    "link": "/problems/coupon-code-validator/",
+    "titleSlug": "coupon-code-validator"
   }
 }
