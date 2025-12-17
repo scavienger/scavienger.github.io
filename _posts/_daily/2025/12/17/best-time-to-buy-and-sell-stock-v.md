@@ -8,214 +8,190 @@ difficulty: Medium
 leetcode_url: https://leetcode.com/problems/best-time-to-buy-and-sell-stock-v/
 ai_solutions:
   - solutions:
-      cpp: "class Solution {\n    public:\n        int maxProfit(vector<int>& prices,\
-        \ int k) {\n            int n = prices.size();\n            if (n < 2) return\
-        \ 0;\n            if (k > n / 2) k = n / 2;\n            vector<vector<int>>\
-        \ buy(k + 1, vector<int>(n, 0));\n            vector<vector<int>> sell(k + 1,\
-        \ vector<int>(n, 0));\n            for (int i = 1; i <= k; i++) {\n        \
-        \        int maxDiff = -prices[0];\n                for (int j = 1; j < n; j++)\
-        \ {\n                    buy[i][j] = max(buy[i][j - 1], sell[i - 1][j - 1] -\
-        \ prices[j]);\n                    sell[i][j] = max(sell[i][j - 1], buy[i][j\
-        \ - 1] + prices[j]);\n                    maxDiff = max(maxDiff, sell[i - 1][j\
-        \ - 1] - prices[j]);\n                }\n            }\n            return sell[k][n\
-        \ - 1];\n        }\n    };"
-      java: "class Solution {\npublic int maxProfit(int[] prices, int k) {\n    int\
-        \ n = prices.length;\n    if (n < 2) return 0;\n    if (k > n / 2) k = n / 2;\n\
-        \    int[][] buy = new int[k + 1][n];\n    int[][] sell = new int[k + 1][n];\n\
-        \    for (int i = 1; i <= k; i++) {\n        int maxDiff = -prices[0];\n   \
-        \     for (int j = 1; j < n; j++) {\n            buy[i][j] = Math.max(buy[i][j\
-        \ - 1], sell[i - 1][j - 1] - prices[j]);\n            sell[i][j] = Math.max(sell[i][j\
-        \ - 1], buy[i][j - 1] + prices[j]);\n            maxDiff = Math.max(maxDiff,\
-        \ sell[i - 1][j - 1] - prices[j]);\n        }\n    }\n    return sell[k][n -\
-        \ 1];\n}\n};"
-      python: "class Solution:\ndef maxProfit(self, prices: List[int], k: int) -> int:\n\
-        \    n = len(prices)\n    if n < 2: return 0\n    if k > n // 2: k = n // 2\n\
-        \    buy = [[0] * n for _ in range(k + 1)]\n    sell = [[0] * n for _ in range(k\
-        \ + 1)]\n    for i in range(1, k + 1):\n        max_diff = -prices[0]\n    \
-        \    for j in range(1, n):\n            buy[i][j] = max(buy[i][j - 1], sell[i\
-        \ - 1][j - 1] - prices[j])\n            sell[i][j] = max(sell[i][j - 1], buy[i][j\
-        \ - 1] + prices[j])\n            max_diff = max(max_diff, sell[i - 1][j - 1]\
-        \ - prices[j])\n    return sell[k][n - 1]"
-      python3: "class Solution:\ndef maxProfit(self, prices: List[int], k: int) -> int:\n\
-        \    n = len(prices)\n    if n < 2: return 0\n    if k > n // 2: k = n // 2\n\
-        \    buy = [[0] * n for _ in range(k + 1)]\n    sell = [[0] * n for _ in range(k\
-        \ + 1)]\n    for i in range(1, k + 1):\n        max_diff = -prices[0]\n    \
-        \    for j in range(1, n):\n            buy[i][j] = max(buy[i][j - 1], sell[i\
-        \ - 1][j - 1] - prices[j])\n            sell[i][j] = max(sell[i][j - 1], buy[i][j\
-        \ - 1] + prices[j])\n            max_diff = max(max_diff, sell[i - 1][j - 1]\
-        \ - prices[j])\n    return sell[k][n - 1]"
-      c: "#include <stdio.h>\n    #include <stdlib.h>\n    int maxProfit(int* prices,\
-        \ int pricesSize, int k) {\n        if (pricesSize < 2) return 0;\n        if\
-        \ (k > pricesSize / 2) k = pricesSize / 2;\n        int** buy = (int**)malloc((k\
-        \ + 1) * sizeof(int*));\n        int** sell = (int**)malloc((k + 1) * sizeof(int*));\n\
-        \        for (int i = 0; i <= k; i++) {\n            buy[i] = (int*)malloc(pricesSize\
-        \ * sizeof(int));\n            sell[i] = (int*)malloc(pricesSize * sizeof(int));\n\
-        \        }\n        for (int i = 1; i <= k; i++) {\n            int max_diff\
-        \ = -prices[0];\n            for (int j = 1; j < pricesSize; j++) {\n      \
-        \          buy[i][j] = (buy[i][j - 1] > sell[i - 1][j - 1] - prices[j]) ? buy[i][j\
-        \ - 1] : sell[i - 1][j - 1] - prices[j];\n                sell[i][j] = (sell[i][j\
-        \ - 1] > buy[i][j - 1] + prices[j]) ? sell[i][j - 1] : buy[i][j - 1] + prices[j];\n\
-        \                max_diff = (max_diff > sell[i - 1][j - 1] - prices[j]) ? max_diff\
-        \ : sell[i - 1][j - 1] - prices[j];\n            }\n        }\n        int result\
-        \ = sell[k][pricesSize - 1];\n        for (int i = 0; i <= k; i++) {\n     \
-        \       free(buy[i]);\n            free(sell[i]);\n        }\n        free(buy);\n\
-        \        free(sell);\n        return result;\n    }"
-      csharp: "public class Solution {\npublic int MaxProfit(int[] prices, int k) {\n\
-        \    int n = prices.Length;\n    if (n < 2) return 0;\n    if (k > n / 2) k\
-        \ = n / 2;\n    int[][] buy = new int[k + 1][];\n    int[][] sell = new int[k\
-        \ + 1][];\n    for (int i = 0; i <= k; i++) {\n        buy[i] = new int[n];\n\
-        \        sell[i] = new int[n];\n    }\n    for (int i = 1; i <= k; i++) {\n\
-        \        int maxDiff = -prices[0];\n        for (int j = 1; j < n; j++) {\n\
-        \            buy[i][j] = Math.Max(buy[i][j - 1], sell[i - 1][j - 1] - prices[j]);\n\
-        \            sell[i][j] = Math.Max(sell[i][j - 1], buy[i][j - 1] + prices[j]);\n\
-        \            maxDiff = Math.Max(maxDiff, sell[i - 1][j - 1] - prices[j]);\n\
-        \        }\n    }\n    return sell[k][n - 1];\n}\n};"
-      javascript: "var maxProfit = function(prices, k) {\nlet n = prices.length;\nif\
-        \ (n < 2) return 0;\nif (k > n / 2) k = Math.floor(n / 2);\nlet buy = Array(k\
-        \ + 1).fill(0).map(() => Array(n).fill(0));\nlet sell = Array(k + 1).fill(0).map(()\
-        \ => Array(n).fill(0));\nfor (let i = 1; i <= k; i++) {\n    let maxDiff = -prices[0];\n\
-        \    for (let j = 1; j < n; j++) {\n        buy[i][j] = Math.max(buy[i][j -\
-        \ 1], sell[i - 1][j - 1] - prices[j]);\n        sell[i][j] = Math.max(sell[i][j\
-        \ - 1], buy[i][j - 1] + prices[j]);\n        maxDiff = Math.max(maxDiff, sell[i\
-        \ - 1][j - 1] - prices[j]);\n    }\n}\nreturn sell[k][n - 1];\n};"
-      typescript: "function maxProfit(prices: number[], k: number): number {\nlet n\
-        \ = prices.length;\nif (n < 2) return 0;\nif (k > n / 2) k = Math.floor(n /\
-        \ 2);\nlet buy: number[][] = Array(k + 1).fill(0).map(() => Array(n).fill(0));\n\
-        let sell: number[][] = Array(k + 1).fill(0).map(() => Array(n).fill(0));\nfor\
-        \ (let i = 1; i <= k; i++) {\n    let maxDiff = -prices[0];\n    for (let j\
-        \ = 1; j < n; j++) {\n        buy[i][j] = Math.max(buy[i][j - 1], sell[i - 1][j\
-        \ - 1] - prices[j]);\n        sell[i][j] = Math.max(sell[i][j - 1], buy[i][j\
-        \ - 1] + prices[j]);\n        maxDiff = Math.max(maxDiff, sell[i - 1][j - 1]\
-        \ - prices[j]);\n    }\n}\nreturn sell[k][n - 1];\n};"
-      php: "class Solution {\nfunction maxProfit($prices, $k) {\n    $n = count($prices);\n\
-        \    if ($n < 2) return 0;\n    if ($k > $n / 2) $k = floor($n / 2);\n    $buy\
-        \ = array_fill(0, $k + 1, array_fill(0, $n, 0));\n    $sell = array_fill(0,\
-        \ $k + 1, array_fill(0, $n, 0));\n    for ($i = 1; $i <= $k; $i++) {\n     \
-        \   $maxDiff = -$prices[0];\n        for ($j = 1; $j < $n; $j++) {\n       \
-        \     $buy[$i][$j] = max($buy[$i][$j - 1], $sell[$i - 1][$j - 1] - $prices[$j]);\n\
-        \            $sell[$i][$j] = max($sell[$i][$j - 1], $buy[$i][$j - 1] + $prices[$j]);\n\
-        \            $maxDiff = max($maxDiff, $sell[$i - 1][$j - 1] - $prices[$j]);\n\
-        \        }\n    }\n    return $sell[$k][$n - 1];\n}\n};"
-      swift: "class Solution {\nfunc maxProfit(_ prices: [Int], _ k: Int) -> Int {\n\
-        \    let n = prices.count\n    if n < 2 { return 0 }\n    if k > n / 2 { return\
-        \ maxProfit(prices, k: n / 2) }\n    var buy = Array(repeating: Array(repeating:\
-        \ 0, count: n), count: k + 1)\n    var sell = Array(repeating: Array(repeating:\
-        \ 0, count: n), count: k + 1)\n    for i in 1...k + 1 {\n        var maxDiff\
-        \ = -prices[0]\n        for j in 1..<n {\n            buy[i][j] = max(buy[i][j\
-        \ - 1], sell[i - 1][j - 1] - prices[j])\n            sell[i][j] = max(sell[i][j\
-        \ - 1], buy[i][j - 1] + prices[j])\n            maxDiff = max(maxDiff, sell[i\
-        \ - 1][j - 1] - prices[j])\n        }\n    }\n    return sell[k][n - 1]\n}\n\
-        };"
-      kotlin: "class Solution {\nfun maxProfit(prices: IntArray, k: Int): Int {\n  \
-        \  val n = prices.size\n    if (n < 2) return 0\n    if (k > n / 2) return maxProfit(prices,\
-        \ n / 2)\n    val buy = Array(k + 1) { IntArray(n) }\n    val sell = Array(k\
-        \ + 1) { IntArray(n) }\n    for (i in 1..k) {\n        var maxDiff = -prices[0]\n\
-        \        for (j in 1 until n) {\n            buy[i][j] = maxOf(buy[i][j - 1],\
-        \ sell[i - 1][j - 1] - prices[j])\n            sell[i][j] = maxOf(sell[i][j\
-        \ - 1], buy[i][j - 1] + prices[j])\n            maxDiff = maxOf(maxDiff, sell[i\
-        \ - 1][j - 1] - prices[j])\n        }\n    }\n    return sell[k][n - 1]\n}\n\
-        };"
-      dart: "class Solution {\nint maxProfit(List<int> prices, int k) {\n    int n =\
-        \ prices.length;\n    if (n < 2) return 0;\n    if (k > n / 2) k = (n / 2).floor();\n\
-        \    List<List<int>> buy = List.generate(k + 1, (i) => List.generate(n, (j)\
-        \ => 0));\n    List<List<int>> sell = List.generate(k + 1, (i) => List.generate(n,\
-        \ (j) => 0));\n    for (int i = 1; i <= k; i++) {\n        int maxDiff = -prices[0];\n\
-        \        for (int j = 1; j < n; j++) {\n            buy[i][j] = max(buy[i][j\
-        \ - 1], sell[i - 1][j - 1] - prices[j]);\n            sell[i][j] = max(sell[i][j\
-        \ - 1], buy[i][j - 1] + prices[j]);\n            maxDiff = max(maxDiff, sell[i\
-        \ - 1][j - 1] - prices[j]);\n        }\n    }\n    return sell[k][n - 1];\n\
-        }\n};"
-      go: "func maxProfit(prices []int, k int) int {\nn := len(prices)\nif n < 2 {\n\
-        \    return 0\n}\nif k > n/2 {\n    k = n / 2\n}\nbuy := make([][]int, k+1)\n\
-        sell := make([][]int, k+1)\nfor i := range buy {\n    buy[i] = make([]int, n)\n\
-        \    sell[i] = make([]int, n)\n}\nfor i := 1; i <= k; i++ {\n    maxDiff :=\
-        \ -prices[0]\n    for j := 1; j < n; j++ {\n        buy[i][j] = max(buy[i][j-1],\
-        \ sell[i-1][j-1]-prices[j])\n        sell[i][j] = max(sell[i][j-1], buy[i][j-1]+prices[j])\n\
-        \        maxDiff = max(maxDiff, sell[i-1][j-1]-prices[j])\n    }\n}\nreturn\
-        \ sell[k][n-1]\n};\nfunc max(a, b int) int {\nif a > b {\n    return a\n}\n\
-        return b\n};"
-      ruby: "def max_profit(prices, k)\nn = prices.size\nreturn 0 if n < 2\nk = n /\
-        \ 2 if k > n / 2\nbuy = Array.new(k + 1) { Array.new(n, 0) }\nsell = Array.new(k\
-        \ + 1) { Array.new(n, 0) }\n(1..k).each do |i|\n    max_diff = -prices[0]\n\
-        \    (1...n).each do |j|\n        buy[i][j] = [buy[i][j - 1], sell[i - 1][j\
-        \ - 1] - prices[j]].max\n        sell[i][j] = [sell[i][j - 1], buy[i][j - 1]\
-        \ + prices[j]].max\n        max_diff = [max_diff, sell[i - 1][j - 1] - prices[j]].max\n\
-        \    end\nend\nsell[k][n - 1]\nend;"
-      scala: "object Solution {\ndef maxProfit(prices: Array[Int], k: Int): Int = {\n\
-        \    val n = prices.length\n    if (n < 2) return 0\n    if (k > n / 2) return\
-        \ maxProfit(prices, n / 2)\n    val buy = Array.ofDim[Int](k + 1, n)\n    val\
-        \ sell = Array.ofDim[Int](k + 1, n)\n    for (i <- 1 to k) {\n        var maxDiff\
-        \ = -prices(0)\n        for (j <- 1 until n) {\n            buy(i)(j) = math.max(buy(i)(j\
-        \ - 1), sell(i - 1)(j - 1) - prices(j))\n            sell(i)(j) = math.max(sell(i)(j\
-        \ - 1), buy(i)(j - 1) + prices(j))\n            maxDiff = math.max(maxDiff,\
-        \ sell(i - 1)(j - 1) - prices(j))\n        }\n    }\n    sell(k)(n - 1)\n}\n\
-        };"
-      rust: "impl Solution {\npub fn max_profit(prices: Vec<i32>, k: i32) -> i32 {\n\
-        \    let n = prices.len();\n    if n < 2 {\n        return 0;\n    }\n    if\
-        \ k as usize > n / 2 {\n        return Solution::max_profit(prices, (n as i32)\
-        \ / 2);\n    }\n    let mut buy = vec![vec![0; n]; (k + 1) as usize];\n    let\
-        \ mut sell = vec![vec![0; n]; (k + 1) as usize];\n    for i in 1..=(k as usize)\
-        \ {\n        let mut max_diff = -prices[0];\n        for j in 1..n {\n     \
-        \       buy[i][j] = std::cmp::max(buy[i][j - 1], sell[i - 1][j - 1] - prices[j]);\n\
-        \            sell[i][j] = std::cmp::max(sell[i][j - 1], buy[i][j - 1] + prices[j]);\n\
-        \            max_diff = std::cmp::max(max_diff, sell[i - 1][j - 1] - prices[j]);\n\
-        \        }\n    }\n    sell[k as usize][n - 1]\n}\n};"
-      racket: "#lang racket\n    (define (max-profit prices k)\n        (let* ((n (length\
-        \ prices))\n               (k (if (> k (/ n 2)) (/ n 2) k)))\n             \
-        \ (define buy (make-vector (add1 k) (make-vector n 0)))\n              (define\
-        \ sell (make-vector (add1 k) (make-vector n 0)))\n              (do ((i 1 (add1\
-        \ i)))\n                  ((> i k))\n                (do ((j 1 (add1 j)))\n\
-        \                    ((= j n))\n                  (vector-set! buy i j (max\
-        \ (vector-ref buy i (sub1 j)) (- (vector-ref sell (sub1 i) (sub1 j)) (list-ref\
-        \ prices j))))\n                  (vector-set! sell i j (max (vector-ref sell\
-        \ i (sub1 j)) (+ (vector-ref buy i (sub1 j)) (list-ref prices j))))))\n    \
-        \          (vector-ref sell k (sub1 n))))"
-      erlang: "-module(solution).\n    -export([max_profit/2]).\n    max_profit(Prices,\
-        \ K) ->\n        N = length(Prices),\n        if N < 2 -> 0;\n            true\
-        \ -> \n                K1 = if K > N div 2 -> N div 2; true -> K end,\n    \
-        \            Buy = array:new([{size, K1 + 1}, {default, array:new([{size, N},\
-        \ {default, 0}])}]),\n                Sell = array:new([{size, K1 + 1}, {default,\
-        \ array:new([{size, N}, {default, 0}])}]),\n                max_profit(Prices,\
-        \ K1, Buy, Sell, 1, 1, -hd(Prices)).\n    max_profit([_|_], K, Buy, Sell, K,\
-        \ N, _) when K > K1 -> array:get(K, Sell, N - 1);\n    max_profit(Prices, K,\
-        \ Buy, Sell, K, N, MaxDiff) ->\n        [P|Ps] = Prices,\n        Buy1 = array:set(K,\
-        \ array:set(N - 1, max(array:get(K, Buy, N - 2), array:get(K - 1, Sell, N -\
-        \ 2) - P), array:get(K, Buy, N - 1)), Buy),\n        Sell1 = array:set(K, array:set(N\
-        \ - 1, max(array:get(K, Sell, N - 2), array:get(K, Buy1, N - 1) + P), array:get(K,\
-        \ Sell, N - 1)), Sell),\n        MaxDiff1 = max(MaxDiff, array:get(K - 1, Sell,\
-        \ N - 2) - P),\n        max_profit(Ps, K, Buy1, Sell1, K, N - 1, MaxDiff1)."
-      elixir: "defmodule Solution do\ndef max_profit(prices, k) do\n    n = length(prices)\n\
-        \    if n < 2, do: 0\n    k = if k > div(n, 2), do: div(n, 2), else: k\n   \
-        \ buy = Array.new(k + 1, fn -> Array.new(n, 0) end)\n    sell = Array.new(k\
-        \ + 1, fn -> Array.new(n, 0) end)\n    max_profit(prices, k, buy, sell, 1, 1,\
-        \ -Enum.at(prices, 0))\nend\ndefp max_profit([_|_], k, buy, sell, k, n, _) when\
-        \ k > k do\n    Array.get(sell, k, n - 1)\nend\ndefp max_profit(prices, k, buy,\
-        \ sell, k, n, max_diff) do\n    [p|ps] = prices\n    buy1 = Array.put(buy, k,\
-        \ Array.put(Array.get(buy, k), n - 1, max(Array.get(Array.get(buy, k), n - 2),\
-        \ Array.get(Array.get(sell, k - 1), n - 2) - p)))\n    sell1 = Array.put(sell,\
-        \ k, Array.put(Array.get(sell, k), n - 1, max(Array.get(Array.get(sell, k),\
-        \ n - 2), Array.get(Array.get(buy1, k), n - 1) + p)))\n    max_diff1 = max(max_diff,\
-        \ Array.get(Array.get(sell, k - 1), n - 2) - p)\n    max_profit(ps, k, buy1,\
-        \ sell1, k, n - 1, max_diff1)\nend\nend"
+      cpp: "class Solution {\npublic:\n    int maxProfit(vector<int>& prices, int k)\
+        \ {\n        int n = prices.size();\n        if (n < 2) return 0;\n        k\
+        \ = min(k, n / 2);\n        vector<vector<int>> buy(n, vector<int>(k + 1, 0));\n\
+        \        vector<vector<int>> sell(n, vector<int>(k + 1, 0));\n        for (int\
+        \ i = 1; i < n; i++) {\n            for (int j = 1; j <= k; j++) {\n       \
+        \         buy[i][j] = max(buy[i - 1][j], sell[i - 1][j - 1] - prices[i]);\n\
+        \                sell[i][j] = max(sell[i - 1][j], buy[i - 1][j] + prices[i]);\n\
+        \            }\n        }\n        return sell[n - 1][k];\n    }\n};"
+      java: "class Solution {\n    public int maxProfit(int[] prices, int k) {\n   \
+        \     int n = prices.length;\n        if (n < 2) return 0;\n        k = Math.min(k,\
+        \ n / 2);\n        int[][] buy = new int[n][k + 1];\n        int[][] sell =\
+        \ new int[n][k + 1];\n        for (int i = 1; i < n; i++) {\n            for\
+        \ (int j = 1; j <= k; j++) {\n                buy[i][j] = Math.max(buy[i - 1][j],\
+        \ sell[i - 1][j - 1] - prices[i]);\n                sell[i][j] = Math.max(sell[i\
+        \ - 1][j], buy[i - 1][j] + prices[i]);\n            }\n        }\n        return\
+        \ sell[n - 1][k];\n    }\n}"
+      python: "class Solution:\n    def maxProfit(self, prices: List[int], k: int) ->\
+        \ int:\n        n = len(prices)\n        if n < 2: return 0\n        k = min(k,\
+        \ n // 2)\n        buy = [[0] * (k + 1) for _ in range(n)]\n        sell = [[0]\
+        \ * (k + 1) for _ in range(n)]\n        for i in range(1, n):\n            for\
+        \ j in range(1, k + 1):\n                buy[i][j] = max(buy[i - 1][j], sell[i\
+        \ - 1][j - 1] - prices[i])\n                sell[i][j] = max(sell[i - 1][j],\
+        \ buy[i - 1][j] + prices[i])\n        return sell[n - 1][k]"
+      python3: "class Solution:\n    def maxProfit(self, prices: List[int], k: int)\
+        \ -> int:\n        n = len(prices)\n        if n < 2: return 0\n        k =\
+        \ min(k, n // 2)\n        buy = [[0] * (k + 1) for _ in range(n)]\n        sell\
+        \ = [[0] * (k + 1) for _ in range(n)]\n        for i in range(1, n):\n     \
+        \       for j in range(1, k + 1):\n                buy[i][j] = max(buy[i - 1][j],\
+        \ sell[i - 1][j - 1] - prices[i])\n                sell[i][j] = max(sell[i -\
+        \ 1][j], buy[i - 1][j] + prices[i])\n        return sell[n - 1][k]"
+      c: "typedef struct {\n    int* arr;\n    int size;\n} Array;\n\nint maxProfit(int*\
+        \ prices, int pricesSize, int k) {\n    if (pricesSize < 2) return 0;\n    k\
+        \ = k < pricesSize / 2 ? k : pricesSize / 2;\n    int** buy = (int**)malloc(pricesSize\
+        \ * sizeof(int*));\n    int** sell = (int**)malloc(pricesSize * sizeof(int*));\n\
+        \    for (int i = 0; i < pricesSize; i++) {\n        buy[i] = (int*)malloc((k\
+        \ + 1) * sizeof(int));\n        sell[i] = (int*)malloc((k + 1) * sizeof(int));\n\
+        \    }\n    for (int i = 1; i < pricesSize; i++) {\n        for (int j = 1;\
+        \ j <= k; j++) {\n            buy[i][j] = (buy[i - 1][j] > sell[i - 1][j - 1]\
+        \ - prices[i]) ? buy[i - 1][j] : sell[i - 1][j - 1] - prices[i];\n         \
+        \   sell[i][j] = (sell[i - 1][j] > buy[i - 1][j] + prices[i]) ? sell[i - 1][j]\
+        \ : buy[i - 1][j] + prices[i];\n        }\n    }\n    int result = sell[pricesSize\
+        \ - 1][k];\n    for (int i = 0; i < pricesSize; i++) {\n        free(buy[i]);\n\
+        \        free(sell[i]);\n    }\n    free(buy);\n    free(sell);\n    return\
+        \ result;\n}"
+      csharp: "public class Solution {\n    public int MaxProfit(int[] prices, int k)\
+        \ {\n        int n = prices.Length;\n        if (n < 2) return 0;\n        k\
+        \ = Math.Min(k, n / 2);\n        int[][] buy = new int[n][];\n        int[][]\
+        \ sell = new int[n][];\n        for (int i = 0; i < n; i++) {\n            buy[i]\
+        \ = new int[k + 1];\n            sell[i] = new int[k + 1];\n        }\n    \
+        \    for (int i = 1; i < n; i++) {\n            for (int j = 1; j <= k; j++)\
+        \ {\n                buy[i][j] = Math.Max(buy[i - 1][j], sell[i - 1][j - 1]\
+        \ - prices[i]);\n                sell[i][j] = Math.Max(sell[i - 1][j], buy[i\
+        \ - 1][j] + prices[i]);\n            }\n        }\n        return sell[n - 1][k];\n\
+        \    }\n}"
+      javascript: "var maxProfit = function(prices, k) {\n    let n = prices.length;\n\
+        \    if (n < 2) return 0;\n    k = Math.min(k, Math.floor(n / 2));\n    let\
+        \ buy = Array(n).fill(0).map(() => Array(k + 1).fill(0));\n    let sell = Array(n).fill(0).map(()\
+        \ => Array(k + 1).fill(0));\n    for (let i = 1; i < n; i++) {\n        for\
+        \ (let j = 1; j <= k; j++) {\n            buy[i][j] = Math.max(buy[i - 1][j],\
+        \ sell[i - 1][j - 1] - prices[i]);\n            sell[i][j] = Math.max(sell[i\
+        \ - 1][j], buy[i - 1][j] + prices[i]);\n        }\n    }\n    return sell[n\
+        \ - 1][k];\n};"
+      typescript: "function maxProfit(prices: number[], k: number): number {\n    let\
+        \ n = prices.length;\n    if (n < 2) return 0;\n    k = Math.min(k, Math.floor(n\
+        \ / 2));\n    let buy: number[][] = Array(n).fill(0).map(() => Array(k + 1).fill(0));\n\
+        \    let sell: number[][] = Array(n).fill(0).map(() => Array(k + 1).fill(0));\n\
+        \    for (let i = 1; i < n; i++) {\n        for (let j = 1; j <= k; j++) {\n\
+        \            buy[i][j] = Math.max(buy[i - 1][j], sell[i - 1][j - 1] - prices[i]);\n\
+        \            sell[i][j] = Math.max(sell[i - 1][j], buy[i - 1][j] + prices[i]);\n\
+        \        }\n    }\n    return sell[n - 1][k];\n}"
+      php: "class Solution {\n    function maxProfit($prices, $k) {\n        $n = count($prices);\n\
+        \        if ($n < 2) return 0;\n        $k = min($k, floor($n / 2));\n     \
+        \   $buy = array_fill(0, $n, array_fill(0, $k + 1, 0));\n        $sell = array_fill(0,\
+        \ $n, array_fill(0, $k + 1, 0));\n        for ($i = 1; $i < $n; $i++) {\n  \
+        \          for ($j = 1; $j <= $k; $j++) {\n                $buy[$i][$j] = max($buy[$i\
+        \ - 1][$j], $sell[$i - 1][$j - 1] - $prices[$i]);\n                $sell[$i][$j]\
+        \ = max($sell[$i - 1][$j], $buy[$i - 1][$j] + $prices[$i]);\n            }\n\
+        \        }\n        return $sell[$n - 1][$k];\n    }\n}"
+      swift: "class Solution {\n    func maxProfit(_ prices: [Int], _ k: Int) -> Int\
+        \ {\n        let n = prices.count\n        if n < 2 { return 0 }\n        let\
+        \ k = min(k, n / 2)\n        var buy = Array(repeating: Array(repeating: 0,\
+        \ count: k + 1), count: n)\n        var sell = Array(repeating: Array(repeating:\
+        \ 0, count: k + 1), count: n)\n        for i in 1..<n {\n            for j in\
+        \ 1...k {\n                buy[i][j] = max(buy[i - 1][j], sell[i - 1][j - 1]\
+        \ - prices[i])\n                sell[i][j] = max(sell[i - 1][j], buy[i - 1][j]\
+        \ + prices[i])\n            }\n        }\n        return sell[n - 1][k]\n  \
+        \  }\n}"
+      kotlin: "class Solution {\n    fun maxProfit(prices: IntArray, k: Int): Int {\n\
+        \        val n = prices.size\n        if (n < 2) return 0\n        val k = minOf(k,\
+        \ n / 2)\n        val buy = Array(n) { IntArray(k + 1) }\n        val sell =\
+        \ Array(n) { IntArray(k + 1) }\n        for (i in 1 until n) {\n           \
+        \ for (j in 1..k) {\n                buy[i][j] = maxOf(buy[i - 1][j], sell[i\
+        \ - 1][j - 1] - prices[i])\n                sell[i][j] = maxOf(sell[i - 1][j],\
+        \ buy[i - 1][j] + prices[i])\n            }\n        }\n        return sell[n\
+        \ - 1][k]\n    }\n}"
+      dart: "class Solution {\n    int maxProfit(List<int> prices, int k) {\n      \
+        \  int n = prices.length;\n        if (n < 2) return 0;\n        k = k < n ~/\
+        \ 2 ? k : n ~/ 2;\n        List<List<int>> buy = List.generate(n, (i) => List.generate(k\
+        \ + 1, (j) => 0));\n        List<List<int>> sell = List.generate(n, (i) => List.generate(k\
+        \ + 1, (j) => 0));\n        for (int i = 1; i < n; i++) {\n            for (int\
+        \ j = 1; j <= k; j++) {\n                buy[i][j] = max(buy[i - 1][j], sell[i\
+        \ - 1][j - 1] - prices[i]);\n                sell[i][j] = max(sell[i - 1][j],\
+        \ buy[i - 1][j] + prices[i]);\n            }\n        }\n        return sell[n\
+        \ - 1][k];\n    }\n}"
+      go: "func maxProfit(prices []int, k int) int {\n    n := len(prices)\n    if n\
+        \ < 2 {\n        return 0\n    }\n    k = min(k, n/2)\n    buy := make([][]int,\
+        \ n)\n    sell := make([][]int, n)\n    for i := range buy {\n        buy[i]\
+        \ = make([]int, k+1)\n        sell[i] = make([]int, k+1)\n    }\n    for i :=\
+        \ 1; i < n; i++ {\n        for j := 1; j <= k; j++ {\n            buy[i][j]\
+        \ = max(buy[i-1][j], sell[i-1][j-1]-prices[i])\n            sell[i][j] = max(sell[i-1][j],\
+        \ buy[i-1][j]+prices[i])\n        }\n    }\n    return sell[n-1][k]\n}\n\nfunc\
+        \ max(a, b int) int {\n    if a > b {\n        return a\n    }\n    return b\n\
+        }\n\nfunc min(a, b int) int {\n    if a < b {\n        return a\n    }\n   \
+        \ return b\n}"
+      ruby: "class Solution\n    def max_profit(prices, k)\n        n = prices.size\n\
+        \        return 0 if n < 2\n        k = [k, n / 2].min\n        buy = Array.new(n)\
+        \ { Array.new(k + 1, 0) }\n        sell = Array.new(n) { Array.new(k + 1, 0)\
+        \ }\n        (1...n).each do |i|\n            (1..k).each do |j|\n         \
+        \       buy[i][j] = [buy[i - 1][j], sell[i - 1][j - 1] - prices[i]].max\n  \
+        \              sell[i][j] = [sell[i - 1][j], buy[i - 1][j] + prices[i]].max\n\
+        \            end\n        end\n        sell[n - 1][k]\n    end\nend"
+      scala: "object Solution {\n    def maxProfit(prices: Array[Int], k: Int): Int\
+        \ = {\n        val n = prices.length\n        if (n < 2) return 0\n        val\
+        \ k = math.min(k, n / 2)\n        val buy = Array.ofDim[Int](n, k + 1)\n   \
+        \     val sell = Array.ofDim[Int](n, k + 1)\n        for (i <- 1 until n) {\n\
+        \            for (j <- 1 to k) {\n                buy(i)(j) = math.max(buy(i\
+        \ - 1)(j), sell(i - 1)(j - 1) - prices(i))\n                sell(i)(j) = math.max(sell(i\
+        \ - 1)(j), buy(i - 1)(j) + prices(i))\n            }\n        }\n        sell(n\
+        \ - 1)(k)\n    }\n}"
+      rust: "struct Solution;\nimpl Solution {\n    pub fn max_profit(prices: Vec<i32>,\
+        \ k: i32) -> i32 {\n        let n = prices.len();\n        if n < 2 {\n    \
+        \        return 0;\n        }\n        let k = k.min(n as i32 / 2);\n      \
+        \  let mut buy = vec![vec![0; k as usize + 1]; n];\n        let mut sell = vec![vec![0;\
+        \ k as usize + 1]; n];\n        for i in 1..n {\n            for j in 1..=k\
+        \ as usize {\n                buy[i][j] = buy[i - 1][j].max(sell[i - 1][j -\
+        \ 1] - prices[i]);\n                sell[i][j] = sell[i - 1][j].max(buy[i -\
+        \ 1][j] + prices[i]);\n            }\n        }\n        sell[n - 1][k as usize]\n\
+        \    }\n}"
+      racket: "define (max-profit prices k)\n    (let* (\n        (n (length prices))\n\
+        \        (k (min k (quotient n 2)))\n        (buy (make-list n (make-list (+\
+        \ k 1) 0)))\n        (sell (make-list n (make-list (+ k 1) 0))))\n        (for\
+        \ (\n            ((i (in-range 1 n)))\n            ((j (in-range 1 (+ k 1))))\n\
+        \            (set! (list-ref (list-ref buy i) j) (max (list-ref (list-ref buy\
+        \ (- i 1)) j) (- (list-ref (list-ref sell (- i 1)) (- j 1)) (list-ref prices\
+        \ i))))\n            (set! (list-ref (list-ref sell i) j) (max (list-ref (list-ref\
+        \ sell (- i 1)) j) (+ (list-ref (list-ref buy (- i 1)) j) (list-ref prices i))))))\n\
+        \        (list-ref (list-ref sell (- n 1)) k))"
+      erlang: "max_profit(Prices, K) ->\n    N = length(Prices),\n    K1 = min(K, N\
+        \ div 2),\n    Buy = array:new(N, {default, array:new(K1 + 1, {default, 0})}),\n\
+        \    Sell = array:new(N, {default, array:new(K1 + 1, {default, 0})}),\n    lists:foreach(fun(I)\
+        \ ->\n        lists:foreach(fun(J) ->\n            Buy1 = array:get(I, Buy),\n\
+        \            Sell1 = array:get(I, Sell),\n            Buy2 = array:get(I - 1,\
+        \ Buy),\n            Sell2 = array:get(I - 1, Sell),\n            array:set(J,\
+        \ max(array:get(J, Buy2), array:get(J - 1, Sell2) - lists:nth(I + 1, Prices),\
+        \ Buy1), Buy),\n            array:set(J, max(array:get(J, Sell2), array:get(J,\
+        \ Buy2) + lists:nth(I + 1, Prices), Sell1), Sell)\n        end, lists:seq(1,\
+        \ K1)),\n        lists:seq(1, N - 1)),\n    array:get(K1, array:get(N - 1, Sell))."
+      elixir: "defmodule Solution do\n    def max_profit(prices, k) do\n        n =\
+        \ length(prices)\n        if n < 2, do: 0\n        k = min(k, div(n, 2))\n \
+        \       buy = for _ <- 1..n, do: for _ <- 1..k + 1, do: 0\n        sell = for\
+        \ _ <- 1..n, do: for _ <- 1..k + 1, do: 0\n        for i <- 1..n - 1 do\n  \
+        \          for j <- 1..k do\n                buy = update_in(buy, [i, j], fn\
+        \ x -> max(x, Enum.at(sell, i - 1) |> Enum.at(j - 1) - Enum.at(prices, i)) end)\n\
+        \                sell = update_in(sell, [i, j], fn x -> max(x, Enum.at(buy,\
+        \ i - 1) |> Enum.at(j) + Enum.at(prices, i)) end)\n            end\n       \
+        \ end\n        Enum.at(Enum.at(sell, n - 1), k)\n    end\nend"
     approach: The problem can be solved using dynamic programming. We need to keep track
-      of the maximum profit that can be achieved with a given number of transactions
-      and the current state of the transaction (either running or completed). The key
-      intuition is to consider all possible transactions and choose the one that maximizes
-      the profit. We can use a 2D array to store the maximum profit for each state and
-      transaction count. The transition from one state to another can be done by either
-      starting a new transaction or completing the current one. The maximum profit can
-      be calculated by considering the maximum profit of the previous state and the
-      current price.
-    time_complexity: The time complexity of the solution is O(n * k) where n is the
+      of the maximum profit we can get after a certain number of transactions. We can
+      use a 2D array to store the maximum profit after each transaction. The key intuition
+      is that we can either choose to make a transaction on the current day or not.
+      If we choose to make a transaction, we need to consider whether it's a normal
+      transaction or a short selling transaction. We can calculate the maximum profit
+      by considering all possible transactions and choosing the one that gives us the
+      maximum profit. The dynamic programming approach allows us to avoid redundant
+      calculations and solve the problem efficiently.
+    time_complexity: The time complexity of the solution is O(n * k), where n is the
       number of days and k is the number of transactions. This is because we need to
-      iterate over the prices array and for each price, we need to consider all possible
-      transactions.
-    space_complexity: The space complexity of the solution is O(n * k) where n is the
+      iterate over each day and each transaction to calculate the maximum profit.
+    space_complexity: The space complexity of the solution is O(n * k), where n is the
       number of days and k is the number of transactions. This is because we need to
-      store the maximum profit for each state and transaction count in a 2D array.
-    elapsed_time: 12.324929475784302
+      store the maximum profit after each transaction in a 2D array.
+    elapsed_time: 9.699870347976685
     model: llama-3.3-70b-versatile
-    generated_at: '2025-12-17 01:07:43 '
+    generated_at: '2025-12-17 02:03:55 '
 ---
 
 ## Problem #3573: Best Time to Buy and Sell Stock V
@@ -303,14 +279,14 @@ We've generated solutions using multiple AI models. Click to expand each solutio
 <details class="ai-solution-card" open markdown="1">
 <summary class="ai-solution-header">
   <span class="ai-model-badge">⚡ Solution from <strong>llama-3.3-70b-versatile</strong></span>
-  <small class="solution-timestamp">(2025-12-17 01:07:43 )</small>
+  <small class="solution-timestamp">(2025-12-17 02:03:55 )</small>
 </summary>
 
 <div class="ai-solution-content">
 
 ### Approach
 
-The problem can be solved using dynamic programming. We need to keep track of the maximum profit that can be achieved with a given number of transactions and the current state of the transaction (either running or completed). The key intuition is to consider all possible transactions and choose the one that maximizes the profit. We can use a 2D array to store the maximum profit for each state and transaction count. The transition from one state to another can be done by either starting a new transaction or completing the current one. The maximum profit can be calculated by considering the maximum profit of the previous state and the current price.
+The problem can be solved using dynamic programming. We need to keep track of the maximum profit we can get after a certain number of transactions. We can use a 2D array to store the maximum profit after each transaction. The key intuition is that we can either choose to make a transaction on the current day or not. If we choose to make a transaction, we need to consider whether it's a normal transaction or a short selling transaction. We can calculate the maximum profit by considering all possible transactions and choosing the one that gives us the maximum profit. The dynamic programming approach allows us to avoid redundant calculations and solve the problem efficiently.
 
 ### Code
 
@@ -361,24 +337,22 @@ The problem can be solved using dynamic programming. We need to keep track of th
 {% highlight cpp %}
 {% raw %}
 class Solution {
-    public:
-        int maxProfit(vector<int>& prices, int k) {
-            int n = prices.size();
-            if (n < 2) return 0;
-            if (k > n / 2) k = n / 2;
-            vector<vector<int>> buy(k + 1, vector<int>(n, 0));
-            vector<vector<int>> sell(k + 1, vector<int>(n, 0));
-            for (int i = 1; i <= k; i++) {
-                int maxDiff = -prices[0];
-                for (int j = 1; j < n; j++) {
-                    buy[i][j] = max(buy[i][j - 1], sell[i - 1][j - 1] - prices[j]);
-                    sell[i][j] = max(sell[i][j - 1], buy[i][j - 1] + prices[j]);
-                    maxDiff = max(maxDiff, sell[i - 1][j - 1] - prices[j]);
-                }
+public:
+    int maxProfit(vector<int>& prices, int k) {
+        int n = prices.size();
+        if (n < 2) return 0;
+        k = min(k, n / 2);
+        vector<vector<int>> buy(n, vector<int>(k + 1, 0));
+        vector<vector<int>> sell(n, vector<int>(k + 1, 0));
+        for (int i = 1; i < n; i++) {
+            for (int j = 1; j <= k; j++) {
+                buy[i][j] = max(buy[i - 1][j], sell[i - 1][j - 1] - prices[i]);
+                sell[i][j] = max(sell[i - 1][j], buy[i - 1][j] + prices[i]);
             }
-            return sell[k][n - 1];
         }
-    };
+        return sell[n - 1][k];
+    }
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -389,23 +363,21 @@ class Solution {
 {% highlight java %}
 {% raw %}
 class Solution {
-public int maxProfit(int[] prices, int k) {
-    int n = prices.length;
-    if (n < 2) return 0;
-    if (k > n / 2) k = n / 2;
-    int[][] buy = new int[k + 1][n];
-    int[][] sell = new int[k + 1][n];
-    for (int i = 1; i <= k; i++) {
-        int maxDiff = -prices[0];
-        for (int j = 1; j < n; j++) {
-            buy[i][j] = Math.max(buy[i][j - 1], sell[i - 1][j - 1] - prices[j]);
-            sell[i][j] = Math.max(sell[i][j - 1], buy[i][j - 1] + prices[j]);
-            maxDiff = Math.max(maxDiff, sell[i - 1][j - 1] - prices[j]);
+    public int maxProfit(int[] prices, int k) {
+        int n = prices.length;
+        if (n < 2) return 0;
+        k = Math.min(k, n / 2);
+        int[][] buy = new int[n][k + 1];
+        int[][] sell = new int[n][k + 1];
+        for (int i = 1; i < n; i++) {
+            for (int j = 1; j <= k; j++) {
+                buy[i][j] = Math.max(buy[i - 1][j], sell[i - 1][j - 1] - prices[i]);
+                sell[i][j] = Math.max(sell[i - 1][j], buy[i - 1][j] + prices[i]);
+            }
         }
+        return sell[n - 1][k];
     }
-    return sell[k][n - 1];
 }
-};
 {% endraw %}
 {% endhighlight %}
 
@@ -416,19 +388,17 @@ public int maxProfit(int[] prices, int k) {
 {% highlight python %}
 {% raw %}
 class Solution:
-def maxProfit(self, prices: List[int], k: int) -> int:
-    n = len(prices)
-    if n < 2: return 0
-    if k > n // 2: k = n // 2
-    buy = [[0] * n for _ in range(k + 1)]
-    sell = [[0] * n for _ in range(k + 1)]
-    for i in range(1, k + 1):
-        max_diff = -prices[0]
-        for j in range(1, n):
-            buy[i][j] = max(buy[i][j - 1], sell[i - 1][j - 1] - prices[j])
-            sell[i][j] = max(sell[i][j - 1], buy[i][j - 1] + prices[j])
-            max_diff = max(max_diff, sell[i - 1][j - 1] - prices[j])
-    return sell[k][n - 1]
+    def maxProfit(self, prices: List[int], k: int) -> int:
+        n = len(prices)
+        if n < 2: return 0
+        k = min(k, n // 2)
+        buy = [[0] * (k + 1) for _ in range(n)]
+        sell = [[0] * (k + 1) for _ in range(n)]
+        for i in range(1, n):
+            for j in range(1, k + 1):
+                buy[i][j] = max(buy[i - 1][j], sell[i - 1][j - 1] - prices[i])
+                sell[i][j] = max(sell[i - 1][j], buy[i - 1][j] + prices[i])
+        return sell[n - 1][k]
 {% endraw %}
 {% endhighlight %}
 
@@ -439,19 +409,17 @@ def maxProfit(self, prices: List[int], k: int) -> int:
 {% highlight python %}
 {% raw %}
 class Solution:
-def maxProfit(self, prices: List[int], k: int) -> int:
-    n = len(prices)
-    if n < 2: return 0
-    if k > n // 2: k = n // 2
-    buy = [[0] * n for _ in range(k + 1)]
-    sell = [[0] * n for _ in range(k + 1)]
-    for i in range(1, k + 1):
-        max_diff = -prices[0]
-        for j in range(1, n):
-            buy[i][j] = max(buy[i][j - 1], sell[i - 1][j - 1] - prices[j])
-            sell[i][j] = max(sell[i][j - 1], buy[i][j - 1] + prices[j])
-            max_diff = max(max_diff, sell[i - 1][j - 1] - prices[j])
-    return sell[k][n - 1]
+    def maxProfit(self, prices: List[int], k: int) -> int:
+        n = len(prices)
+        if n < 2: return 0
+        k = min(k, n // 2)
+        buy = [[0] * (k + 1) for _ in range(n)]
+        sell = [[0] * (k + 1) for _ in range(n)]
+        for i in range(1, n):
+            for j in range(1, k + 1):
+                buy[i][j] = max(buy[i - 1][j], sell[i - 1][j - 1] - prices[i])
+                sell[i][j] = max(sell[i - 1][j], buy[i - 1][j] + prices[i])
+        return sell[n - 1][k]
 {% endraw %}
 {% endhighlight %}
 
@@ -461,34 +429,35 @@ def maxProfit(self, prices: List[int], k: int) -> int:
 
 {% highlight c %}
 {% raw %}
-#include <stdio.h>
-    #include <stdlib.h>
-    int maxProfit(int* prices, int pricesSize, int k) {
-        if (pricesSize < 2) return 0;
-        if (k > pricesSize / 2) k = pricesSize / 2;
-        int** buy = (int**)malloc((k + 1) * sizeof(int*));
-        int** sell = (int**)malloc((k + 1) * sizeof(int*));
-        for (int i = 0; i <= k; i++) {
-            buy[i] = (int*)malloc(pricesSize * sizeof(int));
-            sell[i] = (int*)malloc(pricesSize * sizeof(int));
-        }
-        for (int i = 1; i <= k; i++) {
-            int max_diff = -prices[0];
-            for (int j = 1; j < pricesSize; j++) {
-                buy[i][j] = (buy[i][j - 1] > sell[i - 1][j - 1] - prices[j]) ? buy[i][j - 1] : sell[i - 1][j - 1] - prices[j];
-                sell[i][j] = (sell[i][j - 1] > buy[i][j - 1] + prices[j]) ? sell[i][j - 1] : buy[i][j - 1] + prices[j];
-                max_diff = (max_diff > sell[i - 1][j - 1] - prices[j]) ? max_diff : sell[i - 1][j - 1] - prices[j];
-            }
-        }
-        int result = sell[k][pricesSize - 1];
-        for (int i = 0; i <= k; i++) {
-            free(buy[i]);
-            free(sell[i]);
-        }
-        free(buy);
-        free(sell);
-        return result;
+typedef struct {
+    int* arr;
+    int size;
+} Array;
+
+int maxProfit(int* prices, int pricesSize, int k) {
+    if (pricesSize < 2) return 0;
+    k = k < pricesSize / 2 ? k : pricesSize / 2;
+    int** buy = (int**)malloc(pricesSize * sizeof(int*));
+    int** sell = (int**)malloc(pricesSize * sizeof(int*));
+    for (int i = 0; i < pricesSize; i++) {
+        buy[i] = (int*)malloc((k + 1) * sizeof(int));
+        sell[i] = (int*)malloc((k + 1) * sizeof(int));
     }
+    for (int i = 1; i < pricesSize; i++) {
+        for (int j = 1; j <= k; j++) {
+            buy[i][j] = (buy[i - 1][j] > sell[i - 1][j - 1] - prices[i]) ? buy[i - 1][j] : sell[i - 1][j - 1] - prices[i];
+            sell[i][j] = (sell[i - 1][j] > buy[i - 1][j] + prices[i]) ? sell[i - 1][j] : buy[i - 1][j] + prices[i];
+        }
+    }
+    int result = sell[pricesSize - 1][k];
+    for (int i = 0; i < pricesSize; i++) {
+        free(buy[i]);
+        free(sell[i]);
+    }
+    free(buy);
+    free(sell);
+    return result;
+}
 {% endraw %}
 {% endhighlight %}
 
@@ -499,27 +468,25 @@ def maxProfit(self, prices: List[int], k: int) -> int:
 {% highlight csharp %}
 {% raw %}
 public class Solution {
-public int MaxProfit(int[] prices, int k) {
-    int n = prices.Length;
-    if (n < 2) return 0;
-    if (k > n / 2) k = n / 2;
-    int[][] buy = new int[k + 1][];
-    int[][] sell = new int[k + 1][];
-    for (int i = 0; i <= k; i++) {
-        buy[i] = new int[n];
-        sell[i] = new int[n];
-    }
-    for (int i = 1; i <= k; i++) {
-        int maxDiff = -prices[0];
-        for (int j = 1; j < n; j++) {
-            buy[i][j] = Math.Max(buy[i][j - 1], sell[i - 1][j - 1] - prices[j]);
-            sell[i][j] = Math.Max(sell[i][j - 1], buy[i][j - 1] + prices[j]);
-            maxDiff = Math.Max(maxDiff, sell[i - 1][j - 1] - prices[j]);
+    public int MaxProfit(int[] prices, int k) {
+        int n = prices.Length;
+        if (n < 2) return 0;
+        k = Math.Min(k, n / 2);
+        int[][] buy = new int[n][];
+        int[][] sell = new int[n][];
+        for (int i = 0; i < n; i++) {
+            buy[i] = new int[k + 1];
+            sell[i] = new int[k + 1];
         }
+        for (int i = 1; i < n; i++) {
+            for (int j = 1; j <= k; j++) {
+                buy[i][j] = Math.Max(buy[i - 1][j], sell[i - 1][j - 1] - prices[i]);
+                sell[i][j] = Math.Max(sell[i - 1][j], buy[i - 1][j] + prices[i]);
+            }
+        }
+        return sell[n - 1][k];
     }
-    return sell[k][n - 1];
 }
-};
 {% endraw %}
 {% endhighlight %}
 
@@ -530,20 +497,18 @@ public int MaxProfit(int[] prices, int k) {
 {% highlight javascript %}
 {% raw %}
 var maxProfit = function(prices, k) {
-let n = prices.length;
-if (n < 2) return 0;
-if (k > n / 2) k = Math.floor(n / 2);
-let buy = Array(k + 1).fill(0).map(() => Array(n).fill(0));
-let sell = Array(k + 1).fill(0).map(() => Array(n).fill(0));
-for (let i = 1; i <= k; i++) {
-    let maxDiff = -prices[0];
-    for (let j = 1; j < n; j++) {
-        buy[i][j] = Math.max(buy[i][j - 1], sell[i - 1][j - 1] - prices[j]);
-        sell[i][j] = Math.max(sell[i][j - 1], buy[i][j - 1] + prices[j]);
-        maxDiff = Math.max(maxDiff, sell[i - 1][j - 1] - prices[j]);
+    let n = prices.length;
+    if (n < 2) return 0;
+    k = Math.min(k, Math.floor(n / 2));
+    let buy = Array(n).fill(0).map(() => Array(k + 1).fill(0));
+    let sell = Array(n).fill(0).map(() => Array(k + 1).fill(0));
+    for (let i = 1; i < n; i++) {
+        for (let j = 1; j <= k; j++) {
+            buy[i][j] = Math.max(buy[i - 1][j], sell[i - 1][j - 1] - prices[i]);
+            sell[i][j] = Math.max(sell[i - 1][j], buy[i - 1][j] + prices[i]);
+        }
     }
-}
-return sell[k][n - 1];
+    return sell[n - 1][k];
 };
 {% endraw %}
 {% endhighlight %}
@@ -555,21 +520,19 @@ return sell[k][n - 1];
 {% highlight typescript %}
 {% raw %}
 function maxProfit(prices: number[], k: number): number {
-let n = prices.length;
-if (n < 2) return 0;
-if (k > n / 2) k = Math.floor(n / 2);
-let buy: number[][] = Array(k + 1).fill(0).map(() => Array(n).fill(0));
-let sell: number[][] = Array(k + 1).fill(0).map(() => Array(n).fill(0));
-for (let i = 1; i <= k; i++) {
-    let maxDiff = -prices[0];
-    for (let j = 1; j < n; j++) {
-        buy[i][j] = Math.max(buy[i][j - 1], sell[i - 1][j - 1] - prices[j]);
-        sell[i][j] = Math.max(sell[i][j - 1], buy[i][j - 1] + prices[j]);
-        maxDiff = Math.max(maxDiff, sell[i - 1][j - 1] - prices[j]);
+    let n = prices.length;
+    if (n < 2) return 0;
+    k = Math.min(k, Math.floor(n / 2));
+    let buy: number[][] = Array(n).fill(0).map(() => Array(k + 1).fill(0));
+    let sell: number[][] = Array(n).fill(0).map(() => Array(k + 1).fill(0));
+    for (let i = 1; i < n; i++) {
+        for (let j = 1; j <= k; j++) {
+            buy[i][j] = Math.max(buy[i - 1][j], sell[i - 1][j - 1] - prices[i]);
+            sell[i][j] = Math.max(sell[i - 1][j], buy[i - 1][j] + prices[i]);
+        }
     }
+    return sell[n - 1][k];
 }
-return sell[k][n - 1];
-};
 {% endraw %}
 {% endhighlight %}
 
@@ -580,23 +543,21 @@ return sell[k][n - 1];
 {% highlight php %}
 {% raw %}
 class Solution {
-function maxProfit($prices, $k) {
-    $n = count($prices);
-    if ($n < 2) return 0;
-    if ($k > $n / 2) $k = floor($n / 2);
-    $buy = array_fill(0, $k + 1, array_fill(0, $n, 0));
-    $sell = array_fill(0, $k + 1, array_fill(0, $n, 0));
-    for ($i = 1; $i <= $k; $i++) {
-        $maxDiff = -$prices[0];
-        for ($j = 1; $j < $n; $j++) {
-            $buy[$i][$j] = max($buy[$i][$j - 1], $sell[$i - 1][$j - 1] - $prices[$j]);
-            $sell[$i][$j] = max($sell[$i][$j - 1], $buy[$i][$j - 1] + $prices[$j]);
-            $maxDiff = max($maxDiff, $sell[$i - 1][$j - 1] - $prices[$j]);
+    function maxProfit($prices, $k) {
+        $n = count($prices);
+        if ($n < 2) return 0;
+        $k = min($k, floor($n / 2));
+        $buy = array_fill(0, $n, array_fill(0, $k + 1, 0));
+        $sell = array_fill(0, $n, array_fill(0, $k + 1, 0));
+        for ($i = 1; $i < $n; $i++) {
+            for ($j = 1; $j <= $k; $j++) {
+                $buy[$i][$j] = max($buy[$i - 1][$j], $sell[$i - 1][$j - 1] - $prices[$i]);
+                $sell[$i][$j] = max($sell[$i - 1][$j], $buy[$i - 1][$j] + $prices[$i]);
+            }
         }
+        return $sell[$n - 1][$k];
     }
-    return $sell[$k][$n - 1];
 }
-};
 {% endraw %}
 {% endhighlight %}
 
@@ -607,23 +568,21 @@ function maxProfit($prices, $k) {
 {% highlight swift %}
 {% raw %}
 class Solution {
-func maxProfit(_ prices: [Int], _ k: Int) -> Int {
-    let n = prices.count
-    if n < 2 { return 0 }
-    if k > n / 2 { return maxProfit(prices, k: n / 2) }
-    var buy = Array(repeating: Array(repeating: 0, count: n), count: k + 1)
-    var sell = Array(repeating: Array(repeating: 0, count: n), count: k + 1)
-    for i in 1...k + 1 {
-        var maxDiff = -prices[0]
-        for j in 1..<n {
-            buy[i][j] = max(buy[i][j - 1], sell[i - 1][j - 1] - prices[j])
-            sell[i][j] = max(sell[i][j - 1], buy[i][j - 1] + prices[j])
-            maxDiff = max(maxDiff, sell[i - 1][j - 1] - prices[j])
+    func maxProfit(_ prices: [Int], _ k: Int) -> Int {
+        let n = prices.count
+        if n < 2 { return 0 }
+        let k = min(k, n / 2)
+        var buy = Array(repeating: Array(repeating: 0, count: k + 1), count: n)
+        var sell = Array(repeating: Array(repeating: 0, count: k + 1), count: n)
+        for i in 1..<n {
+            for j in 1...k {
+                buy[i][j] = max(buy[i - 1][j], sell[i - 1][j - 1] - prices[i])
+                sell[i][j] = max(sell[i - 1][j], buy[i - 1][j] + prices[i])
+            }
         }
+        return sell[n - 1][k]
     }
-    return sell[k][n - 1]
 }
-};
 {% endraw %}
 {% endhighlight %}
 
@@ -634,23 +593,21 @@ func maxProfit(_ prices: [Int], _ k: Int) -> Int {
 {% highlight kotlin %}
 {% raw %}
 class Solution {
-fun maxProfit(prices: IntArray, k: Int): Int {
-    val n = prices.size
-    if (n < 2) return 0
-    if (k > n / 2) return maxProfit(prices, n / 2)
-    val buy = Array(k + 1) { IntArray(n) }
-    val sell = Array(k + 1) { IntArray(n) }
-    for (i in 1..k) {
-        var maxDiff = -prices[0]
-        for (j in 1 until n) {
-            buy[i][j] = maxOf(buy[i][j - 1], sell[i - 1][j - 1] - prices[j])
-            sell[i][j] = maxOf(sell[i][j - 1], buy[i][j - 1] + prices[j])
-            maxDiff = maxOf(maxDiff, sell[i - 1][j - 1] - prices[j])
+    fun maxProfit(prices: IntArray, k: Int): Int {
+        val n = prices.size
+        if (n < 2) return 0
+        val k = minOf(k, n / 2)
+        val buy = Array(n) { IntArray(k + 1) }
+        val sell = Array(n) { IntArray(k + 1) }
+        for (i in 1 until n) {
+            for (j in 1..k) {
+                buy[i][j] = maxOf(buy[i - 1][j], sell[i - 1][j - 1] - prices[i])
+                sell[i][j] = maxOf(sell[i - 1][j], buy[i - 1][j] + prices[i])
+            }
         }
+        return sell[n - 1][k]
     }
-    return sell[k][n - 1]
 }
-};
 {% endraw %}
 {% endhighlight %}
 
@@ -661,23 +618,21 @@ fun maxProfit(prices: IntArray, k: Int): Int {
 {% highlight dart %}
 {% raw %}
 class Solution {
-int maxProfit(List<int> prices, int k) {
-    int n = prices.length;
-    if (n < 2) return 0;
-    if (k > n / 2) k = (n / 2).floor();
-    List<List<int>> buy = List.generate(k + 1, (i) => List.generate(n, (j) => 0));
-    List<List<int>> sell = List.generate(k + 1, (i) => List.generate(n, (j) => 0));
-    for (int i = 1; i <= k; i++) {
-        int maxDiff = -prices[0];
-        for (int j = 1; j < n; j++) {
-            buy[i][j] = max(buy[i][j - 1], sell[i - 1][j - 1] - prices[j]);
-            sell[i][j] = max(sell[i][j - 1], buy[i][j - 1] + prices[j]);
-            maxDiff = max(maxDiff, sell[i - 1][j - 1] - prices[j]);
+    int maxProfit(List<int> prices, int k) {
+        int n = prices.length;
+        if (n < 2) return 0;
+        k = k < n ~/ 2 ? k : n ~/ 2;
+        List<List<int>> buy = List.generate(n, (i) => List.generate(k + 1, (j) => 0));
+        List<List<int>> sell = List.generate(n, (i) => List.generate(k + 1, (j) => 0));
+        for (int i = 1; i < n; i++) {
+            for (int j = 1; j <= k; j++) {
+                buy[i][j] = max(buy[i - 1][j], sell[i - 1][j - 1] - prices[i]);
+                sell[i][j] = max(sell[i - 1][j], buy[i - 1][j] + prices[i]);
+            }
         }
+        return sell[n - 1][k];
     }
-    return sell[k][n - 1];
 }
-};
 {% endraw %}
 {% endhighlight %}
 
@@ -688,35 +643,39 @@ int maxProfit(List<int> prices, int k) {
 {% highlight go %}
 {% raw %}
 func maxProfit(prices []int, k int) int {
-n := len(prices)
-if n < 2 {
-    return 0
-}
-if k > n/2 {
-    k = n / 2
-}
-buy := make([][]int, k+1)
-sell := make([][]int, k+1)
-for i := range buy {
-    buy[i] = make([]int, n)
-    sell[i] = make([]int, n)
-}
-for i := 1; i <= k; i++ {
-    maxDiff := -prices[0]
-    for j := 1; j < n; j++ {
-        buy[i][j] = max(buy[i][j-1], sell[i-1][j-1]-prices[j])
-        sell[i][j] = max(sell[i][j-1], buy[i][j-1]+prices[j])
-        maxDiff = max(maxDiff, sell[i-1][j-1]-prices[j])
+    n := len(prices)
+    if n < 2 {
+        return 0
     }
+    k = min(k, n/2)
+    buy := make([][]int, n)
+    sell := make([][]int, n)
+    for i := range buy {
+        buy[i] = make([]int, k+1)
+        sell[i] = make([]int, k+1)
+    }
+    for i := 1; i < n; i++ {
+        for j := 1; j <= k; j++ {
+            buy[i][j] = max(buy[i-1][j], sell[i-1][j-1]-prices[i])
+            sell[i][j] = max(sell[i-1][j], buy[i-1][j]+prices[i])
+        }
+    }
+    return sell[n-1][k]
 }
-return sell[k][n-1]
-};
+
 func max(a, b int) int {
-if a > b {
-    return a
+    if a > b {
+        return a
+    }
+    return b
 }
-return b
-};
+
+func min(a, b int) int {
+    if a < b {
+        return a
+    }
+    return b
+}
 {% endraw %}
 {% endhighlight %}
 
@@ -726,22 +685,22 @@ return b
 
 {% highlight ruby %}
 {% raw %}
-def max_profit(prices, k)
-n = prices.size
-return 0 if n < 2
-k = n / 2 if k > n / 2
-buy = Array.new(k + 1) { Array.new(n, 0) }
-sell = Array.new(k + 1) { Array.new(n, 0) }
-(1..k).each do |i|
-    max_diff = -prices[0]
-    (1...n).each do |j|
-        buy[i][j] = [buy[i][j - 1], sell[i - 1][j - 1] - prices[j]].max
-        sell[i][j] = [sell[i][j - 1], buy[i][j - 1] + prices[j]].max
-        max_diff = [max_diff, sell[i - 1][j - 1] - prices[j]].max
+class Solution
+    def max_profit(prices, k)
+        n = prices.size
+        return 0 if n < 2
+        k = [k, n / 2].min
+        buy = Array.new(n) { Array.new(k + 1, 0) }
+        sell = Array.new(n) { Array.new(k + 1, 0) }
+        (1...n).each do |i|
+            (1..k).each do |j|
+                buy[i][j] = [buy[i - 1][j], sell[i - 1][j - 1] - prices[i]].max
+                sell[i][j] = [sell[i - 1][j], buy[i - 1][j] + prices[i]].max
+            end
+        end
+        sell[n - 1][k]
     end
 end
-sell[k][n - 1]
-end;
 {% endraw %}
 {% endhighlight %}
 
@@ -752,23 +711,21 @@ end;
 {% highlight scala %}
 {% raw %}
 object Solution {
-def maxProfit(prices: Array[Int], k: Int): Int = {
-    val n = prices.length
-    if (n < 2) return 0
-    if (k > n / 2) return maxProfit(prices, n / 2)
-    val buy = Array.ofDim[Int](k + 1, n)
-    val sell = Array.ofDim[Int](k + 1, n)
-    for (i <- 1 to k) {
-        var maxDiff = -prices(0)
-        for (j <- 1 until n) {
-            buy(i)(j) = math.max(buy(i)(j - 1), sell(i - 1)(j - 1) - prices(j))
-            sell(i)(j) = math.max(sell(i)(j - 1), buy(i)(j - 1) + prices(j))
-            maxDiff = math.max(maxDiff, sell(i - 1)(j - 1) - prices(j))
+    def maxProfit(prices: Array[Int], k: Int): Int = {
+        val n = prices.length
+        if (n < 2) return 0
+        val k = math.min(k, n / 2)
+        val buy = Array.ofDim[Int](n, k + 1)
+        val sell = Array.ofDim[Int](n, k + 1)
+        for (i <- 1 until n) {
+            for (j <- 1 to k) {
+                buy(i)(j) = math.max(buy(i - 1)(j), sell(i - 1)(j - 1) - prices(i))
+                sell(i)(j) = math.max(sell(i - 1)(j), buy(i - 1)(j) + prices(i))
+            }
         }
+        sell(n - 1)(k)
     }
-    sell(k)(n - 1)
 }
-};
 {% endraw %}
 {% endhighlight %}
 
@@ -778,28 +735,25 @@ def maxProfit(prices: Array[Int], k: Int): Int = {
 
 {% highlight rust %}
 {% raw %}
+struct Solution;
 impl Solution {
-pub fn max_profit(prices: Vec<i32>, k: i32) -> i32 {
-    let n = prices.len();
-    if n < 2 {
-        return 0;
-    }
-    if k as usize > n / 2 {
-        return Solution::max_profit(prices, (n as i32) / 2);
-    }
-    let mut buy = vec![vec![0; n]; (k + 1) as usize];
-    let mut sell = vec![vec![0; n]; (k + 1) as usize];
-    for i in 1..=(k as usize) {
-        let mut max_diff = -prices[0];
-        for j in 1..n {
-            buy[i][j] = std::cmp::max(buy[i][j - 1], sell[i - 1][j - 1] - prices[j]);
-            sell[i][j] = std::cmp::max(sell[i][j - 1], buy[i][j - 1] + prices[j]);
-            max_diff = std::cmp::max(max_diff, sell[i - 1][j - 1] - prices[j]);
+    pub fn max_profit(prices: Vec<i32>, k: i32) -> i32 {
+        let n = prices.len();
+        if n < 2 {
+            return 0;
         }
+        let k = k.min(n as i32 / 2);
+        let mut buy = vec![vec![0; k as usize + 1]; n];
+        let mut sell = vec![vec![0; k as usize + 1]; n];
+        for i in 1..n {
+            for j in 1..=k as usize {
+                buy[i][j] = buy[i - 1][j].max(sell[i - 1][j - 1] - prices[i]);
+                sell[i][j] = sell[i - 1][j].max(buy[i - 1][j] + prices[i]);
+            }
+        }
+        sell[n - 1][k as usize]
     }
-    sell[k as usize][n - 1]
 }
-};
 {% endraw %}
 {% endhighlight %}
 
@@ -809,19 +763,18 @@ pub fn max_profit(prices: Vec<i32>, k: i32) -> i32 {
 
 {% highlight racket %}
 {% raw %}
-#lang racket
-    (define (max-profit prices k)
-        (let* ((n (length prices))
-               (k (if (> k (/ n 2)) (/ n 2) k)))
-              (define buy (make-vector (add1 k) (make-vector n 0)))
-              (define sell (make-vector (add1 k) (make-vector n 0)))
-              (do ((i 1 (add1 i)))
-                  ((> i k))
-                (do ((j 1 (add1 j)))
-                    ((= j n))
-                  (vector-set! buy i j (max (vector-ref buy i (sub1 j)) (- (vector-ref sell (sub1 i) (sub1 j)) (list-ref prices j))))
-                  (vector-set! sell i j (max (vector-ref sell i (sub1 j)) (+ (vector-ref buy i (sub1 j)) (list-ref prices j))))))
-              (vector-ref sell k (sub1 n))))
+define (max-profit prices k)
+    (let* (
+        (n (length prices))
+        (k (min k (quotient n 2)))
+        (buy (make-list n (make-list (+ k 1) 0)))
+        (sell (make-list n (make-list (+ k 1) 0))))
+        (for (
+            ((i (in-range 1 n)))
+            ((j (in-range 1 (+ k 1))))
+            (set! (list-ref (list-ref buy i) j) (max (list-ref (list-ref buy (- i 1)) j) (- (list-ref (list-ref sell (- i 1)) (- j 1)) (list-ref prices i))))
+            (set! (list-ref (list-ref sell i) j) (max (list-ref (list-ref sell (- i 1)) j) (+ (list-ref (list-ref buy (- i 1)) j) (list-ref prices i))))))
+        (list-ref (list-ref sell (- n 1)) k))
 {% endraw %}
 {% endhighlight %}
 
@@ -831,23 +784,22 @@ pub fn max_profit(prices: Vec<i32>, k: i32) -> i32 {
 
 {% highlight erlang %}
 {% raw %}
--module(solution).
-    -export([max_profit/2]).
-    max_profit(Prices, K) ->
-        N = length(Prices),
-        if N < 2 -> 0;
-            true -> 
-                K1 = if K > N div 2 -> N div 2; true -> K end,
-                Buy = array:new([{size, K1 + 1}, {default, array:new([{size, N}, {default, 0}])}]),
-                Sell = array:new([{size, K1 + 1}, {default, array:new([{size, N}, {default, 0}])}]),
-                max_profit(Prices, K1, Buy, Sell, 1, 1, -hd(Prices)).
-    max_profit([_|_], K, Buy, Sell, K, N, _) when K > K1 -> array:get(K, Sell, N - 1);
-    max_profit(Prices, K, Buy, Sell, K, N, MaxDiff) ->
-        [P|Ps] = Prices,
-        Buy1 = array:set(K, array:set(N - 1, max(array:get(K, Buy, N - 2), array:get(K - 1, Sell, N - 2) - P), array:get(K, Buy, N - 1)), Buy),
-        Sell1 = array:set(K, array:set(N - 1, max(array:get(K, Sell, N - 2), array:get(K, Buy1, N - 1) + P), array:get(K, Sell, N - 1)), Sell),
-        MaxDiff1 = max(MaxDiff, array:get(K - 1, Sell, N - 2) - P),
-        max_profit(Ps, K, Buy1, Sell1, K, N - 1, MaxDiff1).
+max_profit(Prices, K) ->
+    N = length(Prices),
+    K1 = min(K, N div 2),
+    Buy = array:new(N, {default, array:new(K1 + 1, {default, 0})}),
+    Sell = array:new(N, {default, array:new(K1 + 1, {default, 0})}),
+    lists:foreach(fun(I) ->
+        lists:foreach(fun(J) ->
+            Buy1 = array:get(I, Buy),
+            Sell1 = array:get(I, Sell),
+            Buy2 = array:get(I - 1, Buy),
+            Sell2 = array:get(I - 1, Sell),
+            array:set(J, max(array:get(J, Buy2), array:get(J - 1, Sell2) - lists:nth(I + 1, Prices), Buy1), Buy),
+            array:set(J, max(array:get(J, Sell2), array:get(J, Buy2) + lists:nth(I + 1, Prices), Sell1), Sell)
+        end, lists:seq(1, K1)),
+        lists:seq(1, N - 1)),
+    array:get(K1, array:get(N - 1, Sell)).
 {% endraw %}
 {% endhighlight %}
 
@@ -858,24 +810,20 @@ pub fn max_profit(prices: Vec<i32>, k: i32) -> i32 {
 {% highlight elixir %}
 {% raw %}
 defmodule Solution do
-def max_profit(prices, k) do
-    n = length(prices)
-    if n < 2, do: 0
-    k = if k > div(n, 2), do: div(n, 2), else: k
-    buy = Array.new(k + 1, fn -> Array.new(n, 0) end)
-    sell = Array.new(k + 1, fn -> Array.new(n, 0) end)
-    max_profit(prices, k, buy, sell, 1, 1, -Enum.at(prices, 0))
-end
-defp max_profit([_|_], k, buy, sell, k, n, _) when k > k do
-    Array.get(sell, k, n - 1)
-end
-defp max_profit(prices, k, buy, sell, k, n, max_diff) do
-    [p|ps] = prices
-    buy1 = Array.put(buy, k, Array.put(Array.get(buy, k), n - 1, max(Array.get(Array.get(buy, k), n - 2), Array.get(Array.get(sell, k - 1), n - 2) - p)))
-    sell1 = Array.put(sell, k, Array.put(Array.get(sell, k), n - 1, max(Array.get(Array.get(sell, k), n - 2), Array.get(Array.get(buy1, k), n - 1) + p)))
-    max_diff1 = max(max_diff, Array.get(Array.get(sell, k - 1), n - 2) - p)
-    max_profit(ps, k, buy1, sell1, k, n - 1, max_diff1)
-end
+    def max_profit(prices, k) do
+        n = length(prices)
+        if n < 2, do: 0
+        k = min(k, div(n, 2))
+        buy = for _ <- 1..n, do: for _ <- 1..k + 1, do: 0
+        sell = for _ <- 1..n, do: for _ <- 1..k + 1, do: 0
+        for i <- 1..n - 1 do
+            for j <- 1..k do
+                buy = update_in(buy, [i, j], fn x -> max(x, Enum.at(sell, i - 1) |> Enum.at(j - 1) - Enum.at(prices, i)) end)
+                sell = update_in(sell, [i, j], fn x -> max(x, Enum.at(buy, i - 1) |> Enum.at(j) + Enum.at(prices, i)) end)
+            end
+        end
+        Enum.at(Enum.at(sell, n - 1), k)
+    end
 end
 {% endraw %}
 {% endhighlight %}
@@ -886,9 +834,9 @@ end
 
 ### Complexity Analysis
 
-- **Time Complexity:** The time complexity of the solution is O(n * k) where n is the number of days and k is the number of transactions. This is because we need to iterate over the prices array and for each price, we need to consider all possible transactions.
+- **Time Complexity:** The time complexity of the solution is O(n * k), where n is the number of days and k is the number of transactions. This is because we need to iterate over each day and each transaction to calculate the maximum profit.
 
-- **Space Complexity:** The space complexity of the solution is O(n * k) where n is the number of days and k is the number of transactions. This is because we need to store the maximum profit for each state and transaction count in a 2D array.
+- **Space Complexity:** The space complexity of the solution is O(n * k), where n is the number of days and k is the number of transactions. This is because we need to store the maximum profit after each transaction in a 2D array.
 
 </div>
 </details>
