@@ -194,5 +194,9 @@
   "2025-12-19": {
     "link": "/problems/find-all-people-with-secret/",
     "titleSlug": "find-all-people-with-secret"
+  },
+  "2025-12-20": {
+    "link": "/problems/delete-columns-to-make-sorted/",
+    "titleSlug": "delete-columns-to-make-sorted"
   }
 }
