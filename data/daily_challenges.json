@@ -198,5 +198,9 @@
   "2025-12-20": {
     "link": "/problems/delete-columns-to-make-sorted/",
     "titleSlug": "delete-columns-to-make-sorted"
+  },
+  "2025-12-21": {
+    "link": "/problems/delete-columns-to-make-sorted-ii/",
+    "titleSlug": "delete-columns-to-make-sorted-ii"
   }
 }
