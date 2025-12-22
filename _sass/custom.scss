@@ -812,10 +812,6 @@ html {
   box-shadow: var(--viewall-shadow);
 }
 
-.hero-btn.primary {}
-
-.hero-btn.secondary {}
-
 .hero-btn:hover {
   transform: translateY(-3px);
   box-shadow: var(--viewall-shadow-hover);
@@ -1246,7 +1242,7 @@ html {
   padding: 6px 14px;
   background: linear-gradient(135deg, #007bff, #0056b3);
   /* Blue to match LeetCode button in Light Mode */
-  color: white;
+  color: white !important;
   font-size: 12px;
   font-weight: 600;
   border-radius: 20px;
@@ -1257,7 +1253,7 @@ html {
 .post-tag:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px var(--shadow);
-  color: white;
+  color: white !important;
 }
 
 /* LeetCode Button in Header */
