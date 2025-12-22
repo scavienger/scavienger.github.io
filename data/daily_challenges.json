@@ -174,5 +174,37 @@
   "2025-12-14": {
     "link": "/problems/number-of-ways-to-divide-a-long-corridor/",
     "titleSlug": "number-of-ways-to-divide-a-long-corridor"
+  },
+  "2025-12-15": {
+    "link": "/problems/number-of-smooth-descent-periods-of-a-stock/",
+    "titleSlug": "number-of-smooth-descent-periods-of-a-stock"
+  },
+  "2025-12-16": {
+    "link": "/problems/maximum-profit-from-trading-stocks-with-discounts/",
+    "titleSlug": "maximum-profit-from-trading-stocks-with-discounts"
+  },
+  "2025-12-17": {
+    "link": "/problems/best-time-to-buy-and-sell-stock-v/",
+    "titleSlug": "best-time-to-buy-and-sell-stock-v"
+  },
+  "2025-12-18": {
+    "link": "/problems/best-time-to-buy-and-sell-stock-using-strategy/",
+    "titleSlug": "best-time-to-buy-and-sell-stock-using-strategy"
+  },
+  "2025-12-19": {
+    "link": "/problems/find-all-people-with-secret/",
+    "titleSlug": "find-all-people-with-secret"
+  },
+  "2025-12-20": {
+    "link": "/problems/delete-columns-to-make-sorted/",
+    "titleSlug": "delete-columns-to-make-sorted"
+  },
+  "2025-12-21": {
+    "link": "/problems/delete-columns-to-make-sorted-ii/",
+    "titleSlug": "delete-columns-to-make-sorted-ii"
+  },
+  "2025-12-22": {
+    "link": "/problems/delete-columns-to-make-sorted-iii/",
+    "titleSlug": "delete-columns-to-make-sorted-iii"
   }
 }
