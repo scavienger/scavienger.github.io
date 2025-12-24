@@ -210,5 +210,9 @@
   "2025-12-23": {
     "link": "/problems/two-best-non-overlapping-events/",
     "titleSlug": "two-best-non-overlapping-events"
+  },
+  "2025-12-24": {
+    "link": "/problems/apple-redistribution-into-boxes/",
+    "titleSlug": "apple-redistribution-into-boxes"
   }
 }
