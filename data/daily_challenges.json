@@ -214,5 +214,9 @@
   "2025-12-24": {
     "link": "/problems/apple-redistribution-into-boxes/",
     "titleSlug": "apple-redistribution-into-boxes"
+  },
+  "2025-12-25": {
+    "link": "/problems/maximize-happiness-of-selected-children/",
+    "titleSlug": "maximize-happiness-of-selected-children"
   }
 }
