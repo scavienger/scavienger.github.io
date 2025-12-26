@@ -218,5 +218,9 @@
   "2025-12-25": {
     "link": "/problems/maximize-happiness-of-selected-children/",
     "titleSlug": "maximize-happiness-of-selected-children"
+  },
+  "2025-12-26": {
+    "link": "/problems/minimum-penalty-for-a-shop/",
+    "titleSlug": "minimum-penalty-for-a-shop"
   }
 }
