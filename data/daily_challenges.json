@@ -230,5 +230,9 @@
   "2025-12-28": {
     "link": "/problems/count-negative-numbers-in-a-sorted-matrix/",
     "titleSlug": "count-negative-numbers-in-a-sorted-matrix"
+  },
+  "2025-12-29": {
+    "link": "/problems/pyramid-transition-matrix/",
+    "titleSlug": "pyramid-transition-matrix"
   }
 }
