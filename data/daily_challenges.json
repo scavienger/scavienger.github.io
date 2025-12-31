@@ -238,5 +238,9 @@
   "2025-12-30": {
     "link": "/problems/magic-squares-in-grid/",
     "titleSlug": "magic-squares-in-grid"
+  },
+  "2025-12-31": {
+    "link": "/problems/last-day-where-you-can-still-cross/",
+    "titleSlug": "last-day-where-you-can-still-cross"
   }
 }
