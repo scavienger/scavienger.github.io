@@ -242,5 +242,9 @@
   "2025-12-31": {
     "link": "/problems/last-day-where-you-can-still-cross/",
     "titleSlug": "last-day-where-you-can-still-cross"
+  },
+  "2026-01-01": {
+    "link": "/problems/plus-one/",
+    "titleSlug": "plus-one"
   }
 }
