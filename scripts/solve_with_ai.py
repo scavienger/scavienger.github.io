@@ -52,9 +52,12 @@ class AISolutionGenerator:
         }
     }
 
-    # Language batches for generation (Split into smaller groups to avoid token limits/safety issues)
+    # Language batches (Split into smaller groups to avoid token limits/safety issues & improve template adherence)
     LANGUAGE_BATCHES = [
-        ["C++", "Java", "Python", "Python3", "C", "C#", "JavaScript", "TypeScript", "PHP", "Swift", "Kotlin", "Dart", "Go", "Ruby", "Scala", "Rust", "Racket", "Erlang", "Elixir"]
+        ["C++", "Java", "Python", "Python3", "C"],
+        ["C#", "JavaScript", "TypeScript", "PHP", "Swift"],
+        ["Kotlin", "Dart", "Go", "Ruby", "Scala"],
+        ["Rust", "Racket", "Erlang", "Elixir"]
     ]
 
     def __init__(self):
@@ -122,6 +125,10 @@ class AISolutionGenerator:
         difficulty = problem_data.get('difficulty', '')
         hints = problem_data.get('hints', [])
         code_template = problem_data.get('code_template', '')
+        
+        # Metadata for locating snippets
+        problem_slug = problem_data.get('title_slug', '')
+        problem_date = problem_data.get('date', '')
 
         lang_pairs = []
         for lang in target_languages:
@@ -151,6 +158,19 @@ Problem Description:
         if code_template:
             prompt += f"Code Template (Python):\n```python\n{code_template}\n```\n\n"
 
+        # Inject specific templates for requested languages
+        snippets_prompt = ""
+        for lang in target_languages:
+            key = lang.lower().replace("c++", "cpp").replace("c#", "csharp")
+            snippet = self._load_snippet(problem_slug, key, problem_date)
+            if snippet:
+                # Add a hint about the template
+                snippets_prompt += f"\nFor {lang}, use this EXACT code template (keep method signature):"
+                snippets_prompt += f"\n```{key}\n{snippet.strip()}\n```\n"
+        
+        if snippets_prompt:
+            prompt += f"IMPORTANT CODE TEMPLATES:\n{snippets_prompt}\n"
+
         langs_str = ", ".join(target_languages)
         prompt += f"""Please provide solutions ONLY for these languages (match this list exactly): {langs_str}
 
@@ -166,6 +186,7 @@ APPROACH:
 
 CODE FORMAT:
 - Multi-line, properly indented code for each language; standard conventions; no explanatory comments.
+- **MUST USE THE PROVIDED TEMPLATES** for method signatures if available.
 
 COMPLEXITY:
 - 1 short paragraph for time complexity and 1 for space complexity.
@@ -568,6 +589,9 @@ Format your response as JSON:
             except Exception as e:
                 print(f"Error with Gemini Batch {i+1}: {e}", file=sys.stderr)
                 self._fill_failed_batch(final_solution, batch, f"Error: {str(e)}")
+
+            if i < len(self.LANGUAGE_BATCHES) - 1:
+                time.sleep(5)
 
         final_solution["elapsed_time"] = total_elapsed_time
         return final_solution
