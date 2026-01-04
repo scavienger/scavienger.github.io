@@ -100,6 +100,12 @@ class AISolutionGenerator:
         if self.provider == 'groq':
             self.groq_api_key = os.getenv('GROQ_API_KEY')
 
+        # Batch delay configuration
+        try:
+            self.batch_delay = float(os.getenv('BATCH_DELAY_SECONDS', '5'))
+        except ValueError:
+            self.batch_delay = 5.0
+
     
     def _extract_detail_message(self, response) -> Optional[str]:
         """Extract a human-readable error/detail message from an HTTP response."""
@@ -617,7 +623,7 @@ Format your response as JSON:
                 self._fill_failed_batch(final_solution, batch, f"Error: {str(e)}")
 
             if i < len(self.LANGUAGE_BATCHES) - 1:
-                time.sleep(5)
+                time.sleep(self.batch_delay)
 
         final_solution["elapsed_time"] = total_elapsed_time
         return final_solution
@@ -699,7 +705,7 @@ Format your response as JSON:
             
             # Add delay to prevent rate limiting (429)
             if i < len(self.LANGUAGE_BATCHES) - 1:
-                time.sleep(5)
+                time.sleep(self.batch_delay)
 
         final_solution["elapsed_time"] = total_elapsed_time
         return final_solution
