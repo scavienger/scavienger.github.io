@@ -130,9 +130,19 @@ class AISolutionGenerator:
         problem_slug = problem_data.get('title_slug', '')
         problem_date = problem_data.get('date', '')
 
+        # Language to snippet filename mapping
+        LANG_TO_KEY = {
+            "C++": "cpp",
+            "C#": "csharp",
+            "Go": "golang",
+            "Python3": "python3", # python3.txt
+            "Python": "python",   # python.txt
+        }
+
         lang_pairs = []
         for lang in target_languages:
-            key = lang.lower().replace("c++", "cpp").replace("c#", "csharp")
+            # Use mapping if available, otherwise fallback to lowercase
+            key = LANG_TO_KEY.get(lang, lang.lower())
             lang_pairs.append((key, lang))
         sample_solutions_lines = [
             f'    "{key}": "Complete {lang} code"' for key, lang in lang_pairs
@@ -161,7 +171,8 @@ Problem Description:
         # Inject specific templates for requested languages
         snippets_prompt = ""
         for lang in target_languages:
-            key = lang.lower().replace("c++", "cpp").replace("c#", "csharp")
+            # Consistent key generation
+            key = LANG_TO_KEY.get(lang, lang.lower())
             snippet = self._load_snippet(problem_slug, key, problem_date)
             if snippet:
                 # Add a hint about the template
