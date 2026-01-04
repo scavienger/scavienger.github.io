@@ -254,5 +254,9 @@
   "2026-01-03": {
     "link": "/problems/number-of-ways-to-paint-n-3-grid/",
     "titleSlug": "number-of-ways-to-paint-n-3-grid"
+  },
+  "2026-01-04": {
+    "link": "/problems/four-divisors/",
+    "titleSlug": "four-divisors"
   }
 }
