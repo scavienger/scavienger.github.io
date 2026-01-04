@@ -52,10 +52,26 @@ class AISolutionGenerator:
         }
     }
 
-    # Language batches for generation (Split into smaller groups to avoid token limits/safety issues)
+    # Language batches (Split into smaller groups to avoid token limits/safety issues & improve template adherence)
     LANGUAGE_BATCHES = [
-        ["C++", "Java", "Python", "Python3", "C", "C#", "JavaScript", "TypeScript", "PHP", "Swift", "Kotlin", "Dart", "Go", "Ruby", "Scala", "Rust", "Racket", "Erlang", "Elixir"]
+        ["C++", "Java", "Python", "Python3", "C"],
+        ["C#", "JavaScript", "TypeScript", "PHP", "Swift"],
+        ["Kotlin", "Dart", "Go", "Ruby", "Scala"],
+        ["Rust", "Racket", "Erlang", "Elixir"]
     ]
+
+    # Map Language Name (from batches) -> JSON Output Key
+    LANG_TO_JSON_KEY = {
+        "C++": "cpp",
+        "C#": "csharp",
+        # "Go": "go", # Implicit via lower()
+        # "Python": "python",
+    }
+
+    # Map JSON Output Key -> Snippet Filename Key (if different)
+    JSON_KEY_TO_FILENAME = {
+        "go": "golang",
+    }
 
     def __init__(self):
         # Get model name from environment (default: gemini-2.5-flash)
@@ -83,6 +99,12 @@ class AISolutionGenerator:
         # Groq setup
         if self.provider == 'groq':
             self.groq_api_key = os.getenv('GROQ_API_KEY')
+
+        # Batch delay configuration
+        try:
+            self.batch_delay = float(os.getenv('BATCH_DELAY_SECONDS', '5'))
+        except ValueError:
+            self.batch_delay = 5.0
 
     
     def _extract_detail_message(self, response) -> Optional[str]:
@@ -115,6 +137,14 @@ class AISolutionGenerator:
 
         return _from_obj(data)
 
+    def _get_json_key(self, lang_name: str) -> str:
+        """Get JSON output key for a language name."""
+        return self.LANG_TO_JSON_KEY.get(lang_name, lang_name.lower())
+
+    def _get_filename_key(self, json_key: str) -> str:
+        """Get snippet filename key for a JSON output key."""
+        return self.JSON_KEY_TO_FILENAME.get(json_key, json_key)
+
     def create_prompt(self, problem_data: Dict, target_languages: list) -> str:
         """Create a prompt for the AI models for specific languages"""
         title = problem_data.get('title', '')
@@ -122,13 +152,18 @@ class AISolutionGenerator:
         difficulty = problem_data.get('difficulty', '')
         hints = problem_data.get('hints', [])
         code_template = problem_data.get('code_template', '')
+        
+        # Metadata for locating snippets
+        problem_slug = problem_data.get('title_slug', '')
+        problem_date = problem_data.get('date', '')
 
         lang_pairs = []
         for lang in target_languages:
-            key = lang.lower().replace("c++", "cpp").replace("c#", "csharp")
-            lang_pairs.append((key, lang))
+            out_key = self._get_json_key(lang)
+            lang_pairs.append((out_key, lang))
+
         sample_solutions_lines = [
-            f'    "{key}": "Complete {lang} code"' for key, lang in lang_pairs
+            f'    "{out_key}": "Complete {lang} code"' for out_key, lang in lang_pairs
         ]
         sample_solutions = "\n".join(sample_solutions_lines)
 
@@ -151,6 +186,21 @@ Problem Description:
         if code_template:
             prompt += f"Code Template (Python):\n```python\n{code_template}\n```\n\n"
 
+        # Inject specific templates for requested languages
+        snippets_prompt = ""
+        for lang in target_languages:
+            out_key = self._get_json_key(lang)
+            file_key = self._get_filename_key(out_key)
+            
+            snippet = self._load_snippet(problem_slug, file_key, problem_date)
+            if snippet:
+                # Add a hint about the template, forcing the Output Key for the code block
+                snippets_prompt += f"\nFor {lang}, use this EXACT code template (keep method signature):"
+                snippets_prompt += f"\n```{out_key}\n{snippet.strip()}\n```\n"
+        
+        if snippets_prompt:
+            prompt += f"IMPORTANT CODE TEMPLATES:\n{snippets_prompt}\n"
+
         langs_str = ", ".join(target_languages)
         prompt += f"""Please provide solutions ONLY for these languages (match this list exactly): {langs_str}
 
@@ -166,6 +216,7 @@ APPROACH:
 
 CODE FORMAT:
 - Multi-line, properly indented code for each language; standard conventions; no explanatory comments.
+- **MUST USE THE PROVIDED TEMPLATES** for method signatures if available.
 
 COMPLEXITY:
 - 1 short paragraph for time complexity and 1 for space complexity.
@@ -306,7 +357,9 @@ Format your response as JSON:
 
         # Try snippet-based correction if we have both problem_slug and lang_slug
         if problem_slug and lang_slug:
-            template = self._load_snippet(problem_slug, lang_slug, problem_date)
+            # Correctly map JSON key to filename key (e.g. go -> golang)
+            file_key = self._get_filename_key(lang_slug)
+            template = self._load_snippet(problem_slug, file_key, problem_date)
             if template:
                 excess = self._detect_excess_from_template(cleaned, template)
                 if excess and excess >= 7:
@@ -569,6 +622,9 @@ Format your response as JSON:
                 print(f"Error with Gemini Batch {i+1}: {e}", file=sys.stderr)
                 self._fill_failed_batch(final_solution, batch, f"Error: {str(e)}")
 
+            if i < len(self.LANGUAGE_BATCHES) - 1:
+                time.sleep(self.batch_delay)
+
         final_solution["elapsed_time"] = total_elapsed_time
         return final_solution
 
@@ -649,7 +705,7 @@ Format your response as JSON:
             
             # Add delay to prevent rate limiting (429)
             if i < len(self.LANGUAGE_BATCHES) - 1:
-                time.sleep(5)
+                time.sleep(self.batch_delay)
 
         final_solution["elapsed_time"] = total_elapsed_time
         return final_solution
