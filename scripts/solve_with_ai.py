@@ -130,22 +130,24 @@ class AISolutionGenerator:
         problem_slug = problem_data.get('title_slug', '')
         problem_date = problem_data.get('date', '')
 
-        # Language to snippet filename mapping
-        LANG_TO_KEY = {
-            "C++": "cpp",
-            "C#": "csharp",
-            "Go": "golang",
-            "Python3": "python3", # python3.txt
-            "Python": "python",   # python.txt
+        # Language mapping: Name -> (JSON Output Key, Snippet Filename Key)
+        # Default behavior: (lower, lower)
+        LANG_MAPPING = {
+            "C++": ("cpp", "cpp"),
+            "C#": ("csharp", "csharp"),
+            "Go": ("go", "golang"),         # JSON: "go", File: "golang.txt"
+            "Python3": ("python3", "python3"),
+            "Python": ("python", "python"),
         }
 
         lang_pairs = []
         for lang in target_languages:
-            # Use mapping if available, otherwise fallback to lowercase
-            key = LANG_TO_KEY.get(lang, lang.lower())
-            lang_pairs.append((key, lang))
+            # Determine keys
+            default_key = lang.lower()
+            out_key, _ = LANG_MAPPING.get(lang, (default_key, default_key))
+            lang_pairs.append((out_key, lang))
         sample_solutions_lines = [
-            f'    "{key}": "Complete {lang} code"' for key, lang in lang_pairs
+            f'    "{out_key}": "Complete {lang} code"' for out_key, lang in lang_pairs
         ]
         sample_solutions = "\n".join(sample_solutions_lines)
 
@@ -172,12 +174,14 @@ Problem Description:
         snippets_prompt = ""
         for lang in target_languages:
             # Consistent key generation
-            key = LANG_TO_KEY.get(lang, lang.lower())
-            snippet = self._load_snippet(problem_slug, key, problem_date)
+            default_key = lang.lower()
+            out_key, snip_key = LANG_MAPPING.get(lang, (default_key, default_key))
+            
+            snippet = self._load_snippet(problem_slug, snip_key, problem_date)
             if snippet:
-                # Add a hint about the template
+                # Add a hint about the template, forcing the Output Key for the code block
                 snippets_prompt += f"\nFor {lang}, use this EXACT code template (keep method signature):"
-                snippets_prompt += f"\n```{key}\n{snippet.strip()}\n```\n"
+                snippets_prompt += f"\n```{out_key}\n{snippet.strip()}\n```\n"
         
         if snippets_prompt:
             prompt += f"IMPORTANT CODE TEMPLATES:\n{snippets_prompt}\n"
