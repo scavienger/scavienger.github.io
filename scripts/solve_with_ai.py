@@ -60,6 +60,19 @@ class AISolutionGenerator:
         ["Rust", "Racket", "Erlang", "Elixir"]
     ]
 
+    # Map Language Name (from batches) -> JSON Output Key
+    LANG_TO_JSON_KEY = {
+        "C++": "cpp",
+        "C#": "csharp",
+        # "Go": "go", # Implicit via lower()
+        # "Python": "python",
+    }
+
+    # Map JSON Output Key -> Snippet Filename Key (if different)
+    JSON_KEY_TO_FILENAME = {
+        "go": "golang",
+    }
+
     def __init__(self):
         # Get model name from environment (default: gemini-2.5-flash)
         self.model_name = os.getenv('AI_MODEL', 'gemini-2.5-flash')
@@ -118,6 +131,14 @@ class AISolutionGenerator:
 
         return _from_obj(data)
 
+    def _get_json_key(self, lang_name: str) -> str:
+        """Get JSON output key for a language name."""
+        return self.LANG_TO_JSON_KEY.get(lang_name, lang_name.lower())
+
+    def _get_filename_key(self, json_key: str) -> str:
+        """Get snippet filename key for a JSON output key."""
+        return self.JSON_KEY_TO_FILENAME.get(json_key, json_key)
+
     def create_prompt(self, problem_data: Dict, target_languages: list) -> str:
         """Create a prompt for the AI models for specific languages"""
         title = problem_data.get('title', '')
@@ -130,22 +151,11 @@ class AISolutionGenerator:
         problem_slug = problem_data.get('title_slug', '')
         problem_date = problem_data.get('date', '')
 
-        # Language mapping: Name -> (JSON Output Key, Snippet Filename Key)
-        # Default behavior: (lower, lower)
-        LANG_MAPPING = {
-            "C++": ("cpp", "cpp"),
-            "C#": ("csharp", "csharp"),
-            "Go": ("go", "golang"),         # JSON: "go", File: "golang.txt"
-            "Python3": ("python3", "python3"),
-            "Python": ("python", "python"),
-        }
-
         lang_pairs = []
         for lang in target_languages:
-            # Determine keys
-            default_key = lang.lower()
-            out_key, _ = LANG_MAPPING.get(lang, (default_key, default_key))
+            out_key = self._get_json_key(lang)
             lang_pairs.append((out_key, lang))
+
         sample_solutions_lines = [
             f'    "{out_key}": "Complete {lang} code"' for out_key, lang in lang_pairs
         ]
@@ -173,11 +183,10 @@ Problem Description:
         # Inject specific templates for requested languages
         snippets_prompt = ""
         for lang in target_languages:
-            # Consistent key generation
-            default_key = lang.lower()
-            out_key, snip_key = LANG_MAPPING.get(lang, (default_key, default_key))
+            out_key = self._get_json_key(lang)
+            file_key = self._get_filename_key(out_key)
             
-            snippet = self._load_snippet(problem_slug, snip_key, problem_date)
+            snippet = self._load_snippet(problem_slug, file_key, problem_date)
             if snippet:
                 # Add a hint about the template, forcing the Output Key for the code block
                 snippets_prompt += f"\nFor {lang}, use this EXACT code template (keep method signature):"
@@ -342,7 +351,9 @@ Format your response as JSON:
 
         # Try snippet-based correction if we have both problem_slug and lang_slug
         if problem_slug and lang_slug:
-            template = self._load_snippet(problem_slug, lang_slug, problem_date)
+            # Correctly map JSON key to filename key (e.g. go -> golang)
+            file_key = self._get_filename_key(lang_slug)
+            template = self._load_snippet(problem_slug, file_key, problem_date)
             if template:
                 excess = self._detect_excess_from_template(cleaned, template)
                 if excess and excess >= 7:
