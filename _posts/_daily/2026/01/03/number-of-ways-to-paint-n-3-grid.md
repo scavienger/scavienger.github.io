@@ -9,297 +9,591 @@ leetcode_url: https://leetcode.com/problems/number-of-ways-to-paint-n-3-grid/
 ai_solutions:
   - solutions:
       cpp: "class Solution {\npublic:\n    int numOfWays(int n) {\n        long long\
-        \ MOD = 1e9 + 7;\n\n        long long aba_count = 6; // Patterns like RGR\n\
-        \        long long abc_count = 6; // Patterns like RYG\n\n        for (int i\
-        \ = 2; i <= n; ++i) {\n            long long new_aba_count = (3 * aba_count\
-        \ + 2 * abc_count) % MOD;\n            long long new_abc_count = (2 * aba_count\
-        \ + 2 * abc_count) % MOD;\n\n            aba_count = new_aba_count;\n      \
-        \      abc_count = new_abc_count;\n        }\n\n        return (aba_count +\
-        \ abc_count) % MOD;\n    }\n};"
+        \ MOD = 1e9 + 7;\n\n        long long dp_2_colors = 6; // Patterns like RGR\n\
+        \        long long dp_3_colors = 6; // Patterns like RYG\n\n        for (int\
+        \ i = 2; i <= n; ++i) {\n            // If current row is ABA type (e.g., 010):\n\
+        \            //   It can be preceded by 3 ABA patterns (e.g., 101, 121, 202\
+        \ for 010)\n            //   It can be preceded by 2 ABC patterns (e.g., 102,\
+        \ 201 for 010)\n            long long new_dp_2_colors = (3 * dp_2_colors + 2\
+        \ * dp_3_colors) % MOD;\n\n            // If current row is ABC type (e.g.,\
+        \ 012):\n            //   It can be preceded by 2 ABA patterns (e.g., 101, 121\
+        \ for 012)\n            //   It can be preceded by 2 ABC patterns (e.g., 120,\
+        \ 201 for 012)\n            long long new_dp_3_colors = (2 * dp_2_colors + 2\
+        \ * dp_3_colors) % MOD;\n\n            dp_2_colors = new_dp_2_colors;\n    \
+        \        dp_3_colors = new_dp_3_colors;\n        }\n\n        return (int)((dp_2_colors\
+        \ + dp_3_colors) % MOD);\n    }\n};"
       java: "class Solution {\n    public int numOfWays(int n) {\n        long MOD =\
-        \ 1_000_000_007;\n\n        long abaCount = 6; // Patterns like RGR\n      \
-        \  long abcCount = 6; // Patterns like RYG\n\n        for (int i = 2; i <= n;\
-        \ ++i) {\n            long newAbaCount = (3 * abaCount + 2 * abcCount) % MOD;\n\
-        \            long newAbcCount = (2 * abaCount + 2 * abcCount) % MOD;\n\n   \
-        \         abaCount = newAbaCount;\n            abcCount = newAbcCount;\n   \
-        \     }\n\n        return (int)((abaCount + abcCount) % MOD);\n    }\n}"
-      python: "class Solution:\n    def numOfWays(self, n: int) -> int:\n        MOD\
-        \ = 10**9 + 7\n\n        # For n=1, there are 12 ways.\n        # 6 ways for\
-        \ patterns like RGR (ABA type)\n        # 6 ways for patterns like RYG (ABC\
-        \ type)\n\n        # dp_aba[i] = number of ways to paint i rows, with the i-th\
-        \ row being an ABA pattern\n        # dp_abc[i] = number of ways to paint i\
-        \ rows, with the i-th row being an ABC pattern\n\n        # Base case for n=1\n\
-        \        aba_count = 6 \n        abc_count = 6 \n\n        for _ in range(2,\
-        \ n + 1):\n            # If previous row was ABA (e.g., RGR):\n            #\
-        \ Next row can be ABA in 3 ways\n            # Next row can be ABC in 2 ways\n\
-        \n            # If previous row was ABC (e.g., RYG):\n            # Next row\
-        \ can be ABA in 2 ways\n            # Next row can be ABC in 2 ways\n\n    \
-        \        new_aba_count = (3 * aba_count + 2 * abc_count) % MOD\n           \
-        \ new_abc_count = (2 * aba_count + 2 * abc_count) % MOD\n\n            aba_count\
-        \ = new_aba_count\n            abc_count = new_abc_count\n\n        return (aba_count\
-        \ + abc_count) % MOD"
+        \ 1_000_000_007;\n\n        long dp_2_colors = 6; // Patterns like RGR\n   \
+        \     long dp_3_colors = 6; // Patterns like RYG\n\n        for (int i = 2;\
+        \ i <= n; ++i) {\n            // If current row is ABA type (e.g., 010):\n \
+        \           //   It can be preceded by 3 ABA patterns (e.g., 101, 121, 202 for\
+        \ 010)\n            //   It can be preceded by 2 ABC patterns (e.g., 102, 201\
+        \ for 010)\n            long new_dp_2_colors = (3 * dp_2_colors + 2 * dp_3_colors)\
+        \ % MOD;\n\n            // If current row is ABC type (e.g., 012):\n       \
+        \     //   It can be preceded by 2 ABA patterns (e.g., 101, 121 for 012)\n \
+        \           //   It can be preceded by 2 ABC patterns (e.g., 120, 201 for 012)\n\
+        \            long new_dp_3_colors = (2 * dp_2_colors + 2 * dp_3_colors) % MOD;\n\
+        \n            dp_2_colors = new_dp_2_colors;\n            dp_3_colors = new_dp_3_colors;\n\
+        \        }\n\n        return (int)((dp_2_colors + dp_3_colors) % MOD);\n   \
+        \ }\n}"
+      python: "class Solution(object):\n    def numOfWays(self, n):\n        \"\"\"\n\
+        \        :type n: int\n        :rtype: int\n        \"\"\"\n        MOD = 10**9\
+        \ + 7\n\n        # dp_2_colors: number of ways to paint a row with 2 distinct\
+        \ colors (e.g., RGR)\n        # dp_3_colors: number of ways to paint a row with\
+        \ 3 distinct colors (e.g., RYG)\n\n        # For n=1:\n        # There are 6\
+        \ patterns of type ABA (e.g., RGR, RYR, GRG, GYG, YRY, YGY)\n        # There\
+        \ are 6 patterns of type ABC (e.g., RYG, RGY, YRG, YGR, GRY, GYR)\n        dp_2_colors\
+        \ = 6\n        dp_3_colors = 6\n\n        for _ in range(2, n + 1):\n      \
+        \      # If current row is ABA type (e.g., 010):\n            #   It can be\
+        \ preceded by 3 ABA patterns (e.g., 101, 121, 202 for 010)\n            #  \
+        \ It can be preceded by 2 ABC patterns (e.g., 102, 201 for 010)\n          \
+        \  new_dp_2_colors = (3 * dp_2_colors + 2 * dp_3_colors) % MOD\n\n         \
+        \   # If current row is ABC type (e.g., 012):\n            #   It can be preceded\
+        \ by 2 ABA patterns (e.g., 101, 121 for 012)\n            #   It can be preceded\
+        \ by 2 ABC patterns (e.g., 120, 201 for 012)\n            new_dp_3_colors =\
+        \ (2 * dp_2_colors + 2 * dp_3_colors) % MOD\n\n            dp_2_colors = new_dp_2_colors\n\
+        \            dp_3_colors = new_dp_3_colors\n\n        return (dp_2_colors +\
+        \ dp_3_colors) % MOD"
       python3: "class Solution:\n    def numOfWays(self, n: int) -> int:\n        MOD\
-        \ = 10**9 + 7\n\n        # For n=1, there are 12 ways.\n        # 6 ways for\
-        \ patterns like RGR (ABA type)\n        # 6 ways for patterns like RYG (ABC\
-        \ type)\n\n        # dp_aba[i] = number of ways to paint i rows, with the i-th\
-        \ row being an ABA pattern\n        # dp_abc[i] = number of ways to paint i\
-        \ rows, with the i-th row being an ABC pattern\n\n        # Base case for n=1\n\
-        \        aba_count = 6 \n        abc_count = 6 \n\n        for _ in range(2,\
-        \ n + 1):\n            # If previous row was ABA (e.g., RGR):\n            #\
-        \ Next row can be ABA in 3 ways\n            # Next row can be ABC in 2 ways\n\
-        \n            # If previous row was ABC (e.g., RYG):\n            # Next row\
-        \ can be ABA in 2 ways\n            # Next row can be ABC in 2 ways\n\n    \
-        \        new_aba_count = (3 * aba_count + 2 * abc_count) % MOD\n           \
-        \ new_abc_count = (2 * aba_count + 2 * abc_count) % MOD\n\n            aba_count\
-        \ = new_aba_count\n            abc_count = new_abc_count\n\n        return (aba_count\
-        \ + abc_count) % MOD"
-      c: "int numOfWays(int n) {\n    long long MOD = 1000000007;\n\n    long long aba_count\
-        \ = 6; // Patterns like RGR\n    long long abc_count = 6; // Patterns like RYG\n\
-        \n    for (int i = 2; i <= n; ++i) {\n        long long new_aba_count = (3 *\
-        \ aba_count + 2 * abc_count) % MOD;\n        long long new_abc_count = (2 *\
-        \ aba_count + 2 * abc_count) % MOD;\n\n        aba_count = new_aba_count;\n\
-        \        abc_count = new_abc_count;\n    }\n\n    return (int)((aba_count +\
-        \ abc_count) % MOD);\n}"
+        \ = 10**9 + 7\n\n        # dp_2_colors: number of ways to paint a row with 2\
+        \ distinct colors (e.g., RGR)\n        # dp_3_colors: number of ways to paint\
+        \ a row with 3 distinct colors (e.g., RYG)\n\n        # For n=1:\n        #\
+        \ There are 6 patterns of type ABA (e.g., RGR, RYR, GRG, GYG, YRY, YGY)\n  \
+        \      # There are 6 patterns of type ABC (e.g., RYG, RGY, YRG, YGR, GRY, GYR)\n\
+        \        dp_2_colors = 6\n        dp_3_colors = 6\n\n        for _ in range(2,\
+        \ n + 1):\n            # If current row is ABA type (e.g., 010):\n         \
+        \   #   It can be preceded by 3 ABA patterns (e.g., 101, 121, 202 for 010)\n\
+        \            #   It can be preceded by 2 ABC patterns (e.g., 102, 201 for 010)\n\
+        \            new_dp_2_colors = (3 * dp_2_colors + 2 * dp_3_colors) % MOD\n\n\
+        \            # If current row is ABC type (e.g., 012):\n            #   It can\
+        \ be preceded by 2 ABA patterns (e.g., 101, 121 for 012)\n            #   It\
+        \ can be preceded by 2 ABC patterns (e.g., 120, 201 for 012)\n            new_dp_3_colors\
+        \ = (2 * dp_2_colors + 2 * dp_3_colors) % MOD\n\n            dp_2_colors = new_dp_2_colors\n\
+        \            dp_3_colors = new_dp_3_colors\n\n        return (dp_2_colors +\
+        \ dp_3_colors) % MOD"
+      c: "int numOfWays(int n) {\n    long long MOD = 1e9 + 7;\n\n    long long dp_2_colors\
+        \ = 6; // Patterns like RGR\n    long long dp_3_colors = 6; // Patterns like\
+        \ RYG\n\n    for (int i = 2; i <= n; ++i) {\n        // If current row is ABA\
+        \ type (e.g., 010):\n        //   It can be preceded by 3 ABA patterns (e.g.,\
+        \ 101, 121, 202 for 010)\n        //   It can be preceded by 2 ABC patterns\
+        \ (e.g., 102, 201 for 010)\n        long long new_dp_2_colors = (3 * dp_2_colors\
+        \ + 2 * dp_3_colors) % MOD;\n\n        // If current row is ABC type (e.g.,\
+        \ 012):\n        //   It can be preceded by 2 ABA patterns (e.g., 101, 121 for\
+        \ 012)\n        //   It can be preceded by 2 ABC patterns (e.g., 120, 201 for\
+        \ 012)\n        long long new_dp_3_colors = (2 * dp_2_colors + 2 * dp_3_colors)\
+        \ % MOD;\n\n        dp_2_colors = new_dp_2_colors;\n        dp_3_colors = new_dp_3_colors;\n\
+        \    }\n\n    return (int)((dp_2_colors + dp_3_colors) % MOD);\n}"
       csharp: "public class Solution {\n    public int NumOfWays(int n) {\n        long\
-        \ MOD = 1_000_000_007;\n\n        long abaCount = 6; // Patterns like RGR\n\
-        \        long abcCount = 6; // Patterns like RYG\n\n        for (int i = 2;\
-        \ i <= n; ++i) {\n            long newAbaCount = (3 * abaCount + 2 * abcCount)\
-        \ % MOD;\n            long newAbcCount = (2 * abaCount + 2 * abcCount) % MOD;\n\
-        \n            abaCount = newAbaCount;\n            abcCount = newAbcCount;\n\
-        \        }\n\n        return (int)((abaCount + abcCount) % MOD);\n    }\n}"
+        \ mod = 1_000_000_007;\n        long countAba = 6; // Ways to paint a row with\
+        \ pattern like RGR (2 colors)\n        long countAbc = 6; // Ways to paint a\
+        \ row with pattern like RYG (3 colors)\n\n        for (int i = 2; i <= n; i++)\
+        \ {\n            long nextAba = (countAba * 3 + countAbc * 2) % mod;\n     \
+        \       long nextAbc = (countAba * 2 + countAbc * 2) % mod;\n            countAba\
+        \ = nextAba;\n            countAbc = nextAbc;\n        }\n\n        return (int)((countAba\
+        \ + countAbc) % mod);\n    }\n}"
       javascript: "/**\n * @param {number} n\n * @return {number}\n */\nvar numOfWays\
-        \ = function(n) {\n    const MOD = 1_000_000_007;\n\n    let abaCount = 6; //\
-        \ Patterns like RGR\n    let abcCount = 6; // Patterns like RYG\n\n    for (let\
-        \ i = 2; i <= n; ++i) {\n        let newAbaCount = (3 * abaCount + 2 * abcCount)\
-        \ % MOD;\n        let newAbcCount = (2 * abaCount + 2 * abcCount) % MOD;\n\n\
-        \        abaCount = newAbaCount;\n        abcCount = newAbcCount;\n    }\n\n\
-        \    return (abaCount + abcCount) % MOD;\n};"
-      typescript: "function numOfWays(n: number): number {\n    const MOD = 1_000_000_007;\n\
-        \n    let abaCount: number = 6; // Patterns like RGR\n    let abcCount: number\
-        \ = 6; // Patterns like RYG\n\n    for (let i = 2; i <= n; ++i) {\n        let\
-        \ newAbaCount: number = (3 * abaCount + 2 * abcCount) % MOD;\n        let newAbcCount:\
-        \ number = (2 * abaCount + 2 * abcCount) % MOD;\n\n        abaCount = newAbaCount;\n\
-        \        abcCount = newAbcCount;\n    }\n\n    return (abaCount + abcCount)\
-        \ % MOD;\n};"
+        \ = function(n) {\n    const mod = 1_000_000_007;\n    let countAba = 6; //\
+        \ Ways to paint a row with pattern like RGR (2 colors)\n    let countAbc = 6;\
+        \ // Ways to paint a row with pattern like RYG (3 colors)\n\n    for (let i\
+        \ = 2; i <= n; i++) {\n        let nextAba = (countAba * 3 + countAbc * 2) %\
+        \ mod;\n        let nextAbc = (countAba * 2 + countAbc * 2) % mod;\n       \
+        \ countAba = nextAba;\n        countAbc = nextAbc;\n    }\n\n    return (countAba\
+        \ + countAbc) % mod;\n};"
+      typescript: "function numOfWays(n: number): number {\n    const mod = 1_000_000_007;\n\
+        \    let countAba: number = 6; // Ways to paint a row with pattern like RGR\
+        \ (2 colors)\n    let countAbc: number = 6; // Ways to paint a row with pattern\
+        \ like RYG (3 colors)\n\n    for (let i = 2; i <= n; i++) {\n        let nextAba:\
+        \ number = (countAba * 3 + countAbc * 2) % mod;\n        let nextAbc: number\
+        \ = (countAba * 2 + countAbc * 2) % mod;\n        countAba = nextAba;\n    \
+        \    countAbc = nextAbc;\n    }\n\n    return (countAba + countAbc) % mod;\n\
+        };"
       php: "class Solution {\n\n    /**\n     * @param Integer $n\n     * @return Integer\n\
-        \     */\n    function numOfWays($n) {\n        $MOD = 1_000_000_007;\n\n  \
-        \      $abaCount = 6; // Patterns like RGR\n        $abcCount = 6; // Patterns\
-        \ like RYG\n\n        for ($i = 2; $i <= $n; ++$i) {\n            $newAbaCount\
-        \ = (3 * $abaCount + 2 * $abcCount) % $MOD;\n            $newAbcCount = (2 *\
-        \ $abaCount + 2 * $abcCount) % $MOD;\n\n            $abaCount = $newAbaCount;\n\
-        \            $abcCount = $newAbcCount;\n        }\n\n        return ($abaCount\
-        \ + $abcCount) % $MOD;\n    }\n}"
-      swift: "class Solution {\n    func numOfWays(_ n: Int) -> Int {\n        let MOD\
-        \ = 1_000_000_007\n\n        var abaCount: Int = 6 // Patterns like RGR\n  \
-        \      var abcCount: Int = 6 // Patterns like RYG\n\n        for _ in 2...n\
-        \ {\n            let newAbaCount = (3 * abaCount + 2 * abcCount) % MOD\n   \
-        \         let newAbcCount = (2 * abaCount + 2 * abcCount) % MOD\n\n        \
-        \    abaCount = newAbaCount\n            abcCount = newAbcCount\n        }\n\
-        \n        return (abaCount + abcCount) % MOD\n    }\n}"
+        \     */\n    function numOfWays($n) {\n        $mod = 1000000007;\n       \
+        \ $countAba = 6; // Ways to paint a row with pattern like RGR (2 colors)\n \
+        \       $countAbc = 6; // Ways to paint a row with pattern like RYG (3 colors)\n\
+        \n        for ($i = 2; $i <= $n; $i++) {\n            $nextAba = ($countAba\
+        \ * 3 + $countAbc * 2) % $mod;\n            $nextAbc = ($countAba * 2 + $countAbc\
+        \ * 2) % $mod;\n            $countAba = $nextAba;\n            $countAbc = $nextAbc;\n\
+        \        }\n\n        return ($countAba + $countAbc) % $mod;\n    }\n}"
+      swift: "class Solution {\n    func numOfWays(_ n: Int) -> Int {\n        let mod\
+        \ = 1_000_000_007\n        var countAba: Int = 6 // Ways to paint a row with\
+        \ pattern like RGR (2 colors)\n        var countAbc: Int = 6 // Ways to paint\
+        \ a row with pattern like RYG (3 colors)\n\n        for _ in 2...n {\n     \
+        \       let nextAba = (countAba * 3 + countAbc * 2) % mod\n            let nextAbc\
+        \ = (countAba * 2 + countAbc * 2) % mod\n            countAba = nextAba\n  \
+        \          countAbc = nextAbc\n        }\n\n        return (countAba + countAbc)\
+        \ % mod\n    }\n}"
       kotlin: "class Solution {\n    fun numOfWays(n: Int): Int {\n        val MOD =\
-        \ 1_000_000_007L // Use Long for MOD to ensure calculations are done in Long\n\
-        \n        var abaCount: Long = 6 // Patterns like RGR\n        var abcCount:\
-        \ Long = 6 // Patterns like RYG\n\n        for (i in 2..n) {\n            val\
-        \ newAbaCount = (3 * abaCount + 2 * abcCount) % MOD\n            val newAbcCount\
-        \ = (2 * abaCount + 2 * abcCount) % MOD\n\n            abaCount = newAbaCount;\n\
-        \            abcCount = newAbcCount;\n        }\n\n        return ((abaCount\
-        \ + abcCount) % MOD).toInt()\n    }\n}"
-      dart: "class Solution {\n  int numOfWays(int n) {\n    final int MOD = 1_000_000_007;\n\
-        \n    int abaCount = 6; // Patterns like RGR\n    int abcCount = 6; // Patterns\
-        \ like RYG\n\n    for (int i = 2; i <= n; ++i) {\n      int newAbaCount = (3\
-        \ * abaCount + 2 * abcCount) % MOD;\n      int newAbcCount = (2 * abaCount +\
-        \ 2 * abcCount) % MOD;\n\n      abaCount = newAbaCount;\n      abcCount = newAbcCount;\n\
-        \    }\n\n    return (abaCount + abcCount) % MOD;\n  }\n}"
-      go: "func numOfWays(n int) int {\n    MOD := 1_000_000_007\n\n    var abaCount\
-        \ int64 = 6 // Patterns like RGR\n    var abcCount int64 = 6 // Patterns like\
-        \ RYG\n\n    for i := 2; i <= n; i++ {\n        newAbaCount := (3 * abaCount\
-        \ + 2 * abcCount) % int64(MOD)\n        newAbcCount := (2 * abaCount + 2 * abcCount)\
-        \ % int64(MOD)\n\n        abaCount = newAbaCount\n        abcCount = newAbcCount\n\
-        \    }\n\n    return int((abaCount + abcCount) % int64(MOD))\n}"
+        \ 1_000_000_000 + 7\n\n        var dp3Color: Long = 6L\n        var dp2Color:\
+        \ Long = 6L\n\n        for (i in 2..n) {\n            val newDp3Color = (2 *\
+        \ dp3Color + 2 * dp2Color) % MOD\n            val newDp2Color = (2 * dp3Color\
+        \ + 3 * dp2Color) % MOD\n            dp3Color = newDp3Color\n            dp2Color\
+        \ = newDp2Color\n        }\n\n        return ((dp3Color + dp2Color) % MOD).toInt()\n\
+        \    }\n}"
+      dart: "class Solution {\n  int numOfWays(int n) {\n    final int MOD = 1000000000\
+        \ + 7;\n\n    int dp3Color = 6;\n    int dp2Color = 6;\n\n    for (int i = 2;\
+        \ i <= n; i++) {\n      int newDp3Color = (2 * dp3Color + 2 * dp2Color) % MOD;\n\
+        \      int newDp2Color = (2 * dp3Color + 3 * dp2Color) % MOD;\n      dp3Color\
+        \ = newDp3Color;\n      dp2Color = newDp2Color;\n    }\n\n    return (dp3Color\
+        \ + dp2Color) % MOD;\n  }\n}"
+      go: "func numOfWays(n int) int {\n    MOD := 1_000_000_000 + 7\n\n    var dp3Color\
+        \ int64 = 6\n    var dp2Color int64 = 6\n\n    for i := 2; i <= n; i++ {\n \
+        \       newDp3Color := (2*dp3Color + 2*dp2Color) % MOD\n        newDp2Color\
+        \ := (2*dp3Color + 3*dp2Color) % MOD\n        dp3Color = newDp3Color\n     \
+        \   dp2Color = newDp2Color\n    }\n\n    return int((dp3Color + dp2Color) %\
+        \ MOD)\n}"
       ruby: "# @param {Integer} n\n# @return {Integer}\ndef num_of_ways(n)\n    mod\
-        \ = 1_000_000_007\n\n    aba_count = 6\n    abc_count = 6\n\n    (2..n).each\
-        \ do |p_i|\n        new_aba_count = (3 * aba_count + 2 * abc_count) % mod\n\
-        \        new_abc_count = (2 * aba_count + 2 * abc_count) % mod\n\n        aba_count\
-        \ = new_aba_count\n        abc_count = new_abc_count\n    end\n\n    (aba_count\
-        \ + abc_count) % mod\nend"
-      scala: "object Solution {\n    def numOfWays(n: Int): Int = {\n        val MOD:\
-        \ Long = 1_000_000_007L\n\n        var abaCount: Long = 6 // Patterns like RGR\n\
-        \        var abcCount: Long = 6 // Patterns like RYG\n\n        for (i <- 2\
-        \ to n) {\n            val newAbaCount = (3 * abaCount + 2 * abcCount) % MOD\n\
-        \            val newAbcCount = (2 * abaCount + 2 * abcCount) % MOD\n\n     \
-        \       abaCount = newAbaCount\n            abcCount = newAbcCount\n       \
-        \ }\n\n        ((abaCount + abcCount) % MOD).toInt\n    }\n}"
-      rust: "impl Solution {\n    pub fn num_of_ways(n: i32) -> i32 {\n        let modulus:\
-        \ i64 = 1_000_000_007;\n\n        let mut aba_count: i64 = 6; // Patterns like\
-        \ RGR\n        let mut abc_count: i64 = 6; // Patterns like RYG\n\n        for\
-        \ _i in 2..=n {\n            let new_aba_count = (3 * aba_count + 2 * abc_count)\
-        \ % modulus;\n            let new_abc_count = (2 * aba_count + 2 * abc_count)\
-        \ % modulus;\n\n            aba_count = new_aba_count;\n            abc_count\
-        \ = new_abc_count;\n        }\n\n        ((aba_count + abc_count) % modulus)\
-        \ as i32\n    }\n}"
+        \ = 10**9 + 7\n\n    dp_3_color = 6\n    dp_2_color = 6\n\n    (2..n).each do\
+        \ |i|\n        new_dp_3_color = (2 * dp_3_color + 2 * dp_2_color) % mod\n  \
+        \      new_dp_2_color = (2 * dp_3_color + 3 * dp_2_color) % mod\n        dp_3_color\
+        \ = new_dp_3_color\n        dp_2_color = new_dp_2_color\n    end\n\n    (dp_3_color\
+        \ + dp_2_color) % mod\nend"
+      scala: "object Solution {\n    def numOfWays(n: Int): Int = {\n        val MOD\
+        \ = 1_000_000_000 + 7\n\n        var dp3Color: Long = 6L\n        var dp2Color:\
+        \ Long = 6L\n\n        for (i <- 2 to n) {\n            val newDp3Color = (2\
+        \ * dp3Color + 2 * dp2Color) % MOD\n            val newDp2Color = (2 * dp3Color\
+        \ + 3 * dp2Color) % MOD\n            dp3Color = newDp3Color\n            dp2Color\
+        \ = newDp2Color\n        }\n\n        ((dp3Color + dp2Color) % MOD).toInt\n\
+        \    }\n}"
+      rust: "impl Solution {\n    pub fn num_of_ways(n: i33) -> i33 {\n        let modulo:\
+        \ i64 = 1_000_000_007;\n\n        // a_prev: count of ways to paint previous\
+        \ row with 3-color patterns (e.g., R-Y-G)\n        // b_prev: count of ways\
+        \ to paint previous row with 2-color patterns (e.g., R-Y-R)\n        let mut\
+        \ a_prev: i64 = 6; // For n=1, there are 6 such patterns\n        let mut b_prev:\
+        \ i64 = 6; // For n=1, there are 6 such patterns\n\n        for _i in 2..=n\
+        \ {\n            let a_curr = (a_prev * 2 + b_prev * 2) % modulo;\n        \
+        \    let b_curr = (a_prev * 2 + b_prev * 3) % modulo;\n            a_prev =\
+        \ a_curr;\n            b_prev = b_curr;\n        }\n\n        ((a_prev + b_prev)\
+        \ % modulo) as i32\n    }\n}"
       racket: "(define/contract (num-of-ways n)\n  (-> exact-integer? exact-integer?)\n\
-        \  (let ([MOD 1000000007])\n    (let loop ([i 1] [aba-count 6] [abc-count 6])\n\
-        \      (if (= i n)\n          (modulo (+ aba-count abc-count) MOD)\n       \
-        \   (let ([new-aba-count (modulo (+ (* 3 aba-count) (* 2 abc-count)) MOD)]\n\
-        \                [new-abc-count (modulo (+ (* 2 aba-count) (* 2 abc-count))\
-        \ MOD)])\n            (loop (+ i 1) new-aba-count new-abc-count))))))"
+        \  (let* ([modulo 1000000007]\n         [a-prev 6] ; count of ways to paint\
+        \ previous row with 3-color patterns (e.g., R-Y-G)\n         [b-prev 6] ; count\
+        \ of ways to paint previous row with 2-color patterns (e.g., R-Y-R)\n      \
+        \   [result (for/fold ([a a-prev] [b b-prev])\n                           ([i\
+        \ (in-range 2 (+ n 1))])\n                   (let ([a-curr (modulo (+ (* a 2)\
+        \ (* b 2)) modulo)]\n                         [b-curr (modulo (+ (* a 2) (*\
+        \ b 3)) modulo)])\n                     (values a-curr b-curr)))])\n    (modulo\
+        \ (+ (car result) (cdr result)) modulo)))"
       erlang: "-spec num_of_ways(N :: integer()) -> integer().\nnum_of_ways(N) ->\n\
-        \    MOD = 1000000007,\n    num_of_ways_loop(N, 1, 6, 6, MOD).\n\nnum_of_ways_loop(N,\
-        \ N, AbaCount, AbcCount, MOD) ->\n    (AbaCount + AbcCount) rem MOD;\nnum_of_ways_loop(N,\
-        \ I, AbaCount, AbcCount, MOD) ->\n    NewAbaCount = (3 * AbaCount + 2 * AbcCount)\
-        \ rem MOD,\n    NewAbcCount = (2 * AbaCount + 2 * AbcCount) rem MOD,\n    num_of_ways_loop(N,\
-        \ I + 1, NewAbaCount, NewAbcCount, MOD)."
+        \    Modulo = 1000000007,\n    %% a_prev: count of ways to paint previous row\
+        \ with 3-color patterns (e.g., R-Y-G)\n    %% b_prev: count of ways to paint\
+        \ previous row with 2-color patterns (e.g., R-Y-R)\n    A_prev = 6, %% For N=1,\
+        \ there are 6 such patterns\n    B_prev = 6, %% For N=1, there are 6 such patterns\n\
+        \n    %% Use a fold-like approach for iteration\n    Result = lists:foldl(fun(_I,\
+        \ {A_acc, B_acc}) ->\n                                 A_curr = (A_acc * 2 +\
+        \ B_acc * 2) rem Modulo,\n                                 B_curr = (A_acc *\
+        \ 2 + B_acc * 3) rem Modulo,\n                                 {A_curr, B_curr}\n\
+        \                         end, {A_prev, B_prev}, lists:seq(2, N)),\n\n    {Final_A,\
+        \ Final_B} = Result,\n    (Final_A + Final_B) rem Modulo."
       elixir: "defmodule Solution do\n  @spec num_of_ways(n :: integer) :: integer\n\
-        \  def num_of_ways(n) do\n    mod = 1_000_000_007\n\n    # Base case for n=1\n\
-        \    aba_count = 6\n    abc_count = 6\n\n    # Iterate from i=2 to n\n    Enum.reduce(2..n,\
-        \ {aba_count, abc_count}, fn _, {current_aba, current_abc} ->\n      new_aba_count\
-        \ = (3 * current_aba + 2 * current_abc) |> rem(mod)\n      new_abc_count = (2\
-        \ * current_aba + 2 * current_abc) |> rem(mod)\n      {new_aba_count, new_abc_count}\n\
-        \    end)\n    |> (fn {final_aba, final_abc} -> (final_aba + final_abc) |> rem(mod)\
-        \ end).()\n  end\nend"
-    approach: 'The problem asks for the number of ways to paint an n x 3 grid such that
-      no two adjacent cells (horizontally or vertically) have the same color. This problem
-      can be efficiently solved using dynamic programming due to the localized dependency
-      of coloring. The key insight is that the valid colorings for any row i depend
-      only on the coloring of the immediately preceding row i-1. We categorize the possible
-      color patterns for a single row of three cells into two types: "ABA" patterns
-      (e.g., Red-Yellow-Red, where the first and third colors are the same) and "ABC"
-      patterns (e.g., Red-Yellow-Green, where all three colors are distinct). There
-      are 6 unique "ABA" patterns and 6 unique "ABC" patterns, totaling 12 ways to color
-      a single row.
+        \  def num_of_ways(n) do\n    modulo = 1_000_000_007\n\n    # a_prev: count\
+        \ of ways to paint previous row with 3-color patterns (e.g., R-Y-G)\n    # b_prev:\
+        \ count of ways to paint previous row with 2-color patterns (e.g., R-Y-R)\n\
+        \    a_prev = 6 # For n=1, there are 6 such patterns\n    b_prev = 6 # For n=1,\
+        \ there are 6 such patterns\n\n    {final_a, final_b} = \n      Enum.reduce(2..n,\
+        \ {a_prev, b_prev}, fn _i, {a_acc, b_acc} ->\n        a_curr = rem(a_acc * 2\
+        \ + b_acc * 2, modulo)\n        b_curr = rem(a_acc * 2 + b_acc * 3, modulo)\n\
+        \        {a_curr, b_curr}\n      end)\n\n    rem(final_a + final_b, modulo)\n\
+        \  end\nend"
+    approach: 'The problem can be solved using dynamic programming by observing that
+      the number of ways to paint the current row depends only on the color pattern
+      of the previous row. We categorize valid single-row color patterns into two types:
+      ''ABA'' patterns (e.g., Red-Yellow-Red, where the first and third colors are the
+      same but different from the middle color) and ''ABC'' patterns (e.g., Red-Yellow-Green,
+      where all three colors are distinct). There are 6 distinct ''ABA'' patterns and
+      6 distinct ''ABC'' patterns for a single row, totaling 12 ways for n=1.
 
 
-      We define dp_aba[i] as the number of ways to paint i rows such that the i-th row
-      ends with an "ABA" pattern, and dp_abc[i] as the number of ways to paint i rows
-      such that the i-th row ends with an "ABC" pattern. For the base case n=1, dp_aba[1]
-      = 6 and dp_abc[1] = 6. For subsequent rows, we derive recurrence relations by
-      analyzing how many valid "ABA" and "ABC" patterns can follow a given "ABA" or
-      "ABC" pattern in the previous row. A detailed analysis shows that an "ABA" pattern
-      can be followed by 3 "ABA" patterns and 2 "ABC" patterns. Similarly, an "ABC"
-      pattern can be followed by 2 "ABA" patterns and 2 "ABC" patterns. This leads to
-      the transitions: dp_aba[i] = (3 * dp_aba[i-1] + 2 * dp_abc[i-1]) % MOD and dp_abc[i]
-      = (2 * dp_aba[i-1] + 2 * dp_abc[i-1]) % MOD. The final answer is the sum of dp_aba[n]
-      and dp_abc[n] modulo 10^9 + 7.'
-    time_complexity: The algorithm iterates n-1 times to compute the counts for each
-      row from 2 to n. In each iteration, a constant number of arithmetic operations
-      (multiplications, additions, and modulo operations) are performed. Therefore,
-      the time complexity is O(N).
-    space_complexity: The algorithm only needs to store the counts for the previous
-      row to compute the current row's counts. This means we only need a constant number
-      of variables (two for ABA count and ABC count). Thus, the space complexity is
-      O(1).
-    elapsed_time: 56.000226736068726
+      We define two DP states: `dp_aba[i]` as the number of ways to paint `i` rows such
+      that the `i`-th row ends with an ''ABA'' pattern, and `dp_abc[i]` as the number
+      of ways to paint `i` rows such that the `i`-th row ends with an ''ABC'' pattern.
+      By analyzing the compatibility between current and previous row patterns, we derive
+      recurrence relations: an ''ABA'' pattern can be placed on top of 3 ''ABA'' patterns
+      or 2 ''ABC'' patterns from the previous row. Similarly, an ''ABC'' pattern can
+      be placed on top of 2 ''ABA'' patterns or 2 ''ABC'' patterns from the previous
+      row. This leads to `dp_aba[i] = (dp_aba[i-1] * 3 + dp_abc[i-1] * 2) % MOD` and
+      `dp_abc[i] = (dp_aba[i-1] * 2 + dp_abc[i-1] * 2) % MOD`. The base cases are `dp_aba[1]
+      = 6` and `dp_abc[1] = 6`. Since the current state only depends on the previous
+      state, we can optimize space to O(1) by iteratively updating the counts.'
+    time_complexity: The time complexity is O(N). We iterate from `i = 2` to `n` (or
+      `n-1` times in a 0-indexed loop), performing a constant number of arithmetic operations
+      and modulo operations in each iteration. Therefore, the total time taken scales
+      linearly with the number of rows `n`.
+    space_complexity: The space complexity is O(1). We only need to store the counts
+      for the two types of patterns from the previous row (`count_aba` and `count_abc`)
+      to calculate the counts for the current row. This requires a constant amount of
+      memory regardless of the input `n`.
+    elapsed_time: 159.07864689826965
     model: gemini-2.5-flash
-    generated_at: '2026-01-03 01:05:42 '
+    generated_at: '2026-01-04 06:23:03 '
   - solutions:
       cpp: "class Solution {\npublic:\n    int numOfWays(int n) {\n        const int\
-        \ MOD = 1e9 + 7;\n        long long dp[5001][3][3][3] = {0};\n        for (int\
-        \ i = 0; i < 3; i++) {\n            for (int j = 0; j < 3; j++) {\n        \
-        \        for (int k = 0; k < 3; k++) {\n                    if (i != j && j\
-        \ != k && k != i) {\n                        dp[1][i][j][k] = 1;\n         \
-        \           }\n                }\n            }\n        }\n        for (int\
-        \ idx = 2; idx <= n; idx++) {\n            for (int i = 0; i < 3; i++) {\n \
-        \               for (int j = 0; j < 3; j++) {\n                    for (int\
-        \ k = 0; k < 3; k++) {\n                        if (dp[idx - 1][i][j][k] > 0)\
-        \ {\n                            for (int x = 0; x < 3; x++) {\n           \
-        \                     for (int y = 0; y < 3; y++) {\n                      \
-        \              for (int z = 0; z < 3; z++) {\n                             \
-        \           if (x != y && y != z && z != x && x != i && y != j && z != k) {\n\
-        \                                            dp[idx][x][y][z] = (dp[idx][x][y][z]\
-        \ + dp[idx - 1][i][j][k]) % MOD;\n                                        }\n\
-        \                                    }\n                                }\n\
-        \                            }\n                        }\n                \
-        \    }\n                }\n            }\n        }\n        long long ans =\
-        \ 0;\n        for (int i = 0; i < 3; i++) {\n            for (int j = 0; j <\
-        \ 3; j++) {\n                for (int k = 0; k < 3; k++) {\n               \
-        \     ans = (ans + dp[n][i][j][k]) % MOD;\n                }\n            }\n\
-        \        }\n        return ans;\n    }\n};"
+        \ MOD = 1e9 + 7;\n        long long dp[3][3][3] = {0};\n        for (int i =\
+        \ 0; i < 3; i++) {\n            for (int j = 0; j < 3; j++) {\n            \
+        \    for (int k = 0; k < 3; k++) {\n                    if (i != j && j != k\
+        \ && i != k) {\n                        dp[i][j][k] = 1;\n                 \
+        \   }\n                }\n            }\n        }\n        for (int i = 2;\
+        \ i <= n; i++) {\n            long long ndp[3][3][3] = {0};\n            for\
+        \ (int a = 0; a < 3; a++) {\n                for (int b = 0; b < 3; b++) {\n\
+        \                    for (int c = 0; c < 3; c++) {\n                       \
+        \ if (dp[a][b][c] > 0) {\n                            for (int d = 0; d < 3;\
+        \ d++) {\n                                for (int e = 0; e < 3; e++) {\n  \
+        \                                  for (int f = 0; f < 3; f++) {\n         \
+        \                               if (a != d && b != e && c != f && d != e &&\
+        \ e != f && d != f) {\n                                            ndp[d][e][f]\
+        \ = (ndp[d][e][f] + dp[a][b][c]) % MOD;\n                                  \
+        \      }\n                                    }\n                          \
+        \      }\n                            }\n                        }\n       \
+        \             }\n                }\n            }\n            for (int a =\
+        \ 0; a < 3; a++) {\n                for (int b = 0; b < 3; b++) {\n        \
+        \            for (int c = 0; c < 3; c++) {\n                        dp[a][b][c]\
+        \ = ndp[a][b][c];\n                    }\n                }\n            }\n\
+        \        }\n        long long ans = 0;\n        for (int i = 0; i < 3; i++)\
+        \ {\n            for (int j = 0; j < 3; j++) {\n                for (int k =\
+        \ 0; k < 3; k++) {\n                    ans = (ans + dp[i][j][k]) % MOD;\n \
+        \               }\n            }\n        }\n        return ans;\n    }\n};"
       java: "class Solution {\n    public int numOfWays(int n) {\n        final int\
-        \ MOD = (int) 1e9 + 7;\n        long[][][][] dp = new long[5001][3][3][3];\n\
-        \        for (int i = 0; i < 3; i++) {\n            for (int j = 0; j < 3; j++)\
-        \ {\n                for (int k = 0; k < 3; k++) {\n                    if (i\
-        \ != j && j != k && k != i) {\n                        dp[1][i][j][k] = 1;\n\
-        \                    }\n                }\n            }\n        }\n      \
-        \  for (int idx = 2; idx <= n; idx++) {\n            for (int i = 0; i < 3;\
-        \ i++) {\n                for (int j = 0; j < 3; j++) {\n                  \
-        \  for (int k = 0; k < 3; k++) {\n                        if (dp[idx - 1][i][j][k]\
-        \ > 0) {\n                            for (int x = 0; x < 3; x++) {\n      \
-        \                          for (int y = 0; y < 3; y++) {\n                 \
-        \                   for (int z = 0; z < 3; z++) {\n                        \
-        \                if (x != y && y != z && z != x && x != i && y != j && z !=\
-        \ k) {\n                                            dp[idx][x][y][z] = (dp[idx][x][y][z]\
-        \ + dp[idx - 1][i][j][k]) % MOD;\n                                        }\n\
-        \                                    }\n                                }\n\
-        \                            }\n                        }\n                \
-        \    }\n                }\n            }\n        }\n        long ans = 0;\n\
-        \        for (int i = 0; i < 3; i++) {\n            for (int j = 0; j < 3; j++)\
-        \ {\n                for (int k = 0; k < 3; k++) {\n                    ans\
-        \ = (ans + dp[n][i][j][k]) % MOD;\n                }\n            }\n      \
-        \  }\n        return (int) ans;\n    }\n}"
-      python: "class Solution:\n    def numOfWays(self, n: int) -> int:\n        MOD\
-        \ = 10**9 + 7\n        dp = [[[0 for _ in range(3)] for _ in range(3)] for _\
-        \ in range(3)]\n        for i in range(3):\n            for j in range(3):\n\
-        \                for k in range(3):\n                    if i != j and j !=\
-        \ k and k != i:\n                        dp[i][j][k] = 1\n        for idx in\
-        \ range(2, n + 1):\n            new_dp = [[[0 for _ in range(3)] for _ in range(3)]\
-        \ for _ in range(3)]\n            for i in range(3):\n                for j\
-        \ in range(3):\n                    for k in range(3):\n                   \
-        \     if dp[i][j][k] > 0:\n                            for x in range(3):\n\
-        \                                for y in range(3):\n                      \
-        \              for z in range(3):\n                                        if\
-        \ x != y and y != z and z != x and x != i and y != j and z != k:\n         \
-        \                                   new_dp[x][y][z] = (new_dp[x][y][z] + dp[i][j][k])\
-        \ % MOD\n            dp = new_dp\n        ans = 0\n        for i in range(3):\n\
-        \            for j in range(3):\n                for k in range(3):\n      \
-        \              ans = (ans + dp[i][j][k]) % MOD\n        return ans"
+        \ MOD = (int) 1e9 + 7;\n        long[][][] dp = new long[3][3][3];\n       \
+        \ for (int i = 0; i < 3; i++) {\n            for (int j = 0; j < 3; j++) {\n\
+        \                for (int k = 0; k < 3; k++) {\n                    if (i !=\
+        \ j && j != k && i != k) {\n                        dp[i][j][k] = 1;\n     \
+        \               }\n                }\n            }\n        }\n        for\
+        \ (int i = 2; i <= n; i++) {\n            long[][][] ndp = new long[3][3][3];\n\
+        \            for (int a = 0; a < 3; a++) {\n                for (int b = 0;\
+        \ b < 3; b++) {\n                    for (int c = 0; c < 3; c++) {\n       \
+        \                 if (dp[a][b][c] > 0) {\n                            for (int\
+        \ d = 0; d < 3; d++) {\n                                for (int e = 0; e <\
+        \ 3; e++) {\n                                    for (int f = 0; f < 3; f++)\
+        \ {\n                                        if (a != d && b != e && c != f\
+        \ && d != e && e != f && d != f) {\n                                       \
+        \     ndp[d][e][f] = (ndp[d][e][f] + dp[a][b][c]) % MOD;\n                 \
+        \                       }\n                                    }\n         \
+        \                       }\n                            }\n                 \
+        \       }\n                    }\n                }\n            }\n       \
+        \     for (int a = 0; a < 3; a++) {\n                for (int b = 0; b < 3;\
+        \ b++) {\n                    for (int c = 0; c < 3; c++) {\n              \
+        \          dp[a][b][c] = ndp[a][b][c];\n                    }\n            \
+        \    }\n            }\n        }\n        long ans = 0;\n        for (int i\
+        \ = 0; i < 3; i++) {\n            for (int j = 0; j < 3; j++) {\n          \
+        \      for (int k = 0; k < 3; k++) {\n                    ans = (ans + dp[i][j][k])\
+        \ % MOD;\n                }\n            }\n        }\n        return (int)\
+        \ ans;\n    }\n}"
+      python: "class Solution(object):\n    def numOfWays(self, n):\n        MOD = 10**9\
+        \ + 7\n        dp = [[[0]*3 for _ in range(3)] for _ in range(3)]\n        for\
+        \ i in range(3):\n            for j in range(3):\n                for k in range(3):\n\
+        \                    if i != j and j != k and i != k:\n                    \
+        \    dp[i][j][k] = 1\n        for _ in range(2, n+1):\n            ndp = [[[0]*3\
+        \ for _ in range(3)] for _ in range(3)]\n            for a in range(3):\n  \
+        \              for b in range(3):\n                    for c in range(3):\n\
+        \                        if dp[a][b][c] > 0:\n                            for\
+        \ d in range(3):\n                                for e in range(3):\n     \
+        \                               for f in range(3):\n                       \
+        \                 if a != d and b != e and c != f and d != e and e != f and\
+        \ d != f:\n                                            ndp[d][e][f] = (ndp[d][e][f]\
+        \ + dp[a][b][c]) % MOD\n            dp = ndp\n        ans = 0\n        for i\
+        \ in range(3):\n            for j in range(3):\n                for k in range(3):\n\
+        \                    ans = (ans + dp[i][j][k]) % MOD\n        return ans"
       python3: "class Solution:\n    def numOfWays(self, n: int) -> int:\n        MOD\
-        \ = 10**9 + 7\n        dp = [[[0 for _ in range(3)] for _ in range(3)] for _\
-        \ in range(3)]\n        for i in range(3):\n            for j in range(3):\n\
-        \                for k in range(3):\n                    if i != j and j !=\
-        \ k and k != i:\n                        dp[i][j][k] = 1\n        for idx in\
-        \ range(2, n + 1):\n            new_dp = [[[0 for _ in range(3)] for _ in range(3)]\
-        \ for _ in range(3)]\n            for i in range(3):\n                for j\
-        \ in range(3):\n                    for k in range(3):\n                   \
-        \     if dp[i][j][k] > 0:\n                            for x in range(3):\n\
-        \                                for y in range(3):\n                      \
-        \              for z in range(3):\n                                        if\
-        \ x != y and y != z and z != x and x != i and y != j and z != k:\n         \
-        \                                   new_dp[x][y][z] = (new_dp[x][y][z] + dp[i][j][k])\
-        \ % MOD\n            dp = new_dp\n        ans = 0\n        for i in range(3):\n\
-        \            for j in range(3):\n                for k in range(3):\n      \
-        \              ans = (ans + dp[i][j][k]) % MOD\n        return ans"
-      c: Not implemented
-      csharp: Not implemented
-      javascript: Not implemented
-      typescript: Not implemented
-      php: Not implemented
-      swift: Not implemented
-      kotlin: Not implemented
-      dart: Not implemented
-      go: Not implemented
-      ruby: Not implemented
-      scala: Not implemented
-      rust: Not implemented
-      racket: Not implemented
-      erlang: Not implemented
-      elixir: Not implemented
-    approach: The problem can be solved using dynamic programming. We define a 4D DP
-      array dp[idx][prev1col][prev2col][prev3col] where dp[idx][prev1col][prev2col][prev3col]
-      represents the number of ways to color the rows of the grid from idx to n-1, given
-      that the previous row (idx - 1) has colors prev1col, prev2col, and prev3col. We
-      iterate over all possible colors for the current row and update the DP array accordingly.
-      The base case is when idx equals n, in which case there is only one way to color
-      the grid (i.e., no more rows to color). The final answer is the sum of dp[1][i][j][k]
-      for all possible i, j, and k, which represents the number of ways to color the
-      entire grid.
-    time_complexity: O(n * 3^4) because we have n rows and for each row, we have 3 choices
-      for each of the 3 columns, resulting in 3^3 possibilities for the current row
-      and 3 possibilities for the previous row.
-    space_complexity: O(n * 3^3) because we need to store the DP array of size n * 3
-      * 3 * 3.
-    elapsed_time: 3.735126256942749
+        \ = 10**9 + 7\n        dp = [[[0]*3 for _ in range(3)] for _ in range(3)]\n\
+        \        for i in range(3):\n            for j in range(3):\n              \
+        \  for k in range(3):\n                    if i != j and j != k and i != k:\n\
+        \                        dp[i][j][k] = 1\n        for _ in range(2, n+1):\n\
+        \            ndp = [[[0]*3 for _ in range(3)] for _ in range(3)]\n         \
+        \   for a in range(3):\n                for b in range(3):\n               \
+        \     for c in range(3):\n                        if dp[a][b][c] > 0:\n    \
+        \                        for d in range(3):\n                              \
+        \  for e in range(3):\n                                    for f in range(3):\n\
+        \                                        if a != d and b != e and c != f and\
+        \ d != e and e != f and d != f:\n                                          \
+        \  ndp[d][e][f] = (ndp[d][e][f] + dp[a][b][c]) % MOD\n            dp = ndp\n\
+        \        ans = 0\n        for i in range(3):\n            for j in range(3):\n\
+        \                for k in range(3):\n                    ans = (ans + dp[i][j][k])\
+        \ % MOD\n        return ans"
+      c: "int numOfWays(int n) {\n    const int MOD = 1e9 + 7;\n    long long dp[3][3][3]\
+        \ = {0};\n    for (int i = 0; i < 3; i++) {\n        for (int j = 0; j < 3;\
+        \ j++) {\n            for (int k = 0; k < 3; k++) {\n                if (i !=\
+        \ j && j != k && i != k) {\n                    dp[i][j][k] = 1;\n         \
+        \       }\n            }\n        }\n    }\n    for (int i = 2; i <= n; i++)\
+        \ {\n        long long ndp[3][3][3] = {0};\n        for (int a = 0; a < 3; a++)\
+        \ {\n            for (int b = 0; b < 3; b++) {\n                for (int c =\
+        \ 0; c < 3; c++) {\n                    if (dp[a][b][c] > 0) {\n           \
+        \             for (int d = 0; d < 3; d++) {\n                            for\
+        \ (int e = 0; e < 3; e++) {\n                                for (int f = 0;\
+        \ f < 3; f++) {\n                                    if (a != d && b != e &&\
+        \ c != f && d != e && e != f && d != f) {\n                                \
+        \        ndp[d][e][f] = (ndp[d][e][f] + dp[a][b][c]) % MOD;\n              \
+        \                      }\n                                }\n              \
+        \              }\n                        }\n                    }\n       \
+        \         }\n            }\n        }\n        for (int a = 0; a < 3; a++) {\n\
+        \            for (int b = 0; b < 3; b++) {\n                for (int c = 0;\
+        \ c < 3; c++) {\n                    dp[a][b][c] = ndp[a][b][c];\n         \
+        \       }\n            }\n        }\n    }\n    long long ans = 0;\n    for\
+        \ (int i = 0; i < 3; i++) {\n        for (int j = 0; j < 3; j++) {\n       \
+        \     for (int k = 0; k < 3; k++) {\n                ans = (ans + dp[i][j][k])\
+        \ % MOD;\n            }\n        }\n    }\n    return ans;\n}"
+      csharp: "public class Solution {\n    public int NumOfWays(int n) {\n        const\
+        \ int MOD = 1000000007;\n        long[,,] dp = new long[n + 1, 3, 3, 3];\n \
+        \       for (int i = 0; i < 3; i++) {\n            for (int j = 0; j < 3; j++)\
+        \ {\n                for (int k = 0; k < 3; k++) {\n                    if (i\
+        \ != j && j != k && k != i) {\n                        dp[1, i, j, k] = 1;\n\
+        \                    }\n                }\n            }\n        }\n      \
+        \  for (int idx = 2; idx <= n; idx++) {\n            for (int prev1col = 0;\
+        \ prev1col < 3; prev1col++) {\n                for (int prev2col = 0; prev2col\
+        \ < 3; prev2col++) {\n                    for (int prev3col = 0; prev3col <\
+        \ 3; prev3col++) {\n                        if (dp[idx - 1, prev1col, prev2col,\
+        \ prev3col] > 0) {\n                            for (int col1 = 0; col1 < 3;\
+        \ col1++) {\n                                for (int col2 = 0; col2 < 3; col2++)\
+        \ {\n                                    for (int col3 = 0; col3 < 3; col3++)\
+        \ {\n                                        if (col1 != col2 && col2 != col3\
+        \ && col3 != col1 && col1 != prev1col && col2 != prev2col && col3 != prev3col)\
+        \ {\n                                            dp[idx, col1, col2, col3] =\
+        \ (dp[idx, col1, col2, col3] + dp[idx - 1, prev1col, prev2col, prev3col]) %\
+        \ MOD;\n                                        }\n                        \
+        \            }\n                                }\n                        \
+        \    }\n                        }\n                    }\n                }\n\
+        \            }\n        }\n        long res = 0;\n        for (int i = 0; i\
+        \ < 3; i++) {\n            for (int j = 0; j < 3; j++) {\n                for\
+        \ (int k = 0; k < 3; k++) {\n                    res = (res + dp[n, i, j, k])\
+        \ % MOD;\n                }\n            }\n        }\n        return (int)res;\n\
+        \    }\n}"
+      javascript: "var numOfWays = function(n) {\n    const MOD = 1000000007;\n    let\
+        \ dp = Array(n + 1).fill(0).map(() => Array(3).fill(0).map(() => Array(3).fill(0).map(()\
+        \ => Array(3).fill(0))));\n    for (let i = 0; i < 3; i++) {\n        for (let\
+        \ j = 0; j < 3; j++) {\n            for (let k = 0; k < 3; k++) {\n        \
+        \        if (i !== j && j !== k && k !== i) {\n                    dp[1][i][j][k]\
+        \ = 1;\n                }\n            }\n        }\n    }\n    for (let idx\
+        \ = 2; idx <= n; idx++) {\n        for (let prev1col = 0; prev1col < 3; prev1col++)\
+        \ {\n            for (let prev2col = 0; prev2col < 3; prev2col++) {\n      \
+        \          for (let prev3col = 0; prev3col < 3; prev3col++) {\n            \
+        \        if (dp[idx - 1][prev1col][prev2col][prev3col] > 0) {\n            \
+        \            for (let col1 = 0; col1 < 3; col1++) {\n                      \
+        \      for (let col2 = 0; col2 < 3; col2++) {\n                            \
+        \    for (let col3 = 0; col3 < 3; col3++) {\n                              \
+        \      if (col1 !== col2 && col2 !== col3 && col3 !== col1 && col1 !== prev1col\
+        \ && col2 !== prev2col && col3 !== prev3col) {\n                           \
+        \             dp[idx][col1][col2][col3] = (dp[idx][col1][col2][col3] + dp[idx\
+        \ - 1][prev1col][prev2col][prev3col]) % MOD;\n                             \
+        \       }\n                                }\n                            }\n\
+        \                        }\n                    }\n                }\n     \
+        \       }\n        }\n    }\n    let res = 0;\n    for (let i = 0; i < 3; i++)\
+        \ {\n        for (let j = 0; j < 3; j++) {\n            for (let k = 0; k <\
+        \ 3; k++) {\n                res = (res + dp[n][i][j][k]) % MOD;\n         \
+        \   }\n        }\n    }\n    return res;\n};"
+      typescript: "function numOfWays(n: number): number {\n    const MOD: number =\
+        \ 1000000007;\n    let dp: number[][][][] = Array(n + 1).fill(0).map(() => Array(3).fill(0).map(()\
+        \ => Array(3).fill(0).map(() => Array(3).fill(0))));\n    for (let i = 0; i\
+        \ < 3; i++) {\n        for (let j = 0; j < 3; j++) {\n            for (let k\
+        \ = 0; k < 3; k++) {\n                if (i !== j && j !== k && k !== i) {\n\
+        \                    dp[1][i][j][k] = 1;\n                }\n            }\n\
+        \        }\n    }\n    for (let idx = 2; idx <= n; idx++) {\n        for (let\
+        \ prev1col = 0; prev1col < 3; prev1col++) {\n            for (let prev2col =\
+        \ 0; prev2col < 3; prev2col++) {\n                for (let prev3col = 0; prev3col\
+        \ < 3; prev3col++) {\n                    if (dp[idx - 1][prev1col][prev2col][prev3col]\
+        \ > 0) {\n                        for (let col1 = 0; col1 < 3; col1++) {\n \
+        \                           for (let col2 = 0; col2 < 3; col2++) {\n       \
+        \                         for (let col3 = 0; col3 < 3; col3++) {\n         \
+        \                           if (col1 !== col2 && col2 !== col3 && col3 !== col1\
+        \ && col1 !== prev1col && col2 !== prev2col && col3 !== prev3col) {\n      \
+        \                                  dp[idx][col1][col2][col3] = (dp[idx][col1][col2][col3]\
+        \ + dp[idx - 1][prev1col][prev2col][prev3col]) % MOD;\n                    \
+        \                }\n                                }\n                    \
+        \        }\n                        }\n                    }\n             \
+        \   }\n            }\n        }\n    }\n    let res: number = 0;\n    for (let\
+        \ i = 0; i < 3; i++) {\n        for (let j = 0; j < 3; j++) {\n            for\
+        \ (let k = 0; k < 3; k++) {\n                res = (res + dp[n][i][j][k]) %\
+        \ MOD;\n            }\n        }\n    }\n    return res;\n}"
+      php: "class Solution {\n    function numOfWays($n) {\n        $MOD = 1000000007;\n\
+        \        $dp = array_fill(0, $n + 1, array_fill(0, 3, array_fill(0, 3, array_fill(0,\
+        \ 3, 0))));\n        for ($i = 0; $i < 3; $i++) {\n            for ($j = 0;\
+        \ $j < 3; $j++) {\n                for ($k = 0; $k < 3; $k++) {\n          \
+        \          if ($i !== $j && $j !== $k && $k !== $i) {\n                    \
+        \    $dp[1][$i][$j][$k] = 1;\n                    }\n                }\n   \
+        \         }\n        }\n        for ($idx = 2; $idx <= $n; $idx++) {\n     \
+        \       for ($prev1col = 0; $prev1col < 3; $prev1col++) {\n                for\
+        \ ($prev2col = 0; $prev2col < 3; $prev2col++) {\n                    for ($prev3col\
+        \ = 0; $prev3col < 3; $prev3col++) {\n                        if ($dp[$idx -\
+        \ 1][$prev1col][$prev2col][$prev3col] > 0) {\n                            for\
+        \ ($col1 = 0; $col1 < 3; $col1++) {\n                                for ($col2\
+        \ = 0; $col2 < 3; $col2++) {\n                                    for ($col3\
+        \ = 0; $col3 < 3; $col3++) {\n                                        if ($col1\
+        \ !== $col2 && $col2 !== $col3 && $col3 !== $col1 && $col1 !== $prev1col &&\
+        \ $col2 !== $prev2col && $col3 !== $prev3col) {\n                          \
+        \                  $dp[$idx][$col1][$col2][$col3] = ($dp[$idx][$col1][$col2][$col3]\
+        \ + $dp[$idx - 1][$prev1col][$prev2col][$prev3col]) % $MOD;\n              \
+        \                          }\n                                    }\n      \
+        \                          }\n                            }\n              \
+        \          }\n                    }\n                }\n            }\n    \
+        \    }\n        $res = 0;\n        for ($i = 0; $i < 3; $i++) {\n          \
+        \  for ($j = 0; $j < 3; $j++) {\n                for ($k = 0; $k < 3; $k++)\
+        \ {\n                    $res = ($res + $dp[$n][$i][$j][$k]) % $MOD;\n     \
+        \           }\n            }\n        }\n        return $res;\n    }\n}"
+      swift: "class Solution {\n    func numOfWays(_ n: Int) -> Int {\n        let MOD:\
+        \ Int = 1000000007\n        var dp: [[[Int]]] = Array(repeating: Array(repeating:\
+        \ Array(repeating: 0, count: 3), count: 3), count: 3)\n        for i in 0..<3\
+        \ {\n            for j in 0..<3 {\n                for k in 0..<3 {\n      \
+        \              if i != j && j != k && k != i {\n                        dp[1][i][j][k]\
+        \ = 1\n                    }\n                }\n            }\n        }\n\
+        \        for idx in 2...n {\n            for prev1col in 0..<3 {\n         \
+        \       for prev2col in 0..<3 {\n                    for prev3col in 0..<3 {\n\
+        \                        if dp[idx - 1][prev1col][prev2col][prev3col] > 0 {\n\
+        \                            for col1 in 0..<3 {\n                         \
+        \       for col2 in 0..<3 {\n                                    for col3 in\
+        \ 0..<3 {\n                                        if col1 != col2 && col2 !=\
+        \ col3 && col3 != col1 && col1 != prev1col && col2 != prev2col && col3 != prev3col\
+        \ {\n                                            dp[idx][col1][col2][col3] =\
+        \ (dp[idx][col1][col2][col3] + dp[idx - 1][prev1col][prev2col][prev3col]) %\
+        \ MOD\n                                        }\n                         \
+        \           }\n                                }\n                         \
+        \   }\n                        }\n                    }\n                }\n\
+        \            }\n        }\n        var res: Int = 0\n        for i in 0..<3\
+        \ {\n            for j in 0..<3 {\n                for k in 0..<3 {\n      \
+        \              res = (res + dp[n][i][j][k]) % MOD\n                }\n     \
+        \       }\n        }\n        return res\n    }\n}"
+      kotlin: "class Solution {\n    fun numOfWays(n: Int): Int {\n        val MOD =\
+        \ 1000000007\n        val memo = HashMap<String, Long>()\n        fun dp(row:\
+        \ Int, prev1: Int, prev2: Int, prev3: Int): Long {\n            if (row == n)\
+        \ return 1\n            val key = \"$row,$prev1,$prev2,$prev3\"\n          \
+        \  if (memo.containsKey(key)) return memo[key]!!\n            var res = 0L\n\
+        \            for (i in 0..2) {\n                for (j in 0..2) {\n        \
+        \            for (k in 0..2) {\n                        if (i != prev1 && j\
+        \ != prev2 && k != prev3 && i != j && j != k) {\n                          \
+        \  res = (res + dp(row + 1, i, j, k)) % MOD\n                        }\n   \
+        \                 }\n                }\n            }\n            memo[key]\
+        \ = res\n            return res\n        }\n        return dp(0, -1, -1, -1).toInt()\n\
+        \    }\n}"
+      dart: "class Solution {\n  int numOfWays(int n) {\n    final int MOD = 1000000007;\n\
+        \    final Map<String, int> memo = {};\n    int dp(int row, int prev1, int prev2,\
+        \ int prev3) {\n      if (row == n) return 1;\n      final String key = \"$row,$prev1,$prev2,$prev3\"\
+        ;\n      if (memo.containsKey(key)) return memo[key]!;\n      int res = 0;\n\
+        \      for (int i = 0; i < 3; i++) {\n        for (int j = 0; j < 3; j++) {\n\
+        \          for (int k = 0; k < 3; k++) {\n            if (i != prev1 && j !=\
+        \ prev2 && k != prev3 && i != j && j != k) {\n              res = (res + dp(row\
+        \ + 1, i, j, k)) % MOD;\n            }\n          }\n        }\n      }\n  \
+        \    memo[key] = res;\n      return res;\n    }\n    return dp(0, -1, -1, -1);\n\
+        \  }\n}"
+      go: "func numOfWays(n int) int {\n    const MOD int = 1e9 + 7\n    memo := make(map[string]int)\n\
+        \    var dp func(row, prev1, prev2, prev3 int) int\n    dp = func(row, prev1,\
+        \ prev2, prev3 int) int {\n        if row == n {\n            return 1\n   \
+        \     }\n        key := fmt.Sprintf(\"%d,%d,%d,%d\", row, prev1, prev2, prev3)\n\
+        \        if val, ok := memo[key]; ok {\n            return val\n        }\n\
+        \        res := 0\n        for i := 0; i < 3; i++ {\n            for j := 0;\
+        \ j < 3; j++ {\n                for k := 0; k < 3; k++ {\n                 \
+        \   if i != prev1 && j != prev2 && k != prev3 && i != j && j != k {\n      \
+        \                  res = (res + dp(row+1, i, j, k)) % MOD\n                \
+        \    }\n                }\n            }\n        }\n        memo[key] = res\n\
+        \        return res\n    }\n    return dp(0, -1, -1, -1)\n}"
+      ruby: "def num_of_ways(n)\n    MOD = 10**9 + 7\n    memo = {}\n    def dp(row,\
+        \ prev1, prev2, prev3)\n        if row == n\n            return 1\n        end\n\
+        \        key = [row, prev1, prev2, prev3].join(\",\")\n        if memo.key?(key)\n\
+        \            return memo[key]\n        end\n        res = 0\n        (0..2).each\
+        \ do |i|\n            (0..2).each do |j|\n                (0..2).each do |k|\n\
+        \                    if i != prev1 && j != prev2 && k != prev3 && i != j &&\
+        \ j != k\n                        res = (res + dp(row + 1, i, j, k)) % MOD\n\
+        \                    end\n                end\n            end\n        end\n\
+        \        memo[key] = res\n        res\n    end\n    dp(0, -1, -1, -1)\nend"
+      scala: "object Solution {\n    def numOfWays(n: Int): Int = {\n        val MOD\
+        \ = 1000000007\n        val memo = scala.collection.mutable.Map[String, Long]()\n\
+        \        def dp(row: Int, prev1: Int, prev2: Int, prev3: Int): Long = {\n  \
+        \          if (row == n) return 1\n            val key = s\"$row,$prev1,$prev2,$prev3\"\
+        \n            if (memo.contains(key)) return memo(key)\n            var res\
+        \ = 0L\n            for (i <- 0 to 2) {\n                for (j <- 0 to 2) {\n\
+        \                    for (k <- 0 to 2) {\n                        if (i != prev1\
+        \ && j != prev2 && k != prev3 && i != j && j != k) {\n                     \
+        \       res = (res + dp(row + 1, i, j, k)) % MOD\n                        }\n\
+        \                    }\n                }\n            }\n            memo(key)\
+        \ = res\n            res\n        }\n        dp(0, -1, -1, -1).toInt\n    }\n\
+        }"
+      rust: "impl Solution {\n    pub fn num_of_ways(n: i32) -> i32 {\n        const\
+        \ MOD: i32 = 1_000_000_007;\n        let mut dp: [[[i32; 3]; 3]; 3] = [[[0;\
+        \ 3]; 3]; 3];\n        for i in 0..3 {\n            for j in 0..3 {\n      \
+        \          for k in 0..3 {\n                    if i != j && j != k && k !=\
+        \ i {\n                        dp[i][j][k] = 1;\n                    }\n   \
+        \             }\n            }\n        }\n        for _ in 1..n {\n       \
+        \     let mut new_dp: [[[i32; 3]; 3]; 3] = [[[0; 3]; 3]; 3];\n            for\
+        \ i in 0..3 {\n                for j in 0..3 {\n                    for k in\
+        \ 0..3 {\n                        for x in 0..3 {\n                        \
+        \    for y in 0..3 {\n                                for z in 0..3 {\n    \
+        \                                if i != x && j != y && k != z && x != y &&\
+        \ y != z && z != x {\n                                        new_dp[x][y][z]\
+        \ = (new_dp[x][y][z] + dp[i][j][k]) % MOD;\n                               \
+        \     }\n                                }\n                            }\n\
+        \                        }\n                    }\n                }\n     \
+        \       }\n            dp = new_dp;\n        }\n        let mut ans = 0;\n \
+        \       for i in 0..3 {\n            for j in 0..3 {\n                for k\
+        \ in 0..3 {\n                    ans = (ans + dp[i][j][k]) % MOD;\n        \
+        \        }\n            }\n        }\n        ans\n    }\n}"
+      racket: "(define/contract (num-of-ways n)\n  (-> exact-integer? exact-integer?)\n\
+        \  (define MOD 1000000007)\n  (define dp (make-vector 27 0))\n  (define (idx\
+        \ i j k) (+ (* i 9) (* j 3) k))\n  (for ([i (in-range 3)] [j (in-range 3)] [k\
+        \ (in-range 3)])\n    (when (and (not (= i j)) (not (= j k)) (not (= k i)))\n\
+        \      (vector-set! dp (idx i j k) 1)))\n  (for ([_ (in-range (sub1 n))])\n\
+        \    (define new-dp (make-vector 27 0))\n    (for ([i (in-range 3)] [j (in-range\
+        \ 3)] [k (in-range 3)])\n      (for ([x (in-range 3)] [y (in-range 3)] [z (in-range\
+        \ 3)])\n        (when (and (not (= i x)) (not (= j y)) (not (= k z)) (not (=\
+        \ x y)) (not (= y z)) (not (= z x)))\n          (vector-set! new-dp (idx x y\
+        \ z) (modulo (+ (vector-ref new-dp (idx x y z)) (vector-ref dp (idx i j k)))\
+        \ MOD))))))\n    (set! dp new-dp))\n  (apply + (vector->list dp)))"
+      erlang: "num_of_ways(N) ->\n  MOD = 1000000007,\n  DP = array:new([27, {default,\
+        \ 0}]),\n  Fun = fun(I, J, K) ->\n           case {I, J, K} of\n           \
+        \  {I, J, K} when I =:= J; J =:= K; K =:= I ->\n               ok;\n       \
+        \      _ ->\n               array:set(I * 9 + J * 3 + K, 1, DP)\n          \
+        \ end\n         end,\n  lists:foreach(fun(I) ->\n                     lists:foreach(fun(J)\
+        \ ->\n                                   lists:foreach(fun(K) -> Fun(I, J, K)\
+        \ end, lists:seq(0, 2))\n                                 end, lists:seq(0,\
+        \ 2))\n                   end, lists:seq(0, 2)),\n  Fun2 = fun(_, DP1) ->\n\
+        \           DP2 = array:new([27, {default, 0}]),\n           Fun3 = fun(I, J,\
+        \ K) ->\n                    Fun4 = fun(X, Y, Z) ->\n                      \
+        \        case {I, J, K, X, Y, Z} of\n                                {I, J,\
+        \ K, X, Y, Z} when I =:= X; J =:= Y; K =:= Z; X =:= Y; Y =:= Z; Z =:= X ->\n\
+        \                                  ok;\n                                _ ->\n\
+        \                                  array:set(X * 9 + Y * 3 + Z, (array:get(X\
+        \ * 9 + Y * 3 + Z, DP2) + array:get(I * 9 + J * 3 + K, DP1)) rem MOD, DP2)\n\
+        \                              end\n                            end,\n     \
+        \               lists:foreach(fun(X) ->\n                                  \
+        \ lists:foreach(fun(Y) ->\n                                                \
+        \ lists:foreach(fun(Z) -> Fun4(X, Y, Z) end, lists:seq(0, 2))\n            \
+        \                                   end, lists:seq(0, 2))\n                \
+        \                 end, lists:seq(0, 2))\n                  end,\n          \
+        \ lists:foreach(fun(I) ->\n                         lists:foreach(fun(J) ->\n\
+        \                                   lists:foreach(fun(K) -> Fun3(I, J, K) end,\
+        \ lists:seq(0, 2))\n                                 end, lists:seq(0, 2))\n\
+        \                       end, lists:seq(0, 2)),\n           DP2\n         end,\n\
+        \  lists:foldl(Fun2, DP, lists:seq(1, N - 1)),\n  array:foldl(fun(I, Acc, _)\
+        \ -> Acc + array:get(I, DP) end, 0, DP) rem MOD."
+      elixir: "defmodule Solution do\n  @spec num_of_ways(n :: integer) :: integer\n\
+        \  def num_of_ways(n) do\n    mod = 1_000_000_007\n    dp = for i <- 0..2, j\
+        \ <- 0..2, k <- 0..2, into: %{} do\n      {{i, j, k}, if i != j and j != k and\
+        \ k != i, do: 1, else: 0}\n    end\n    for _ <- 1..(n - 1) do\n      new_dp\
+        \ = for x <- 0..2, y <- 0..2, z <- 0..2, into: %{} do\n        {{x, y, z},\n\
+        \         Enum.reduce(0..2, 0, fn i, acc ->\n           Enum.reduce(0..2, acc,\
+        \ fn j, acc ->\n             Enum.reduce(0..2, acc, fn k, acc ->\n         \
+        \      if i != x and j != y and k != z and x != y and y != z and z != x do\n\
+        \                 rem(acc + Map.get(dp, {i, j, k}, 0), mod)\n              \
+        \ else\n                 acc\n               end\n             end)\n      \
+        \     end)\n         end)}\n      end\n      dp = new_dp\n    end\n    Enum.reduce(dp,\
+        \ 0, fn {_, v}, acc -> rem(acc + v, mod) end)\n  end\nend"
+    approach: The problem can be solved using dynamic programming. We will create a
+      4D DP array where dp[idx][prev1col][prev2col][prev3col] represents the number
+      of ways to color the rows of the grid from idx to n-1, given that the previous
+      row has colors prev1col, prev2col, and prev3col. We will iterate over all possible
+      colors for the current row and update the DP array accordingly. The base case
+      will be when we have colored all rows, in which case we return 1. The final answer
+      will be the sum of all possible ways to color the first row, which will be stored
+      in dp[1][prev1col][prev2col][prev3col] for all possible prev1col, prev2col, and
+      prev3col. We will use a modulo operation to avoid overflow, as the answer can
+      be very large.
+    time_complexity: The time complexity of the solution is O(n * 3^4) because we are
+      iterating over all possible colors for the current row and the previous row. The
+      space complexity is also O(n * 3^4) because we need to store the DP array. However,
+      we can optimize the space complexity to O(3^4) by only storing the previous row
+      in the DP array.
+    space_complexity: The space complexity of the solution is O(3^4) because we only
+      need to store the previous row in the DP array. This is a significant improvement
+      over the original O(n * 3^4) space complexity, and it allows us to solve the problem
+      for large values of n.
+    elapsed_time: 18.610949516296387
     model: llama-3.3-70b-versatile
-    generated_at: '2026-01-03 01:05:46 '
+    generated_at: '2026-01-04 06:23:37 '
 ---
 
 ## Problem #1411: Number of Ways to Paint N × 3 Grid
@@ -353,16 +647,16 @@ We've generated solutions using multiple AI models. Click to expand each solutio
 <details class="ai-solution-card" open markdown="1">
 <summary class="ai-solution-header">
   <span class="ai-model-badge">✨ Solution from <strong>gemini-2.5-flash</strong></span>
-  <small class="solution-timestamp">(2026-01-03 01:05:42 )</small>
+  <small class="solution-timestamp">(2026-01-04 06:23:03 )</small>
 </summary>
 
 <div class="ai-solution-content">
 
 ### Approach
 
-The problem asks for the number of ways to paint an n x 3 grid such that no two adjacent cells (horizontally or vertically) have the same color. This problem can be efficiently solved using dynamic programming due to the localized dependency of coloring. The key insight is that the valid colorings for any row i depend only on the coloring of the immediately preceding row i-1. We categorize the possible color patterns for a single row of three cells into two types: "ABA" patterns (e.g., Red-Yellow-Red, where the first and third colors are the same) and "ABC" patterns (e.g., Red-Yellow-Green, where all three colors are distinct). There are 6 unique "ABA" patterns and 6 unique "ABC" patterns, totaling 12 ways to color a single row.
+The problem can be solved using dynamic programming by observing that the number of ways to paint the current row depends only on the color pattern of the previous row. We categorize valid single-row color patterns into two types: 'ABA' patterns (e.g., Red-Yellow-Red, where the first and third colors are the same but different from the middle color) and 'ABC' patterns (e.g., Red-Yellow-Green, where all three colors are distinct). There are 6 distinct 'ABA' patterns and 6 distinct 'ABC' patterns for a single row, totaling 12 ways for n=1.
 
-We define dp_aba[i] as the number of ways to paint i rows such that the i-th row ends with an "ABA" pattern, and dp_abc[i] as the number of ways to paint i rows such that the i-th row ends with an "ABC" pattern. For the base case n=1, dp_aba[1] = 6 and dp_abc[1] = 6. For subsequent rows, we derive recurrence relations by analyzing how many valid "ABA" and "ABC" patterns can follow a given "ABA" or "ABC" pattern in the previous row. A detailed analysis shows that an "ABA" pattern can be followed by 3 "ABA" patterns and 2 "ABC" patterns. Similarly, an "ABC" pattern can be followed by 2 "ABA" patterns and 2 "ABC" patterns. This leads to the transitions: dp_aba[i] = (3 * dp_aba[i-1] + 2 * dp_abc[i-1]) % MOD and dp_abc[i] = (2 * dp_aba[i-1] + 2 * dp_abc[i-1]) % MOD. The final answer is the sum of dp_aba[n] and dp_abc[n] modulo 10^9 + 7.
+We define two DP states: `dp_aba[i]` as the number of ways to paint `i` rows such that the `i`-th row ends with an 'ABA' pattern, and `dp_abc[i]` as the number of ways to paint `i` rows such that the `i`-th row ends with an 'ABC' pattern. By analyzing the compatibility between current and previous row patterns, we derive recurrence relations: an 'ABA' pattern can be placed on top of 3 'ABA' patterns or 2 'ABC' patterns from the previous row. Similarly, an 'ABC' pattern can be placed on top of 2 'ABA' patterns or 2 'ABC' patterns from the previous row. This leads to `dp_aba[i] = (dp_aba[i-1] * 3 + dp_abc[i-1] * 2) % MOD` and `dp_abc[i] = (dp_aba[i-1] * 2 + dp_abc[i-1] * 2) % MOD`. The base cases are `dp_aba[1] = 6` and `dp_abc[1] = 6`. Since the current state only depends on the previous state, we can optimize space to O(1) by iteratively updating the counts.
 
 ### Code
 
@@ -417,18 +711,25 @@ public:
     int numOfWays(int n) {
         long long MOD = 1e9 + 7;
 
-        long long aba_count = 6; // Patterns like RGR
-        long long abc_count = 6; // Patterns like RYG
+        long long dp_2_colors = 6; // Patterns like RGR
+        long long dp_3_colors = 6; // Patterns like RYG
 
         for (int i = 2; i <= n; ++i) {
-            long long new_aba_count = (3 * aba_count + 2 * abc_count) % MOD;
-            long long new_abc_count = (2 * aba_count + 2 * abc_count) % MOD;
+            // If current row is ABA type (e.g., 010):
+            //   It can be preceded by 3 ABA patterns (e.g., 101, 121, 202 for 010)
+            //   It can be preceded by 2 ABC patterns (e.g., 102, 201 for 010)
+            long long new_dp_2_colors = (3 * dp_2_colors + 2 * dp_3_colors) % MOD;
 
-            aba_count = new_aba_count;
-            abc_count = new_abc_count;
+            // If current row is ABC type (e.g., 012):
+            //   It can be preceded by 2 ABA patterns (e.g., 101, 121 for 012)
+            //   It can be preceded by 2 ABC patterns (e.g., 120, 201 for 012)
+            long long new_dp_3_colors = (2 * dp_2_colors + 2 * dp_3_colors) % MOD;
+
+            dp_2_colors = new_dp_2_colors;
+            dp_3_colors = new_dp_3_colors;
         }
 
-        return (aba_count + abc_count) % MOD;
+        return (int)((dp_2_colors + dp_3_colors) % MOD);
     }
 };
 {% endraw %}
@@ -444,18 +745,25 @@ class Solution {
     public int numOfWays(int n) {
         long MOD = 1_000_000_007;
 
-        long abaCount = 6; // Patterns like RGR
-        long abcCount = 6; // Patterns like RYG
+        long dp_2_colors = 6; // Patterns like RGR
+        long dp_3_colors = 6; // Patterns like RYG
 
         for (int i = 2; i <= n; ++i) {
-            long newAbaCount = (3 * abaCount + 2 * abcCount) % MOD;
-            long newAbcCount = (2 * abaCount + 2 * abcCount) % MOD;
+            // If current row is ABA type (e.g., 010):
+            //   It can be preceded by 3 ABA patterns (e.g., 101, 121, 202 for 010)
+            //   It can be preceded by 2 ABC patterns (e.g., 102, 201 for 010)
+            long new_dp_2_colors = (3 * dp_2_colors + 2 * dp_3_colors) % MOD;
 
-            abaCount = newAbaCount;
-            abcCount = newAbcCount;
+            // If current row is ABC type (e.g., 012):
+            //   It can be preceded by 2 ABA patterns (e.g., 101, 121 for 012)
+            //   It can be preceded by 2 ABC patterns (e.g., 120, 201 for 012)
+            long new_dp_3_colors = (2 * dp_2_colors + 2 * dp_3_colors) % MOD;
+
+            dp_2_colors = new_dp_2_colors;
+            dp_3_colors = new_dp_3_colors;
         }
 
-        return (int)((abaCount + abcCount) % MOD);
+        return (int)((dp_2_colors + dp_3_colors) % MOD);
     }
 }
 {% endraw %}
@@ -467,37 +775,38 @@ class Solution {
 
 {% highlight python %}
 {% raw %}
-class Solution:
-    def numOfWays(self, n: int) -> int:
+class Solution(object):
+    def numOfWays(self, n):
+        """
+        :type n: int
+        :rtype: int
+        """
         MOD = 10**9 + 7
 
-        # For n=1, there are 12 ways.
-        # 6 ways for patterns like RGR (ABA type)
-        # 6 ways for patterns like RYG (ABC type)
+        # dp_2_colors: number of ways to paint a row with 2 distinct colors (e.g., RGR)
+        # dp_3_colors: number of ways to paint a row with 3 distinct colors (e.g., RYG)
 
-        # dp_aba[i] = number of ways to paint i rows, with the i-th row being an ABA pattern
-        # dp_abc[i] = number of ways to paint i rows, with the i-th row being an ABC pattern
-
-        # Base case for n=1
-        aba_count = 6 
-        abc_count = 6 
+        # For n=1:
+        # There are 6 patterns of type ABA (e.g., RGR, RYR, GRG, GYG, YRY, YGY)
+        # There are 6 patterns of type ABC (e.g., RYG, RGY, YRG, YGR, GRY, GYR)
+        dp_2_colors = 6
+        dp_3_colors = 6
 
         for _ in range(2, n + 1):
-            # If previous row was ABA (e.g., RGR):
-            # Next row can be ABA in 3 ways
-            # Next row can be ABC in 2 ways
+            # If current row is ABA type (e.g., 010):
+            #   It can be preceded by 3 ABA patterns (e.g., 101, 121, 202 for 010)
+            #   It can be preceded by 2 ABC patterns (e.g., 102, 201 for 010)
+            new_dp_2_colors = (3 * dp_2_colors + 2 * dp_3_colors) % MOD
 
-            # If previous row was ABC (e.g., RYG):
-            # Next row can be ABA in 2 ways
-            # Next row can be ABC in 2 ways
+            # If current row is ABC type (e.g., 012):
+            #   It can be preceded by 2 ABA patterns (e.g., 101, 121 for 012)
+            #   It can be preceded by 2 ABC patterns (e.g., 120, 201 for 012)
+            new_dp_3_colors = (2 * dp_2_colors + 2 * dp_3_colors) % MOD
 
-            new_aba_count = (3 * aba_count + 2 * abc_count) % MOD
-            new_abc_count = (2 * aba_count + 2 * abc_count) % MOD
+            dp_2_colors = new_dp_2_colors
+            dp_3_colors = new_dp_3_colors
 
-            aba_count = new_aba_count
-            abc_count = new_abc_count
-
-        return (aba_count + abc_count) % MOD
+        return (dp_2_colors + dp_3_colors) % MOD
 {% endraw %}
 {% endhighlight %}
 
@@ -511,33 +820,30 @@ class Solution:
     def numOfWays(self, n: int) -> int:
         MOD = 10**9 + 7
 
-        # For n=1, there are 12 ways.
-        # 6 ways for patterns like RGR (ABA type)
-        # 6 ways for patterns like RYG (ABC type)
+        # dp_2_colors: number of ways to paint a row with 2 distinct colors (e.g., RGR)
+        # dp_3_colors: number of ways to paint a row with 3 distinct colors (e.g., RYG)
 
-        # dp_aba[i] = number of ways to paint i rows, with the i-th row being an ABA pattern
-        # dp_abc[i] = number of ways to paint i rows, with the i-th row being an ABC pattern
-
-        # Base case for n=1
-        aba_count = 6 
-        abc_count = 6 
+        # For n=1:
+        # There are 6 patterns of type ABA (e.g., RGR, RYR, GRG, GYG, YRY, YGY)
+        # There are 6 patterns of type ABC (e.g., RYG, RGY, YRG, YGR, GRY, GYR)
+        dp_2_colors = 6
+        dp_3_colors = 6
 
         for _ in range(2, n + 1):
-            # If previous row was ABA (e.g., RGR):
-            # Next row can be ABA in 3 ways
-            # Next row can be ABC in 2 ways
+            # If current row is ABA type (e.g., 010):
+            #   It can be preceded by 3 ABA patterns (e.g., 101, 121, 202 for 010)
+            #   It can be preceded by 2 ABC patterns (e.g., 102, 201 for 010)
+            new_dp_2_colors = (3 * dp_2_colors + 2 * dp_3_colors) % MOD
 
-            # If previous row was ABC (e.g., RYG):
-            # Next row can be ABA in 2 ways
-            # Next row can be ABC in 2 ways
+            # If current row is ABC type (e.g., 012):
+            #   It can be preceded by 2 ABA patterns (e.g., 101, 121 for 012)
+            #   It can be preceded by 2 ABC patterns (e.g., 120, 201 for 012)
+            new_dp_3_colors = (2 * dp_2_colors + 2 * dp_3_colors) % MOD
 
-            new_aba_count = (3 * aba_count + 2 * abc_count) % MOD
-            new_abc_count = (2 * aba_count + 2 * abc_count) % MOD
+            dp_2_colors = new_dp_2_colors
+            dp_3_colors = new_dp_3_colors
 
-            aba_count = new_aba_count
-            abc_count = new_abc_count
-
-        return (aba_count + abc_count) % MOD
+        return (dp_2_colors + dp_3_colors) % MOD
 {% endraw %}
 {% endhighlight %}
 
@@ -548,20 +854,27 @@ class Solution:
 {% highlight c %}
 {% raw %}
 int numOfWays(int n) {
-    long long MOD = 1000000007;
+    long long MOD = 1e9 + 7;
 
-    long long aba_count = 6; // Patterns like RGR
-    long long abc_count = 6; // Patterns like RYG
+    long long dp_2_colors = 6; // Patterns like RGR
+    long long dp_3_colors = 6; // Patterns like RYG
 
     for (int i = 2; i <= n; ++i) {
-        long long new_aba_count = (3 * aba_count + 2 * abc_count) % MOD;
-        long long new_abc_count = (2 * aba_count + 2 * abc_count) % MOD;
+        // If current row is ABA type (e.g., 010):
+        //   It can be preceded by 3 ABA patterns (e.g., 101, 121, 202 for 010)
+        //   It can be preceded by 2 ABC patterns (e.g., 102, 201 for 010)
+        long long new_dp_2_colors = (3 * dp_2_colors + 2 * dp_3_colors) % MOD;
 
-        aba_count = new_aba_count;
-        abc_count = new_abc_count;
+        // If current row is ABC type (e.g., 012):
+        //   It can be preceded by 2 ABA patterns (e.g., 101, 121 for 012)
+        //   It can be preceded by 2 ABC patterns (e.g., 120, 201 for 012)
+        long long new_dp_3_colors = (2 * dp_2_colors + 2 * dp_3_colors) % MOD;
+
+        dp_2_colors = new_dp_2_colors;
+        dp_3_colors = new_dp_3_colors;
     }
 
-    return (int)((aba_count + abc_count) % MOD);
+    return (int)((dp_2_colors + dp_3_colors) % MOD);
 }
 {% endraw %}
 {% endhighlight %}
@@ -574,20 +887,18 @@ int numOfWays(int n) {
 {% raw %}
 public class Solution {
     public int NumOfWays(int n) {
-        long MOD = 1_000_000_007;
+        long mod = 1_000_000_007;
+        long countAba = 6; // Ways to paint a row with pattern like RGR (2 colors)
+        long countAbc = 6; // Ways to paint a row with pattern like RYG (3 colors)
 
-        long abaCount = 6; // Patterns like RGR
-        long abcCount = 6; // Patterns like RYG
-
-        for (int i = 2; i <= n; ++i) {
-            long newAbaCount = (3 * abaCount + 2 * abcCount) % MOD;
-            long newAbcCount = (2 * abaCount + 2 * abcCount) % MOD;
-
-            abaCount = newAbaCount;
-            abcCount = newAbcCount;
+        for (int i = 2; i <= n; i++) {
+            long nextAba = (countAba * 3 + countAbc * 2) % mod;
+            long nextAbc = (countAba * 2 + countAbc * 2) % mod;
+            countAba = nextAba;
+            countAbc = nextAbc;
         }
 
-        return (int)((abaCount + abcCount) % MOD);
+        return (int)((countAba + countAbc) % mod);
     }
 }
 {% endraw %}
@@ -604,20 +915,18 @@ public class Solution {
  * @return {number}
  */
 var numOfWays = function(n) {
-    const MOD = 1_000_000_007;
+    const mod = 1_000_000_007;
+    let countAba = 6; // Ways to paint a row with pattern like RGR (2 colors)
+    let countAbc = 6; // Ways to paint a row with pattern like RYG (3 colors)
 
-    let abaCount = 6; // Patterns like RGR
-    let abcCount = 6; // Patterns like RYG
-
-    for (let i = 2; i <= n; ++i) {
-        let newAbaCount = (3 * abaCount + 2 * abcCount) % MOD;
-        let newAbcCount = (2 * abaCount + 2 * abcCount) % MOD;
-
-        abaCount = newAbaCount;
-        abcCount = newAbcCount;
+    for (let i = 2; i <= n; i++) {
+        let nextAba = (countAba * 3 + countAbc * 2) % mod;
+        let nextAbc = (countAba * 2 + countAbc * 2) % mod;
+        countAba = nextAba;
+        countAbc = nextAbc;
     }
 
-    return (abaCount + abcCount) % MOD;
+    return (countAba + countAbc) % mod;
 };
 {% endraw %}
 {% endhighlight %}
@@ -629,20 +938,18 @@ var numOfWays = function(n) {
 {% highlight typescript %}
 {% raw %}
 function numOfWays(n: number): number {
-    const MOD = 1_000_000_007;
+    const mod = 1_000_000_007;
+    let countAba: number = 6; // Ways to paint a row with pattern like RGR (2 colors)
+    let countAbc: number = 6; // Ways to paint a row with pattern like RYG (3 colors)
 
-    let abaCount: number = 6; // Patterns like RGR
-    let abcCount: number = 6; // Patterns like RYG
-
-    for (let i = 2; i <= n; ++i) {
-        let newAbaCount: number = (3 * abaCount + 2 * abcCount) % MOD;
-        let newAbcCount: number = (2 * abaCount + 2 * abcCount) % MOD;
-
-        abaCount = newAbaCount;
-        abcCount = newAbcCount;
+    for (let i = 2; i <= n; i++) {
+        let nextAba: number = (countAba * 3 + countAbc * 2) % mod;
+        let nextAbc: number = (countAba * 2 + countAbc * 2) % mod;
+        countAba = nextAba;
+        countAbc = nextAbc;
     }
 
-    return (abaCount + abcCount) % MOD;
+    return (countAba + countAbc) % mod;
 };
 {% endraw %}
 {% endhighlight %}
@@ -660,20 +967,18 @@ class Solution {
      * @return Integer
      */
     function numOfWays($n) {
-        $MOD = 1_000_000_007;
+        $mod = 1000000007;
+        $countAba = 6; // Ways to paint a row with pattern like RGR (2 colors)
+        $countAbc = 6; // Ways to paint a row with pattern like RYG (3 colors)
 
-        $abaCount = 6; // Patterns like RGR
-        $abcCount = 6; // Patterns like RYG
-
-        for ($i = 2; $i <= $n; ++$i) {
-            $newAbaCount = (3 * $abaCount + 2 * $abcCount) % $MOD;
-            $newAbcCount = (2 * $abaCount + 2 * $abcCount) % $MOD;
-
-            $abaCount = $newAbaCount;
-            $abcCount = $newAbcCount;
+        for ($i = 2; $i <= $n; $i++) {
+            $nextAba = ($countAba * 3 + $countAbc * 2) % $mod;
+            $nextAbc = ($countAba * 2 + $countAbc * 2) % $mod;
+            $countAba = $nextAba;
+            $countAbc = $nextAbc;
         }
 
-        return ($abaCount + $abcCount) % $MOD;
+        return ($countAba + $countAbc) % $mod;
     }
 }
 {% endraw %}
@@ -687,20 +992,18 @@ class Solution {
 {% raw %}
 class Solution {
     func numOfWays(_ n: Int) -> Int {
-        let MOD = 1_000_000_007
-
-        var abaCount: Int = 6 // Patterns like RGR
-        var abcCount: Int = 6 // Patterns like RYG
+        let mod = 1_000_000_007
+        var countAba: Int = 6 // Ways to paint a row with pattern like RGR (2 colors)
+        var countAbc: Int = 6 // Ways to paint a row with pattern like RYG (3 colors)
 
         for _ in 2...n {
-            let newAbaCount = (3 * abaCount + 2 * abcCount) % MOD
-            let newAbcCount = (2 * abaCount + 2 * abcCount) % MOD
-
-            abaCount = newAbaCount
-            abcCount = newAbcCount
+            let nextAba = (countAba * 3 + countAbc * 2) % mod
+            let nextAbc = (countAba * 2 + countAbc * 2) % mod
+            countAba = nextAba
+            countAbc = nextAbc
         }
 
-        return (abaCount + abcCount) % MOD
+        return (countAba + countAbc) % mod
     }
 }
 {% endraw %}
@@ -714,20 +1017,19 @@ class Solution {
 {% raw %}
 class Solution {
     fun numOfWays(n: Int): Int {
-        val MOD = 1_000_000_007L // Use Long for MOD to ensure calculations are done in Long
+        val MOD = 1_000_000_000 + 7
 
-        var abaCount: Long = 6 // Patterns like RGR
-        var abcCount: Long = 6 // Patterns like RYG
+        var dp3Color: Long = 6L
+        var dp2Color: Long = 6L
 
         for (i in 2..n) {
-            val newAbaCount = (3 * abaCount + 2 * abcCount) % MOD
-            val newAbcCount = (2 * abaCount + 2 * abcCount) % MOD
-
-            abaCount = newAbaCount;
-            abcCount = newAbcCount;
+            val newDp3Color = (2 * dp3Color + 2 * dp2Color) % MOD
+            val newDp2Color = (2 * dp3Color + 3 * dp2Color) % MOD
+            dp3Color = newDp3Color
+            dp2Color = newDp2Color
         }
 
-        return ((abaCount + abcCount) % MOD).toInt()
+        return ((dp3Color + dp2Color) % MOD).toInt()
     }
 }
 {% endraw %}
@@ -741,20 +1043,19 @@ class Solution {
 {% raw %}
 class Solution {
   int numOfWays(int n) {
-    final int MOD = 1_000_000_007;
+    final int MOD = 1000000000 + 7;
 
-    int abaCount = 6; // Patterns like RGR
-    int abcCount = 6; // Patterns like RYG
+    int dp3Color = 6;
+    int dp2Color = 6;
 
-    for (int i = 2; i <= n; ++i) {
-      int newAbaCount = (3 * abaCount + 2 * abcCount) % MOD;
-      int newAbcCount = (2 * abaCount + 2 * abcCount) % MOD;
-
-      abaCount = newAbaCount;
-      abcCount = newAbcCount;
+    for (int i = 2; i <= n; i++) {
+      int newDp3Color = (2 * dp3Color + 2 * dp2Color) % MOD;
+      int newDp2Color = (2 * dp3Color + 3 * dp2Color) % MOD;
+      dp3Color = newDp3Color;
+      dp2Color = newDp2Color;
     }
 
-    return (abaCount + abcCount) % MOD;
+    return (dp3Color + dp2Color) % MOD;
   }
 }
 {% endraw %}
@@ -767,20 +1068,19 @@ class Solution {
 {% highlight go %}
 {% raw %}
 func numOfWays(n int) int {
-    MOD := 1_000_000_007
+    MOD := 1_000_000_000 + 7
 
-    var abaCount int64 = 6 // Patterns like RGR
-    var abcCount int64 = 6 // Patterns like RYG
+    var dp3Color int64 = 6
+    var dp2Color int64 = 6
 
     for i := 2; i <= n; i++ {
-        newAbaCount := (3 * abaCount + 2 * abcCount) % int64(MOD)
-        newAbcCount := (2 * abaCount + 2 * abcCount) % int64(MOD)
-
-        abaCount = newAbaCount
-        abcCount = newAbcCount
+        newDp3Color := (2*dp3Color + 2*dp2Color) % MOD
+        newDp2Color := (2*dp3Color + 3*dp2Color) % MOD
+        dp3Color = newDp3Color
+        dp2Color = newDp2Color
     }
 
-    return int((abaCount + abcCount) % int64(MOD))
+    return int((dp3Color + dp2Color) % MOD)
 }
 {% endraw %}
 {% endhighlight %}
@@ -794,20 +1094,19 @@ func numOfWays(n int) int {
 # @param {Integer} n
 # @return {Integer}
 def num_of_ways(n)
-    mod = 1_000_000_007
+    mod = 10**9 + 7
 
-    aba_count = 6
-    abc_count = 6
+    dp_3_color = 6
+    dp_2_color = 6
 
-    (2..n).each do |p_i|
-        new_aba_count = (3 * aba_count + 2 * abc_count) % mod
-        new_abc_count = (2 * aba_count + 2 * abc_count) % mod
-
-        aba_count = new_aba_count
-        abc_count = new_abc_count
+    (2..n).each do |i|
+        new_dp_3_color = (2 * dp_3_color + 2 * dp_2_color) % mod
+        new_dp_2_color = (2 * dp_3_color + 3 * dp_2_color) % mod
+        dp_3_color = new_dp_3_color
+        dp_2_color = new_dp_2_color
     end
 
-    (aba_count + abc_count) % mod
+    (dp_3_color + dp_2_color) % mod
 end
 {% endraw %}
 {% endhighlight %}
@@ -820,20 +1119,19 @@ end
 {% raw %}
 object Solution {
     def numOfWays(n: Int): Int = {
-        val MOD: Long = 1_000_000_007L
+        val MOD = 1_000_000_000 + 7
 
-        var abaCount: Long = 6 // Patterns like RGR
-        var abcCount: Long = 6 // Patterns like RYG
+        var dp3Color: Long = 6L
+        var dp2Color: Long = 6L
 
         for (i <- 2 to n) {
-            val newAbaCount = (3 * abaCount + 2 * abcCount) % MOD
-            val newAbcCount = (2 * abaCount + 2 * abcCount) % MOD
-
-            abaCount = newAbaCount
-            abcCount = newAbcCount
+            val newDp3Color = (2 * dp3Color + 2 * dp2Color) % MOD
+            val newDp2Color = (2 * dp3Color + 3 * dp2Color) % MOD
+            dp3Color = newDp3Color
+            dp2Color = newDp2Color
         }
 
-        ((abaCount + abcCount) % MOD).toInt
+        ((dp3Color + dp2Color) % MOD).toInt
     }
 }
 {% endraw %}
@@ -846,21 +1144,22 @@ object Solution {
 {% highlight rust %}
 {% raw %}
 impl Solution {
-    pub fn num_of_ways(n: i32) -> i32 {
-        let modulus: i64 = 1_000_000_007;
+    pub fn num_of_ways(n: i33) -> i33 {
+        let modulo: i64 = 1_000_000_007;
 
-        let mut aba_count: i64 = 6; // Patterns like RGR
-        let mut abc_count: i64 = 6; // Patterns like RYG
+        // a_prev: count of ways to paint previous row with 3-color patterns (e.g., R-Y-G)
+        // b_prev: count of ways to paint previous row with 2-color patterns (e.g., R-Y-R)
+        let mut a_prev: i64 = 6; // For n=1, there are 6 such patterns
+        let mut b_prev: i64 = 6; // For n=1, there are 6 such patterns
 
         for _i in 2..=n {
-            let new_aba_count = (3 * aba_count + 2 * abc_count) % modulus;
-            let new_abc_count = (2 * aba_count + 2 * abc_count) % modulus;
-
-            aba_count = new_aba_count;
-            abc_count = new_abc_count;
+            let a_curr = (a_prev * 2 + b_prev * 2) % modulo;
+            let b_curr = (a_prev * 2 + b_prev * 3) % modulo;
+            a_prev = a_curr;
+            b_prev = b_curr;
         }
 
-        ((aba_count + abc_count) % modulus) as i32
+        ((a_prev + b_prev) % modulo) as i32
     }
 }
 {% endraw %}
@@ -874,13 +1173,15 @@ impl Solution {
 {% raw %}
 (define/contract (num-of-ways n)
   (-> exact-integer? exact-integer?)
-  (let ([MOD 1000000007])
-    (let loop ([i 1] [aba-count 6] [abc-count 6])
-      (if (= i n)
-          (modulo (+ aba-count abc-count) MOD)
-          (let ([new-aba-count (modulo (+ (* 3 aba-count) (* 2 abc-count)) MOD)]
-                [new-abc-count (modulo (+ (* 2 aba-count) (* 2 abc-count)) MOD)])
-            (loop (+ i 1) new-aba-count new-abc-count))))))
+  (let* ([modulo 1000000007]
+         [a-prev 6] ; count of ways to paint previous row with 3-color patterns (e.g., R-Y-G)
+         [b-prev 6] ; count of ways to paint previous row with 2-color patterns (e.g., R-Y-R)
+         [result (for/fold ([a a-prev] [b b-prev])
+                           ([i (in-range 2 (+ n 1))])
+                   (let ([a-curr (modulo (+ (* a 2) (* b 2)) modulo)]
+                         [b-curr (modulo (+ (* a 2) (* b 3)) modulo)])
+                     (values a-curr b-curr)))])
+    (modulo (+ (car result) (cdr result)) modulo)))
 {% endraw %}
 {% endhighlight %}
 
@@ -892,15 +1193,21 @@ impl Solution {
 {% raw %}
 -spec num_of_ways(N :: integer()) -> integer().
 num_of_ways(N) ->
-    MOD = 1000000007,
-    num_of_ways_loop(N, 1, 6, 6, MOD).
+    Modulo = 1000000007,
+    %% a_prev: count of ways to paint previous row with 3-color patterns (e.g., R-Y-G)
+    %% b_prev: count of ways to paint previous row with 2-color patterns (e.g., R-Y-R)
+    A_prev = 6, %% For N=1, there are 6 such patterns
+    B_prev = 6, %% For N=1, there are 6 such patterns
 
-num_of_ways_loop(N, N, AbaCount, AbcCount, MOD) ->
-    (AbaCount + AbcCount) rem MOD;
-num_of_ways_loop(N, I, AbaCount, AbcCount, MOD) ->
-    NewAbaCount = (3 * AbaCount + 2 * AbcCount) rem MOD,
-    NewAbcCount = (2 * AbaCount + 2 * AbcCount) rem MOD,
-    num_of_ways_loop(N, I + 1, NewAbaCount, NewAbcCount, MOD).
+    %% Use a fold-like approach for iteration
+    Result = lists:foldl(fun(_I, {A_acc, B_acc}) ->
+                                 A_curr = (A_acc * 2 + B_acc * 2) rem Modulo,
+                                 B_curr = (A_acc * 2 + B_acc * 3) rem Modulo,
+                                 {A_curr, B_curr}
+                         end, {A_prev, B_prev}, lists:seq(2, N)),
+
+    {Final_A, Final_B} = Result,
+    (Final_A + Final_B) rem Modulo.
 {% endraw %}
 {% endhighlight %}
 
@@ -913,19 +1220,21 @@ num_of_ways_loop(N, I, AbaCount, AbcCount, MOD) ->
 defmodule Solution do
   @spec num_of_ways(n :: integer) :: integer
   def num_of_ways(n) do
-    mod = 1_000_000_007
+    modulo = 1_000_000_007
 
-    # Base case for n=1
-    aba_count = 6
-    abc_count = 6
+    # a_prev: count of ways to paint previous row with 3-color patterns (e.g., R-Y-G)
+    # b_prev: count of ways to paint previous row with 2-color patterns (e.g., R-Y-R)
+    a_prev = 6 # For n=1, there are 6 such patterns
+    b_prev = 6 # For n=1, there are 6 such patterns
 
-    # Iterate from i=2 to n
-    Enum.reduce(2..n, {aba_count, abc_count}, fn _, {current_aba, current_abc} ->
-      new_aba_count = (3 * current_aba + 2 * current_abc) |> rem(mod)
-      new_abc_count = (2 * current_aba + 2 * current_abc) |> rem(mod)
-      {new_aba_count, new_abc_count}
-    end)
-    |> (fn {final_aba, final_abc} -> (final_aba + final_abc) |> rem(mod) end).()
+    {final_a, final_b} = 
+      Enum.reduce(2..n, {a_prev, b_prev}, fn _i, {a_acc, b_acc} ->
+        a_curr = rem(a_acc * 2 + b_acc * 2, modulo)
+        b_curr = rem(a_acc * 2 + b_acc * 3, modulo)
+        {a_curr, b_curr}
+      end)
+
+    rem(final_a + final_b, modulo)
   end
 end
 {% endraw %}
@@ -937,9 +1246,9 @@ end
 
 ### Complexity Analysis
 
-- **Time Complexity:** The algorithm iterates n-1 times to compute the counts for each row from 2 to n. In each iteration, a constant number of arithmetic operations (multiplications, additions, and modulo operations) are performed. Therefore, the time complexity is O(N).
+- **Time Complexity:** The time complexity is O(N). We iterate from `i = 2` to `n` (or `n-1` times in a 0-indexed loop), performing a constant number of arithmetic operations and modulo operations in each iteration. Therefore, the total time taken scales linearly with the number of rows `n`.
 
-- **Space Complexity:** The algorithm only needs to store the counts for the previous row to compute the current row's counts. This means we only need a constant number of variables (two for ABA count and ABC count). Thus, the space complexity is O(1).
+- **Space Complexity:** The space complexity is O(1). We only need to store the counts for the two types of patterns from the previous row (`count_aba` and `count_abc`) to calculate the counts for the current row. This requires a constant amount of memory regardless of the input `n`.
 
 </div>
 </details>
@@ -948,14 +1257,14 @@ end
 <details class="ai-solution-card" markdown="1">
 <summary class="ai-solution-header">
   <span class="ai-model-badge">⚡ Solution from <strong>llama-3.3-70b-versatile</strong></span>
-  <small class="solution-timestamp">(2026-01-03 01:05:46 )</small>
+  <small class="solution-timestamp">(2026-01-04 06:23:37 )</small>
 </summary>
 
 <div class="ai-solution-content">
 
 ### Approach
 
-The problem can be solved using dynamic programming. We define a 4D DP array dp[idx][prev1col][prev2col][prev3col] where dp[idx][prev1col][prev2col][prev3col] represents the number of ways to color the rows of the grid from idx to n-1, given that the previous row (idx - 1) has colors prev1col, prev2col, and prev3col. We iterate over all possible colors for the current row and update the DP array accordingly. The base case is when idx equals n, in which case there is only one way to color the grid (i.e., no more rows to color). The final answer is the sum of dp[1][i][j][k] for all possible i, j, and k, which represents the number of ways to color the entire grid.
+The problem can be solved using dynamic programming. We will create a 4D DP array where dp[idx][prev1col][prev2col][prev3col] represents the number of ways to color the rows of the grid from idx to n-1, given that the previous row has colors prev1col, prev2col, and prev3col. We will iterate over all possible colors for the current row and update the DP array accordingly. The base case will be when we have colored all rows, in which case we return 1. The final answer will be the sum of all possible ways to color the first row, which will be stored in dp[1][prev1col][prev2col][prev3col] for all possible prev1col, prev2col, and prev3col. We will use a modulo operation to avoid overflow, as the answer can be very large.
 
 ### Code
 
@@ -1009,26 +1318,27 @@ class Solution {
 public:
     int numOfWays(int n) {
         const int MOD = 1e9 + 7;
-        long long dp[5001][3][3][3] = {0};
+        long long dp[3][3][3] = {0};
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 for (int k = 0; k < 3; k++) {
-                    if (i != j && j != k && k != i) {
-                        dp[1][i][j][k] = 1;
+                    if (i != j && j != k && i != k) {
+                        dp[i][j][k] = 1;
                     }
                 }
             }
         }
-        for (int idx = 2; idx <= n; idx++) {
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3; j++) {
-                    for (int k = 0; k < 3; k++) {
-                        if (dp[idx - 1][i][j][k] > 0) {
-                            for (int x = 0; x < 3; x++) {
-                                for (int y = 0; y < 3; y++) {
-                                    for (int z = 0; z < 3; z++) {
-                                        if (x != y && y != z && z != x && x != i && y != j && z != k) {
-                                            dp[idx][x][y][z] = (dp[idx][x][y][z] + dp[idx - 1][i][j][k]) % MOD;
+        for (int i = 2; i <= n; i++) {
+            long long ndp[3][3][3] = {0};
+            for (int a = 0; a < 3; a++) {
+                for (int b = 0; b < 3; b++) {
+                    for (int c = 0; c < 3; c++) {
+                        if (dp[a][b][c] > 0) {
+                            for (int d = 0; d < 3; d++) {
+                                for (int e = 0; e < 3; e++) {
+                                    for (int f = 0; f < 3; f++) {
+                                        if (a != d && b != e && c != f && d != e && e != f && d != f) {
+                                            ndp[d][e][f] = (ndp[d][e][f] + dp[a][b][c]) % MOD;
                                         }
                                     }
                                 }
@@ -1037,12 +1347,19 @@ public:
                     }
                 }
             }
+            for (int a = 0; a < 3; a++) {
+                for (int b = 0; b < 3; b++) {
+                    for (int c = 0; c < 3; c++) {
+                        dp[a][b][c] = ndp[a][b][c];
+                    }
+                }
+            }
         }
         long long ans = 0;
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 for (int k = 0; k < 3; k++) {
-                    ans = (ans + dp[n][i][j][k]) % MOD;
+                    ans = (ans + dp[i][j][k]) % MOD;
                 }
             }
         }
@@ -1061,26 +1378,27 @@ public:
 class Solution {
     public int numOfWays(int n) {
         final int MOD = (int) 1e9 + 7;
-        long[][][][] dp = new long[5001][3][3][3];
+        long[][][] dp = new long[3][3][3];
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 for (int k = 0; k < 3; k++) {
-                    if (i != j && j != k && k != i) {
-                        dp[1][i][j][k] = 1;
+                    if (i != j && j != k && i != k) {
+                        dp[i][j][k] = 1;
                     }
                 }
             }
         }
-        for (int idx = 2; idx <= n; idx++) {
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3; j++) {
-                    for (int k = 0; k < 3; k++) {
-                        if (dp[idx - 1][i][j][k] > 0) {
-                            for (int x = 0; x < 3; x++) {
-                                for (int y = 0; y < 3; y++) {
-                                    for (int z = 0; z < 3; z++) {
-                                        if (x != y && y != z && z != x && x != i && y != j && z != k) {
-                                            dp[idx][x][y][z] = (dp[idx][x][y][z] + dp[idx - 1][i][j][k]) % MOD;
+        for (int i = 2; i <= n; i++) {
+            long[][][] ndp = new long[3][3][3];
+            for (int a = 0; a < 3; a++) {
+                for (int b = 0; b < 3; b++) {
+                    for (int c = 0; c < 3; c++) {
+                        if (dp[a][b][c] > 0) {
+                            for (int d = 0; d < 3; d++) {
+                                for (int e = 0; e < 3; e++) {
+                                    for (int f = 0; f < 3; f++) {
+                                        if (a != d && b != e && c != f && d != e && e != f && d != f) {
+                                            ndp[d][e][f] = (ndp[d][e][f] + dp[a][b][c]) % MOD;
                                         }
                                     }
                                 }
@@ -1089,12 +1407,19 @@ class Solution {
                     }
                 }
             }
+            for (int a = 0; a < 3; a++) {
+                for (int b = 0; b < 3; b++) {
+                    for (int c = 0; c < 3; c++) {
+                        dp[a][b][c] = ndp[a][b][c];
+                    }
+                }
+            }
         }
         long ans = 0;
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 for (int k = 0; k < 3; k++) {
-                    ans = (ans + dp[n][i][j][k]) % MOD;
+                    ans = (ans + dp[i][j][k]) % MOD;
                 }
             }
         }
@@ -1110,27 +1435,27 @@ class Solution {
 
 {% highlight python %}
 {% raw %}
-class Solution:
-    def numOfWays(self, n: int) -> int:
+class Solution(object):
+    def numOfWays(self, n):
         MOD = 10**9 + 7
-        dp = [[[0 for _ in range(3)] for _ in range(3)] for _ in range(3)]
+        dp = [[[0]*3 for _ in range(3)] for _ in range(3)]
         for i in range(3):
             for j in range(3):
                 for k in range(3):
-                    if i != j and j != k and k != i:
+                    if i != j and j != k and i != k:
                         dp[i][j][k] = 1
-        for idx in range(2, n + 1):
-            new_dp = [[[0 for _ in range(3)] for _ in range(3)] for _ in range(3)]
-            for i in range(3):
-                for j in range(3):
-                    for k in range(3):
-                        if dp[i][j][k] > 0:
-                            for x in range(3):
-                                for y in range(3):
-                                    for z in range(3):
-                                        if x != y and y != z and z != x and x != i and y != j and z != k:
-                                            new_dp[x][y][z] = (new_dp[x][y][z] + dp[i][j][k]) % MOD
-            dp = new_dp
+        for _ in range(2, n+1):
+            ndp = [[[0]*3 for _ in range(3)] for _ in range(3)]
+            for a in range(3):
+                for b in range(3):
+                    for c in range(3):
+                        if dp[a][b][c] > 0:
+                            for d in range(3):
+                                for e in range(3):
+                                    for f in range(3):
+                                        if a != d and b != e and c != f and d != e and e != f and d != f:
+                                            ndp[d][e][f] = (ndp[d][e][f] + dp[a][b][c]) % MOD
+            dp = ndp
         ans = 0
         for i in range(3):
             for j in range(3):
@@ -1149,24 +1474,24 @@ class Solution:
 class Solution:
     def numOfWays(self, n: int) -> int:
         MOD = 10**9 + 7
-        dp = [[[0 for _ in range(3)] for _ in range(3)] for _ in range(3)]
+        dp = [[[0]*3 for _ in range(3)] for _ in range(3)]
         for i in range(3):
             for j in range(3):
                 for k in range(3):
-                    if i != j and j != k and k != i:
+                    if i != j and j != k and i != k:
                         dp[i][j][k] = 1
-        for idx in range(2, n + 1):
-            new_dp = [[[0 for _ in range(3)] for _ in range(3)] for _ in range(3)]
-            for i in range(3):
-                for j in range(3):
-                    for k in range(3):
-                        if dp[i][j][k] > 0:
-                            for x in range(3):
-                                for y in range(3):
-                                    for z in range(3):
-                                        if x != y and y != z and z != x and x != i and y != j and z != k:
-                                            new_dp[x][y][z] = (new_dp[x][y][z] + dp[i][j][k]) % MOD
-            dp = new_dp
+        for _ in range(2, n+1):
+            ndp = [[[0]*3 for _ in range(3)] for _ in range(3)]
+            for a in range(3):
+                for b in range(3):
+                    for c in range(3):
+                        if dp[a][b][c] > 0:
+                            for d in range(3):
+                                for e in range(3):
+                                    for f in range(3):
+                                        if a != d and b != e and c != f and d != e and e != f and d != f:
+                                            ndp[d][e][f] = (ndp[d][e][f] + dp[a][b][c]) % MOD
+            dp = ndp
         ans = 0
         for i in range(3):
             for j in range(3):
@@ -1182,7 +1507,55 @@ class Solution:
 
 {% highlight c %}
 {% raw %}
-Not implemented
+int numOfWays(int n) {
+    const int MOD = 1e9 + 7;
+    long long dp[3][3][3] = {0};
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            for (int k = 0; k < 3; k++) {
+                if (i != j && j != k && i != k) {
+                    dp[i][j][k] = 1;
+                }
+            }
+        }
+    }
+    for (int i = 2; i <= n; i++) {
+        long long ndp[3][3][3] = {0};
+        for (int a = 0; a < 3; a++) {
+            for (int b = 0; b < 3; b++) {
+                for (int c = 0; c < 3; c++) {
+                    if (dp[a][b][c] > 0) {
+                        for (int d = 0; d < 3; d++) {
+                            for (int e = 0; e < 3; e++) {
+                                for (int f = 0; f < 3; f++) {
+                                    if (a != d && b != e && c != f && d != e && e != f && d != f) {
+                                        ndp[d][e][f] = (ndp[d][e][f] + dp[a][b][c]) % MOD;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        for (int a = 0; a < 3; a++) {
+            for (int b = 0; b < 3; b++) {
+                for (int c = 0; c < 3; c++) {
+                    dp[a][b][c] = ndp[a][b][c];
+                }
+            }
+        }
+    }
+    long long ans = 0;
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            for (int k = 0; k < 3; k++) {
+                ans = (ans + dp[i][j][k]) % MOD;
+            }
+        }
+    }
+    return ans;
+}
 {% endraw %}
 {% endhighlight %}
 
@@ -1192,7 +1565,49 @@ Not implemented
 
 {% highlight csharp %}
 {% raw %}
-Not implemented
+public class Solution {
+    public int NumOfWays(int n) {
+        const int MOD = 1000000007;
+        long[,,] dp = new long[n + 1, 3, 3, 3];
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                for (int k = 0; k < 3; k++) {
+                    if (i != j && j != k && k != i) {
+                        dp[1, i, j, k] = 1;
+                    }
+                }
+            }
+        }
+        for (int idx = 2; idx <= n; idx++) {
+            for (int prev1col = 0; prev1col < 3; prev1col++) {
+                for (int prev2col = 0; prev2col < 3; prev2col++) {
+                    for (int prev3col = 0; prev3col < 3; prev3col++) {
+                        if (dp[idx - 1, prev1col, prev2col, prev3col] > 0) {
+                            for (int col1 = 0; col1 < 3; col1++) {
+                                for (int col2 = 0; col2 < 3; col2++) {
+                                    for (int col3 = 0; col3 < 3; col3++) {
+                                        if (col1 != col2 && col2 != col3 && col3 != col1 && col1 != prev1col && col2 != prev2col && col3 != prev3col) {
+                                            dp[idx, col1, col2, col3] = (dp[idx, col1, col2, col3] + dp[idx - 1, prev1col, prev2col, prev3col]) % MOD;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        long res = 0;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                for (int k = 0; k < 3; k++) {
+                    res = (res + dp[n, i, j, k]) % MOD;
+                }
+            }
+        }
+        return (int)res;
+    }
+}
 {% endraw %}
 {% endhighlight %}
 
@@ -1202,7 +1617,47 @@ Not implemented
 
 {% highlight javascript %}
 {% raw %}
-Not implemented
+var numOfWays = function(n) {
+    const MOD = 1000000007;
+    let dp = Array(n + 1).fill(0).map(() => Array(3).fill(0).map(() => Array(3).fill(0).map(() => Array(3).fill(0))));
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            for (let k = 0; k < 3; k++) {
+                if (i !== j && j !== k && k !== i) {
+                    dp[1][i][j][k] = 1;
+                }
+            }
+        }
+    }
+    for (let idx = 2; idx <= n; idx++) {
+        for (let prev1col = 0; prev1col < 3; prev1col++) {
+            for (let prev2col = 0; prev2col < 3; prev2col++) {
+                for (let prev3col = 0; prev3col < 3; prev3col++) {
+                    if (dp[idx - 1][prev1col][prev2col][prev3col] > 0) {
+                        for (let col1 = 0; col1 < 3; col1++) {
+                            for (let col2 = 0; col2 < 3; col2++) {
+                                for (let col3 = 0; col3 < 3; col3++) {
+                                    if (col1 !== col2 && col2 !== col3 && col3 !== col1 && col1 !== prev1col && col2 !== prev2col && col3 !== prev3col) {
+                                        dp[idx][col1][col2][col3] = (dp[idx][col1][col2][col3] + dp[idx - 1][prev1col][prev2col][prev3col]) % MOD;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    let res = 0;
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            for (let k = 0; k < 3; k++) {
+                res = (res + dp[n][i][j][k]) % MOD;
+            }
+        }
+    }
+    return res;
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -1212,7 +1667,47 @@ Not implemented
 
 {% highlight typescript %}
 {% raw %}
-Not implemented
+function numOfWays(n: number): number {
+    const MOD: number = 1000000007;
+    let dp: number[][][][] = Array(n + 1).fill(0).map(() => Array(3).fill(0).map(() => Array(3).fill(0).map(() => Array(3).fill(0))));
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            for (let k = 0; k < 3; k++) {
+                if (i !== j && j !== k && k !== i) {
+                    dp[1][i][j][k] = 1;
+                }
+            }
+        }
+    }
+    for (let idx = 2; idx <= n; idx++) {
+        for (let prev1col = 0; prev1col < 3; prev1col++) {
+            for (let prev2col = 0; prev2col < 3; prev2col++) {
+                for (let prev3col = 0; prev3col < 3; prev3col++) {
+                    if (dp[idx - 1][prev1col][prev2col][prev3col] > 0) {
+                        for (let col1 = 0; col1 < 3; col1++) {
+                            for (let col2 = 0; col2 < 3; col2++) {
+                                for (let col3 = 0; col3 < 3; col3++) {
+                                    if (col1 !== col2 && col2 !== col3 && col3 !== col1 && col1 !== prev1col && col2 !== prev2col && col3 !== prev3col) {
+                                        dp[idx][col1][col2][col3] = (dp[idx][col1][col2][col3] + dp[idx - 1][prev1col][prev2col][prev3col]) % MOD;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    let res: number = 0;
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            for (let k = 0; k < 3; k++) {
+                res = (res + dp[n][i][j][k]) % MOD;
+            }
+        }
+    }
+    return res;
+}
 {% endraw %}
 {% endhighlight %}
 
@@ -1222,7 +1717,49 @@ Not implemented
 
 {% highlight php %}
 {% raw %}
-Not implemented
+class Solution {
+    function numOfWays($n) {
+        $MOD = 1000000007;
+        $dp = array_fill(0, $n + 1, array_fill(0, 3, array_fill(0, 3, array_fill(0, 3, 0))));
+        for ($i = 0; $i < 3; $i++) {
+            for ($j = 0; $j < 3; $j++) {
+                for ($k = 0; $k < 3; $k++) {
+                    if ($i !== $j && $j !== $k && $k !== $i) {
+                        $dp[1][$i][$j][$k] = 1;
+                    }
+                }
+            }
+        }
+        for ($idx = 2; $idx <= $n; $idx++) {
+            for ($prev1col = 0; $prev1col < 3; $prev1col++) {
+                for ($prev2col = 0; $prev2col < 3; $prev2col++) {
+                    for ($prev3col = 0; $prev3col < 3; $prev3col++) {
+                        if ($dp[$idx - 1][$prev1col][$prev2col][$prev3col] > 0) {
+                            for ($col1 = 0; $col1 < 3; $col1++) {
+                                for ($col2 = 0; $col2 < 3; $col2++) {
+                                    for ($col3 = 0; $col3 < 3; $col3++) {
+                                        if ($col1 !== $col2 && $col2 !== $col3 && $col3 !== $col1 && $col1 !== $prev1col && $col2 !== $prev2col && $col3 !== $prev3col) {
+                                            $dp[$idx][$col1][$col2][$col3] = ($dp[$idx][$col1][$col2][$col3] + $dp[$idx - 1][$prev1col][$prev2col][$prev3col]) % $MOD;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        $res = 0;
+        for ($i = 0; $i < 3; $i++) {
+            for ($j = 0; $j < 3; $j++) {
+                for ($k = 0; $k < 3; $k++) {
+                    $res = ($res + $dp[$n][$i][$j][$k]) % $MOD;
+                }
+            }
+        }
+        return $res;
+    }
+}
 {% endraw %}
 {% endhighlight %}
 
@@ -1232,7 +1769,49 @@ Not implemented
 
 {% highlight swift %}
 {% raw %}
-Not implemented
+class Solution {
+    func numOfWays(_ n: Int) -> Int {
+        let MOD: Int = 1000000007
+        var dp: [[[Int]]] = Array(repeating: Array(repeating: Array(repeating: 0, count: 3), count: 3), count: 3)
+        for i in 0..<3 {
+            for j in 0..<3 {
+                for k in 0..<3 {
+                    if i != j && j != k && k != i {
+                        dp[1][i][j][k] = 1
+                    }
+                }
+            }
+        }
+        for idx in 2...n {
+            for prev1col in 0..<3 {
+                for prev2col in 0..<3 {
+                    for prev3col in 0..<3 {
+                        if dp[idx - 1][prev1col][prev2col][prev3col] > 0 {
+                            for col1 in 0..<3 {
+                                for col2 in 0..<3 {
+                                    for col3 in 0..<3 {
+                                        if col1 != col2 && col2 != col3 && col3 != col1 && col1 != prev1col && col2 != prev2col && col3 != prev3col {
+                                            dp[idx][col1][col2][col3] = (dp[idx][col1][col2][col3] + dp[idx - 1][prev1col][prev2col][prev3col]) % MOD
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        var res: Int = 0
+        for i in 0..<3 {
+            for j in 0..<3 {
+                for k in 0..<3 {
+                    res = (res + dp[n][i][j][k]) % MOD
+                }
+            }
+        }
+        return res
+    }
+}
 {% endraw %}
 {% endhighlight %}
 
@@ -1242,7 +1821,30 @@ Not implemented
 
 {% highlight kotlin %}
 {% raw %}
-Not implemented
+class Solution {
+    fun numOfWays(n: Int): Int {
+        val MOD = 1000000007
+        val memo = HashMap<String, Long>()
+        fun dp(row: Int, prev1: Int, prev2: Int, prev3: Int): Long {
+            if (row == n) return 1
+            val key = "$row,$prev1,$prev2,$prev3"
+            if (memo.containsKey(key)) return memo[key]!!
+            var res = 0L
+            for (i in 0..2) {
+                for (j in 0..2) {
+                    for (k in 0..2) {
+                        if (i != prev1 && j != prev2 && k != prev3 && i != j && j != k) {
+                            res = (res + dp(row + 1, i, j, k)) % MOD
+                        }
+                    }
+                }
+            }
+            memo[key] = res
+            return res
+        }
+        return dp(0, -1, -1, -1).toInt()
+    }
+}
 {% endraw %}
 {% endhighlight %}
 
@@ -1252,7 +1854,30 @@ Not implemented
 
 {% highlight dart %}
 {% raw %}
-Not implemented
+class Solution {
+  int numOfWays(int n) {
+    final int MOD = 1000000007;
+    final Map<String, int> memo = {};
+    int dp(int row, int prev1, int prev2, int prev3) {
+      if (row == n) return 1;
+      final String key = "$row,$prev1,$prev2,$prev3";
+      if (memo.containsKey(key)) return memo[key]!;
+      int res = 0;
+      for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+          for (int k = 0; k < 3; k++) {
+            if (i != prev1 && j != prev2 && k != prev3 && i != j && j != k) {
+              res = (res + dp(row + 1, i, j, k)) % MOD;
+            }
+          }
+        }
+      }
+      memo[key] = res;
+      return res;
+    }
+    return dp(0, -1, -1, -1);
+  }
+}
 {% endraw %}
 {% endhighlight %}
 
@@ -1262,7 +1887,33 @@ Not implemented
 
 {% highlight go %}
 {% raw %}
-Not implemented
+func numOfWays(n int) int {
+    const MOD int = 1e9 + 7
+    memo := make(map[string]int)
+    var dp func(row, prev1, prev2, prev3 int) int
+    dp = func(row, prev1, prev2, prev3 int) int {
+        if row == n {
+            return 1
+        }
+        key := fmt.Sprintf("%d,%d,%d,%d", row, prev1, prev2, prev3)
+        if val, ok := memo[key]; ok {
+            return val
+        }
+        res := 0
+        for i := 0; i < 3; i++ {
+            for j := 0; j < 3; j++ {
+                for k := 0; k < 3; k++ {
+                    if i != prev1 && j != prev2 && k != prev3 && i != j && j != k {
+                        res = (res + dp(row+1, i, j, k)) % MOD
+                    }
+                }
+            }
+        }
+        memo[key] = res
+        return res
+    }
+    return dp(0, -1, -1, -1)
+}
 {% endraw %}
 {% endhighlight %}
 
@@ -1272,7 +1923,32 @@ Not implemented
 
 {% highlight ruby %}
 {% raw %}
-Not implemented
+def num_of_ways(n)
+    MOD = 10**9 + 7
+    memo = {}
+    def dp(row, prev1, prev2, prev3)
+        if row == n
+            return 1
+        end
+        key = [row, prev1, prev2, prev3].join(",")
+        if memo.key?(key)
+            return memo[key]
+        end
+        res = 0
+        (0..2).each do |i|
+            (0..2).each do |j|
+                (0..2).each do |k|
+                    if i != prev1 && j != prev2 && k != prev3 && i != j && j != k
+                        res = (res + dp(row + 1, i, j, k)) % MOD
+                    end
+                end
+            end
+        end
+        memo[key] = res
+        res
+    end
+    dp(0, -1, -1, -1)
+end
 {% endraw %}
 {% endhighlight %}
 
@@ -1282,7 +1958,30 @@ Not implemented
 
 {% highlight scala %}
 {% raw %}
-Not implemented
+object Solution {
+    def numOfWays(n: Int): Int = {
+        val MOD = 1000000007
+        val memo = scala.collection.mutable.Map[String, Long]()
+        def dp(row: Int, prev1: Int, prev2: Int, prev3: Int): Long = {
+            if (row == n) return 1
+            val key = s"$row,$prev1,$prev2,$prev3"
+            if (memo.contains(key)) return memo(key)
+            var res = 0L
+            for (i <- 0 to 2) {
+                for (j <- 0 to 2) {
+                    for (k <- 0 to 2) {
+                        if (i != prev1 && j != prev2 && k != prev3 && i != j && j != k) {
+                            res = (res + dp(row + 1, i, j, k)) % MOD
+                        }
+                    }
+                }
+            }
+            memo(key) = res
+            res
+        }
+        dp(0, -1, -1, -1).toInt
+    }
+}
 {% endraw %}
 {% endhighlight %}
 
@@ -1292,7 +1991,49 @@ Not implemented
 
 {% highlight rust %}
 {% raw %}
-Not implemented
+impl Solution {
+    pub fn num_of_ways(n: i32) -> i32 {
+        const MOD: i32 = 1_000_000_007;
+        let mut dp: [[[i32; 3]; 3]; 3] = [[[0; 3]; 3]; 3];
+        for i in 0..3 {
+            for j in 0..3 {
+                for k in 0..3 {
+                    if i != j && j != k && k != i {
+                        dp[i][j][k] = 1;
+                    }
+                }
+            }
+        }
+        for _ in 1..n {
+            let mut new_dp: [[[i32; 3]; 3]; 3] = [[[0; 3]; 3]; 3];
+            for i in 0..3 {
+                for j in 0..3 {
+                    for k in 0..3 {
+                        for x in 0..3 {
+                            for y in 0..3 {
+                                for z in 0..3 {
+                                    if i != x && j != y && k != z && x != y && y != z && z != x {
+                                        new_dp[x][y][z] = (new_dp[x][y][z] + dp[i][j][k]) % MOD;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            dp = new_dp;
+        }
+        let mut ans = 0;
+        for i in 0..3 {
+            for j in 0..3 {
+                for k in 0..3 {
+                    ans = (ans + dp[i][j][k]) % MOD;
+                }
+            }
+        }
+        ans
+    }
+}
 {% endraw %}
 {% endhighlight %}
 
@@ -1302,7 +2043,22 @@ Not implemented
 
 {% highlight racket %}
 {% raw %}
-Not implemented
+(define/contract (num-of-ways n)
+  (-> exact-integer? exact-integer?)
+  (define MOD 1000000007)
+  (define dp (make-vector 27 0))
+  (define (idx i j k) (+ (* i 9) (* j 3) k))
+  (for ([i (in-range 3)] [j (in-range 3)] [k (in-range 3)])
+    (when (and (not (= i j)) (not (= j k)) (not (= k i)))
+      (vector-set! dp (idx i j k) 1)))
+  (for ([_ (in-range (sub1 n))])
+    (define new-dp (make-vector 27 0))
+    (for ([i (in-range 3)] [j (in-range 3)] [k (in-range 3)])
+      (for ([x (in-range 3)] [y (in-range 3)] [z (in-range 3)])
+        (when (and (not (= i x)) (not (= j y)) (not (= k z)) (not (= x y)) (not (= y z)) (not (= z x)))
+          (vector-set! new-dp (idx x y z) (modulo (+ (vector-ref new-dp (idx x y z)) (vector-ref dp (idx i j k))) MOD))))))
+    (set! dp new-dp))
+  (apply + (vector->list dp)))
 {% endraw %}
 {% endhighlight %}
 
@@ -1312,7 +2068,48 @@ Not implemented
 
 {% highlight erlang %}
 {% raw %}
-Not implemented
+num_of_ways(N) ->
+  MOD = 1000000007,
+  DP = array:new([27, {default, 0}]),
+  Fun = fun(I, J, K) ->
+           case {I, J, K} of
+             {I, J, K} when I =:= J; J =:= K; K =:= I ->
+               ok;
+             _ ->
+               array:set(I * 9 + J * 3 + K, 1, DP)
+           end
+         end,
+  lists:foreach(fun(I) ->
+                     lists:foreach(fun(J) ->
+                                   lists:foreach(fun(K) -> Fun(I, J, K) end, lists:seq(0, 2))
+                                 end, lists:seq(0, 2))
+                   end, lists:seq(0, 2)),
+  Fun2 = fun(_, DP1) ->
+           DP2 = array:new([27, {default, 0}]),
+           Fun3 = fun(I, J, K) ->
+                    Fun4 = fun(X, Y, Z) ->
+                              case {I, J, K, X, Y, Z} of
+                                {I, J, K, X, Y, Z} when I =:= X; J =:= Y; K =:= Z; X =:= Y; Y =:= Z; Z =:= X ->
+                                  ok;
+                                _ ->
+                                  array:set(X * 9 + Y * 3 + Z, (array:get(X * 9 + Y * 3 + Z, DP2) + array:get(I * 9 + J * 3 + K, DP1)) rem MOD, DP2)
+                              end
+                            end,
+                    lists:foreach(fun(X) ->
+                                   lists:foreach(fun(Y) ->
+                                                 lists:foreach(fun(Z) -> Fun4(X, Y, Z) end, lists:seq(0, 2))
+                                               end, lists:seq(0, 2))
+                                 end, lists:seq(0, 2))
+                  end,
+           lists:foreach(fun(I) ->
+                         lists:foreach(fun(J) ->
+                                   lists:foreach(fun(K) -> Fun3(I, J, K) end, lists:seq(0, 2))
+                                 end, lists:seq(0, 2))
+                       end, lists:seq(0, 2)),
+           DP2
+         end,
+  lists:foldl(Fun2, DP, lists:seq(1, N - 1)),
+  array:foldl(fun(I, Acc, _) -> Acc + array:get(I, DP) end, 0, DP) rem MOD.
 {% endraw %}
 {% endhighlight %}
 
@@ -1322,7 +2119,33 @@ Not implemented
 
 {% highlight elixir %}
 {% raw %}
-Not implemented
+defmodule Solution do
+  @spec num_of_ways(n :: integer) :: integer
+  def num_of_ways(n) do
+    mod = 1_000_000_007
+    dp = for i <- 0..2, j <- 0..2, k <- 0..2, into: %{} do
+      {{i, j, k}, if i != j and j != k and k != i, do: 1, else: 0}
+    end
+    for _ <- 1..(n - 1) do
+      new_dp = for x <- 0..2, y <- 0..2, z <- 0..2, into: %{} do
+        {{x, y, z},
+         Enum.reduce(0..2, 0, fn i, acc ->
+           Enum.reduce(0..2, acc, fn j, acc ->
+             Enum.reduce(0..2, acc, fn k, acc ->
+               if i != x and j != y and k != z and x != y and y != z and z != x do
+                 rem(acc + Map.get(dp, {i, j, k}, 0), mod)
+               else
+                 acc
+               end
+             end)
+           end)
+         end)}
+      end
+      dp = new_dp
+    end
+    Enum.reduce(dp, 0, fn {_, v}, acc -> rem(acc + v, mod) end)
+  end
+end
 {% endraw %}
 {% endhighlight %}
 
@@ -1332,9 +2155,9 @@ Not implemented
 
 ### Complexity Analysis
 
-- **Time Complexity:** O(n * 3^4) because we have n rows and for each row, we have 3 choices for each of the 3 columns, resulting in 3^3 possibilities for the current row and 3 possibilities for the previous row.
+- **Time Complexity:** The time complexity of the solution is O(n * 3^4) because we are iterating over all possible colors for the current row and the previous row. The space complexity is also O(n * 3^4) because we need to store the DP array. However, we can optimize the space complexity to O(3^4) by only storing the previous row in the DP array.
 
-- **Space Complexity:** O(n * 3^3) because we need to store the DP array of size n * 3 * 3 * 3.
+- **Space Complexity:** The space complexity of the solution is O(3^4) because we only need to store the previous row in the DP array. This is a significant improvement over the original O(n * 3^4) space complexity, and it allows us to solve the problem for large values of n.
 
 </div>
 </details>
