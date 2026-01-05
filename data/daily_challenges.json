@@ -258,5 +258,9 @@
   "2026-01-04": {
     "link": "/problems/four-divisors/",
     "titleSlug": "four-divisors"
+  },
+  "2026-01-05": {
+    "link": "/problems/maximum-matrix-sum/",
+    "titleSlug": "maximum-matrix-sum"
   }
 }
