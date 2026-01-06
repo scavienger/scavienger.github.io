@@ -262,5 +262,9 @@
   "2026-01-05": {
     "link": "/problems/maximum-matrix-sum/",
     "titleSlug": "maximum-matrix-sum"
+  },
+  "2026-01-06": {
+    "link": "/problems/maximum-level-sum-of-a-binary-tree/",
+    "titleSlug": "maximum-level-sum-of-a-binary-tree"
   }
 }
