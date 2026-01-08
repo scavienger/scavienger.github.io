@@ -270,5 +270,9 @@
   "2026-01-07": {
     "link": "/problems/maximum-product-of-splitted-binary-tree/",
     "titleSlug": "maximum-product-of-splitted-binary-tree"
+  },
+  "2026-01-08": {
+    "link": "/problems/max-dot-product-of-two-subsequences/",
+    "titleSlug": "max-dot-product-of-two-subsequences"
   }
 }
