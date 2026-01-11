@@ -282,5 +282,9 @@
   "2026-01-10": {
     "link": "/problems/minimum-ascii-delete-sum-for-two-strings/",
     "titleSlug": "minimum-ascii-delete-sum-for-two-strings"
+  },
+  "2026-01-11": {
+    "link": "/problems/maximal-rectangle/",
+    "titleSlug": "maximal-rectangle"
   }
 }
