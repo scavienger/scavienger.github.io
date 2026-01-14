@@ -294,5 +294,9 @@
   "2026-01-13": {
     "link": "/problems/separate-squares-i/",
     "titleSlug": "separate-squares-i"
+  },
+  "2026-01-14": {
+    "link": "/problems/separate-squares-ii/",
+    "titleSlug": "separate-squares-ii"
   }
 }
