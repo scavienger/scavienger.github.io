@@ -8,183 +8,281 @@ difficulty: Medium
 leetcode_url: https://leetcode.com/problems/maximize-area-of-square-hole-in-grid/
 ai_solutions:
   - solutions:
-      cpp: "class Solution {\npublic:\n    int getMaxConsecutiveLength(std::vector<int>&\
-        \ bars) {\n        if (bars.empty()) {\n            return 0;\n        }\n \
-        \       std::sort(bars.begin(), bars.end());\n        int max_len = 1;\n   \
-        \     int current_len = 1;\n        for (int i = 1; i < bars.size(); ++i) {\n\
-        \            if (bars[i] == bars[i-1] + 1) {\n                current_len++;\n\
-        \            } else {\n                max_len = std::max(max_len, current_len);\n\
-        \                current_len = 1;\n            }\n        }\n        max_len\
-        \ = std::max(max_len, current_len);\n        return max_len;\n    }\n\n    int\
-        \ maximizeSquareHoleArea(int n, int m, std::vector<int>& hBars, std::vector<int>&\
-        \ vBars) {\n        int h_max_len = getMaxConsecutiveLength(hBars);\n      \
-        \  int v_max_len = getMaxConsecutiveLength(vBars);\n\n        int side = std::min(h_max_len\
-        \ + 1, v_max_len + 1);\n        return side * side;\n    }\n};"
-      java: "import java.util.Arrays;\n\nclass Solution {\n    private int getMaxConsecutiveLength(int[]\
-        \ bars) {\n        if (bars == null || bars.length == 0) {\n            return\
-        \ 0;\n        }\n        Arrays.sort(bars);\n        int max_len = 1;\n    \
-        \    int current_len = 1;\n        for (int i = 1; i < bars.length; i++) {\n\
-        \            if (bars[i] == bars[i-1] + 1) {\n                current_len++;\n\
-        \            } else {\n                max_len = Math.max(max_len, current_len);\n\
-        \                current_len = 1;\n            }\n        }\n        max_len\
-        \ = Math.max(max_len, current_len);\n        return max_len;\n    }\n\n    public\
-        \ int maximizeSquareHoleArea(int n, int m, int[] hBars, int[] vBars) {\n   \
-        \     int h_max_len = getMaxConsecutiveLength(hBars);\n        int v_max_len\
-        \ = getMaxConsecutiveLength(vBars);\n\n        int side = Math.min(h_max_len\
-        \ + 1, v_max_len + 1);\n        return side * side;\n    }\n}"
-      python: "# Failed to parse response\n# Check logs for full output.\n# Full Response:\n\
-        '''\n{\n  \"approach\": \"The problem asks for the maximum area of a square-shaped\
-        \ hole that can be created by removing some horizontal bars from `hBars` and\
-        \ some vertical bars from `vBars`. The key insight, guided by the problem's\
-        \ hints and examples, is to understand how removing a sequence of consecutive\
-        \ bars creates a larger gap. If we remove `L` consecutive horizontal bars (e.g.,\
-        \ `i, i+1, ..., i+L-1`), this creates a hole of height `L+1` units. This hole\
-        \ is bounded by the fixed horizontal bars `i-1` and `i+L`, which are guaranteed\
-        \ to be present because `hBars` only contains indices between `2` and `n+1`,\
-        \ meaning `1` and `n+2` are never in `hBars` and thus always fixed. Similarly,\
-        \ removing `L'` consecutive vertical bars creates a hole of width `L'+1` units.\"\
-        ,\n  \"time_complexity\": \"The time complexity is dominated by sorting the\
-        \ `hBars` and `vBars` arrays. Let `L_h` be the length of `hBars` and `L_v` be\
-        \ the length of `vBars`. Sorting takes `O(L_h log L_h)` and `O(L_v log L_v)`\
-        \ respectively. After sorting, iterating through each array to find the longest\
-        \ consecutive sequence takes `O(L_h)` and `O(L_v)` time. Since `L_h` and `L_v`\
-        \ are at most 100, this is very efficient. The overall time complexity is `O(L_h\
-        \ log L_h + L_v log L_v)`.\",\n  \"space_complexity\": \"The space complexity\
-        \ is `O(L_h + L_v)` if the sorting algorithm used requires auxiliary space proportional\
-        \ to the input size. If an in-place sorting algorithm is used, the space complexity\
-        \ would be `O(1)` (or `O(log L)` for the recursion stack in some quicksort implementations),\
-        \ ignoring the space for the input arrays themselves. Given the constraints\
-        \ (maximum length of 100 for `hBars` and `vBars`), the space usage is minimal.\"\
-        \n}\n'''"
-      python3: "from typing import List\n\nclass Solution:\n    def _get_max_consecutive_length(self,\
-        \ bars: List[int]) -> int:\n        if not bars:\n            return 0\n\n \
-        \       bars.sort()\n\n        max_len = 1\n        current_len = 1\n\n    \
-        \    for i in range(1, len(bars)):\n            if bars[i] == bars[i-1] + 1:\n\
-        \                current_len += 1\n            else:\n                max_len\
-        \ = max(max_len, current_len)\n                current_len = 1\n\n        max_len\
-        \ = max(max_len, current_len) # Check the last sequence\n        return max_len\n\
-        \n    def maximizeSquareHoleArea(self, n: int, m: int, hBars: List[int], vBars:\
-        \ List[int]) -> int:\n        h_max_len = self._get_max_consecutive_length(hBars)\n\
-        \        v_max_len = self._get_max_consecutive_length(vBars)\n\n        side\
-        \ = min(h_max_len + 1, v_max_len + 1)\n        return side * side"
-      c: "#include <stdlib.h> // For qsort\n\n// Comparison function for qsort\nint\
-        \ compareInts(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n\
-        }\n\nint getMaxConsecutiveLength(int* bars, int barsSize) {\n    if (barsSize\
-        \ == 0) {\n        return 0;\n    }\n\n    qsort(bars, barsSize, sizeof(int),\
-        \ compareInts);\n\n    int max_len = 1;\n    int current_len = 1;\n\n    for\
-        \ (int i = 1; i < barsSize; ++i) {\n        if (bars[i] == bars[i-1] + 1) {\n\
-        \            current_len++;\n        } else {\n            if (current_len >\
-        \ max_len) {\n                max_len = current_len;\n            }\n      \
-        \      current_len = 1;\n        }\n    }\n    // After loop, check the last\
-        \ sequence\n    if (current_len > max_len) {\n        max_len = current_len;\n\
-        \    }\n    return max_len;\n}\n\nint maximizeSquareHoleArea(int n, int m, int*\
-        \ hBars, int hBarsSize, int* vBars, int vBarsSize) {\n    int h_max_len = getMaxConsecutiveLength(hBars,\
-        \ hBarsSize);\n    int v_max_len = getMaxConsecutiveLength(vBars, vBarsSize);\n\
-        \n    int side_h = h_max_len + 1;\n    int side_v = v_max_len + 1;\n\n    int\
-        \ side = (side_h < side_v) ? side_h : side_v; // Equivalent to min(side_h, side_v)\n\
-        \    return side * side;\n}"
+      cpp: "class Solution {\npublic:\n    int getMaxConsecutive(std::vector<int>& bars)\
+        \ {\n        if (bars.empty()) {\n            return 0; // Based on constraints,\
+        \ bars will not be empty.\n        }\n        std::sort(bars.begin(), bars.end());\n\
+        \        int max_consecutive = 1;\n        int current_consecutive = 1;\n  \
+        \      for (int i = 1; i < bars.size(); ++i) {\n            if (bars[i] == bars[i-1]\
+        \ + 1) {\n                current_consecutive++;\n            } else {\n   \
+        \             current_consecutive = 1;\n            }\n            max_consecutive\
+        \ = std::max(max_consecutive, current_consecutive);\n        }\n        return\
+        \ max_consecutive;\n    }\n\n    int maximizeSquareHoleArea(int n, int m, std::vector<int>&\
+        \ hBars, std::vector<int>& vBars) {\n        int max_h = getMaxConsecutive(hBars);\n\
+        \        int max_v = getMaxConsecutive(vBars);\n        int side_length = std::min(max_h\
+        \ + 1, max_v + 1);\n        return side_length * side_length;\n    }\n};"
+      java: "import java.util.Arrays;\n\nclass Solution {\n    private int getMaxConsecutive(int[]\
+        \ bars) {\n        if (bars.length == 0) {\n            return 0; // Based on\
+        \ constraints, bars will not be empty.\n        }\n        Arrays.sort(bars);\n\
+        \        int maxConsecutive = 1;\n        int currentConsecutive = 1;\n    \
+        \    for (int i = 1; i < bars.length; i++) {\n            if (bars[i] == bars[i-1]\
+        \ + 1) {\n                currentConsecutive++;\n            } else {\n    \
+        \            currentConsecutive = 1;\n            }\n            maxConsecutive\
+        \ = Math.max(maxConsecutive, currentConsecutive);\n        }\n        return\
+        \ maxConsecutive;\n    }\n\n    public int maximizeSquareHoleArea(int n, int\
+        \ m, int[] hBars, int[] vBars) {\n        int maxH = getMaxConsecutive(hBars);\n\
+        \        int maxV = getMaxConsecutive(vBars);\n        int sideLength = Math.min(maxH\
+        \ + 1, maxV + 1);\n        return sideLength * sideLength;\n    }\n}"
+      python: "class Solution(object):\n    def _get_max_consecutive(self, bars):\n\
+        \        if not bars:\n            return 0 # Based on constraints, bars will\
+        \ not be empty.\n        bars.sort()\n        max_consecutive = 1\n        current_consecutive\
+        \ = 1\n        for i in range(1, len(bars)):\n            if bars[i] == bars[i-1]\
+        \ + 1:\n                current_consecutive += 1\n            else:\n      \
+        \          current_consecutive = 1\n            max_consecutive = max(max_consecutive,\
+        \ current_consecutive)\n        return max_consecutive\n\n    def maximizeSquareHoleArea(self,\
+        \ n, m, hBars, vBars):\n        \"\"\"\n        :type n: int\n        :type\
+        \ m: int\n        :type hBars: List[int]\n        :type vBars: List[int]\n \
+        \       :rtype: int\n        \"\"\"\n        max_h = self._get_max_consecutive(hBars)\n\
+        \        max_v = self._get_max_consecutive(vBars)\n        side_length = min(max_h\
+        \ + 1, max_v + 1)\n        return side_length * side_length"
+      python3: "class Solution:\n    def _get_max_consecutive(self, bars: List[int])\
+        \ -> int:\n        if not bars:\n            return 0 # Based on constraints,\
+        \ bars will not be empty.\n        bars.sort()\n        max_consecutive = 1\n\
+        \        current_consecutive = 1\n        for i in range(1, len(bars)):\n  \
+        \          if bars[i] == bars[i-1] + 1:\n                current_consecutive\
+        \ += 1\n            else:\n                current_consecutive = 1\n       \
+        \     max_consecutive = max(max_consecutive, current_consecutive)\n        return\
+        \ max_consecutive\n\n    def maximizeSquareHoleArea(self, n: int, m: int, hBars:\
+        \ List[int], vBars: List[int]) -> int:\n        max_h = self._get_max_consecutive(hBars)\n\
+        \        max_v = self._get_max_consecutive(vBars)\n        side_length = min(max_h\
+        \ + 1, max_v + 1)\n        return side_length * side_length"
+      c: "#include <stdlib.h>\n#include <string.h>\n#include <stdio.h>\n\n// Comparison\
+        \ function for qsort\nint compareInts(const void *a, const void *b) {\n    return\
+        \ (*(int*)a - *(int*)b);\n}\n\nint getMaxConsecutive(int* bars, int barsSize)\
+        \ {\n    if (barsSize == 0) {\n        return 0; // Based on constraints, bars\
+        \ will not be empty.\n    }\n    qsort(bars, barsSize, sizeof(int), compareInts);\n\
+        \    int max_consecutive = 1;\n    int current_consecutive = 1;\n    for (int\
+        \ i = 1; i < barsSize; i++) {\n        if (bars[i] == bars[i-1] + 1) {\n   \
+        \         current_consecutive++;\n        } else {\n            current_consecutive\
+        \ = 1;\n        }\n        if (current_consecutive > max_consecutive) {\n  \
+        \          max_consecutive = current_consecutive;\n        }\n    }\n    return\
+        \ max_consecutive;\n}\n\nint maximizeSquareHoleArea(int n, int m, int* hBars,\
+        \ int hBarsSize, int* vBars, int vBarsSize) {\n    int max_h = getMaxConsecutive(hBars,\
+        \ hBarsSize);\n    int max_v = getMaxConsecutive(vBars, vBarsSize);\n    int\
+        \ side_length = (max_h + 1 < max_v + 1) ? (max_h + 1) : (max_v + 1);\n    return\
+        \ side_length * side_length;\n}"
       csharp: "using System;\nusing System.Linq;\n\npublic class Solution {\n    private\
-        \ int GetMaxConsecutiveLength(int[] bars) {\n        if (bars == null || bars.Length\
-        \ == 0) {\n            return 0;\n        }\n        Array.Sort(bars);\n   \
-        \     int max_len = 1;\n        int current_len = 1;\n        for (int i = 1;\
-        \ i < bars.Length; i++) {\n            if (bars[i] == bars[i-1] + 1) {\n   \
-        \             current_len++;\n            } else {\n                max_len\
-        \ = Math.Max(max_len, current_len);\n                current_len = 1;\n    \
-        \        }\n        }\n        max_len = Math.Max(max_len, current_len);\n \
-        \       return max_len;\n    }\n\n    public int MaximizeSquareHoleArea(int\
-        \ n, int m, int[] hBars, int[] vBars) {\n        int h_max_len = GetMaxConsecutiveLength(hBars);\n\
-        \        int v_max_len = GetMaxConsecutiveLength(vBars);\n\n        int side\
-        \ = Math.Min(h_max_len + 1, v_max_len + 1);\n        return side * side;\n \
-        \   }\n}"
-      javascript: "/**\n * @param {number[]} bars\n * @return {number}\n */\nfunction\
-        \ getMaxConsecutiveLength(bars) {\n    if (!bars || bars.length === 0) {\n \
-        \       return 0;\n    }\n    bars.sort((a, b) => a - b);\n    let max_len =\
-        \ 1;\n    let current_len = 1;\n    for (let i = 1; i < bars.length; i++) {\n\
-        \        if (bars[i] === bars[i-1] + 1) {\n            current_len++;\n    \
-        \    } else {\n            max_len = Math.max(max_len, current_len);\n     \
-        \       current_len = 1;\n        }\n    }\n    max_len = Math.max(max_len,\
-        \ current_len);\n    return max_len;\n}\n\n/**\n * @param {number} n\n * @param\
-        \ {number} m\n * @param {number[]} hBars\n * @param {number[]} vBars\n * @return\
-        \ {number}\n */\nvar maximizeSquareHoleArea = function(n, m, hBars, vBars) {\n\
-        \    let h_max_len = getMaxConsecutiveLength(hBars);\n    let v_max_len = getMaxConsecutiveLength(vBars);\n\
-        \n    let side = Math.min(h_max_len + 1, v_max_len + 1);\n    return side *\
-        \ side;\n};"
-      typescript: "function getMaxConsecutiveLength(bars: number[]): number {\n    if\
-        \ (!bars || bars.length === 0) {\n        return 0;\n    }\n    bars.sort((a,\
-        \ b) => a - b);\n    let max_len = 1;\n    let current_len = 1;\n    for (let\
-        \ i = 1; i < bars.length; i++) {\n        if (bars[i] === bars[i-1] + 1) {\n\
-        \            current_len++;\n        } else {\n            max_len = Math.max(max_len,\
-        \ current_len);\n            current_len = 1;\n        }\n    }\n    max_len\
-        \ = Math.max(max_len, current_len);\n    return max_len;\n}\n\nfunction maximizeSquareHoleArea(n:\
-        \ number, m: number, hBars: number[], vBars: number[]): number {\n    let h_max_len\
-        \ = getMaxConsecutiveLength(hBars);\n    let v_max_len = getMaxConsecutiveLength(vBars);\n\
-        \n    let side = Math.min(h_max_len + 1, v_max_len + 1);\n    return side *\
-        \ side;\n};"
-      php: "<?php\nclass Solution {\n\n    /**\n     * @param Integer[] $bars\n    \
-        \ * @return Integer\n     */\n    private function getMaxConsecutiveLength(array\
-        \ $bars): int {\n        if (empty($bars)) {\n            return 0;\n      \
-        \  }\n        sort($bars);\n        $max_len = 1;\n        $current_len = 1;\n\
-        \        for ($i = 1; $i < count($bars); $i++) {\n            if ($bars[$i]\
-        \ === $bars[$i-1] + 1) {\n                $current_len++;\n            } else\
-        \ {\n                $max_len = max($max_len, $current_len);\n             \
-        \   $current_len = 1;\n            }\n        }\n        $max_len = max($max_len,\
-        \ $current_len);\n        return $max_len;\n    }\n\n    /**\n     * @param\
-        \ Integer $n\n     * @param Integer $m\n     * @param Integer[] $hBars\n   \
-        \  * @param Integer[] $vBars\n     * @return Integer\n     */\n    function\
-        \ maximizeSquareHoleArea($n, $m, $hBars, $vBars) {\n        $h_max_len = $this->getMaxConsecutiveLength($hBars);\n\
-        \        $v_max_len = $this->getMaxConsecutiveLength($vBars);\n\n        $side\
-        \ = min($h_max_len + 1, $v_max_len + 1);\n        return $side * $side;\n  \
-        \  }\n}\n?>"
-      swift: "import Foundation\n\nclass Solution {\n    private func getMaxConsecutiveLength(_\
-        \ bars: [Int]) -> Int {\n        if bars.isEmpty {\n            return 0\n \
-        \       }\n        var sortedBars = bars.sorted()\n        var max_len = 1\n\
-        \        var current_len = 1\n        for i in 1..<sortedBars.count {\n    \
-        \        if sortedBars[i] == sortedBars[i-1] + 1 {\n                current_len\
-        \ += 1\n            } else {\n                max_len = max(max_len, current_len)\n\
-        \                current_len = 1\n            }\n        }\n        max_len\
-        \ = max(max_len, current_len)\n        return max_len\n    }\n\n    func maximizeSquareHoleArea(_\
-        \ n: Int, _ m: Int, _ hBars: [Int], _ vBars: [Int]) -> Int {\n        let h_max_len\
-        \ = getMaxConsecutiveLength(hBars)\n        let v_max_len = getMaxConsecutiveLength(vBars)\n\
-        \n        let side = min(h_max_len + 1, v_max_len + 1)\n        return side\
-        \ * side\n    }\n}"
-    approach: 'The problem asks for the maximum area of a square hole, which implies
-      finding the maximum possible side length S such that a square of side S can be
-      formed. A square hole of side S requires S+1 horizontal bars and S+1 vertical
-      bars to define its boundaries. To achieve this, S-1 intermediate horizontal bars
-      must be removable and removed, and similarly, S-1 intermediate vertical bars must
-      be removable and removed. The bars 1 and n+2 (for horizontal) and 1 and m+2 (for
-      vertical) are always fixed. Any other bar k not present in hBars or vBars is also
-      fixed.
+        \ int GetMaxConsecutive(int[] bars) {\n        if (bars.Length == 0) {\n   \
+        \         return 0; // Based on constraints, bars will not be empty.\n     \
+        \   }\n        Array.Sort(bars);\n        int maxConsecutive = 1;\n        int\
+        \ currentConsecutive = 1;\n        for (int i = 1; i < bars.Length; i++) {\n\
+        \            if (bars[i] == bars[i-1] + 1) {\n                currentConsecutive++;\n\
+        \            } else {\n                currentConsecutive = 1;\n           \
+        \ }\n            maxConsecutive = Math.Max(maxConsecutive, currentConsecutive);\n\
+        \        }\n        return maxConsecutive;\n    }\n\n    public int MaximizeSquareHoleArea(int\
+        \ n, int m, int[] hBars, int[] vBars) {\n        int maxH = GetMaxConsecutive(hBars);\n\
+        \        int maxV = GetMaxConsecutive(vBars);\n        int sideLength = Math.Min(maxH\
+        \ + 1, maxV + 1);\n        return sideLength * sideLength;\n    }\n}"
+      javascript: "/**\n * @param {number} n\n * @param {number} m\n * @param {number[]}\
+        \ hBars\n * @param {number[]} vBars\n * @return {number}\n */\nvar maximizeSquareHoleArea\
+        \ = function(n, m, hBars, vBars) {\n    const getMaxConsecutive = (bars) =>\
+        \ {\n        if (bars.length === 0) {\n            return 0; // Based on constraints,\
+        \ bars will not be empty.\n        }\n        bars.sort((a, b) => a - b);\n\
+        \        let maxConsecutive = 1;\n        let currentConsecutive = 1;\n    \
+        \    for (let i = 1; i < bars.length; i++) {\n            if (bars[i] === bars[i-1]\
+        \ + 1) {\n                currentConsecutive++;\n            } else {\n    \
+        \            currentConsecutive = 1;\n            }\n            maxConsecutive\
+        \ = Math.max(maxConsecutive, currentConsecutive);\n        }\n        return\
+        \ maxConsecutive;\n    };\n\n    const maxH = getMaxConsecutive(hBars);\n  \
+        \  const maxV = getMaxConsecutive(vBars);\n    const sideLength = Math.min(maxH\
+        \ + 1, maxV + 1);\n    return sideLength * sideLength;\n};"
+      typescript: "function maximizeSquareHoleArea(n: number, m: number, hBars: number[],\
+        \ vBars: number[]): number {\n    const getMaxConsecutive = (bars: number[]):\
+        \ number => {\n        if (bars.length === 0) {\n            return 0; // Based\
+        \ on constraints, bars will not be empty.\n        }\n        bars.sort((a,\
+        \ b) => a - b);\n        let maxConsecutive = 1;\n        let currentConsecutive\
+        \ = 1;\n        for (let i = 1; i < bars.length; i++) {\n            if (bars[i]\
+        \ === bars[i-1] + 1) {\n                currentConsecutive++;\n            }\
+        \ else {\n                currentConsecutive = 1;\n            }\n         \
+        \   maxConsecutive = Math.max(maxConsecutive, currentConsecutive);\n       \
+        \ }\n        return maxConsecutive;\n    };\n\n    const maxH = getMaxConsecutive(hBars);\n\
+        \    const maxV = getMaxConsecutive(vBars);\n    const sideLength = Math.min(maxH\
+        \ + 1, maxV + 1);\n    return sideLength * sideLength;\n};"
+      php: "<?php\nclass Solution {\n\n    /**\n     * @param Integer $n\n     * @param\
+        \ Integer $m\n     * @param Integer[] $hBars\n     * @param Integer[] $vBars\n\
+        \     * @return Integer\n     */\n    function maximizeSquareHoleArea($n, $m,\
+        \ $hBars, $vBars) {\n        $getMaxConsecutive = function($bars) {\n      \
+        \      if (empty($bars)) {\n                return 0; // Based on constraints,\
+        \ bars will not be empty.\n            }\n            sort($bars);\n       \
+        \     $maxConsecutive = 1;\n            $currentConsecutive = 1;\n         \
+        \   for ($i = 1; $i < count($bars); $i++) {\n                if ($bars[$i] ==\
+        \ $bars[$i-1] + 1) {\n                    $currentConsecutive++;\n         \
+        \       } else {\n                    $currentConsecutive = 1;\n           \
+        \     }\n                $maxConsecutive = max($maxConsecutive, $currentConsecutive);\n\
+        \            }\n            return $maxConsecutive;\n        };\n\n        $maxH\
+        \ = $getMaxConsecutive($hBars);\n        $maxV = $getMaxConsecutive($vBars);\n\
+        \        $sideLength = min($maxH + 1, $maxV + 1);\n        return $sideLength\
+        \ * $sideLength;\n    }\n}\n?>"
+      swift: "import Foundation\n\nclass Solution {\n    private func getMaxConsecutive(_\
+        \ bars: [Int]) -> Int {\n        if bars.isEmpty {\n            return 0 //\
+        \ Based on constraints, bars will not be empty.\n        }\n        var sortedBars\
+        \ = bars.sorted()\n        var maxConsecutive = 1\n        var currentConsecutive\
+        \ = 1\n        for i in 1..<sortedBars.count {\n            if sortedBars[i]\
+        \ == sortedBars[i-1] + 1 {\n                currentConsecutive += 1\n      \
+        \      } else {\n                currentConsecutive = 1\n            }\n   \
+        \         maxConsecutive = max(maxConsecutive, currentConsecutive)\n       \
+        \ }\n        return maxConsecutive\n    }\n\n    func maximizeSquareHoleArea(_\
+        \ n: Int, _ m: Int, _ hBars: [Int], _ vBars: [Int]) -> Int {\n        let maxH\
+        \ = getMaxConsecutive(hBars)\n        let maxV = getMaxConsecutive(vBars)\n\
+        \        let sideLength = min(maxH + 1, maxV + 1)\n        return sideLength\
+        \ * sideLength\n    }\n}"
+      kotlin: "class Solution {\n    fun maximizeSquareHoleArea(n: Int, m: Int, hBars:\
+        \ IntArray, vBars: IntArray): Int {\n        val maxLenH = getMaxConsecutiveLength(hBars)\n\
+        \        val maxLenV = getMaxConsecutiveLength(vBars)\n\n        val side =\
+        \ minOf(maxLenH + 1, maxLenV + 1)\n        return side * side\n    }\n\n   \
+        \ private fun getMaxConsecutiveLength(bars: IntArray): Int {\n        if (bars.isEmpty())\
+        \ {\n            return 0\n        }\n\n        bars.sort()\n        var maxLen\
+        \ = 1\n        var currentLen = 1\n\n        for (i in 1 until bars.size) {\n\
+        \            if (bars[i] == bars[i-1] + 1) {\n                currentLen++\n\
+        \            } else {\n                currentLen = 1\n            }\n     \
+        \       maxLen = maxOf(maxLen, currentLen)\n        }\n\n        return maxLen\n\
+        \    }\n}"
+      dart: "class Solution {\n  int maximizeSquareHoleArea(int n, int m, List<int>\
+        \ hBars, List<int> vBars) {\n    int maxLenH = _getMaxConsecutiveLength(hBars);\n\
+        \    int maxLenV = _getMaxConsecutiveLength(vBars);\n\n    int side = (maxLenH\
+        \ + 1 < maxLenV + 1) ? (maxLenH + 1) : (maxLenV + 1);\n    return side * side;\n\
+        \  }\n\n  int _getMaxConsecutiveLength(List<int> bars) {\n    if (bars.isEmpty)\
+        \ {\n      return 0;\n    }\n\n    bars.sort();\n    int maxLen = 1;\n    int\
+        \ currentLen = 1;\n\n    for (int i = 1; i < bars.length; i++) {\n      if (bars[i]\
+        \ == bars[i-1] + 1) {\n        currentLen++;\n      } else {\n        currentLen\
+        \ = 1;\n      }\n      if (currentLen > maxLen) {\n        maxLen = currentLen;\n\
+        \      }\n    }\n\n    return maxLen;\n  }\n}"
+      go: "import \"sort\"\n\nfunc maximizeSquareHoleArea(n int, m int, hBars []int,\
+        \ vBars []int) int {\n    maxLenH := getMaxConsecutiveLength(hBars)\n    maxLenV\
+        \ := getMaxConsecutiveLength(vBars)\n\n    side := min(maxLenH + 1, maxLenV\
+        \ + 1)\n    return side * side\n}\n\nfunc getMaxConsecutiveLength(bars []int)\
+        \ int {\n    if len(bars) == 0 {\n        return 0\n    }\n\n    sort.Ints(bars)\n\
+        \    maxLen := 1\n    currentLen := 1\n\n    for i := 1; i < len(bars); i++\
+        \ {\n        if bars[i] == bars[i-1] + 1 {\n            currentLen++\n     \
+        \   } else {\n            currentLen = 1\n        }\n        if currentLen >\
+        \ maxLen {\n            maxLen = currentLen\n        }\n    }\n\n    return\
+        \ maxLen\n}\n\nfunc min(a, b int) int {\n    if a < b {\n        return a\n\
+        \    }\n    return b\n}"
+      ruby: "# @param {Integer} n\n# @param {Integer} m\n# @param {Integer[]} h_bars\n\
+        # @param {Integer[]} v_bars\n# @return {Integer}\ndef maximize_square_hole_area(n,\
+        \ m, h_bars, v_bars)\n    max_len_h = get_max_consecutive_length(h_bars)\n \
+        \   max_len_v = get_max_consecutive_length(v_bars)\n\n    side = [max_len_h\
+        \ + 1, max_len_v + 1].min\n    side * side\nend\n\ndef get_max_consecutive_length(bars)\n\
+        \    return 0 if bars.empty?\n\n    bars.sort!\n    max_len = 1\n    current_len\
+        \ = 1\n\n    (1...bars.length).each do |i|\n        if bars[i] == bars[i-1]\
+        \ + 1\n            current_len += 1\n        else\n            current_len =\
+        \ 1\n        end\n        max_len = [max_len, current_len].max\n    end\n\n\
+        \    max_len\nend"
+      scala: "object Solution {\n    def maximizeSquareHoleArea(n: Int, m: Int, hBars:\
+        \ Array[Int], vBars: Array[Int]): Int = {\n        val maxLenH = getMaxConsecutiveLength(hBars)\n\
+        \        val maxLenV = getMaxConsecutiveLength(vBars)\n\n        val side =\
+        \ Math.min(maxLenH + 1, maxLenV + 1)\n        side * side\n    }\n\n    private\
+        \ def getMaxConsecutiveLength(bars: Array[Int]): Int = {\n        if (bars.isEmpty)\
+        \ {\n            return 0\n        }\n\n        val sortedBars = bars.sorted\n\
+        \        var maxLen = 1\n        var currentLen = 1\n\n        for (i <- 1 until\
+        \ sortedBars.length) {\n            if (sortedBars(i) == sortedBars(i-1) + 1)\
+        \ {\n                currentLen += 1\n            } else {\n               \
+        \ currentLen = 1\n            }\n            maxLen = Math.max(maxLen, currentLen)\n\
+        \        }\n\n        maxLen\n    }\n}"
+      rust: "impl Solution {\n    pub fn maximize_square_hole_area(n: i32, m: i32, h_bars:\
+        \ Vec<i32>, v_bars: Vec<i32>) -> i32 {\n        let max_len_h = Self::get_max_consecutive_length(h_bars);\n\
+        \        let max_len_v = Self::get_max_consecutive_length(v_bars);\n\n     \
+        \   let side = std::cmp::min(max_len_h + 1, max_len_v + 1);\n        side *\
+        \ side\n    }\n\n    fn get_max_consecutive_length(mut bars: Vec<i32>) -> i32\
+        \ {\n        if bars.is_empty() {\n            return 0;\n        }\n\n    \
+        \    bars.sort_unstable();\n        let mut max_len = 1;\n        let mut current_len\
+        \ = 1;\n\n        for i in 1..bars.len() {\n            if bars[i] == bars[i-1]\
+        \ + 1 {\n                current_len += 1;\n            } else {\n         \
+        \       current_len = 1;\n            }\n            max_len = std::cmp::max(max_len,\
+        \ current_len);\n        }\n\n        max_len\n    }\n}"
+      racket: "(define/contract (maximize-square-hole-area n m hBars vBars)\n  (-> exact-integer?\
+        \ exact-integer? (listof exact-integer?) (listof exact-integer?) exact-integer?)\n\
+        \  (define (get-max-consecutive-length bars)\n    (if (empty? bars)\n      \
+        \  0\n        (let* ([sorted-bars (list->vector (sort bars <))]\n          \
+        \     [len (vector-length sorted-bars)])\n          (if (= len 1)\n        \
+        \      1\n              (let-values ([(max-len current-len)\n              \
+        \              (for/fold ([max-len 1] [current-len 1])\n                   \
+        \                   ([i (in-range 1 len)])\n                              (let\
+        \ ([prev-bar (vector-ref sorted-bars (- i 1))]\n                           \
+        \         [curr-bar (vector-ref sorted-bars i)])\n                         \
+        \       (if (= curr-bar (+ prev-bar 1))\n                                  \
+        \  (values (max max-len (+ current-len 1)) (+ current-len 1))\n            \
+        \                        (values (max max-len 1) 1))))])\n                max-len)))))\
+        \ ; max-len is the result of the fold\n\n  (let* ([max-len-h (get-max-consecutive-length\
+        \ hBars)]\n         [max-len-v (get-max-consecutive-length vBars)]\n       \
+        \  [side (+ 1 (min max-len-h max-len-v))])\n    (* side side)))"
+      erlang: "-spec maximize_square_hole_area(N :: integer(), M :: integer(), HBars\
+        \ :: [integer()], VBars :: [integer()]) -> integer().\nmaximize_square_hole_area(N,\
+        \ M, HBars, VBars) ->\n  MaxLenH = get_max_consecutive_length(HBars),\n  MaxLenV\
+        \ = get_max_consecutive_length(VBars),\n  Side = min(MaxLenH + 1, MaxLenV +\
+        \ 1),\n  Side * Side.\n\nget_max_consecutive_length(Bars) ->\n  case Bars of\n\
+        \    [] -> 0;\n    _ ->\n      SortedBars = lists:sort(Bars),\n      get_max_consecutive_length_impl(SortedBars,\
+        \ 1, 1)\n  end.\n\nget_max_consecutive_length_impl([_], MaxLen, _CurrentLen)\
+        \ ->\n  MaxLen;\nget_max_consecutive_length_impl([H1, H2 | T], MaxLen, CurrentLen)\
+        \ ->\n  if H2 == H1 + 1 ->\n    NewCurrentLen = CurrentLen + 1,\n    NewMaxLen\
+        \ = max(MaxLen, NewCurrentLen),\n    get_max_consecutive_length_impl([H2 | T],\
+        \ NewMaxLen, NewCurrentLen);\n  true ->\n    NewCurrentLen = 1,\n    NewMaxLen\
+        \ = max(MaxLen, NewCurrentLen),\n    get_max_consecutive_length_impl([H2 | T],\
+        \ NewMaxLen, NewCurrentLen)\n  end."
+      elixir: "defmodule Solution do\n  @spec maximize_square_hole_area(n :: integer,\
+        \ m :: integer, h_bars :: [integer], v_bars :: [integer]) :: integer\n  def\
+        \ maximize_square_hole_area(n, m, h_bars, v_bars) do\n    max_len_h = get_max_consecutive_length(h_bars)\n\
+        \    max_len_v = get_max_consecutive_length(v_bars)\n\n    side = min(max_len_h\
+        \ + 1, max_len_v + 1)\n    side * side\n  end\n\n  defp get_max_consecutive_length(bars)\
+        \ do\n    case bars do\n      [] -> 0\n      _ ->\n        sorted_bars = Enum.sort(bars)\n\
+        \        do_get_max_consecutive_length(sorted_bars, 1, 1)\n    end\n  end\n\n\
+        \  defp do_get_max_consecutive_length([_], max_len, _current_len), do: max_len\n\
+        \  defp do_get_max_consecutive_length([h1, h2 | t], max_len, current_len) do\n\
+        \    if h2 == h1 + 1 do\n      new_current_len = current_len + 1\n      new_max_len\
+        \ = max(max_len, new_current_len)\n      do_get_max_consecutive_length([h2 |\
+        \ t], new_max_len, new_current_len)\n    else\n      new_current_len = 1\n \
+        \     new_max_len = max(max_len, new_current_len)\n      do_get_max_consecutive_length([h2\
+        \ | t], new_max_len, new_current_len)\n    end\n  end\nend"
+    approach: 'The problem asks for the maximum area of a square-shaped hole that can
+      be formed by removing certain horizontal and vertical bars. A square hole of side
+      length ''S'' implies that we need to remove ''S-1'' consecutive horizontal bars
+      and ''S-1'' consecutive vertical bars, such that the remaining boundary bars define
+      an ''S'' unit span. For example, to create a 1x1 hole, we need 0 bars removed,
+      meaning the space between two fixed adjacent bars. To create a 2x2 hole, we need
+      to remove one horizontal bar (e.g., bar 2 to open space between 1 and 3) and one
+      vertical bar (e.g., bar 2 to open space between 1 and 3). The key insight, as
+      suggested by the hints, is that if we have ''k'' consecutive removable bars (e.g.,
+      `i, i+1, ..., i+k-1`), we can remove all of them to create an open span of `k+1`
+      units between the fixed bars `i-1` and `i+k`. The bars `1` and `n+2` (or `m+2`)
+      are always fixed boundaries because `hBars[i]` and `vBars[i]` are constrained
+      to be between `2` and `n+1` (or `m+1`).
 
 
-      The core idea is to determine the maximum number of consecutive removable bars
-      in both the horizontal and vertical dimensions. For hBars, we first sort the array.
-      Then, we iterate through the sorted array to find the longest sequence of consecutive
-      integers. For example, if hBars = [2,3,4], the longest consecutive sequence has
-      length 3. If hBars = [2,4,5], the longest consecutive sequence is [4,5] with length
-      2. Let this maximum length be max_len_h. This max_len_h represents the number
-      of intermediate horizontal bars that can be removed. These max_len_h removed bars
-      create a gap of max_len_h + 1 units. We apply the same logic to vBars to find
-      max_len_v, which allows for a vertical gap of max_len_v + 1 units. The maximum
-      side length S of a square hole is then the minimum of these two possible side
-      lengths: min(max_len_h + 1, max_len_v + 1). The final answer is S * S.'
-    time_complexity: The time complexity is dominated by sorting the input arrays hBars
-      and vBars. Let L_h be the length of hBars and L_v be the length of vBars. Sorting
-      takes O(L_h log L_h) for hBars and O(L_v log L_v) for vBars. After sorting, iterating
-      through each array to find the longest consecutive sequence takes O(L_h) and O(L_v)
-      respectively. Therefore, the total time complexity is O(L_h log L_h + L_v log
-      L_v). Given L_h, L_v <= 100, this is very efficient.
-    space_complexity: The space complexity depends primarily on the sorting algorithm
-      used. If an in-place sort (like C++ std::sort or Java's Arrays.sort for primitives)
-      is used, the auxiliary space complexity is O(log L) due to recursion stack depth.
-      If a sort requiring auxiliary space (like Python's Timsort or Java's Arrays.sort
-      for objects) is used, it can be O(L). In either case, L is L_h or L_v. Additionally,
-      a few constant variables are used. Thus, the overall space complexity is O(L_h
-      + L_v) in the worst case for auxiliary space, or O(log L_h + log L_v) for in-place
-      sorts. Considering L_h, L_v <= 100, this is very small.
-    elapsed_time: 103.42253494262695
+      The algorithm proceeds by first determining the maximum possible side length achievable
+      horizontally and vertically. For each set of bars (`hBars` and `vBars`), we sort
+      the array. Then, we iterate through the sorted array to find the longest sequence
+      of consecutive integers. If `k` is the length of the longest consecutive sequence
+      of removable bars (e.g., `[2,3]` has length 2), then the maximum span we can create
+      in that dimension is `k+1`. We calculate this `k+1` value for both horizontal
+      and vertical bars. The side length of the largest square hole will be the minimum
+      of these two maximum achievable spans. Finally, the area is the square of this
+      side length.'
+    time_complexity: The time complexity is dominated by sorting the input arrays. Let
+      `L_h` be the length of `hBars` and `L_v` be the length of `vBars`. Sorting `hBars`
+      takes O(L_h log L_h) time, and sorting `vBars` takes O(L_v log L_v) time. After
+      sorting, iterating through each array to find the longest consecutive sequence
+      takes O(L_h) and O(L_v) time, respectively. Therefore, the total time complexity
+      is O(L_h log L_h + L_v log L_v). Given that `L_h` and `L_v` are at most 100, this
+      is very efficient.
+    space_complexity: The space complexity depends on the sorting algorithm used. If
+      an in-place sort is used, the auxiliary space complexity would be O(1) (excluding
+      the input arrays). If the sorting algorithm requires auxiliary space (e.g., Timsort
+      used by Python's list.sort() or Scala's sorted method which creates a new array),
+      it would be O(L_h) for `hBars` and O(L_v) for `vBars`. Thus, the total auxiliary
+      space complexity is O(L_h + L_v) in the worst case, which is minimal given the
+      constraints on `L_h` and `L_v`.
+    elapsed_time: 113.55222988128662
     model: gemini-2.5-flash
-    generated_at: '2026-01-15 01:09:40 '
+    generated_at: '2026-01-15 22:44:43 '
   - solutions:
       cpp: "class Solution {\npublic:\n    int maximizeSquareHoleArea(int n, int m,\
         \ vector<int>& hBars, vector<int>& vBars) {\n        sort(hBars.begin(), hBars.end());\n\
@@ -536,16 +634,16 @@ We've generated solutions using multiple AI models. Click to expand each solutio
 <details class="ai-solution-card" open markdown="1">
 <summary class="ai-solution-header">
   <span class="ai-model-badge">✨ Solution from <strong>gemini-2.5-flash</strong></span>
-  <small class="solution-timestamp">(2026-01-15 01:09:40 )</small>
+  <small class="solution-timestamp">(2026-01-15 22:44:43 )</small>
 </summary>
 
 <div class="ai-solution-content">
 
 ### Approach
 
-The problem asks for the maximum area of a square hole, which implies finding the maximum possible side length S such that a square of side S can be formed. A square hole of side S requires S+1 horizontal bars and S+1 vertical bars to define its boundaries. To achieve this, S-1 intermediate horizontal bars must be removable and removed, and similarly, S-1 intermediate vertical bars must be removable and removed. The bars 1 and n+2 (for horizontal) and 1 and m+2 (for vertical) are always fixed. Any other bar k not present in hBars or vBars is also fixed.
+The problem asks for the maximum area of a square-shaped hole that can be formed by removing certain horizontal and vertical bars. A square hole of side length 'S' implies that we need to remove 'S-1' consecutive horizontal bars and 'S-1' consecutive vertical bars, such that the remaining boundary bars define an 'S' unit span. For example, to create a 1x1 hole, we need 0 bars removed, meaning the space between two fixed adjacent bars. To create a 2x2 hole, we need to remove one horizontal bar (e.g., bar 2 to open space between 1 and 3) and one vertical bar (e.g., bar 2 to open space between 1 and 3). The key insight, as suggested by the hints, is that if we have 'k' consecutive removable bars (e.g., `i, i+1, ..., i+k-1`), we can remove all of them to create an open span of `k+1` units between the fixed bars `i-1` and `i+k`. The bars `1` and `n+2` (or `m+2`) are always fixed boundaries because `hBars[i]` and `vBars[i]` are constrained to be between `2` and `n+1` (or `m+1`).
 
-The core idea is to determine the maximum number of consecutive removable bars in both the horizontal and vertical dimensions. For hBars, we first sort the array. Then, we iterate through the sorted array to find the longest sequence of consecutive integers. For example, if hBars = [2,3,4], the longest consecutive sequence has length 3. If hBars = [2,4,5], the longest consecutive sequence is [4,5] with length 2. Let this maximum length be max_len_h. This max_len_h represents the number of intermediate horizontal bars that can be removed. These max_len_h removed bars create a gap of max_len_h + 1 units. We apply the same logic to vBars to find max_len_v, which allows for a vertical gap of max_len_v + 1 units. The maximum side length S of a square hole is then the minimum of these two possible side lengths: min(max_len_h + 1, max_len_v + 1). The final answer is S * S.
+The algorithm proceeds by first determining the maximum possible side length achievable horizontally and vertically. For each set of bars (`hBars` and `vBars`), we sort the array. Then, we iterate through the sorted array to find the longest sequence of consecutive integers. If `k` is the length of the longest consecutive sequence of removable bars (e.g., `[2,3]` has length 2), then the maximum span we can create in that dimension is `k+1`. We calculate this `k+1` value for both horizontal and vertical bars. The side length of the largest square hole will be the minimum of these two maximum achievable spans. Finally, the area is the square of this side length.
 
 ### Code
 
@@ -560,6 +658,15 @@ The core idea is to determine the maximum number of consecutive removable bars i
   <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-typescript-gemini-2-5-flash">
   <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-php-gemini-2-5-flash">
   <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-swift-gemini-2-5-flash">
+  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-kotlin-gemini-2-5-flash">
+  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-dart-gemini-2-5-flash">
+  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-go-gemini-2-5-flash">
+  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-ruby-gemini-2-5-flash">
+  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-scala-gemini-2-5-flash">
+  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-rust-gemini-2-5-flash">
+  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-racket-gemini-2-5-flash">
+  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-erlang-gemini-2-5-flash">
+  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-elixir-gemini-2-5-flash">
   <div class="tab-labels">
     <label for="lang-cpp-gemini-2-5-flash">C++</label>
     <label for="lang-java-gemini-2-5-flash">Java</label>
@@ -571,6 +678,15 @@ The core idea is to determine the maximum number of consecutive removable bars i
     <label for="lang-typescript-gemini-2-5-flash">TypeScript</label>
     <label for="lang-php-gemini-2-5-flash">PHP</label>
     <label for="lang-swift-gemini-2-5-flash">Swift</label>
+    <label for="lang-kotlin-gemini-2-5-flash">Kotlin</label>
+    <label for="lang-dart-gemini-2-5-flash">Dart</label>
+    <label for="lang-go-gemini-2-5-flash">Go</label>
+    <label for="lang-ruby-gemini-2-5-flash">Ruby</label>
+    <label for="lang-scala-gemini-2-5-flash">Scala</label>
+    <label for="lang-rust-gemini-2-5-flash">Rust</label>
+    <label for="lang-racket-gemini-2-5-flash">Racket</label>
+    <label for="lang-erlang-gemini-2-5-flash">Erlang</label>
+    <label for="lang-elixir-gemini-2-5-flash">Elixir</label>
   </div>
 
   <div class="tab-panel" data-lang="cpp">
@@ -579,31 +695,29 @@ The core idea is to determine the maximum number of consecutive removable bars i
 {% raw %}
 class Solution {
 public:
-    int getMaxConsecutiveLength(std::vector<int>& bars) {
+    int getMaxConsecutive(std::vector<int>& bars) {
         if (bars.empty()) {
-            return 0;
+            return 0; // Based on constraints, bars will not be empty.
         }
         std::sort(bars.begin(), bars.end());
-        int max_len = 1;
-        int current_len = 1;
+        int max_consecutive = 1;
+        int current_consecutive = 1;
         for (int i = 1; i < bars.size(); ++i) {
             if (bars[i] == bars[i-1] + 1) {
-                current_len++;
+                current_consecutive++;
             } else {
-                max_len = std::max(max_len, current_len);
-                current_len = 1;
+                current_consecutive = 1;
             }
+            max_consecutive = std::max(max_consecutive, current_consecutive);
         }
-        max_len = std::max(max_len, current_len);
-        return max_len;
+        return max_consecutive;
     }
 
     int maximizeSquareHoleArea(int n, int m, std::vector<int>& hBars, std::vector<int>& vBars) {
-        int h_max_len = getMaxConsecutiveLength(hBars);
-        int v_max_len = getMaxConsecutiveLength(vBars);
-
-        int side = std::min(h_max_len + 1, v_max_len + 1);
-        return side * side;
+        int max_h = getMaxConsecutive(hBars);
+        int max_v = getMaxConsecutive(vBars);
+        int side_length = std::min(max_h + 1, max_v + 1);
+        return side_length * side_length;
     }
 };
 {% endraw %}
@@ -618,31 +732,29 @@ public:
 import java.util.Arrays;
 
 class Solution {
-    private int getMaxConsecutiveLength(int[] bars) {
-        if (bars == null || bars.length == 0) {
-            return 0;
+    private int getMaxConsecutive(int[] bars) {
+        if (bars.length == 0) {
+            return 0; // Based on constraints, bars will not be empty.
         }
         Arrays.sort(bars);
-        int max_len = 1;
-        int current_len = 1;
+        int maxConsecutive = 1;
+        int currentConsecutive = 1;
         for (int i = 1; i < bars.length; i++) {
             if (bars[i] == bars[i-1] + 1) {
-                current_len++;
+                currentConsecutive++;
             } else {
-                max_len = Math.max(max_len, current_len);
-                current_len = 1;
+                currentConsecutive = 1;
             }
+            maxConsecutive = Math.max(maxConsecutive, currentConsecutive);
         }
-        max_len = Math.max(max_len, current_len);
-        return max_len;
+        return maxConsecutive;
     }
 
     public int maximizeSquareHoleArea(int n, int m, int[] hBars, int[] vBars) {
-        int h_max_len = getMaxConsecutiveLength(hBars);
-        int v_max_len = getMaxConsecutiveLength(vBars);
-
-        int side = Math.min(h_max_len + 1, v_max_len + 1);
-        return side * side;
+        int maxH = getMaxConsecutive(hBars);
+        int maxV = getMaxConsecutive(vBars);
+        int sideLength = Math.min(maxH + 1, maxV + 1);
+        return sideLength * sideLength;
     }
 }
 {% endraw %}
@@ -654,16 +766,33 @@ class Solution {
 
 {% highlight python %}
 {% raw %}
-# Failed to parse response
-# Check logs for full output.
-# Full Response:
-'''
-{
-  "approach": "The problem asks for the maximum area of a square-shaped hole that can be created by removing some horizontal bars from `hBars` and some vertical bars from `vBars`. The key insight, guided by the problem's hints and examples, is to understand how removing a sequence of consecutive bars creates a larger gap. If we remove `L` consecutive horizontal bars (e.g., `i, i+1, ..., i+L-1`), this creates a hole of height `L+1` units. This hole is bounded by the fixed horizontal bars `i-1` and `i+L`, which are guaranteed to be present because `hBars` only contains indices between `2` and `n+1`, meaning `1` and `n+2` are never in `hBars` and thus always fixed. Similarly, removing `L'` consecutive vertical bars creates a hole of width `L'+1` units.",
-  "time_complexity": "The time complexity is dominated by sorting the `hBars` and `vBars` arrays. Let `L_h` be the length of `hBars` and `L_v` be the length of `vBars`. Sorting takes `O(L_h log L_h)` and `O(L_v log L_v)` respectively. After sorting, iterating through each array to find the longest consecutive sequence takes `O(L_h)` and `O(L_v)` time. Since `L_h` and `L_v` are at most 100, this is very efficient. The overall time complexity is `O(L_h log L_h + L_v log L_v)`.",
-  "space_complexity": "The space complexity is `O(L_h + L_v)` if the sorting algorithm used requires auxiliary space proportional to the input size. If an in-place sorting algorithm is used, the space complexity would be `O(1)` (or `O(log L)` for the recursion stack in some quicksort implementations), ignoring the space for the input arrays themselves. Given the constraints (maximum length of 100 for `hBars` and `vBars`), the space usage is minimal."
-}
-'''
+class Solution(object):
+    def _get_max_consecutive(self, bars):
+        if not bars:
+            return 0 # Based on constraints, bars will not be empty.
+        bars.sort()
+        max_consecutive = 1
+        current_consecutive = 1
+        for i in range(1, len(bars)):
+            if bars[i] == bars[i-1] + 1:
+                current_consecutive += 1
+            else:
+                current_consecutive = 1
+            max_consecutive = max(max_consecutive, current_consecutive)
+        return max_consecutive
+
+    def maximizeSquareHoleArea(self, n, m, hBars, vBars):
+        """
+        :type n: int
+        :type m: int
+        :type hBars: List[int]
+        :type vBars: List[int]
+        :rtype: int
+        """
+        max_h = self._get_max_consecutive(hBars)
+        max_v = self._get_max_consecutive(vBars)
+        side_length = min(max_h + 1, max_v + 1)
+        return side_length * side_length
 {% endraw %}
 {% endhighlight %}
 
@@ -673,34 +802,26 @@ class Solution {
 
 {% highlight python %}
 {% raw %}
-from typing import List
-
 class Solution:
-    def _get_max_consecutive_length(self, bars: List[int]) -> int:
+    def _get_max_consecutive(self, bars: List[int]) -> int:
         if not bars:
-            return 0
-
+            return 0 # Based on constraints, bars will not be empty.
         bars.sort()
-
-        max_len = 1
-        current_len = 1
-
+        max_consecutive = 1
+        current_consecutive = 1
         for i in range(1, len(bars)):
             if bars[i] == bars[i-1] + 1:
-                current_len += 1
+                current_consecutive += 1
             else:
-                max_len = max(max_len, current_len)
-                current_len = 1
-
-        max_len = max(max_len, current_len) # Check the last sequence
-        return max_len
+                current_consecutive = 1
+            max_consecutive = max(max_consecutive, current_consecutive)
+        return max_consecutive
 
     def maximizeSquareHoleArea(self, n: int, m: int, hBars: List[int], vBars: List[int]) -> int:
-        h_max_len = self._get_max_consecutive_length(hBars)
-        v_max_len = self._get_max_consecutive_length(vBars)
-
-        side = min(h_max_len + 1, v_max_len + 1)
-        return side * side
+        max_h = self._get_max_consecutive(hBars)
+        max_v = self._get_max_consecutive(vBars)
+        side_length = min(max_h + 1, max_v + 1)
+        return side_length * side_length
 {% endraw %}
 {% endhighlight %}
 
@@ -710,49 +831,40 @@ class Solution:
 
 {% highlight c %}
 {% raw %}
-#include <stdlib.h> // For qsort
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 
 // Comparison function for qsort
 int compareInts(const void *a, const void *b) {
     return (*(int*)a - *(int*)b);
 }
 
-int getMaxConsecutiveLength(int* bars, int barsSize) {
+int getMaxConsecutive(int* bars, int barsSize) {
     if (barsSize == 0) {
-        return 0;
+        return 0; // Based on constraints, bars will not be empty.
     }
-
     qsort(bars, barsSize, sizeof(int), compareInts);
-
-    int max_len = 1;
-    int current_len = 1;
-
-    for (int i = 1; i < barsSize; ++i) {
+    int max_consecutive = 1;
+    int current_consecutive = 1;
+    for (int i = 1; i < barsSize; i++) {
         if (bars[i] == bars[i-1] + 1) {
-            current_len++;
+            current_consecutive++;
         } else {
-            if (current_len > max_len) {
-                max_len = current_len;
-            }
-            current_len = 1;
+            current_consecutive = 1;
+        }
+        if (current_consecutive > max_consecutive) {
+            max_consecutive = current_consecutive;
         }
     }
-    // After loop, check the last sequence
-    if (current_len > max_len) {
-        max_len = current_len;
-    }
-    return max_len;
+    return max_consecutive;
 }
 
 int maximizeSquareHoleArea(int n, int m, int* hBars, int hBarsSize, int* vBars, int vBarsSize) {
-    int h_max_len = getMaxConsecutiveLength(hBars, hBarsSize);
-    int v_max_len = getMaxConsecutiveLength(vBars, vBarsSize);
-
-    int side_h = h_max_len + 1;
-    int side_v = v_max_len + 1;
-
-    int side = (side_h < side_v) ? side_h : side_v; // Equivalent to min(side_h, side_v)
-    return side * side;
+    int max_h = getMaxConsecutive(hBars, hBarsSize);
+    int max_v = getMaxConsecutive(vBars, vBarsSize);
+    int side_length = (max_h + 1 < max_v + 1) ? (max_h + 1) : (max_v + 1);
+    return side_length * side_length;
 }
 {% endraw %}
 {% endhighlight %}
@@ -767,31 +879,29 @@ using System;
 using System.Linq;
 
 public class Solution {
-    private int GetMaxConsecutiveLength(int[] bars) {
-        if (bars == null || bars.Length == 0) {
-            return 0;
+    private int GetMaxConsecutive(int[] bars) {
+        if (bars.Length == 0) {
+            return 0; // Based on constraints, bars will not be empty.
         }
         Array.Sort(bars);
-        int max_len = 1;
-        int current_len = 1;
+        int maxConsecutive = 1;
+        int currentConsecutive = 1;
         for (int i = 1; i < bars.Length; i++) {
             if (bars[i] == bars[i-1] + 1) {
-                current_len++;
+                currentConsecutive++;
             } else {
-                max_len = Math.Max(max_len, current_len);
-                current_len = 1;
+                currentConsecutive = 1;
             }
+            maxConsecutive = Math.Max(maxConsecutive, currentConsecutive);
         }
-        max_len = Math.Max(max_len, current_len);
-        return max_len;
+        return maxConsecutive;
     }
 
     public int MaximizeSquareHoleArea(int n, int m, int[] hBars, int[] vBars) {
-        int h_max_len = GetMaxConsecutiveLength(hBars);
-        int v_max_len = GetMaxConsecutiveLength(vBars);
-
-        int side = Math.Min(h_max_len + 1, v_max_len + 1);
-        return side * side;
+        int maxH = GetMaxConsecutive(hBars);
+        int maxV = GetMaxConsecutive(vBars);
+        int sideLength = Math.Min(maxH + 1, maxV + 1);
+        return sideLength * sideLength;
     }
 }
 {% endraw %}
@@ -804,29 +914,6 @@ public class Solution {
 {% highlight javascript %}
 {% raw %}
 /**
- * @param {number[]} bars
- * @return {number}
- */
-function getMaxConsecutiveLength(bars) {
-    if (!bars || bars.length === 0) {
-        return 0;
-    }
-    bars.sort((a, b) => a - b);
-    let max_len = 1;
-    let current_len = 1;
-    for (let i = 1; i < bars.length; i++) {
-        if (bars[i] === bars[i-1] + 1) {
-            current_len++;
-        } else {
-            max_len = Math.max(max_len, current_len);
-            current_len = 1;
-        }
-    }
-    max_len = Math.max(max_len, current_len);
-    return max_len;
-}
-
-/**
  * @param {number} n
  * @param {number} m
  * @param {number[]} hBars
@@ -834,11 +921,28 @@ function getMaxConsecutiveLength(bars) {
  * @return {number}
  */
 var maximizeSquareHoleArea = function(n, m, hBars, vBars) {
-    let h_max_len = getMaxConsecutiveLength(hBars);
-    let v_max_len = getMaxConsecutiveLength(vBars);
+    const getMaxConsecutive = (bars) => {
+        if (bars.length === 0) {
+            return 0; // Based on constraints, bars will not be empty.
+        }
+        bars.sort((a, b) => a - b);
+        let maxConsecutive = 1;
+        let currentConsecutive = 1;
+        for (let i = 1; i < bars.length; i++) {
+            if (bars[i] === bars[i-1] + 1) {
+                currentConsecutive++;
+            } else {
+                currentConsecutive = 1;
+            }
+            maxConsecutive = Math.max(maxConsecutive, currentConsecutive);
+        }
+        return maxConsecutive;
+    };
 
-    let side = Math.min(h_max_len + 1, v_max_len + 1);
-    return side * side;
+    const maxH = getMaxConsecutive(hBars);
+    const maxV = getMaxConsecutive(vBars);
+    const sideLength = Math.min(maxH + 1, maxV + 1);
+    return sideLength * sideLength;
 };
 {% endraw %}
 {% endhighlight %}
@@ -849,31 +953,29 @@ var maximizeSquareHoleArea = function(n, m, hBars, vBars) {
 
 {% highlight typescript %}
 {% raw %}
-function getMaxConsecutiveLength(bars: number[]): number {
-    if (!bars || bars.length === 0) {
-        return 0;
-    }
-    bars.sort((a, b) => a - b);
-    let max_len = 1;
-    let current_len = 1;
-    for (let i = 1; i < bars.length; i++) {
-        if (bars[i] === bars[i-1] + 1) {
-            current_len++;
-        } else {
-            max_len = Math.max(max_len, current_len);
-            current_len = 1;
-        }
-    }
-    max_len = Math.max(max_len, current_len);
-    return max_len;
-}
-
 function maximizeSquareHoleArea(n: number, m: number, hBars: number[], vBars: number[]): number {
-    let h_max_len = getMaxConsecutiveLength(hBars);
-    let v_max_len = getMaxConsecutiveLength(vBars);
+    const getMaxConsecutive = (bars: number[]): number => {
+        if (bars.length === 0) {
+            return 0; // Based on constraints, bars will not be empty.
+        }
+        bars.sort((a, b) => a - b);
+        let maxConsecutive = 1;
+        let currentConsecutive = 1;
+        for (let i = 1; i < bars.length; i++) {
+            if (bars[i] === bars[i-1] + 1) {
+                currentConsecutive++;
+            } else {
+                currentConsecutive = 1;
+            }
+            maxConsecutive = Math.max(maxConsecutive, currentConsecutive);
+        }
+        return maxConsecutive;
+    };
 
-    let side = Math.min(h_max_len + 1, v_max_len + 1);
-    return side * side;
+    const maxH = getMaxConsecutive(hBars);
+    const maxV = getMaxConsecutive(vBars);
+    const sideLength = Math.min(maxH + 1, maxV + 1);
+    return sideLength * sideLength;
 };
 {% endraw %}
 {% endhighlight %}
@@ -888,29 +990,6 @@ function maximizeSquareHoleArea(n: number, m: number, hBars: number[], vBars: nu
 class Solution {
 
     /**
-     * @param Integer[] $bars
-     * @return Integer
-     */
-    private function getMaxConsecutiveLength(array $bars): int {
-        if (empty($bars)) {
-            return 0;
-        }
-        sort($bars);
-        $max_len = 1;
-        $current_len = 1;
-        for ($i = 1; $i < count($bars); $i++) {
-            if ($bars[$i] === $bars[$i-1] + 1) {
-                $current_len++;
-            } else {
-                $max_len = max($max_len, $current_len);
-                $current_len = 1;
-            }
-        }
-        $max_len = max($max_len, $current_len);
-        return $max_len;
-    }
-
-    /**
      * @param Integer $n
      * @param Integer $m
      * @param Integer[] $hBars
@@ -918,11 +997,28 @@ class Solution {
      * @return Integer
      */
     function maximizeSquareHoleArea($n, $m, $hBars, $vBars) {
-        $h_max_len = $this->getMaxConsecutiveLength($hBars);
-        $v_max_len = $this->getMaxConsecutiveLength($vBars);
+        $getMaxConsecutive = function($bars) {
+            if (empty($bars)) {
+                return 0; // Based on constraints, bars will not be empty.
+            }
+            sort($bars);
+            $maxConsecutive = 1;
+            $currentConsecutive = 1;
+            for ($i = 1; $i < count($bars); $i++) {
+                if ($bars[$i] == $bars[$i-1] + 1) {
+                    $currentConsecutive++;
+                } else {
+                    $currentConsecutive = 1;
+                }
+                $maxConsecutive = max($maxConsecutive, $currentConsecutive);
+            }
+            return $maxConsecutive;
+        };
 
-        $side = min($h_max_len + 1, $v_max_len + 1);
-        return $side * $side;
+        $maxH = $getMaxConsecutive($hBars);
+        $maxV = $getMaxConsecutive($vBars);
+        $sideLength = min($maxH + 1, $maxV + 1);
+        return $sideLength * $sideLength;
     }
 }
 ?>
@@ -938,33 +1034,386 @@ class Solution {
 import Foundation
 
 class Solution {
-    private func getMaxConsecutiveLength(_ bars: [Int]) -> Int {
+    private func getMaxConsecutive(_ bars: [Int]) -> Int {
         if bars.isEmpty {
-            return 0
+            return 0 // Based on constraints, bars will not be empty.
         }
         var sortedBars = bars.sorted()
-        var max_len = 1
-        var current_len = 1
+        var maxConsecutive = 1
+        var currentConsecutive = 1
         for i in 1..<sortedBars.count {
             if sortedBars[i] == sortedBars[i-1] + 1 {
-                current_len += 1
+                currentConsecutive += 1
             } else {
-                max_len = max(max_len, current_len)
-                current_len = 1
+                currentConsecutive = 1
             }
+            maxConsecutive = max(maxConsecutive, currentConsecutive)
         }
-        max_len = max(max_len, current_len)
-        return max_len
+        return maxConsecutive
     }
 
     func maximizeSquareHoleArea(_ n: Int, _ m: Int, _ hBars: [Int], _ vBars: [Int]) -> Int {
-        let h_max_len = getMaxConsecutiveLength(hBars)
-        let v_max_len = getMaxConsecutiveLength(vBars)
-
-        let side = min(h_max_len + 1, v_max_len + 1)
-        return side * side
+        let maxH = getMaxConsecutive(hBars)
+        let maxV = getMaxConsecutive(vBars)
+        let sideLength = min(maxH + 1, maxV + 1)
+        return sideLength * sideLength
     }
 }
+{% endraw %}
+{% endhighlight %}
+
+  </div>
+
+  <div class="tab-panel" data-lang="kotlin">
+
+{% highlight kotlin %}
+{% raw %}
+class Solution {
+    fun maximizeSquareHoleArea(n: Int, m: Int, hBars: IntArray, vBars: IntArray): Int {
+        val maxLenH = getMaxConsecutiveLength(hBars)
+        val maxLenV = getMaxConsecutiveLength(vBars)
+
+        val side = minOf(maxLenH + 1, maxLenV + 1)
+        return side * side
+    }
+
+    private fun getMaxConsecutiveLength(bars: IntArray): Int {
+        if (bars.isEmpty()) {
+            return 0
+        }
+
+        bars.sort()
+        var maxLen = 1
+        var currentLen = 1
+
+        for (i in 1 until bars.size) {
+            if (bars[i] == bars[i-1] + 1) {
+                currentLen++
+            } else {
+                currentLen = 1
+            }
+            maxLen = maxOf(maxLen, currentLen)
+        }
+
+        return maxLen
+    }
+}
+{% endraw %}
+{% endhighlight %}
+
+  </div>
+
+  <div class="tab-panel" data-lang="dart">
+
+{% highlight dart %}
+{% raw %}
+class Solution {
+  int maximizeSquareHoleArea(int n, int m, List<int> hBars, List<int> vBars) {
+    int maxLenH = _getMaxConsecutiveLength(hBars);
+    int maxLenV = _getMaxConsecutiveLength(vBars);
+
+    int side = (maxLenH + 1 < maxLenV + 1) ? (maxLenH + 1) : (maxLenV + 1);
+    return side * side;
+  }
+
+  int _getMaxConsecutiveLength(List<int> bars) {
+    if (bars.isEmpty) {
+      return 0;
+    }
+
+    bars.sort();
+    int maxLen = 1;
+    int currentLen = 1;
+
+    for (int i = 1; i < bars.length; i++) {
+      if (bars[i] == bars[i-1] + 1) {
+        currentLen++;
+      } else {
+        currentLen = 1;
+      }
+      if (currentLen > maxLen) {
+        maxLen = currentLen;
+      }
+    }
+
+    return maxLen;
+  }
+}
+{% endraw %}
+{% endhighlight %}
+
+  </div>
+
+  <div class="tab-panel" data-lang="go">
+
+{% highlight go %}
+{% raw %}
+import "sort"
+
+func maximizeSquareHoleArea(n int, m int, hBars []int, vBars []int) int {
+    maxLenH := getMaxConsecutiveLength(hBars)
+    maxLenV := getMaxConsecutiveLength(vBars)
+
+    side := min(maxLenH + 1, maxLenV + 1)
+    return side * side
+}
+
+func getMaxConsecutiveLength(bars []int) int {
+    if len(bars) == 0 {
+        return 0
+    }
+
+    sort.Ints(bars)
+    maxLen := 1
+    currentLen := 1
+
+    for i := 1; i < len(bars); i++ {
+        if bars[i] == bars[i-1] + 1 {
+            currentLen++
+        } else {
+            currentLen = 1
+        }
+        if currentLen > maxLen {
+            maxLen = currentLen
+        }
+    }
+
+    return maxLen
+}
+
+func min(a, b int) int {
+    if a < b {
+        return a
+    }
+    return b
+}
+{% endraw %}
+{% endhighlight %}
+
+  </div>
+
+  <div class="tab-panel" data-lang="ruby">
+
+{% highlight ruby %}
+{% raw %}
+# @param {Integer} n
+# @param {Integer} m
+# @param {Integer[]} h_bars
+# @param {Integer[]} v_bars
+# @return {Integer}
+def maximize_square_hole_area(n, m, h_bars, v_bars)
+    max_len_h = get_max_consecutive_length(h_bars)
+    max_len_v = get_max_consecutive_length(v_bars)
+
+    side = [max_len_h + 1, max_len_v + 1].min
+    side * side
+end
+
+def get_max_consecutive_length(bars)
+    return 0 if bars.empty?
+
+    bars.sort!
+    max_len = 1
+    current_len = 1
+
+    (1...bars.length).each do |i|
+        if bars[i] == bars[i-1] + 1
+            current_len += 1
+        else
+            current_len = 1
+        end
+        max_len = [max_len, current_len].max
+    end
+
+    max_len
+end
+{% endraw %}
+{% endhighlight %}
+
+  </div>
+
+  <div class="tab-panel" data-lang="scala">
+
+{% highlight scala %}
+{% raw %}
+object Solution {
+    def maximizeSquareHoleArea(n: Int, m: Int, hBars: Array[Int], vBars: Array[Int]): Int = {
+        val maxLenH = getMaxConsecutiveLength(hBars)
+        val maxLenV = getMaxConsecutiveLength(vBars)
+
+        val side = Math.min(maxLenH + 1, maxLenV + 1)
+        side * side
+    }
+
+    private def getMaxConsecutiveLength(bars: Array[Int]): Int = {
+        if (bars.isEmpty) {
+            return 0
+        }
+
+        val sortedBars = bars.sorted
+        var maxLen = 1
+        var currentLen = 1
+
+        for (i <- 1 until sortedBars.length) {
+            if (sortedBars(i) == sortedBars(i-1) + 1) {
+                currentLen += 1
+            } else {
+                currentLen = 1
+            }
+            maxLen = Math.max(maxLen, currentLen)
+        }
+
+        maxLen
+    }
+}
+{% endraw %}
+{% endhighlight %}
+
+  </div>
+
+  <div class="tab-panel" data-lang="rust">
+
+{% highlight rust %}
+{% raw %}
+impl Solution {
+    pub fn maximize_square_hole_area(n: i32, m: i32, h_bars: Vec<i32>, v_bars: Vec<i32>) -> i32 {
+        let max_len_h = Self::get_max_consecutive_length(h_bars);
+        let max_len_v = Self::get_max_consecutive_length(v_bars);
+
+        let side = std::cmp::min(max_len_h + 1, max_len_v + 1);
+        side * side
+    }
+
+    fn get_max_consecutive_length(mut bars: Vec<i32>) -> i32 {
+        if bars.is_empty() {
+            return 0;
+        }
+
+        bars.sort_unstable();
+        let mut max_len = 1;
+        let mut current_len = 1;
+
+        for i in 1..bars.len() {
+            if bars[i] == bars[i-1] + 1 {
+                current_len += 1;
+            } else {
+                current_len = 1;
+            }
+            max_len = std::cmp::max(max_len, current_len);
+        }
+
+        max_len
+    }
+}
+{% endraw %}
+{% endhighlight %}
+
+  </div>
+
+  <div class="tab-panel" data-lang="racket">
+
+{% highlight racket %}
+{% raw %}
+(define/contract (maximize-square-hole-area n m hBars vBars)
+  (-> exact-integer? exact-integer? (listof exact-integer?) (listof exact-integer?) exact-integer?)
+  (define (get-max-consecutive-length bars)
+    (if (empty? bars)
+        0
+        (let* ([sorted-bars (list->vector (sort bars <))]
+               [len (vector-length sorted-bars)])
+          (if (= len 1)
+              1
+              (let-values ([(max-len current-len)
+                            (for/fold ([max-len 1] [current-len 1])
+                                      ([i (in-range 1 len)])
+                              (let ([prev-bar (vector-ref sorted-bars (- i 1))]
+                                    [curr-bar (vector-ref sorted-bars i)])
+                                (if (= curr-bar (+ prev-bar 1))
+                                    (values (max max-len (+ current-len 1)) (+ current-len 1))
+                                    (values (max max-len 1) 1))))])
+                max-len))))) ; max-len is the result of the fold
+
+  (let* ([max-len-h (get-max-consecutive-length hBars)]
+         [max-len-v (get-max-consecutive-length vBars)]
+         [side (+ 1 (min max-len-h max-len-v))])
+    (* side side)))
+{% endraw %}
+{% endhighlight %}
+
+  </div>
+
+  <div class="tab-panel" data-lang="erlang">
+
+{% highlight erlang %}
+{% raw %}
+-spec maximize_square_hole_area(N :: integer(), M :: integer(), HBars :: [integer()], VBars :: [integer()]) -> integer().
+maximize_square_hole_area(N, M, HBars, VBars) ->
+  MaxLenH = get_max_consecutive_length(HBars),
+  MaxLenV = get_max_consecutive_length(VBars),
+  Side = min(MaxLenH + 1, MaxLenV + 1),
+  Side * Side.
+
+get_max_consecutive_length(Bars) ->
+  case Bars of
+    [] -> 0;
+    _ ->
+      SortedBars = lists:sort(Bars),
+      get_max_consecutive_length_impl(SortedBars, 1, 1)
+  end.
+
+get_max_consecutive_length_impl([_], MaxLen, _CurrentLen) ->
+  MaxLen;
+get_max_consecutive_length_impl([H1, H2 | T], MaxLen, CurrentLen) ->
+  if H2 == H1 + 1 ->
+    NewCurrentLen = CurrentLen + 1,
+    NewMaxLen = max(MaxLen, NewCurrentLen),
+    get_max_consecutive_length_impl([H2 | T], NewMaxLen, NewCurrentLen);
+  true ->
+    NewCurrentLen = 1,
+    NewMaxLen = max(MaxLen, NewCurrentLen),
+    get_max_consecutive_length_impl([H2 | T], NewMaxLen, NewCurrentLen)
+  end.
+{% endraw %}
+{% endhighlight %}
+
+  </div>
+
+  <div class="tab-panel" data-lang="elixir">
+
+{% highlight elixir %}
+{% raw %}
+defmodule Solution do
+  @spec maximize_square_hole_area(n :: integer, m :: integer, h_bars :: [integer], v_bars :: [integer]) :: integer
+  def maximize_square_hole_area(n, m, h_bars, v_bars) do
+    max_len_h = get_max_consecutive_length(h_bars)
+    max_len_v = get_max_consecutive_length(v_bars)
+
+    side = min(max_len_h + 1, max_len_v + 1)
+    side * side
+  end
+
+  defp get_max_consecutive_length(bars) do
+    case bars do
+      [] -> 0
+      _ ->
+        sorted_bars = Enum.sort(bars)
+        do_get_max_consecutive_length(sorted_bars, 1, 1)
+    end
+  end
+
+  defp do_get_max_consecutive_length([_], max_len, _current_len), do: max_len
+  defp do_get_max_consecutive_length([h1, h2 | t], max_len, current_len) do
+    if h2 == h1 + 1 do
+      new_current_len = current_len + 1
+      new_max_len = max(max_len, new_current_len)
+      do_get_max_consecutive_length([h2 | t], new_max_len, new_current_len)
+    else
+      new_current_len = 1
+      new_max_len = max(max_len, new_current_len)
+      do_get_max_consecutive_length([h2 | t], new_max_len, new_current_len)
+    end
+  end
+end
 {% endraw %}
 {% endhighlight %}
 
@@ -974,9 +1423,9 @@ class Solution {
 
 ### Complexity Analysis
 
-- **Time Complexity:** The time complexity is dominated by sorting the input arrays hBars and vBars. Let L_h be the length of hBars and L_v be the length of vBars. Sorting takes O(L_h log L_h) for hBars and O(L_v log L_v) for vBars. After sorting, iterating through each array to find the longest consecutive sequence takes O(L_h) and O(L_v) respectively. Therefore, the total time complexity is O(L_h log L_h + L_v log L_v). Given L_h, L_v <= 100, this is very efficient.
+- **Time Complexity:** The time complexity is dominated by sorting the input arrays. Let `L_h` be the length of `hBars` and `L_v` be the length of `vBars`. Sorting `hBars` takes O(L_h log L_h) time, and sorting `vBars` takes O(L_v log L_v) time. After sorting, iterating through each array to find the longest consecutive sequence takes O(L_h) and O(L_v) time, respectively. Therefore, the total time complexity is O(L_h log L_h + L_v log L_v). Given that `L_h` and `L_v` are at most 100, this is very efficient.
 
-- **Space Complexity:** The space complexity depends primarily on the sorting algorithm used. If an in-place sort (like C++ std::sort or Java's Arrays.sort for primitives) is used, the auxiliary space complexity is O(log L) due to recursion stack depth. If a sort requiring auxiliary space (like Python's Timsort or Java's Arrays.sort for objects) is used, it can be O(L). In either case, L is L_h or L_v. Additionally, a few constant variables are used. Thus, the overall space complexity is O(L_h + L_v) in the worst case for auxiliary space, or O(log L_h + log L_v) for in-place sorts. Considering L_h, L_v <= 100, this is very small.
+- **Space Complexity:** The space complexity depends on the sorting algorithm used. If an in-place sort is used, the auxiliary space complexity would be O(1) (excluding the input arrays). If the sorting algorithm requires auxiliary space (e.g., Timsort used by Python's list.sort() or Scala's sorted method which creates a new array), it would be O(L_h) for `hBars` and O(L_v) for `vBars`. Thus, the total auxiliary space complexity is O(L_h + L_v) in the worst case, which is minimal given the constraints on `L_h` and `L_v`.
 
 </div>
 </details>
