@@ -310,5 +310,9 @@
   "2026-01-17": {
     "link": "/problems/find-the-largest-area-of-square-inside-two-rectangles/",
     "titleSlug": "find-the-largest-area-of-square-inside-two-rectangles"
+  },
+  "2026-01-18": {
+    "link": "/problems/largest-magic-square/",
+    "titleSlug": "largest-magic-square"
   }
 }
