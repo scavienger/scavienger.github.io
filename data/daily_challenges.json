@@ -318,5 +318,9 @@
   "2026-01-19": {
     "link": "/problems/maximum-side-length-of-a-square-with-sum-less-than-or-equal-to-threshold/",
     "titleSlug": "maximum-side-length-of-a-square-with-sum-less-than-or-equal-to-threshold"
+  },
+  "2026-01-20": {
+    "link": "/problems/construct-the-minimum-bitwise-array-i/",
+    "titleSlug": "construct-the-minimum-bitwise-array-i"
   }
 }
