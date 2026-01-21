@@ -275,106 +275,116 @@ ai_solutions:
   - solutions:
       cpp: "class Solution {\npublic:\n    vector<int> minBitwiseArray(vector<int>&\
         \ nums) {\n        vector<int> ans;\n        for (int num : nums) {\n      \
-        \      if (num % 2 == 0) ans.push_back(-1);\n            else ans.push_back(num\
-        \ - 1);\n        }\n        return ans;\n    }\n};"
+        \      if (num % 2 == 0) {\n                ans.push_back(-1);\n           \
+        \ } else {\n                int x = num;\n                while ((x | (x + 1))\
+        \ != num) {\n                    x--;\n                }\n                ans.push_back(x);\n\
+        \            }\n        }\n        return ans;\n    }\n};"
       java: "class Solution {\n    public int[] minBitwiseArray(List<Integer> nums)\
         \ {\n        int[] ans = new int[nums.size()];\n        for (int i = 0; i <\
         \ nums.size(); i++) {\n            int num = nums.get(i);\n            if (num\
-        \ % 2 == 0) ans[i] = -1;\n            else ans[i] = num - 1;\n        }\n  \
-        \      return ans;\n    }\n}"
+        \ % 2 == 0) {\n                ans[i] = -1;\n            } else {\n        \
+        \        int x = num;\n                while ((x | (x + 1)) != num) {\n    \
+        \                x--;\n                }\n                ans[i] = x;\n    \
+        \        }\n        }\n        return ans;\n    }\n}"
       python: "class Solution(object):\n    def minBitwiseArray(self, nums):\n     \
-        \   return [num - 1 if num % 2 else -1 for num in nums]"
+        \   ans = []\n        for num in nums:\n            if num % 2 == 0:\n     \
+        \           ans.append(-1)\n            else:\n                x = num\n   \
+        \             while (x | (x + 1)) != num:\n                    x -= 1\n    \
+        \            ans.append(x)\n        return ans"
       python3: "class Solution:\n    def minBitwiseArray(self, nums: list[int]) -> list[int]:\n\
-        \        return [num - 1 if num % 2 else -1 for num in nums]"
+        \        ans = []\n        for num in nums:\n            if num % 2 == 0:\n\
+        \                ans.append(-1)\n            else:\n                x = num\n\
+        \                while (x | (x + 1)) != num:\n                    x -= 1\n \
+        \               ans.append(x)\n        return ans"
       c: "int* minBitwiseArray(int* nums, int numsSize, int* returnSize) {\n    int*\
         \ ans = (int*)malloc(numsSize * sizeof(int));\n    *returnSize = numsSize;\n\
-        \    for (int i = 0; i < numsSize; i++) {\n        if (nums[i] % 2 == 0) ans[i]\
-        \ = -1;\n        else ans[i] = nums[i] - 1;\n    }\n    return ans;\n}"
+        \    for (int i = 0; i < numsSize; i++) {\n        int num = nums[i];\n    \
+        \    if (num % 2 == 0) {\n            ans[i] = -1;\n        } else {\n     \
+        \       int x = num;\n            while ((x | (x + 1)) != num) {\n         \
+        \       x--;\n            }\n            ans[i] = x;\n        }\n    }\n   \
+        \ return ans;\n}"
       csharp: "public class Solution {\n    public int[] MinBitwiseArray(IList<int>\
         \ nums) {\n        int[] ans = new int[nums.Count];\n        for (int i = 0;\
         \ i < nums.Count; i++) {\n            int num = nums[i];\n            if (num\
-        \ % 2 == 0) ans[i] = -1;\n            else ans[i] = num - 1;\n        }\n  \
-        \      return ans;\n    }\n}"
-      javascript: "var minBitwiseArray = function(nums) {\n    return nums.map(num =>\
-        \ num % 2 ? num - 1 : -1);\n};"
-      typescript: "function minBitwiseArray(nums: number[]): number[] {\n    return\
-        \ nums.map(num => num % 2 ? num - 1 : -1);\n}"
+        \ % 2 == 0) {\n                ans[i] = -1;\n            } else {\n        \
+        \        int x = num;\n                while ((x | (x + 1)) != num) {\n    \
+        \                x--;\n                }\n                ans[i] = x;\n    \
+        \        }\n        }\n        return ans;\n    }\n}"
+      javascript: "var minBitwiseArray = function(nums) {\n    let ans = [];\n    for\
+        \ (let num of nums) {\n        if (num % 2 == 0) {\n            ans.push(-1);\n\
+        \        } else {\n            let x = num;\n            while ((x | (x + 1))\
+        \ != num) {\n                x--;\n            }\n            ans.push(x);\n\
+        \        }\n    }\n    return ans;\n};"
+      typescript: "function minBitwiseArray(nums: number[]): number[] {\n    let ans:\
+        \ number[] = [];\n    for (let num of nums) {\n        if (num % 2 == 0) {\n\
+        \            ans.push(-1);\n        } else {\n            let x = num;\n   \
+        \         while ((x | (x + 1)) != num) {\n                x--;\n           \
+        \ }\n            ans.push(x);\n        }\n    }\n    return ans;\n}"
       php: "class Solution {\n    function minBitwiseArray($nums) {\n        $ans =\
-        \ [];\n        foreach ($nums as $num) {\n            if ($num % 2 == 0) $ans[]\
-        \ = -1;\n            else $ans[] = $num - 1;\n        }\n        return $ans;\n\
-        \    }\n}"
+        \ array();\n        foreach ($nums as $num) {\n            if ($num % 2 == 0)\
+        \ {\n                array_push($ans, -1);\n            } else {\n         \
+        \       $x = $num;\n                while (($x | ($x + 1)) != $num) {\n    \
+        \                $x--;\n                }\n                array_push($ans,\
+        \ $x);\n            }\n        }\n        return $ans;\n    }\n}"
       swift: "class Solution {\n    func minBitwiseArray(_ nums: [Int]) -> [Int] {\n\
-        \        return nums.map { $0 % 2 == 0 ? -1 : $0 - 1 }\n    }\n}"
+        \        var ans: [Int] = []\n        for num in nums {\n            if num\
+        \ % 2 == 0 {\n                ans.append(-1)\n            } else {\n       \
+        \         var x = num\n                while (x | (x + 1)) != num {\n      \
+        \              x -= 1\n                }\n                ans.append(x)\n  \
+        \          }\n        }\n        return ans\n    }\n}"
       kotlin: "class Solution {\n    fun minBitwiseArray(nums: List<Int>): IntArray\
-        \ {\n        val result = IntArray(nums.size)\n        for (i in nums.indices)\
-        \ {\n            if (nums[i] % 2 == 0) {\n                result[i] = -1\n \
-        \           } else {\n                var j = nums[i]\n                while\
-        \ ((j or (j + 1)) != nums[i]) {\n                    j--\n                }\n\
-        \                result[i] = j\n            }\n        }\n        return result\n\
-        \    }\n}"
-      dart: "class Solution {\n  List<int> minBitwiseArray(List<int> nums) {\n    List<int>\
-        \ result = List<int>.filled(nums.length, 0);\n    for (int i = 0; i < nums.length;\
-        \ i++) {\n      if (nums[i] % 2 == 0) {\n        result[i] = -1;\n      } else\
-        \ {\n        int j = nums[i];\n        while ((j | (j + 1)) != nums[i]) {\n\
-        \          j--;\n        }\n        result[i] = j;\n      }\n    }\n    return\
-        \ result;\n  }\n}"
-      go: "func minBitwiseArray(nums []int) []int {\n    result := make([]int, len(nums))\n\
-        \    for i, num := range nums {\n        if num % 2 == 0 {\n            result[i]\
-        \ = -1\n        } else {\n            j := num\n            for (j | (j + 1))\
-        \ != num {\n                j--\n            }\n            result[i] = j\n\
-        \        }\n    }\n    return result\n}"
-      ruby: "def min_bitwise_array(nums)\n    result = Array.new(nums.size)\n    nums.each_with_index\
-        \ do |num, i|\n        if num % 2 == 0\n            result[i] = -1\n       \
-        \ else\n            j = num\n            j -= 1 while (j | (j + 1)) != num\n\
-        \            result[i] = j\n        end\n    end\n    result\nend"
+        \ {\n        return nums.map { num ->\n            if (num % 2 == 0) -1\n  \
+        \          else num - 1\n        }.toIntArray()\n    }\n}"
+      dart: "class Solution {\n  List<int> minBitwiseArray(List<int> nums) {\n    return\
+        \ nums.map((num) => num % 2 == 0 ? -1 : num - 1).toList();\n  }\n}"
+      go: "func minBitwiseArray(nums []int) []int {\n    ans := make([]int, len(nums))\n\
+        \    for i, num := range nums {\n        if num%2 == 0 {\n            ans[i]\
+        \ = -1\n        } else {\n            ans[i] = num - 1\n        }\n    }\n \
+        \   return ans\n}"
+      ruby: "# @param {Integer[]} nums\n# @return {Integer[]}\ndef min_bitwise_array(nums)\n\
+        \    nums.map do |num|\n        num.even? ? -1 : num - 1\n    end\nend"
       scala: "object Solution {\n    def minBitwiseArray(nums: List[Int]): Array[Int]\
-        \ = {\n        val result = new Array[Int](nums.size)\n        for (i <- nums.indices)\
-        \ {\n            if (nums(i) % 2 == 0) {\n                result(i) = -1\n \
-        \           } else {\n                var j = nums(i)\n                while\
-        \ ((j | (j + 1)) != nums(i)) {\n                    j -= 1\n               \
-        \ }\n                result(i) = j\n            }\n        }\n        result\n\
+        \ = {\n        nums.map(num => if (num % 2 == 0) -1 else num - 1).toArray\n\
         \    }\n}"
       rust: "impl Solution {\n    pub fn min_bitwise_array(nums: Vec<i32>) -> Vec<i32>\
-        \ {\n        let mut result = vec![0; nums.len()];\n        for (i, &num) in\
-        \ nums.iter().enumerate() {\n            if num % 2 == 0 {\n               \
-        \ result[i] = -1;\n            } else {\n                let mut j = num;\n\
-        \                while (j | (j + 1)) != num {\n                    j -= 1;\n\
-        \                }\n                result[i] = j;\n            }\n        }\n\
-        \        result\n    }\n}"
+        \ {\n        nums.into_iter().map(|num| if num % 2 == 0 { -1 } else { num -\
+        \ 1 }).collect()\n    }\n}"
       racket: "(define/contract (min-bitwise-array nums)\n  (-> (listof exact-integer?)\
-        \ (listof exact-integer?))\n  (let loop ([nums nums] [result '()])\n    (if\
-        \ (null? nums)\n        (reverse result)\n        (let ([num (car nums)])\n\
-        \          (if (even? num)\n              (loop (cdr nums) (cons -1 result))\n\
-        \              (let loop2 ([j num])\n                (if (= (bitwise-ior j (add1\
-        \ j)) num)\n                    (loop (cdr nums) (cons j result))\n        \
-        \            (loop2 (sub1 j)))))))))"
-      erlang: "-module(solution).\n-export([min_bitwise_array/1]).\nmin_bitwise_array(Nums)\
-        \ ->\n    lists:map(fun(N) when N rem 2 == 0 -> -1;\n                   (N)\
-        \ ->\n                       find_smallest(N, N)\n               end, Nums).\n\
-        find_smallest(N, J) when (J bor (J + 1)) == N -> J;\nfind_smallest(N, J) ->\
-        \ find_smallest(N, J - 1)."
+        \ (listof exact-integer?))\n  (map (lambda (num) (if (even? num) -1 (- num 1)))\
+        \ nums))"
+      erlang: "-spec min_bitwise_array(Nums :: [integer()]) -> [integer()].\nmin_bitwise_array(Nums)\
+        \ ->\n    lists:map(fun(N) when N rem 2 == 0 -> -1; (N) -> N - 1 end, Nums)."
       elixir: "defmodule Solution do\n  @spec min_bitwise_array(nums :: [integer]) ::\
-        \ [integer]\n  def min_bitwise_array(nums) do\n    Enum.map(nums, fn\n     \
-        \ num when rem(num, 2) == 0 -> -1\n      num -> find_smallest(num, num)\n  \
-        \  end)\n  end\n\n  defp find_smallest(num, j) when bor(j, j + 1) == num, do:\
-        \ j\n  defp find_smallest(num, j), do: find_smallest(num, j - 1)\nend"
-    approach: The problem requires constructing an array where each element's bitwise
-      OR with its next element equals a given prime number. We start by checking if
-      the given number is even. If it is, we set the answer to -1 because there's no
-      number that can satisfy the condition for even numbers. For odd numbers, we try
-      to find the smallest number that satisfies the condition by unsetting a single
-      bit from the given number. This approach works because the bitwise OR of a number
-      and the number plus one will always result in a number with one more bit set than
-      the original number, which is a property of binary representation.
-    time_complexity: The time complexity of this solution is O(n) where n is the number
-      of elements in the input array. This is because we are iterating over the array
-      once and performing a constant amount of work for each element.
-    space_complexity: The space complexity of this solution is O(n) where n is the number
-      of elements in the input array. This is because we are creating a new array of
-      the same size as the input array to store the results.
-    elapsed_time: 6.01027512550354
+        \ [integer]\n  def min_bitwise_array(nums) do\n    Enum.map(nums, fn num ->\
+        \ if rem(num, 2) == 0, do: -1, else: num - 1 end)\n  end\nend"
+    approach: 'The problem requires constructing an array ans of length n, such that
+      for each index i, the bitwise OR of ans[i] and ans[i] + 1 is equal to nums[i].
+      To solve this problem, we can iterate over each number in the input array and
+      find the smallest number that satisfies the condition. We can use the fact that
+      the bitwise OR of a number and the number plus one will have all the bits set
+      to the right of the rightmost set bit in the number. Therefore, we can start from
+      the number itself and keep subtracting the rightmost set bit until we find a number
+      that satisfies the condition.
+
+
+      The key intuition here is to understand how the bitwise OR operation works and
+      how it can be used to find the smallest number that satisfies the condition. We
+      can use bitwise operations to find the rightmost set bit in a number and then
+      subtract it from the number. This process can be repeated until we find a number
+      that satisfies the condition. If no such number is found, we can set ans[i] to
+      -1 to indicate that it is not possible to find a value for ans[i] that satisfies
+      the condition.'
+    time_complexity: O(n log m) where n is the length of the input array and m is the
+      maximum value in the array. This is because for each number in the input array,
+      we are performing a constant amount of work to find the smallest number that satisfies
+      the condition. The work involves iterating over the bits of the number, which
+      takes O(log m) time. Therefore, the overall time complexity is O(n log m).
+    space_complexity: O(n) where n is the length of the input array. This is because
+      we need to store the result for each number in the input array. The space complexity
+      is linear because we are using a constant amount of space to store each result.
+    elapsed_time: 5.254392147064209
     model: llama-3.3-70b-versatile
-    generated_at: '2026-01-21 19:46:02 '
+    generated_at: '2026-01-21 19:53:31 '
 ---
 
 ## Problem #3315: Construct the Minimum Bitwise Array II
@@ -933,14 +943,16 @@ class Solution {
 <details class="ai-solution-card" markdown="1">
 <summary class="ai-solution-header">
   <span class="ai-model-badge">⚡ Solution from <strong>llama-3.3-70b-versatile</strong></span>
-  <small class="solution-timestamp">(2026-01-21 19:46:02 )</small>
+  <small class="solution-timestamp">(2026-01-21 19:53:31 )</small>
 </summary>
 
 <div class="ai-solution-content">
 
 ### Approach
 
-The problem requires constructing an array where each element's bitwise OR with its next element equals a given prime number. We start by checking if the given number is even. If it is, we set the answer to -1 because there's no number that can satisfy the condition for even numbers. For odd numbers, we try to find the smallest number that satisfies the condition by unsetting a single bit from the given number. This approach works because the bitwise OR of a number and the number plus one will always result in a number with one more bit set than the original number, which is a property of binary representation.
+The problem requires constructing an array ans of length n, such that for each index i, the bitwise OR of ans[i] and ans[i] + 1 is equal to nums[i]. To solve this problem, we can iterate over each number in the input array and find the smallest number that satisfies the condition. We can use the fact that the bitwise OR of a number and the number plus one will have all the bits set to the right of the rightmost set bit in the number. Therefore, we can start from the number itself and keep subtracting the rightmost set bit until we find a number that satisfies the condition.
+
+The key intuition here is to understand how the bitwise OR operation works and how it can be used to find the smallest number that satisfies the condition. We can use bitwise operations to find the rightmost set bit in a number and then subtract it from the number. This process can be repeated until we find a number that satisfies the condition. If no such number is found, we can set ans[i] to -1 to indicate that it is not possible to find a value for ans[i] that satisfies the condition.
 
 ### Code
 
@@ -995,8 +1007,15 @@ public:
     vector<int> minBitwiseArray(vector<int>& nums) {
         vector<int> ans;
         for (int num : nums) {
-            if (num % 2 == 0) ans.push_back(-1);
-            else ans.push_back(num - 1);
+            if (num % 2 == 0) {
+                ans.push_back(-1);
+            } else {
+                int x = num;
+                while ((x | (x + 1)) != num) {
+                    x--;
+                }
+                ans.push_back(x);
+            }
         }
         return ans;
     }
@@ -1015,8 +1034,15 @@ class Solution {
         int[] ans = new int[nums.size()];
         for (int i = 0; i < nums.size(); i++) {
             int num = nums.get(i);
-            if (num % 2 == 0) ans[i] = -1;
-            else ans[i] = num - 1;
+            if (num % 2 == 0) {
+                ans[i] = -1;
+            } else {
+                int x = num;
+                while ((x | (x + 1)) != num) {
+                    x--;
+                }
+                ans[i] = x;
+            }
         }
         return ans;
     }
@@ -1032,7 +1058,16 @@ class Solution {
 {% raw %}
 class Solution(object):
     def minBitwiseArray(self, nums):
-        return [num - 1 if num % 2 else -1 for num in nums]
+        ans = []
+        for num in nums:
+            if num % 2 == 0:
+                ans.append(-1)
+            else:
+                x = num
+                while (x | (x + 1)) != num:
+                    x -= 1
+                ans.append(x)
+        return ans
 {% endraw %}
 {% endhighlight %}
 
@@ -1044,7 +1079,16 @@ class Solution(object):
 {% raw %}
 class Solution:
     def minBitwiseArray(self, nums: list[int]) -> list[int]:
-        return [num - 1 if num % 2 else -1 for num in nums]
+        ans = []
+        for num in nums:
+            if num % 2 == 0:
+                ans.append(-1)
+            else:
+                x = num
+                while (x | (x + 1)) != num:
+                    x -= 1
+                ans.append(x)
+        return ans
 {% endraw %}
 {% endhighlight %}
 
@@ -1058,8 +1102,16 @@ int* minBitwiseArray(int* nums, int numsSize, int* returnSize) {
     int* ans = (int*)malloc(numsSize * sizeof(int));
     *returnSize = numsSize;
     for (int i = 0; i < numsSize; i++) {
-        if (nums[i] % 2 == 0) ans[i] = -1;
-        else ans[i] = nums[i] - 1;
+        int num = nums[i];
+        if (num % 2 == 0) {
+            ans[i] = -1;
+        } else {
+            int x = num;
+            while ((x | (x + 1)) != num) {
+                x--;
+            }
+            ans[i] = x;
+        }
     }
     return ans;
 }
@@ -1077,8 +1129,15 @@ public class Solution {
         int[] ans = new int[nums.Count];
         for (int i = 0; i < nums.Count; i++) {
             int num = nums[i];
-            if (num % 2 == 0) ans[i] = -1;
-            else ans[i] = num - 1;
+            if (num % 2 == 0) {
+                ans[i] = -1;
+            } else {
+                int x = num;
+                while ((x | (x + 1)) != num) {
+                    x--;
+                }
+                ans[i] = x;
+            }
         }
         return ans;
     }
@@ -1093,7 +1152,19 @@ public class Solution {
 {% highlight javascript %}
 {% raw %}
 var minBitwiseArray = function(nums) {
-    return nums.map(num => num % 2 ? num - 1 : -1);
+    let ans = [];
+    for (let num of nums) {
+        if (num % 2 == 0) {
+            ans.push(-1);
+        } else {
+            let x = num;
+            while ((x | (x + 1)) != num) {
+                x--;
+            }
+            ans.push(x);
+        }
+    }
+    return ans;
 };
 {% endraw %}
 {% endhighlight %}
@@ -1105,7 +1176,19 @@ var minBitwiseArray = function(nums) {
 {% highlight typescript %}
 {% raw %}
 function minBitwiseArray(nums: number[]): number[] {
-    return nums.map(num => num % 2 ? num - 1 : -1);
+    let ans: number[] = [];
+    for (let num of nums) {
+        if (num % 2 == 0) {
+            ans.push(-1);
+        } else {
+            let x = num;
+            while ((x | (x + 1)) != num) {
+                x--;
+            }
+            ans.push(x);
+        }
+    }
+    return ans;
 }
 {% endraw %}
 {% endhighlight %}
@@ -1118,10 +1201,17 @@ function minBitwiseArray(nums: number[]): number[] {
 {% raw %}
 class Solution {
     function minBitwiseArray($nums) {
-        $ans = [];
+        $ans = array();
         foreach ($nums as $num) {
-            if ($num % 2 == 0) $ans[] = -1;
-            else $ans[] = $num - 1;
+            if ($num % 2 == 0) {
+                array_push($ans, -1);
+            } else {
+                $x = $num;
+                while (($x | ($x + 1)) != $num) {
+                    $x--;
+                }
+                array_push($ans, $x);
+            }
         }
         return $ans;
     }
@@ -1137,7 +1227,19 @@ class Solution {
 {% raw %}
 class Solution {
     func minBitwiseArray(_ nums: [Int]) -> [Int] {
-        return nums.map { $0 % 2 == 0 ? -1 : $0 - 1 }
+        var ans: [Int] = []
+        for num in nums {
+            if num % 2 == 0 {
+                ans.append(-1)
+            } else {
+                var x = num
+                while (x | (x + 1)) != num {
+                    x -= 1
+                }
+                ans.append(x)
+            }
+        }
+        return ans
     }
 }
 {% endraw %}
@@ -1151,19 +1253,10 @@ class Solution {
 {% raw %}
 class Solution {
     fun minBitwiseArray(nums: List<Int>): IntArray {
-        val result = IntArray(nums.size)
-        for (i in nums.indices) {
-            if (nums[i] % 2 == 0) {
-                result[i] = -1
-            } else {
-                var j = nums[i]
-                while ((j or (j + 1)) != nums[i]) {
-                    j--
-                }
-                result[i] = j
-            }
-        }
-        return result
+        return nums.map { num ->
+            if (num % 2 == 0) -1
+            else num - 1
+        }.toIntArray()
     }
 }
 {% endraw %}
@@ -1177,19 +1270,7 @@ class Solution {
 {% raw %}
 class Solution {
   List<int> minBitwiseArray(List<int> nums) {
-    List<int> result = List<int>.filled(nums.length, 0);
-    for (int i = 0; i < nums.length; i++) {
-      if (nums[i] % 2 == 0) {
-        result[i] = -1;
-      } else {
-        int j = nums[i];
-        while ((j | (j + 1)) != nums[i]) {
-          j--;
-        }
-        result[i] = j;
-      }
-    }
-    return result;
+    return nums.map((num) => num % 2 == 0 ? -1 : num - 1).toList();
   }
 }
 {% endraw %}
@@ -1202,19 +1283,15 @@ class Solution {
 {% highlight go %}
 {% raw %}
 func minBitwiseArray(nums []int) []int {
-    result := make([]int, len(nums))
+    ans := make([]int, len(nums))
     for i, num := range nums {
-        if num % 2 == 0 {
-            result[i] = -1
+        if num%2 == 0 {
+            ans[i] = -1
         } else {
-            j := num
-            for (j | (j + 1)) != num {
-                j--
-            }
-            result[i] = j
+            ans[i] = num - 1
         }
     }
-    return result
+    return ans
 }
 {% endraw %}
 {% endhighlight %}
@@ -1225,18 +1302,12 @@ func minBitwiseArray(nums []int) []int {
 
 {% highlight ruby %}
 {% raw %}
+# @param {Integer[]} nums
+# @return {Integer[]}
 def min_bitwise_array(nums)
-    result = Array.new(nums.size)
-    nums.each_with_index do |num, i|
-        if num % 2 == 0
-            result[i] = -1
-        else
-            j = num
-            j -= 1 while (j | (j + 1)) != num
-            result[i] = j
-        end
+    nums.map do |num|
+        num.even? ? -1 : num - 1
     end
-    result
 end
 {% endraw %}
 {% endhighlight %}
@@ -1249,19 +1320,7 @@ end
 {% raw %}
 object Solution {
     def minBitwiseArray(nums: List[Int]): Array[Int] = {
-        val result = new Array[Int](nums.size)
-        for (i <- nums.indices) {
-            if (nums(i) % 2 == 0) {
-                result(i) = -1
-            } else {
-                var j = nums(i)
-                while ((j | (j + 1)) != nums(i)) {
-                    j -= 1
-                }
-                result(i) = j
-            }
-        }
-        result
+        nums.map(num => if (num % 2 == 0) -1 else num - 1).toArray
     }
 }
 {% endraw %}
@@ -1275,19 +1334,7 @@ object Solution {
 {% raw %}
 impl Solution {
     pub fn min_bitwise_array(nums: Vec<i32>) -> Vec<i32> {
-        let mut result = vec![0; nums.len()];
-        for (i, &num) in nums.iter().enumerate() {
-            if num % 2 == 0 {
-                result[i] = -1;
-            } else {
-                let mut j = num;
-                while (j | (j + 1)) != num {
-                    j -= 1;
-                }
-                result[i] = j;
-            }
-        }
-        result
+        nums.into_iter().map(|num| if num % 2 == 0 { -1 } else { num - 1 }).collect()
     }
 }
 {% endraw %}
@@ -1301,16 +1348,7 @@ impl Solution {
 {% raw %}
 (define/contract (min-bitwise-array nums)
   (-> (listof exact-integer?) (listof exact-integer?))
-  (let loop ([nums nums] [result '()])
-    (if (null? nums)
-        (reverse result)
-        (let ([num (car nums)])
-          (if (even? num)
-              (loop (cdr nums) (cons -1 result))
-              (let loop2 ([j num])
-                (if (= (bitwise-ior j (add1 j)) num)
-                    (loop (cdr nums) (cons j result))
-                    (loop2 (sub1 j)))))))))
+  (map (lambda (num) (if (even? num) -1 (- num 1))) nums))
 {% endraw %}
 {% endhighlight %}
 
@@ -1320,15 +1358,9 @@ impl Solution {
 
 {% highlight erlang %}
 {% raw %}
--module(solution).
--export([min_bitwise_array/1]).
+-spec min_bitwise_array(Nums :: [integer()]) -> [integer()].
 min_bitwise_array(Nums) ->
-    lists:map(fun(N) when N rem 2 == 0 -> -1;
-                   (N) ->
-                       find_smallest(N, N)
-               end, Nums).
-find_smallest(N, J) when (J bor (J + 1)) == N -> J;
-find_smallest(N, J) -> find_smallest(N, J - 1).
+    lists:map(fun(N) when N rem 2 == 0 -> -1; (N) -> N - 1 end, Nums).
 {% endraw %}
 {% endhighlight %}
 
@@ -1341,14 +1373,8 @@ find_smallest(N, J) -> find_smallest(N, J - 1).
 defmodule Solution do
   @spec min_bitwise_array(nums :: [integer]) :: [integer]
   def min_bitwise_array(nums) do
-    Enum.map(nums, fn
-      num when rem(num, 2) == 0 -> -1
-      num -> find_smallest(num, num)
-    end)
+    Enum.map(nums, fn num -> if rem(num, 2) == 0, do: -1, else: num - 1 end)
   end
-
-  defp find_smallest(num, j) when bor(j, j + 1) == num, do: j
-  defp find_smallest(num, j), do: find_smallest(num, j - 1)
 end
 {% endraw %}
 {% endhighlight %}
@@ -1359,9 +1385,9 @@ end
 
 ### Complexity Analysis
 
-- **Time Complexity:** The time complexity of this solution is O(n) where n is the number of elements in the input array. This is because we are iterating over the array once and performing a constant amount of work for each element.
+- **Time Complexity:** O(n log m) where n is the length of the input array and m is the maximum value in the array. This is because for each number in the input array, we are performing a constant amount of work to find the smallest number that satisfies the condition. The work involves iterating over the bits of the number, which takes O(log m) time. Therefore, the overall time complexity is O(n log m).
 
-- **Space Complexity:** The space complexity of this solution is O(n) where n is the number of elements in the input array. This is because we are creating a new array of the same size as the input array to store the results.
+- **Space Complexity:** O(n) where n is the length of the input array. This is because we need to store the result for each number in the input array. The space complexity is linear because we are using a constant amount of space to store each result.
 
 </div>
 </details>
