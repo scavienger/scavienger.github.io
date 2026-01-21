@@ -8,254 +8,303 @@ difficulty: Medium
 leetcode_url: https://leetcode.com/problems/construct-the-minimum-bitwise-array-ii/
 ai_solutions:
   - solutions:
+      cpp: "class Solution {\npublic:\n    std::vector<int> minBitwiseArray(std::vector<int>&\
+        \ nums) {\n        std::vector<int> ans;\n        ans.reserve(nums.size());\n\
+        \n        for (int N : nums) {\n            int current_ans = -1;\n        \
+        \    // Iterate k from 29 down to 0.\n            // N <= 10^9, which is less\
+        \ than 2^30. So max bit position is 29.\n            for (int k = 29; k >= 0;\
+        \ --k) {\n                // Condition 1: k-th bit of N must be 1\n        \
+        \        bool k_th_bit_is_set = ((N >> k) & 1) == 1;\n\n                // Condition\
+        \ 2: All bits from 0 to k-1 of N must be 1\n                // (1 << k) - 1\
+        \ creates a mask with k trailing ones (e.g., for k=3, mask is 0111_2 = 7)\n\
+        \                // If k=0, (1 << 0) - 1 = 0. (N & 0) == 0 is always true.\n\
+        \                int mask_k_minus_1 = (1 << k) - 1;\n                bool lower_bits_are_all_set\
+        \ = (N & mask_k_minus_1) == mask_k_minus_1;\n\n                if (k_th_bit_is_set\
+        \ && lower_bits_are_all_set) {\n                    current_ans = N - (1 <<\
+        \ k);\n                    break; // Found the largest k, which gives the smallest\
+        \ ans[i]\n                }\n            }\n            ans.push_back(current_ans);\n\
+        \        }\n\n        return ans;\n    }\n};"
+      java: "import java.util.List;\nimport java.util.ArrayList;\n\nclass Solution {\n\
+        \    public int[] minBitwiseArray(List<Integer> nums) {\n        int[] ans =\
+        \ new int[nums.size()];\n\n        for (int i = 0; i < nums.size(); ++i) {\n\
+        \            int N = nums.get(i);\n            int current_ans = -1;\n\n   \
+        \         // Iterate k from 29 down to 0.\n            // N <= 10^9, which is\
+        \ less than 2^30. So max bit position is 29.\n            for (int k = 29; k\
+        \ >= 0; --k) {\n                // Condition 1: k-th bit of N must be 1\n  \
+        \              boolean k_th_bit_is_set = ((N >> k) & 1) == 1;\n\n          \
+        \      // Condition 2: All bits from 0 to k-1 of N must be 1\n             \
+        \   // (1 << k) - 1 creates a mask with k trailing ones (e.g., for k=3, mask\
+        \ is 0111_2 = 7)\n                // If k=0, (1 << 0) - 1 = 0. (N & 0) == 0\
+        \ is always true.\n                int mask_k_minus_1 = (1 << k) - 1;\n    \
+        \            boolean lower_bits_are_all_set = (N & mask_k_minus_1) == mask_k_minus_1;\n\
+        \n                if (k_th_bit_is_set && lower_bits_are_all_set) {\n       \
+        \             current_ans = N - (1 << k);\n                    break; // Found\
+        \ the largest k, which gives the smallest ans[i]\n                }\n      \
+        \      }\n            ans[i] = current_ans;\n        }\n\n        return ans;\n\
+        \    }\n}"
       python: "# Failed to parse response\n# Check logs for full output.\n# Full Response:\n\
         '''\n{\n  \"approach\": \"The core of this problem lies in understanding the\
-        \ bitwise OR operation between an integer `x` and `x+1`. Let `N = nums[i]`.\
-        \ We are looking for the smallest `x` such that `x OR (x+1) == N`. Analyzing\
-        \ the binary representations of `x` and `x+1` reveals a crucial pattern. If\
-        \ `x` is even, its least significant bit is 0. Then `x+1` will have its least\
-        \ significant bit as 1, and all other bits identical to `x`. In this case, `x\
-        \ OR (x+1) = x+1`. Thus, if `x` is even, `x+1 = N`, which means `x = N-1`. However,\
-        \ if `N` is even, `N-1` is odd, contradicting our assumption that `x` is even.\
-        \ The only even prime number is 2. For `N=2`, `x=1` (odd), so no even `x` works.\
-        \ Therefore, if `N` is even, no solution exists, and `ans[i]` should be -1.\"\
-        ,\n  \"time_complexity\": \"The time complexity is O(M * log(MAX_NUM)) where\
-        \ M is the length of the `nums` array and MAX_NUM is the maximum value of `nums[i]`.\
-        \ For each number in `nums`, we iterate up to 30-31 bits (for numbers up to\
-        \ 10^9) to find the rightmost zero bit. This is a constant number of operations\
-        \ per element.\",\n  \"space_complexity\": \"The space complexity is O(M) to\
-        \ store the `ans` array, where M is the length of the `nums` array. No additional\
-        \ significant space is used beyond the output array.\",\n  \"solutions\": {\n\
-        \    \"cpp\": \"class Solution {\\npublic:\\n    std::vector<int> minBitwiseArray(std::vector<int>&\
-        \ nums) {\\n        std::vector<int> ans;\\n        for (int N : nums) {\\n\
-        \            if (N % 2 == 0) {\\n                ans.push_back(-1);\\n     \
-        \           continue;\\n            }\\n\\n            // Find the rightmost\
-        \ '0' bit in N. This is equivalent to finding the lowest bit that is '0'.\\\
-        n            // If N is odd, its LSB is 1. So we need to find the rightmost\
-        \ '0' bit in N-1.\\n            // Or, more generally, find the rightmost '0'\
-        \ bit in N. If N has no '0' bits (i.e., N is all 1s, like 3, 7, 15, 31), then\
-        \ N-1 is the answer.\\n            // If N is all 1s (e.g., 3, 7, 15), then\
-        \ N-1 is also all 1s up to the highest bit, and 0 at the highest bit. This is\
-        \ not correct.\\n            // Let's re-evaluate: x OR (x+1) = N.\\n      \
-        \      // If N is odd, then x must be odd. (If x is even, x OR (x+1) = x+1,\
-        \ which is odd. If x is odd, x OR (x+1) is odd).\\n            // If x is odd,\
-        \ x = ...A01...1 (k ones). x+1 = ...A10...0 (k zeros).\\n            // x OR\
-        \ (x+1) = ...A11...1 (k+1 ones).\\n            // This means N must be of the\
-        \ form (prefix) followed by all ones.\\n            // To minimize x, we want\
-        \ to make x as close to N as possible, but smaller.\\n            // N must\
-        \ be of the form (prefix)11...1. If N is not of this form, no solution.\\n \
-        \           // If N is of this form, then x should be (prefix)01...1.\\n   \
-        \         // To get (prefix)01...1 from N, we need to find the rightmost '1'\
-        \ bit in N that is NOT part of the trailing sequence of '1's.\\n           \
-        \ // This is equivalent to finding the rightmost '0' bit in N, and flipping\
-        \ it to '1', and all bits to its right to '0'.\\n            // No, this is\
-        \ not correct. This is for x | (x-1).\\n\\n            // Let's use the property:\
-        \ x | (x+1) = N.\\n            // This implies that N must have all bits set\
-        \ that are set in x AND all bits set that are set in x+1.\\n            // Also,\
-        \ x <= N and x+1 <= N. So x must be N or N-1 or smaller.\\n            // If\
-        \ x = N, then N | (N+1) = N. This implies N+1 has no bits set that N doesn't\
-        \ have. This is only true if N+1 is a submask of N, which is impossible for\
-        \ positive integers.\\n            // So x < N.\\n\\n            // Consider\
-        \ N in binary. If N has a '0' bit, say at position k (0-indexed from right).\\\
-        n            // N = ...10... (k-th bit is 0)\\n            // If x has a '0'\
-        \ at position k, then x | (x+1) will also have a '0' at position k (if x has\
-        \ 0 at k, and x+1 has 0 at k, or x has 0 at k and x+1 has 1 at k, then x | (x+1)\
-        \ has 1 at k).\\n            // The only way x | (x+1) can have a 0 at bit k\
-        \ is if both x and x+1 have 0 at bit k.\\n            // This means x must be\
-        \ of the form A01...1 and x+1 must be A10...0.\\n            // Then x | (x+1)\
-        \ would be A11...1.\\n            // So, if N has a 0 bit, say at position `k`,\
-        \ then `x` must have a `0` at bit `k` and `x+1` must have a `0` at bit `k`.\\\
-        n            // This means that `x` must be `N` with some bits unset. Specifically,\
-        \ `x` must be `N` with its lowest `1` bit flipped to `0`, and all bits to its\
-        \ right flipped to `0`.\\n            // This is `x = N & (~(N & -N))`. This\
-        \ is `N` XOR `(N & -N)`. This is `N` with its lowest set bit cleared.\\n   \
-        \         // Let `x_candidate = N ^ (N & -N)`. This is `N` with its rightmost\
-        \ set bit cleared.\\n            // Example: N=7 (111_2). N&-N = 1 (001_2).\
-        \ N ^ (N&-N) = 6 (110_2). 6 | 7 = 7. This is not the minimum. Minimum is 3.\\\
-        n            // Example: N=5 (101_2). N&-N = 1 (001_2). N ^ (N&-N) = 4 (100_2).\
-        \ 4 | 5 = 5. This is correct.\\n            // Example: N=3 (011_2). N&-N =\
-        \ 1 (001_2). N ^ (N&-N) = 2 (010_2). 2 | 3 = 3. This is not the minimum. Minimum\
-        \ is 1.\\n\\n            // The hint says: \"Try unsetting a single bit from\
-        \ nums[i]\".\\n            // Let's try `x = N - (1 << k)` for some k.\\n  \
-        \          // The condition `x OR (x+1) == N` implies that `x` must be `N` with\
-        \ some bits unset.\\n            // Specifically, if `x` is `...A01...1` (where\
-        \ `0` is the rightmost zero bit of `x`, and there are `k` ones after it),\\\
-        n            // then `x+1` is `...A10...0` (where `1` is at the position of\
-        \ the original `0`, and there are `k` zeros after it).\\n            // Then\
-        \ `x OR (x+1)` is `...A11...1` (all bits from the rightmost zero of `x` onwards\
-        \ are `1`).\\n            // This means `N` must be of the form `(prefix)11...1`\
-        \ where the `prefix` is `A`.\\n            // To find the smallest `x`, we want\
-        \ `A` to be as large as possible, and `k` to be as small as possible.\\n   \
-        \         // This means we want `x` to be `N` with its rightmost `1` bit (that\
-        \ is part of the trailing sequence of `1`s) flipped to `0`.\\n            //\
-        \ More precisely, `N` must be of the form `P11...1` where `P` is some prefix.\
-        \ The `x` we are looking for is `P01...1`.\\n            // This means `x =\
-        \ N - (1 << k)` where `k` is the position of the lowest `0` bit in `N`'s binary\
-        \ representation.\\n            // If `N` is all ones (e.g., 3, 7, 15, 31),\
-        \ then `N` has no `0` bit. In this case, `x = N-1` is the answer.\\n       \
-        \     // For example, N=3 (011_2). No 0 bit. x = 3-1 = 2. But 2 | 3 = 3. This\
-        \ is not the minimum. Minimum is 1.\\n            // For N=7 (111_2). No 0 bit.\
-        \ x = 7-1 = 6. But 6 | 7 = 7. Not minimum. Minimum is 3.\\n\\n            //\
-        \ Let's re-examine the property: `x | (x+1)`. The bits of `x` and `x+1` are\
-        \ identical up to the most significant bit where they differ.\\n           \
-        \ // Let `k` be the position of the rightmost `0` bit in `x`. Then `x` has the\
-        \ form `...B10...0` (where `0` is at position `k`, and there are `m` ones after\
-        \ it).\\n            // No, this is wrong. Let `x = A01...1` (where `0` is the\
-        \ rightmost `0` bit, and there are `k` ones after it).\\n            // Then\
-        \ `x+1 = A10...0` (where `1` is at the position of the original `0`, and there\
-        \ are `k` zeros after it).\\n            // `x OR (x+1) = A11...1` (all bits\
-        \ from position `k` downwards are `1`).\\n            // So, `N` must be of\
-        \ the form `A11...1` for some `A` and some `k`.\\n            // To find the\
-        \ minimum `x`, we need to find the largest `A` and smallest `k` such that `N\
-        \ = A11...1`.\\n            // This means `N` must be equal to `(A << (k+1))\
-        \ | ((1 << (k+1)) - 1)`.\\n            // The value `A` is `N >> (k+1)`. The\
-        \ value `k` is the position of the rightmost `0` bit in `N`.\\n            //\
-        \ If `N` is all\n'''"
-      kotlin: "class Solution {\n    fun minBitwiseArray(nums: List<Int>): IntArray\
-        \ {\n        val ans = IntArray(nums.size)\n        for (i in nums.indices)\
-        \ {\n            val num = nums[i]\n            if (num % 2 == 0) {\n      \
-        \          ans[i] = -1\n            } else {\n                var m = 0\n  \
-        \              var temp = num\n                while (temp > 0 && (temp and\
-        \ 1) == 1) {\n                    m++\n                    temp = temp shr 1\n\
-        \                }\n                ans[i] = num xor (1 shl (m - 1))\n     \
-        \       }\n        }\n        return ans\n    }\n}"
-      dart: "class Solution {\n  List<int> minBitwiseArray(List<int> nums) {\n    final\
-        \ List<int> ans = List<int>.filled(nums.length, 0);\n    for (int i = 0; i <\
-        \ nums.length; i++) {\n      final int num = nums[i];\n      if (num % 2 ==\
-        \ 0) {\n        ans[i] = -1;\n      } else {\n        int m = 0;\n        int\
-        \ temp = num;\n        while (temp > 0 && (temp & 1) == 1) {\n          m++;\n\
-        \          temp >>= 1;\n        }\n        ans[i] = num ^ (1 << (m - 1));\n\
-        \      }\n    }\n    return ans;\n  }\n}"
-      go: "func minBitwiseArray(nums []int) []int {\n    ans := make([]int, len(nums))\n\
-        \    for i, num := range nums {\n        if num%2 == 0 {\n            ans[i]\
-        \ = -1\n        } else {\n            m := 0\n            temp := num\n    \
-        \        for temp > 0 && (temp&1) == 1 {\n                m++\n            \
-        \    temp >>= 1\n            }\n            ans[i] = num ^ (1 << (m - 1))\n\
-        \        }\n    }\n    return ans\n}"
-      ruby: "# @param {Integer[]} nums\n# @return {Integer[]}\ndef min_bitwise_array(nums)\n\
-        \    ans = []\n    nums.each do |num|\n        if num % 2 == 0\n           \
-        \ ans << -1\n        else\n            m = 0\n            temp = num\n     \
-        \       while temp > 0 && (temp & 1) == 1\n                m += 1\n        \
-        \        temp >>= 1\n            end\n            ans << (num ^ (1 << (m - 1)))\n\
-        \        end\n    end\n    ans\nend"
-      scala: "object Solution {\n    def minBitwiseArray(nums: List[Int]): Array[Int]\
-        \ = {\n        val ans = Array.ofDim[Int](nums.length)\n        for (i <- nums.indices)\
-        \ {\n            val num = nums(i)\n            if (num % 2 == 0) {\n      \
-        \          ans(i) = -1\n            } else {\n                var m = 0\n  \
-        \              var temp = num\n                while (temp > 0 && (temp & 1)\
-        \ == 1) {\n                    m += 1\n                    temp = temp >>> 1\n\
-        \                }\n                ans(i) = num ^ (1 << (m - 1))\n        \
-        \    }\n        }\n        ans\n    }\n}"
-      rust: "impl Solution {\n    pub fn min_bitwise_array(nums: Vec<i32>) -> Vec<i32>\
-        \ {\n        let mut ans = Vec::with_capacity(nums.len());\n        for num\
-        \ in nums {\n            if num % 2 == 0 {\n                ans.push(-1);\n\
-        \            } else {\n                let mut m = 0;\n                let mut\
-        \ temp = num;\n                while temp > 0 && (temp & 1) == 1 {\n       \
-        \             m += 1;\n                    temp >>= 1;\n                }\n\
-        \                ans.push(num ^ (1 << (m - 1)));\n            }\n        }\n\
-        \        ans\n    }\n}"
-      racket: "(define/contract (min-bitwise-array nums)\n  (-> (listof exact-integer?)\
-        \ (listof exact-integer?))\n  (map (lambda (num)\n         (if (= (remainder\
-        \ num 2) 0)\n             -1\n             (let loop ((m 0) (temp num))\n  \
-        \             (if (and (> temp 0) (= (bitwise-and temp 1) 1))\n            \
-        \       (loop (+ m 1) (arithmetic-shift temp -1))\n                   (bitwise-xor\
-        \ num (arithmetic-shift 1 (- m 1)))))))\n       nums))"
-      erlang: "-spec min_bitwise_array(Nums :: [integer()]) -> [integer()].\nmin_bitwise_array(Nums)\
-        \ ->\n  lists:map(fun(Num) ->\n    if\n      (Num rem 2) == 0 ->\n        -1;\n\
-        \      true ->\n        M = count_trailing_ones(Num, 0, Num),\n        Num bxor\
-        \ (1 bsl (M - 1))\n    end\n  end, Nums).\n\ncount_trailing_ones(Temp, M, _)\
-        \ when Temp =< 0 -> M;\ncount_trailing_ones(Temp, M, _) when (Temp band 1) ==\
-        \ 0 -> M;\ncount_trailing_ones(Temp, M, Num) ->\n  count_trailing_ones(Temp\
-        \ bsr 1, M + 1, Num)."
-      elixir: "defmodule Solution do\n  @spec min_bitwise_array(nums :: [integer]) ::\
-        \ [integer]\n  def min_bitwise_array(nums) do\n    Enum.map(nums, fn num ->\n\
-        \      if rem(num, 2) == 0 do\n        -1\n      else\n        m = count_trailing_ones(num,\
-        \ 0)\n        Bitwise.bxor(num, Bitwise.bsl(1, m - 1))\n      end\n    end)\n\
-        \  end\n\n  defp count_trailing_ones(temp, m) when temp <= 0, do: m\n  defp\
-        \ count_trailing_ones(temp, m) when Bitwise.band(temp, 1) == 0, do: m\n  defp\
-        \ count_trailing_ones(temp, m) do\n    count_trailing_ones(Bitwise.bsr(temp,\
-        \ 1), m + 1)\n  end\nend"
-    approach: 'The problem asks us to find the minimum `ans[i]` such that `ans[i] OR
-      (ans[i] + 1) == nums[i]`. Let `x = ans[i]` and `N = nums[i]`. We analyze the bitwise
-      OR operation `x OR (x + 1)`. If `x` has its rightmost zero bit at position `k`
-      (0-indexed from the right), then `x` can be represented as `(prefix)0(k ones)`
-      in binary. Consequently, `x + 1` will be `(prefix)1(k zeros)`. Performing the
-      bitwise OR, `x OR (x + 1)` results in `(prefix)1(k ones)`. This implies that `N`
-      must be of the form `(some_prefix)1(k ones)`, meaning `N` must have `k+1` trailing
-      ones. If `N` does not fit this pattern (e.g., if `N` is even, it has zero trailing
-      ones), then no such `x` exists.
+        \ bitwise OR operation between an integer `x` and `x + 1`. When we perform `x\
+        \ OR (x + 1)`, the result `N` will have all the bits of `x` set, plus any trailing\
+        \ zero bits of `x` (from the least significant bit up to the rightmost zero)\
+        \ will also become set. Specifically, if `x` has a binary representation ending\
+        \ in `...A01...1` (where `A` is some prefix and there are `k` ones after the\
+        \ `0`), then `x + 1` will be `...A10...0`. The bitwise OR `x OR (x + 1)` will\
+        \ then be `...A11...1`, effectively setting all bits from the rightmost zero\
+        \ of `x` to the least significant bit to one. This implies that `N` must be\
+        \ of the form `(2^k - 1) | (some_prefix_bits << k)` for some `k`, meaning `N`\
+        \ must be an odd number, and all bits from its least significant bit up to its\
+        \ rightmost zero must be set to one. If `N` is even, it's impossible to find\
+        \ such an `x`, so `ans[i]` is -1. This is because `x OR (x+1)` will always result\
+        \ in an odd number. If `x` is even, `x = ...0`, `x+1 = ...1`, so `x OR (x+1)\
+        \ = x+1`, which is odd. If `x` is odd, `x = ...1`, `x+1 = ...0` (after carrying\
+        \ over), and `x OR (x+1)` will still have the LSB set to 1, making it odd.\n\
+        \nTo minimize `ans[i]`, we want to find the smallest `x` such that `x OR (x\
+        \ + 1) == N`. Based on the property derived, `N` must be an odd number. If `N`\
+        \ is even, `ans[i]` is -1. If `N` is odd, we need to find an `x` such that `x`\
+        \ has all the bits of `N` set, except possibly some trailing ones that `x+1`\
+        \ would fill in. The smallest such `x` would be `N` itself, but `N OR (N+1)`\
+        \ is generally not `N`. Instead, `x` must be `N` with its lowest set bit (which\
+        \ is always 0 for `N` if `N` is odd) flipped to 0. This is equivalent to `N\
+        \ XOR (N & (N-1))`, or simply `N - (N & (N-1))`. More directly, `x` should be\
+        \ `N` with its rightmost `1` bit unset. This can be achieved by `N ^ (N & -N)`.\
+        \ For example, if `N = 7 (111)`, `x = 3 (011)`. `3 OR 4 = 7`. If `N = 5 (101)`,\
+        \ `x = 4 (100)`. `4 OR 5 = 5`. This logic works because `x` must be `N` with\
+        \ its lowest set bit (which is 1 for odd `N`) unset, and `x+1` will then set\
+        \ that bit back to 1, and `x` will have all other bits of `N` set. However,\
+        \ this is not quite right. `x` should be `N` with its lowest *zero* bit unset.\n\
+        Let's re-evaluate: `x OR (x + 1) = N`. This means `N` must have all bits set\
+        \ that are set in `x` and `x+1`.\nThe expression `x OR (x + 1)` effectively\
+        \ sets all trailing zeros of `x` to ones. For example, if `x = 4 (100)`, `x+1\
+        \ = 5 (101)`, `x OR (x+1) = 5 (101)`. If `x = 6 (110)`, `x+1 = 7 (111)`, `x\
+        \ OR (x+1) = 7 (111)`.\nThis means `N` must be of the form `(x | (2^k - 1))`\
+        \ where `k` is the position of the least significant zero bit in `x`.\nTo minimize\
+        \ `x`, we want `x` to be as close to `N` as possible from below, such that `x`\
+        \ has its lowest bit 0, and `x+1` fills in the lowest bit.\nThe condition `x\
+        \ OR (x + 1) == N` implies two things:\n1. `x` must be less than or equal to\
+        \ `N`.\n2. `x + 1` must be less than or equal to `N`.\n3. All bits set in `x`\
+        \ must be set in `N`.\n4. All bits set in `x+1` must be set in `N`.\n5. `N`\
+        \ must be odd. If `N` is even, return -1.\nIf `N` is odd, consider `x = N -\
+        \ 1`. Then `x` is even. `x OR (x+1) = (N-1) OR N`. Since `N-1` is even and `N`\
+        \ is odd, `N-1` ends in `...0` and `N` ends in `...1`. So `(N-1) OR N` will\
+        \ have all bits of `N-1` and the last bit of `N` set. This is simply `N`. So\
+        \ `x = N - 1` is a candidate.\nWhat if `N` is odd, but `N-1` is not the smallest?\n\
+        Example: `N = 3 (011)`. `N-1 = 2 (010)`. `2 OR 3 = 3`. So `ans = 2`. But the\
+        \ example says `ans = 1`.\n`1 (001) OR 2 (010) = 3 (011)`. So `x = 1` works.\n\
+        Example: `N = 5 (101)`. `N-1 = 4 (100)`. `4 OR 5 = 5`. So `ans = 4`. This matches\
+        \ the example.\nExample: `N = 7 (111)`. `N-1 = 6 (110)`. `6 OR 7 = 7`. So `ans\
+        \ = 6`. But the example says `ans = 3`.\n`3 (011) OR 4 (100) = 7 (111)`. So\
+        \ `x = 3` works.\n\nThe pattern seems to be: if `N` is odd, find the smallest\
+        \ `k` such that `N` has all bits from `0` to `k-1` set to `1`, and bit `k` is\
+        \ `0`. No, this is not right.\nThe condition `x OR (x + 1) == N` means that\
+        \ `N` must be `x` with all its trailing zeros flipped to ones.\nThis implies\
+        \ that `N` must be of the form `(A << (k+1)) | (2^(k+1) - 1)` where `A` is some\
+        \ prefix and `k` is the position of the most significant bit of the trailing\
+        \ ones in `x`.\nMore precisely, `x` must be of the form `P01...1` (where `P`\
+        \ is a prefix, `0` is at bit `k`, and there are `m` ones after it).\nThen `x+1`\
+        \ is `P10...0`.\n`x OR (x+1)` is `P11...1`.\nSo `N` must be of the form `P11...1`.\n\
+        This means `N` must have a block of trailing ones.\nIf `N` has a binary representation\
+        \ `...B11...1` (where `B` is the bit just before the block of trailing ones,\
+        \ and there are `k` trailing ones), then `x` must be `...B01...1` (i.e., `N`\
+        \ with the `k`-th bit from the right (0-indexed) flipped to 0).\nTo minimize\
+        \ `x`, we want to find the largest `k` such that `N` has `k` trailing ones.\n\
+        Let `N` be `...b_k b_{k-1} ... b_1 b_0`.\nIf `b_0 = 0`, then `N` is even. `ans\
+        \ = -1`.\nIf `b_0 = 1`, `N` is odd.\nWe need to find the largest `k` such that\
+        \ `N` has `k` trailing ones.\nThis means `N` is `...X01...1` (where there are\
+        \ `k` ones).\nThen `x` should be `...X01...1` (same as `N`) but with the `k`-th\
+        \ bit from the right (which is `0` in `N`) flipped to `0`.\nNo, this is confusing.\
+        \ Let's use the hint: \"Try unsetting a single bit from `nums[i]`.\"\nLet `N\
+        \ = nums[i]`.\nIf `N` is even, `ans[i] = -1`. (As derived above, `x OR (x+1)`\
+        \ is always odd).\nIf `N` is odd:\nWe are looking for `x` such that `x OR (x+1)\
+        \ = N`.\nThis means `x` must be `N` with some bits potentially unset.\nSpecifically,\
+        \ `x` must be `N` with its lowest *zero* bit unset.\nLet `N = 11 (1011_2)`.\
+        \ The lowest zero bit is at index 2. Unsetting it means `1011_2` becomes `1001_2\
+        \ = 9`.\nCheck: `9 OR (9+1) = 9 OR 10 = 1001_2 OR 1010_2 = 1011_2 = 11`. This\
+        \ works. `ans = 9`.\nLet `N = 13 (1101_2)`. The lowest zero bit is at index\
+        \ 2. Unsetting it means `1101_2` becomes `1100_2 = 12`.\nCheck: `12 OR (12+1)\
+        \ = 12 OR 13 = 1100_2 OR 1101_2 = 1101_2 = 13`. This works. `ans = 12`.\nLet\
+        \ `N = 31 (11111_2)`. There are no zero bits. This implies `x` would be `N`\
+        \ itself, but `N OR (N+1)` is `N | (N+1)`. If `N` has all bits set, `N = 2^k\
+        \ - 1`. Then `N+1 = 2^k`. `N | (N+1) = (2^k - 1) | 2^k = 2^(k+1) - 1`. This\
+        \ is not `N`.\nSo if `N` has all bits set (e.g., 3, 7, 15, 31, ...), then `N`\
+        \ itself cannot be `x`.\nIn this case, `N = 3 (011_2)`. Lowest zero bit is at\
+        \ index 2 (conceptually, if we extend to higher bits). Unsetting it means `011_2`\
+        \ becomes `001_2 = \n'''"
+      python3: "class Solution:\n    def minBitwiseArray(self, nums: List[int]) -> List[int]:\n\
+        \        ans = []\n\n        for N in nums:\n            current_ans = -1\n\
+        \            # Iterate k from 29 down to 0.\n            # N <= 10^9, which\
+        \ is less than 2^30. So max bit position is 29.\n            for k in range(29,\
+        \ -1, -1):\n                # Condition 1: k-th bit of N must be 1\n       \
+        \         k_th_bit_is_set = ((N >> k) & 1) == 1\n\n                # Condition\
+        \ 2: All bits from 0 to k-1 of N must be 1\n                # (1 << k) - 1 creates\
+        \ a mask with k trailing ones (e.g., for k=3, mask is 0b111 = 7)\n         \
+        \       # If k=0, (1 << 0) - 1 = 0. (N & 0) == 0 is always true.\n         \
+        \       mask_k_minus_1 = (1 << k) - 1\n                lower_bits_are_all_set\
+        \ = (N & mask_k_minus_1) == mask_k_minus_1\n\n                if k_th_bit_is_set\
+        \ and lower_bits_are_all_set:\n                    current_ans = N - (1 << k)\n\
+        \                    break # Found the largest k, which gives the smallest ans[i]\n\
+        \            ans.append(current_ans)\n\n        return ans"
+      c: "#include <stdlib.h> // For malloc\n#include <stdbool.h> // For bool\n\n/**\n\
+        \ * Note: The returned array must be malloced, assume caller calls free().\n\
+        \ */\nint* minBitwiseArray(int* nums, int numsSize, int* returnSize) {\n   \
+        \ int* ans = (int*)malloc(numsSize * sizeof(int));\n    *returnSize = numsSize;\n\
+        \n    for (int i = 0; i < numsSize; ++i) {\n        int N = nums[i];\n     \
+        \   int current_ans = -1;\n\n        // Iterate k from 29 down to 0.\n     \
+        \   // N <= 10^9, which is less than 2^30. So max bit position is 29.\n    \
+        \    for (int k = 29; k >= 0; --k) {\n            // Condition 1: k-th bit of\
+        \ N must be 1\n            bool k_th_bit_is_set = ((N >> k) & 1) == 1;\n\n \
+        \           // Condition 2: All bits from 0 to k-1 of N must be 1\n        \
+        \    // (1 << k) - 1 creates a mask with k trailing ones (e.g., for k=3, mask\
+        \ is 0111_2 = 7)\n            // If k=0, (1 << 0) - 1 = 0. (N & 0) == 0 is always\
+        \ true.\n            int mask_k_minus_1 = (1 << k) - 1;\n            bool lower_bits_are_all_set\
+        \ = (N & mask_k_minus_1) == mask_k_minus_1;\n\n            if (k_th_bit_is_set\
+        \ && lower_bits_are_all_set) {\n                current_ans = N - (1 << k);\n\
+        \                break; // Found the largest k, which gives the smallest ans[i]\n\
+        \            }\n        }\n        ans[i] = current_ans;\n    }\n\n    return\
+        \ ans;\n}"
+      csharp: "using System.Collections.Generic;\n\npublic class Solution {\n    public\
+        \ int[] MinBitwiseArray(IList<int> nums) {\n        int[] ans = new int[nums.Count];\n\
+        \n        for (int i = 0; i < nums.Count; ++i) {\n            int N = nums[i];\n\
+        \            int current_ans = -1;\n\n            // Iterate k from 29 down\
+        \ to 0.\n            // N <= 10^9, which is less than 2^30. So max bit position\
+        \ is 29.\n            for (int k = 29; k >= 0; --k) {\n                // Condition\
+        \ 1: k-th bit of N must be 1\n                bool k_th_bit_is_set = ((N >>\
+        \ k) & 1) == 1;\n\n                // Condition 2: All bits from 0 to k-1 of\
+        \ N must be 1\n                // (1 << k) - 1 creates a mask with k trailing\
+        \ ones (e.g., for k=3, mask is 0b111 = 7)\n                // If k=0, (1 <<\
+        \ 0) - 1 = 0. (N & 0) == 0 is always true.\n                int mask_k_minus_1\
+        \ = (1 << k) - 1;\n                bool lower_bits_are_all_set = (N & mask_k_minus_1)\
+        \ == mask_k_minus_1;\n\n                if (k_th_bit_is_set && lower_bits_are_all_set)\
+        \ {\n                    current_ans = N - (1 << k);\n                    break;\
+        \ // Found the largest k, which gives the smallest ans[i]\n                }\n\
+        \            }\n            ans[i] = current_ans;\n        }\n\n        return\
+        \ ans;\n    }\n}"
+      javascript: "/**\n * @param {number[]} nums\n * @return {number[]}\n */\nvar minBitwiseArray\
+        \ = function(nums) {\n    const ans = [];\n\n    for (const N of nums) {\n \
+        \       let current_ans = -1;\n        // Iterate k from 29 down to 0.\n   \
+        \     // N <= 10^9, which is less than 2^30. So max bit position is 29.\n  \
+        \      for (let k = 29; k >= 0; --k) {\n            // Condition 1: k-th bit\
+        \ of N must be 1\n            const k_th_bit_is_set = ((N >> k) & 1) === 1;\n\
+        \n            // Condition 2: All bits from 0 to k-1 of N must be 1\n      \
+        \      // (1 << k) - 1 creates a mask with k trailing ones (e.g., for k=3, mask\
+        \ is 0b111 = 7)\n            // If k=0, (1 << 0) - 1 = 0. (N & 0) == 0 is always\
+        \ true.\n            const mask_k_minus_1 = (1 << k) - 1;\n            const\
+        \ lower_bits_are_all_set = (N & mask_k_minus_1) === mask_k_minus_1;\n\n    \
+        \        if (k_th_bit_is_set && lower_bits_are_all_set) {\n                current_ans\
+        \ = N - (1 << k);\n                break; // Found the largest k, which gives\
+        \ the smallest ans[i]\n            }\n        }\n        ans.push(current_ans);\n\
+        \    }\n\n    return ans;\n};"
+      typescript: "function minBitwiseArray(nums: number[]): number[] {\n    const ans:\
+        \ number[] = [];\n\n    for (const N of nums) {\n        let current_ans: number\
+        \ = -1;\n        // Iterate k from 29 down to 0.\n        // N <= 10^9, which\
+        \ is less than 2^30. So max bit position is 29.\n        for (let k = 29; k\
+        \ >= 0; --k) {\n            // Condition 1: k-th bit of N must be 1\n      \
+        \      const k_th_bit_is_set: boolean = ((N >> k) & 1) === 1;\n\n          \
+        \  // Condition 2: All bits from 0 to k-1 of N must be 1\n            // (1\
+        \ << k) - 1 creates a mask with k trailing ones (e.g., for k=3, mask is 0b111\
+        \ = 7)\n            // If k=0, (1 << 0) - 1 = 0. (N & 0) == 0 is always true.\n\
+        \            const mask_k_minus_1: number = (1 << k) - 1;\n            const\
+        \ lower_bits_are_all_set: boolean = (N & mask_k_minus_1) === mask_k_minus_1;\n\
+        \n            if (k_th_bit_is_set && lower_bits_are_all_set) {\n           \
+        \     current_ans = N - (1 << k);\n                break; // Found the largest\
+        \ k, which gives the smallest ans[i]\n            }\n        }\n        ans.push(current_ans);\n\
+        \    }\n\n    return ans;\n}"
+      php: "<?php\n\nclass Solution {\n\n    /**\n     * @param Integer[] $nums\n  \
+        \   * @return Integer[]\n     */\n    function minBitwiseArray($nums) {\n  \
+        \      $ans = [];\n\n        foreach ($nums as $N) {\n            $current_ans\
+        \ = -1;\n            // Iterate k from 29 down to 0.\n            // N <= 10^9,\
+        \ which is less than 2^30. So max bit position is 29.\n            for ($k =\
+        \ 29; $k >= 0; --$k) {\n                // Condition 1: k-th bit of N must be\
+        \ 1\n                $k_th_bit_is_set = (($N >> $k) & 1) == 1;\n\n         \
+        \       // Condition 2: All bits from 0 to k-1 of N must be 1\n            \
+        \    // (1 << k) - 1 creates a mask with k trailing ones (e.g., for k=3, mask\
+        \ is 0b111 = 7)\n                // If k=0, (1 << 0) - 1 = 0. (N & 0) == 0 is\
+        \ always true.\n                $mask_k_minus_1 = (1 << $k) - 1;\n         \
+        \       $lower_bits_are_all_set = ($N & $mask_k_minus_1) == $mask_k_minus_1;\n\
+        \n                if ($k_th_bit_is_set && $lower_bits_are_all_set) {\n     \
+        \               $current_ans = $N - (1 << $k);\n                    break; //\
+        \ Found the largest k, which gives the smallest ans[i]\n                }\n\
+        \            }\n            $ans[] = $current_ans;\n        }\n\n        return\
+        \ $ans;\n    }\n}"
+      swift: "class Solution {\n    func minBitwiseArray(_ nums: [Int]) -> [Int] {\n\
+        \        var ans: [Int] = []\n\n        for N in nums {\n            var currentAns:\
+        \ Int = -1\n            // Iterate k from 29 down to 0.\n            // N <=\
+        \ 10^9, which is less than 2^30. So max bit position is 29.\n            for\
+        \ k in (0...29).reversed() {\n                // Condition 1: k-th bit of N\
+        \ must be 1\n                let kThBitIsSet = ((N >> k) & 1) == 1\n\n     \
+        \           // Condition 2: All bits from 0 to k-1 of N must be 1\n        \
+        \        // (1 << k) - 1 creates a mask with k trailing ones (e.g., for k=3,\
+        \ mask is 0b111 = 7)\n                // If k=0, (1 << 0) - 1 = 0. (N & 0) ==\
+        \ 0 is always true.\n                let maskKMinus1 = (1 << k) - 1\n      \
+        \          let lowerBitsAreAllSet = (N & maskKMinus1) == maskKMinus1\n\n   \
+        \             if kThBitIsSet && lowerBitsAreAllSet {\n                    currentAns\
+        \ = N - (1 << k)\n                    break // Found the largest k, which gives\
+        \ the smallest ans[i]\n                }\n            }\n            ans.append(currentAns)\n\
+        \        }\n\n        return ans\n    }\n}"
+    approach: 'The problem requires finding the minimum `ans[i]` such that `ans[i] OR
+      (ans[i] + 1) == nums[i]`. Let `x = ans[i]` and `N = nums[i]`. Analyzing the bitwise
+      OR operation `x OR (x + 1)` reveals a crucial pattern. If `x` has its rightmost
+      zero bit at position `k` (i.e., `x = P01...1` where `P` is a prefix, `0` is at
+      bit `k`, and there are `k` ones to its right), then `x + 1 = P10...0`. Consequently,
+      `x OR (x + 1) = P11...1`. This means `N` must be of the form `P11...1`, where
+      the `1` at bit `k` is the most significant bit of a contiguous block of `k+1`
+      ones extending to the least significant bit.
 
 
-      Based on this observation, for a given `N`, we first check if `N` is even. If
-      it is, `ans[i]` is `-1`. Since `nums[i]` are prime, this only happens for `N=2`.
-      If `N` is odd, we count `m`, the number of trailing ones in `N`. From the pattern
-      `(prefix)1(k ones)`, we deduce that `k+1 = m`, so `k = m-1`. The desired `x` is
-      then `N` with its `k`-th bit unset. This can be achieved by `x = N XOR (1 << k)`.
-      This construction yields the unique `x` that satisfies the structural properties,
-      and thus it is the minimal one. We apply this logic for each number in the input
-      array `nums` to construct the `ans` array.'
-    time_complexity: The time complexity is O(L * log(max_val)), where L is the length
-      of the `nums` array and `max_val` is the maximum value in `nums`. For each number,
-      we iterate through its bits to count the trailing ones, which takes at most `log(max_val)`
-      operations (approximately 30-31 for 10^9).
-    space_complexity: The space complexity is O(L), where L is the length of the `nums`
-      array. This is due to storing the `ans` array, which has the same length as the
-      input array.
-    elapsed_time: 328.89649987220764
+      To find the minimum `x` for a given `N`, we need to find the largest possible
+      `k` such that `N` can be represented as `P11...1` (with `k+1` trailing ones).
+      This `x` would then be `N - (1 << k)`. This `x` is `N` with its `k`-th bit unset,
+      and all bits from `0` to `k-1` set to `1`. For this to be a valid `x`, two conditions
+      must hold for `N` and `k`: (1) the `k`-th bit of `N` must be `1`, and (2) all
+      bits from `0` to `k-1` of `N` must be `1`. We iterate `k` downwards from `29`
+      (since `N <= 10^9 < 2^30`) to `0`. The first `k` that satisfies both conditions
+      gives the minimum `x = N - (1 << k)`. If no such `k` is found after checking all
+      possibilities, it means no valid `x` exists for `N`, and `ans[i]` is set to `-1`.'
+    time_complexity: The time complexity is O(M * log(max_N)), where M is the length
+      of the `nums` array and `max_N` is the maximum value in `nums`. For each number
+      in `nums`, we iterate through at most 30 possible bit positions (from 29 down
+      to 0). Each iteration involves constant-time bitwise operations. Given `M <= 100`
+      and `max_N <= 10^9`, this is roughly `100 * 30` operations, which is very efficient.
+    space_complexity: The space complexity is O(M), where M is the length of the `nums`
+      array. This is for storing the `ans` array, which has the same length as `nums`.
+      No additional data structures are used that scale with the input values beyond
+      a constant number of variables per iteration.
+    elapsed_time: 353.8196671009064
     model: gemini-2.5-flash
-    generated_at: '2026-01-21 18:37:04 '
+    generated_at: '2026-01-21 19:45:51 '
   - solutions:
       cpp: "class Solution {\npublic:\n    vector<int> minBitwiseArray(vector<int>&\
         \ nums) {\n        vector<int> ans;\n        for (int num : nums) {\n      \
-        \      if (num % 2 == 0) ans.push_back(-1);\n            else {\n          \
-        \      int x = num;\n                while ((x | (x + 1)) != num) x--;\n   \
-        \             ans.push_back(x);\n            }\n        }\n        return ans;\n\
-        \    }\n};"
+        \      if (num % 2 == 0) ans.push_back(-1);\n            else ans.push_back(num\
+        \ - 1);\n        }\n        return ans;\n    }\n};"
       java: "class Solution {\n    public int[] minBitwiseArray(List<Integer> nums)\
         \ {\n        int[] ans = new int[nums.size()];\n        for (int i = 0; i <\
         \ nums.size(); i++) {\n            int num = nums.get(i);\n            if (num\
-        \ % 2 == 0) ans[i] = -1;\n            else {\n                int x = num;\n\
-        \                while ((x | (x + 1)) != num) x--;\n                ans[i] =\
-        \ x;\n            }\n        }\n        return ans;\n    }\n}"
+        \ % 2 == 0) ans[i] = -1;\n            else ans[i] = num - 1;\n        }\n  \
+        \      return ans;\n    }\n}"
       python: "class Solution(object):\n    def minBitwiseArray(self, nums):\n     \
-        \   ans = []\n        for num in nums:\n            if num % 2 == 0: ans.append(-1)\n\
-        \            else:\n                x = num\n                while (x | (x +\
-        \ 1)) != num: x -= 1\n                ans.append(x)\n        return ans"
+        \   return [num - 1 if num % 2 else -1 for num in nums]"
       python3: "class Solution:\n    def minBitwiseArray(self, nums: list[int]) -> list[int]:\n\
-        \        ans = []\n        for num in nums:\n            if num % 2 == 0: ans.append(-1)\n\
-        \            else:\n                x = num\n                while (x | (x +\
-        \ 1)) != num: x -= 1\n                ans.append(x)\n        return ans"
+        \        return [num - 1 if num % 2 else -1 for num in nums]"
       c: "int* minBitwiseArray(int* nums, int numsSize, int* returnSize) {\n    int*\
         \ ans = (int*)malloc(numsSize * sizeof(int));\n    *returnSize = numsSize;\n\
-        \    for (int i = 0; i < numsSize; i++) {\n        int num = nums[i];\n    \
-        \    if (num % 2 == 0) ans[i] = -1;\n        else {\n            int x = num;\n\
-        \            while ((x | (x + 1)) != num) x--;\n            ans[i] = x;\n  \
-        \      }\n    }\n    return ans;\n}"
+        \    for (int i = 0; i < numsSize; i++) {\n        if (nums[i] % 2 == 0) ans[i]\
+        \ = -1;\n        else ans[i] = nums[i] - 1;\n    }\n    return ans;\n}"
       csharp: "public class Solution {\n    public int[] MinBitwiseArray(IList<int>\
         \ nums) {\n        int[] ans = new int[nums.Count];\n        for (int i = 0;\
         \ i < nums.Count; i++) {\n            int num = nums[i];\n            if (num\
-        \ % 2 == 0) ans[i] = -1;\n            else {\n                int x = num;\n\
-        \                while ((x | (x + 1)) != num) x--;\n                ans[i] =\
-        \ x;\n            }\n        }\n        return ans;\n    }\n}"
-      javascript: "var minBitwiseArray = function(nums) {\n    let ans = [];\n    for\
-        \ (let num of nums) {\n        if (num % 2 == 0) ans.push(-1);\n        else\
-        \ {\n            let x = num;\n            while ((x | (x + 1)) != num) x--;\n\
-        \            ans.push(x);\n        }\n    }\n    return ans;\n};"
-      typescript: "function minBitwiseArray(nums: number[]): number[] {\n    let ans:\
-        \ number[] = [];\n    for (let num of nums) {\n        if (num % 2 == 0) ans.push(-1);\n\
-        \        else {\n            let x = num;\n            while ((x | (x + 1))\
-        \ != num) x--;\n            ans.push(x);\n        }\n    }\n    return ans;\n\
-        }"
+        \ % 2 == 0) ans[i] = -1;\n            else ans[i] = num - 1;\n        }\n  \
+        \      return ans;\n    }\n}"
+      javascript: "var minBitwiseArray = function(nums) {\n    return nums.map(num =>\
+        \ num % 2 ? num - 1 : -1);\n};"
+      typescript: "function minBitwiseArray(nums: number[]): number[] {\n    return\
+        \ nums.map(num => num % 2 ? num - 1 : -1);\n}"
       php: "class Solution {\n    function minBitwiseArray($nums) {\n        $ans =\
         \ [];\n        foreach ($nums as $num) {\n            if ($num % 2 == 0) $ans[]\
-        \ = -1;\n            else {\n                $x = $num;\n                while\
-        \ (($x | ($x + 1)) != $num) $x--;\n                $ans[] = $x;\n          \
-        \  }\n        }\n        return $ans;\n    }\n}"
+        \ = -1;\n            else $ans[] = $num - 1;\n        }\n        return $ans;\n\
+        \    }\n}"
       swift: "class Solution {\n    func minBitwiseArray(_ nums: [Int]) -> [Int] {\n\
-        \        var ans: [Int] = []\n        for num in nums {\n            if num\
-        \ % 2 == 0 { ans.append(-1) }\n            else {\n                var x = num\n\
-        \                while (x | (x + 1)) != num { x -= 1 }\n                ans.append(x)\n\
-        \            }\n        }\n        return ans\n    }\n}"
+        \        return nums.map { $0 % 2 == 0 ? -1 : $0 - 1 }\n    }\n}"
       kotlin: "class Solution {\n    fun minBitwiseArray(nums: List<Int>): IntArray\
         \ {\n        val result = IntArray(nums.size)\n        for (i in nums.indices)\
         \ {\n            if (nums[i] % 2 == 0) {\n                result[i] = -1\n \
@@ -270,7 +319,7 @@ ai_solutions:
         \          j--;\n        }\n        result[i] = j;\n      }\n    }\n    return\
         \ result;\n  }\n}"
       go: "func minBitwiseArray(nums []int) []int {\n    result := make([]int, len(nums))\n\
-        \    for i, num := range nums {\n        if num%2 == 0 {\n            result[i]\
+        \    for i, num := range nums {\n        if num % 2 == 0 {\n            result[i]\
         \ = -1\n        } else {\n            j := num\n            for (j | (j + 1))\
         \ != num {\n                j--\n            }\n            result[i] = j\n\
         \        }\n    }\n    return result\n}"
@@ -279,7 +328,7 @@ ai_solutions:
         \ else\n            j = num\n            j -= 1 while (j | (j + 1)) != num\n\
         \            result[i] = j\n        end\n    end\n    result\nend"
       scala: "object Solution {\n    def minBitwiseArray(nums: List[Int]): Array[Int]\
-        \ = {\n        val result = Array.ofDim[Int](nums.size)\n        for (i <- nums.indices)\
+        \ = {\n        val result = new Array[Int](nums.size)\n        for (i <- nums.indices)\
         \ {\n            if (nums(i) % 2 == 0) {\n                result(i) = -1\n \
         \           } else {\n                var j = nums(i)\n                while\
         \ ((j | (j + 1)) != nums(i)) {\n                    j -= 1\n               \
@@ -299,33 +348,33 @@ ai_solutions:
         \              (let loop2 ([j num])\n                (if (= (bitwise-ior j (add1\
         \ j)) num)\n                    (loop (cdr nums) (cons j result))\n        \
         \            (loop2 (sub1 j)))))))))"
-      erlang: "-spec min_bitwise_array(Nums :: [integer()]) -> [integer()].\nmin_bitwise_array(Nums)\
-        \ ->\n    lists:map(fun(N) ->\n        case N rem 2 of\n            0 -> -1;\n\
-        \            _ ->\n                J = N,\n                while (bor(J, J +\
-        \ 1) =/= N) ->\n                    J - 1;\n                J\n        end\n\
-        \    end, Nums)."
+      erlang: "-module(solution).\n-export([min_bitwise_array/1]).\nmin_bitwise_array(Nums)\
+        \ ->\n    lists:map(fun(N) when N rem 2 == 0 -> -1;\n                   (N)\
+        \ ->\n                       find_smallest(N, N)\n               end, Nums).\n\
+        find_smallest(N, J) when (J bor (J + 1)) == N -> J;\nfind_smallest(N, J) ->\
+        \ find_smallest(N, J - 1)."
       elixir: "defmodule Solution do\n  @spec min_bitwise_array(nums :: [integer]) ::\
-        \ [integer]\n  def min_bitwise_array(nums) do\n    Enum.map(nums, fn num ->\n\
-        \      if rem(num, 2) == 0 do\n        -1\n      else\n        j = num\n   \
-        \     while bor(j, j + 1) != num do\n          j = j - 1\n        end\n    \
-        \    j\n      end\n    end)\n  end\nend"
+        \ [integer]\n  def min_bitwise_array(nums) do\n    Enum.map(nums, fn\n     \
+        \ num when rem(num, 2) == 0 -> -1\n      num -> find_smallest(num, num)\n  \
+        \  end)\n  end\n\n  defp find_smallest(num, j) when bor(j, j + 1) == num, do:\
+        \ j\n  defp find_smallest(num, j), do: find_smallest(num, j - 1)\nend"
     approach: The problem requires constructing an array where each element's bitwise
-      OR with its next element equals a given prime number. The key intuition is to
-      analyze the binary representation of the prime numbers. For a number to satisfy
-      the condition, it must have a specific bit set to 1, such that when it is ORed
-      with the next number (which is essentially the current number plus 1), it results
-      in the given prime number. This can be achieved by unsetting a single bit from
-      the prime number, which will give us the required number. If the prime number
-      is even, it is impossible to find such a number, so we set the answer to -1.
-    time_complexity: The time complexity of this solution is O(n), where n is the number
-      of elements in the input array. This is because we are iterating over each element
-      in the array once and performing a constant amount of work for each element.
-    space_complexity: The space complexity of this solution is O(n), where n is the
-      number of elements in the input array. This is because we are creating a new array
-      of the same size as the input array to store the results.
-    elapsed_time: 6.779659986495972
+      OR with its next element equals a given prime number. We start by checking if
+      the given number is even. If it is, we set the answer to -1 because there's no
+      number that can satisfy the condition for even numbers. For odd numbers, we try
+      to find the smallest number that satisfies the condition by unsetting a single
+      bit from the given number. This approach works because the bitwise OR of a number
+      and the number plus one will always result in a number with one more bit set than
+      the original number, which is a property of binary representation.
+    time_complexity: The time complexity of this solution is O(n) where n is the number
+      of elements in the input array. This is because we are iterating over the array
+      once and performing a constant amount of work for each element.
+    space_complexity: The space complexity of this solution is O(n) where n is the number
+      of elements in the input array. This is because we are creating a new array of
+      the same size as the input array to store the results.
+    elapsed_time: 6.01027512550354
     model: llama-3.3-70b-versatile
-    generated_at: '2026-01-21 18:37:16 '
+    generated_at: '2026-01-21 19:46:02 '
 ---
 
 ## Problem #3315: Construct the Minimum Bitwise Array II
@@ -404,41 +453,124 @@ We've generated solutions using multiple AI models. Click to expand each solutio
 <details class="ai-solution-card" open markdown="1">
 <summary class="ai-solution-header">
   <span class="ai-model-badge">✨ Solution from <strong>gemini-2.5-flash</strong></span>
-  <small class="solution-timestamp">(2026-01-21 18:37:04 )</small>
+  <small class="solution-timestamp">(2026-01-21 19:45:51 )</small>
 </summary>
 
 <div class="ai-solution-content">
 
 ### Approach
 
-The problem asks us to find the minimum `ans[i]` such that `ans[i] OR (ans[i] + 1) == nums[i]`. Let `x = ans[i]` and `N = nums[i]`. We analyze the bitwise OR operation `x OR (x + 1)`. If `x` has its rightmost zero bit at position `k` (0-indexed from the right), then `x` can be represented as `(prefix)0(k ones)` in binary. Consequently, `x + 1` will be `(prefix)1(k zeros)`. Performing the bitwise OR, `x OR (x + 1)` results in `(prefix)1(k ones)`. This implies that `N` must be of the form `(some_prefix)1(k ones)`, meaning `N` must have `k+1` trailing ones. If `N` does not fit this pattern (e.g., if `N` is even, it has zero trailing ones), then no such `x` exists.
+The problem requires finding the minimum `ans[i]` such that `ans[i] OR (ans[i] + 1) == nums[i]`. Let `x = ans[i]` and `N = nums[i]`. Analyzing the bitwise OR operation `x OR (x + 1)` reveals a crucial pattern. If `x` has its rightmost zero bit at position `k` (i.e., `x = P01...1` where `P` is a prefix, `0` is at bit `k`, and there are `k` ones to its right), then `x + 1 = P10...0`. Consequently, `x OR (x + 1) = P11...1`. This means `N` must be of the form `P11...1`, where the `1` at bit `k` is the most significant bit of a contiguous block of `k+1` ones extending to the least significant bit.
 
-Based on this observation, for a given `N`, we first check if `N` is even. If it is, `ans[i]` is `-1`. Since `nums[i]` are prime, this only happens for `N=2`. If `N` is odd, we count `m`, the number of trailing ones in `N`. From the pattern `(prefix)1(k ones)`, we deduce that `k+1 = m`, so `k = m-1`. The desired `x` is then `N` with its `k`-th bit unset. This can be achieved by `x = N XOR (1 << k)`. This construction yields the unique `x` that satisfies the structural properties, and thus it is the minimal one. We apply this logic for each number in the input array `nums` to construct the `ans` array.
+To find the minimum `x` for a given `N`, we need to find the largest possible `k` such that `N` can be represented as `P11...1` (with `k+1` trailing ones). This `x` would then be `N - (1 << k)`. This `x` is `N` with its `k`-th bit unset, and all bits from `0` to `k-1` set to `1`. For this to be a valid `x`, two conditions must hold for `N` and `k`: (1) the `k`-th bit of `N` must be `1`, and (2) all bits from `0` to `k-1` of `N` must be `1`. We iterate `k` downwards from `29` (since `N <= 10^9 < 2^30`) to `0`. The first `k` that satisfies both conditions gives the minimum `x = N - (1 << k)`. If no such `k` is found after checking all possibilities, it means no valid `x` exists for `N`, and `ans[i]` is set to `-1`.
 
 ### Code
 
 <div class="code-tabs" markdown="0">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-python-gemini-2-5-flash" checked>
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-kotlin-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-dart-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-go-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-ruby-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-scala-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-rust-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-racket-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-erlang-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-elixir-gemini-2-5-flash">
+  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-cpp-gemini-2-5-flash" checked>
+  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-java-gemini-2-5-flash">
+  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-python-gemini-2-5-flash">
+  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-python3-gemini-2-5-flash">
+  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-c-gemini-2-5-flash">
+  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-csharp-gemini-2-5-flash">
+  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-javascript-gemini-2-5-flash">
+  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-typescript-gemini-2-5-flash">
+  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-php-gemini-2-5-flash">
+  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-swift-gemini-2-5-flash">
   <div class="tab-labels">
+    <label for="lang-cpp-gemini-2-5-flash">C++</label>
+    <label for="lang-java-gemini-2-5-flash">Java</label>
     <label for="lang-python-gemini-2-5-flash">Python</label>
-    <label for="lang-kotlin-gemini-2-5-flash">Kotlin</label>
-    <label for="lang-dart-gemini-2-5-flash">Dart</label>
-    <label for="lang-go-gemini-2-5-flash">Go</label>
-    <label for="lang-ruby-gemini-2-5-flash">Ruby</label>
-    <label for="lang-scala-gemini-2-5-flash">Scala</label>
-    <label for="lang-rust-gemini-2-5-flash">Rust</label>
-    <label for="lang-racket-gemini-2-5-flash">Racket</label>
-    <label for="lang-erlang-gemini-2-5-flash">Erlang</label>
-    <label for="lang-elixir-gemini-2-5-flash">Elixir</label>
+    <label for="lang-python3-gemini-2-5-flash">Python3</label>
+    <label for="lang-c-gemini-2-5-flash">C</label>
+    <label for="lang-csharp-gemini-2-5-flash">C#</label>
+    <label for="lang-javascript-gemini-2-5-flash">JavaScript</label>
+    <label for="lang-typescript-gemini-2-5-flash">TypeScript</label>
+    <label for="lang-php-gemini-2-5-flash">PHP</label>
+    <label for="lang-swift-gemini-2-5-flash">Swift</label>
+  </div>
+
+  <div class="tab-panel" data-lang="cpp">
+
+{% highlight cpp %}
+{% raw %}
+class Solution {
+public:
+    std::vector<int> minBitwiseArray(std::vector<int>& nums) {
+        std::vector<int> ans;
+        ans.reserve(nums.size());
+
+        for (int N : nums) {
+            int current_ans = -1;
+            // Iterate k from 29 down to 0.
+            // N <= 10^9, which is less than 2^30. So max bit position is 29.
+            for (int k = 29; k >= 0; --k) {
+                // Condition 1: k-th bit of N must be 1
+                bool k_th_bit_is_set = ((N >> k) & 1) == 1;
+
+                // Condition 2: All bits from 0 to k-1 of N must be 1
+                // (1 << k) - 1 creates a mask with k trailing ones (e.g., for k=3, mask is 0111_2 = 7)
+                // If k=0, (1 << 0) - 1 = 0. (N & 0) == 0 is always true.
+                int mask_k_minus_1 = (1 << k) - 1;
+                bool lower_bits_are_all_set = (N & mask_k_minus_1) == mask_k_minus_1;
+
+                if (k_th_bit_is_set && lower_bits_are_all_set) {
+                    current_ans = N - (1 << k);
+                    break; // Found the largest k, which gives the smallest ans[i]
+                }
+            }
+            ans.push_back(current_ans);
+        }
+
+        return ans;
+    }
+};
+{% endraw %}
+{% endhighlight %}
+
+  </div>
+
+  <div class="tab-panel" data-lang="java">
+
+{% highlight java %}
+{% raw %}
+import java.util.List;
+import java.util.ArrayList;
+
+class Solution {
+    public int[] minBitwiseArray(List<Integer> nums) {
+        int[] ans = new int[nums.size()];
+
+        for (int i = 0; i < nums.size(); ++i) {
+            int N = nums.get(i);
+            int current_ans = -1;
+
+            // Iterate k from 29 down to 0.
+            // N <= 10^9, which is less than 2^30. So max bit position is 29.
+            for (int k = 29; k >= 0; --k) {
+                // Condition 1: k-th bit of N must be 1
+                boolean k_th_bit_is_set = ((N >> k) & 1) == 1;
+
+                // Condition 2: All bits from 0 to k-1 of N must be 1
+                // (1 << k) - 1 creates a mask with k trailing ones (e.g., for k=3, mask is 0111_2 = 7)
+                // If k=0, (1 << 0) - 1 = 0. (N & 0) == 0 is always true.
+                int mask_k_minus_1 = (1 << k) - 1;
+                boolean lower_bits_are_all_set = (N & mask_k_minus_1) == mask_k_minus_1;
+
+                if (k_th_bit_is_set && lower_bits_are_all_set) {
+                    current_ans = N - (1 << k);
+                    break; // Found the largest k, which gives the smallest ans[i]
+                }
+            }
+            ans[i] = current_ans;
+        }
+
+        return ans;
+    }
+}
+{% endraw %}
+{% endhighlight %}
+
   </div>
 
   <div class="tab-panel" data-lang="python">
@@ -450,253 +582,337 @@ Based on this observation, for a given `N`, we first check if `N` is even. If it
 # Full Response:
 '''
 {
-  "approach": "The core of this problem lies in understanding the bitwise OR operation between an integer `x` and `x+1`. Let `N = nums[i]`. We are looking for the smallest `x` such that `x OR (x+1) == N`. Analyzing the binary representations of `x` and `x+1` reveals a crucial pattern. If `x` is even, its least significant bit is 0. Then `x+1` will have its least significant bit as 1, and all other bits identical to `x`. In this case, `x OR (x+1) = x+1`. Thus, if `x` is even, `x+1 = N`, which means `x = N-1`. However, if `N` is even, `N-1` is odd, contradicting our assumption that `x` is even. The only even prime number is 2. For `N=2`, `x=1` (odd), so no even `x` works. Therefore, if `N` is even, no solution exists, and `ans[i]` should be -1.",
-  "time_complexity": "The time complexity is O(M * log(MAX_NUM)) where M is the length of the `nums` array and MAX_NUM is the maximum value of `nums[i]`. For each number in `nums`, we iterate up to 30-31 bits (for numbers up to 10^9) to find the rightmost zero bit. This is a constant number of operations per element.",
-  "space_complexity": "The space complexity is O(M) to store the `ans` array, where M is the length of the `nums` array. No additional significant space is used beyond the output array.",
-  "solutions": {
-    "cpp": "class Solution {\npublic:\n    std::vector<int> minBitwiseArray(std::vector<int>& nums) {\n        std::vector<int> ans;\n        for (int N : nums) {\n            if (N % 2 == 0) {\n                ans.push_back(-1);\n                continue;\n            }\n\n            // Find the rightmost '0' bit in N. This is equivalent to finding the lowest bit that is '0'.\n            // If N is odd, its LSB is 1. So we need to find the rightmost '0' bit in N-1.\n            // Or, more generally, find the rightmost '0' bit in N. If N has no '0' bits (i.e., N is all 1s, like 3, 7, 15, 31), then N-1 is the answer.\n            // If N is all 1s (e.g., 3, 7, 15), then N-1 is also all 1s up to the highest bit, and 0 at the highest bit. This is not correct.\n            // Let's re-evaluate: x OR (x+1) = N.\n            // If N is odd, then x must be odd. (If x is even, x OR (x+1) = x+1, which is odd. If x is odd, x OR (x+1) is odd).\n            // If x is odd, x = ...A01...1 (k ones). x+1 = ...A10...0 (k zeros).\n            // x OR (x+1) = ...A11...1 (k+1 ones).\n            // This means N must be of the form (prefix) followed by all ones.\n            // To minimize x, we want to make x as close to N as possible, but smaller.\n            // N must be of the form (prefix)11...1. If N is not of this form, no solution.\n            // If N is of this form, then x should be (prefix)01...1.\n            // To get (prefix)01...1 from N, we need to find the rightmost '1' bit in N that is NOT part of the trailing sequence of '1's.\n            // This is equivalent to finding the rightmost '0' bit in N, and flipping it to '1', and all bits to its right to '0'.\n            // No, this is not correct. This is for x | (x-1).\n\n            // Let's use the property: x | (x+1) = N.\n            // This implies that N must have all bits set that are set in x AND all bits set that are set in x+1.\n            // Also, x <= N and x+1 <= N. So x must be N or N-1 or smaller.\n            // If x = N, then N | (N+1) = N. This implies N+1 has no bits set that N doesn't have. This is only true if N+1 is a submask of N, which is impossible for positive integers.\n            // So x < N.\n\n            // Consider N in binary. If N has a '0' bit, say at position k (0-indexed from right).\n            // N = ...10... (k-th bit is 0)\n            // If x has a '0' at position k, then x | (x+1) will also have a '0' at position k (if x has 0 at k, and x+1 has 0 at k, or x has 0 at k and x+1 has 1 at k, then x | (x+1) has 1 at k).\n            // The only way x | (x+1) can have a 0 at bit k is if both x and x+1 have 0 at bit k.\n            // This means x must be of the form A01...1 and x+1 must be A10...0.\n            // Then x | (x+1) would be A11...1.\n            // So, if N has a 0 bit, say at position `k`, then `x` must have a `0` at bit `k` and `x+1` must have a `0` at bit `k`.\n            // This means that `x` must be `N` with some bits unset. Specifically, `x` must be `N` with its lowest `1` bit flipped to `0`, and all bits to its right flipped to `0`.\n            // This is `x = N & (~(N & -N))`. This is `N` XOR `(N & -N)`. This is `N` with its lowest set bit cleared.\n            // Let `x_candidate = N ^ (N & -N)`. This is `N` with its rightmost set bit cleared.\n            // Example: N=7 (111_2). N&-N = 1 (001_2). N ^ (N&-N) = 6 (110_2). 6 | 7 = 7. This is not the minimum. Minimum is 3.\n            // Example: N=5 (101_2). N&-N = 1 (001_2). N ^ (N&-N) = 4 (100_2). 4 | 5 = 5. This is correct.\n            // Example: N=3 (011_2). N&-N = 1 (001_2). N ^ (N&-N) = 2 (010_2). 2 | 3 = 3. This is not the minimum. Minimum is 1.\n\n            // The hint says: "Try unsetting a single bit from nums[i]".\n            // Let's try `x = N - (1 << k)` for some k.\n            // The condition `x OR (x+1) == N` implies that `x` must be `N` with some bits unset.\n            // Specifically, if `x` is `...A01...1` (where `0` is the rightmost zero bit of `x`, and there are `k` ones after it),\n            // then `x+1` is `...A10...0` (where `1` is at the position of the original `0`, and there are `k` zeros after it).\n            // Then `x OR (x+1)` is `...A11...1` (all bits from the rightmost zero of `x` onwards are `1`).\n            // This means `N` must be of the form `(prefix)11...1` where the `prefix` is `A`.\n            // To find the smallest `x`, we want `A` to be as large as possible, and `k` to be as small as possible.\n            // This means we want `x` to be `N` with its rightmost `1` bit (that is part of the trailing sequence of `1`s) flipped to `0`.\n            // More precisely, `N` must be of the form `P11...1` where `P` is some prefix. The `x` we are looking for is `P01...1`.\n            // This means `x = N - (1 << k)` where `k` is the position of the lowest `0` bit in `N`'s binary representation.\n            // If `N` is all ones (e.g., 3, 7, 15, 31), then `N` has no `0` bit. In this case, `x = N-1` is the answer.\n            // For example, N=3 (011_2). No 0 bit. x = 3-1 = 2. But 2 | 3 = 3. This is not the minimum. Minimum is 1.\n            // For N=7 (111_2). No 0 bit. x = 7-1 = 6. But 6 | 7 = 7. Not minimum. Minimum is 3.\n\n            // Let's re-examine the property: `x | (x+1)`. The bits of `x` and `x+1` are identical up to the most significant bit where they differ.\n            // Let `k` be the position of the rightmost `0` bit in `x`. Then `x` has the form `...B10...0` (where `0` is at position `k`, and there are `m` ones after it).\n            // No, this is wrong. Let `x = A01...1` (where `0` is the rightmost `0` bit, and there are `k` ones after it).\n            // Then `x+1 = A10...0` (where `1` is at the position of the original `0`, and there are `k` zeros after it).\n            // `x OR (x+1) = A11...1` (all bits from position `k` downwards are `1`).\n            // So, `N` must be of the form `A11...1` for some `A` and some `k`.\n            // To find the minimum `x`, we need to find the largest `A` and smallest `k` such that `N = A11...1`.\n            // This means `N` must be equal to `(A << (k+1)) | ((1 << (k+1)) - 1)`.\n            // The value `A` is `N >> (k+1)`. The value `k` is the position of the rightmost `0` bit in `N`.\n            // If `N` is all
+  "approach": "The core of this problem lies in understanding the bitwise OR operation between an integer `x` and `x + 1`. When we perform `x OR (x + 1)`, the result `N` will have all the bits of `x` set, plus any trailing zero bits of `x` (from the least significant bit up to the rightmost zero) will also become set. Specifically, if `x` has a binary representation ending in `...A01...1` (where `A` is some prefix and there are `k` ones after the `0`), then `x + 1` will be `...A10...0`. The bitwise OR `x OR (x + 1)` will then be `...A11...1`, effectively setting all bits from the rightmost zero of `x` to the least significant bit to one. This implies that `N` must be of the form `(2^k - 1) | (some_prefix_bits << k)` for some `k`, meaning `N` must be an odd number, and all bits from its least significant bit up to its rightmost zero must be set to one. If `N` is even, it's impossible to find such an `x`, so `ans[i]` is -1. This is because `x OR (x+1)` will always result in an odd number. If `x` is even, `x = ...0`, `x+1 = ...1`, so `x OR (x+1) = x+1`, which is odd. If `x` is odd, `x = ...1`, `x+1 = ...0` (after carrying over), and `x OR (x+1)` will still have the LSB set to 1, making it odd.
+
+To minimize `ans[i]`, we want to find the smallest `x` such that `x OR (x + 1) == N`. Based on the property derived, `N` must be an odd number. If `N` is even, `ans[i]` is -1. If `N` is odd, we need to find an `x` such that `x` has all the bits of `N` set, except possibly some trailing ones that `x+1` would fill in. The smallest such `x` would be `N` itself, but `N OR (N+1)` is generally not `N`. Instead, `x` must be `N` with its lowest set bit (which is always 0 for `N` if `N` is odd) flipped to 0. This is equivalent to `N XOR (N & (N-1))`, or simply `N - (N & (N-1))`. More directly, `x` should be `N` with its rightmost `1` bit unset. This can be achieved by `N ^ (N & -N)`. For example, if `N = 7 (111)`, `x = 3 (011)`. `3 OR 4 = 7`. If `N = 5 (101)`, `x = 4 (100)`. `4 OR 5 = 5`. This logic works because `x` must be `N` with its lowest set bit (which is 1 for odd `N`) unset, and `x+1` will then set that bit back to 1, and `x` will have all other bits of `N` set. However, this is not quite right. `x` should be `N` with its lowest *zero* bit unset.
+Let's re-evaluate: `x OR (x + 1) = N`. This means `N` must have all bits set that are set in `x` and `x+1`.
+The expression `x OR (x + 1)` effectively sets all trailing zeros of `x` to ones. For example, if `x = 4 (100)`, `x+1 = 5 (101)`, `x OR (x+1) = 5 (101)`. If `x = 6 (110)`, `x+1 = 7 (111)`, `x OR (x+1) = 7 (111)`.
+This means `N` must be of the form `(x | (2^k - 1))` where `k` is the position of the least significant zero bit in `x`.
+To minimize `x`, we want `x` to be as close to `N` as possible from below, such that `x` has its lowest bit 0, and `x+1` fills in the lowest bit.
+The condition `x OR (x + 1) == N` implies two things:
+1. `x` must be less than or equal to `N`.
+2. `x + 1` must be less than or equal to `N`.
+3. All bits set in `x` must be set in `N`.
+4. All bits set in `x+1` must be set in `N`.
+5. `N` must be odd. If `N` is even, return -1.
+If `N` is odd, consider `x = N - 1`. Then `x` is even. `x OR (x+1) = (N-1) OR N`. Since `N-1` is even and `N` is odd, `N-1` ends in `...0` and `N` ends in `...1`. So `(N-1) OR N` will have all bits of `N-1` and the last bit of `N` set. This is simply `N`. So `x = N - 1` is a candidate.
+What if `N` is odd, but `N-1` is not the smallest?
+Example: `N = 3 (011)`. `N-1 = 2 (010)`. `2 OR 3 = 3`. So `ans = 2`. But the example says `ans = 1`.
+`1 (001) OR 2 (010) = 3 (011)`. So `x = 1` works.
+Example: `N = 5 (101)`. `N-1 = 4 (100)`. `4 OR 5 = 5`. So `ans = 4`. This matches the example.
+Example: `N = 7 (111)`. `N-1 = 6 (110)`. `6 OR 7 = 7`. So `ans = 6`. But the example says `ans = 3`.
+`3 (011) OR 4 (100) = 7 (111)`. So `x = 3` works.
+
+The pattern seems to be: if `N` is odd, find the smallest `k` such that `N` has all bits from `0` to `k-1` set to `1`, and bit `k` is `0`. No, this is not right.
+The condition `x OR (x + 1) == N` means that `N` must be `x` with all its trailing zeros flipped to ones.
+This implies that `N` must be of the form `(A << (k+1)) | (2^(k+1) - 1)` where `A` is some prefix and `k` is the position of the most significant bit of the trailing ones in `x`.
+More precisely, `x` must be of the form `P01...1` (where `P` is a prefix, `0` is at bit `k`, and there are `m` ones after it).
+Then `x+1` is `P10...0`.
+`x OR (x+1)` is `P11...1`.
+So `N` must be of the form `P11...1`.
+This means `N` must have a block of trailing ones.
+If `N` has a binary representation `...B11...1` (where `B` is the bit just before the block of trailing ones, and there are `k` trailing ones), then `x` must be `...B01...1` (i.e., `N` with the `k`-th bit from the right (0-indexed) flipped to 0).
+To minimize `x`, we want to find the largest `k` such that `N` has `k` trailing ones.
+Let `N` be `...b_k b_{k-1} ... b_1 b_0`.
+If `b_0 = 0`, then `N` is even. `ans = -1`.
+If `b_0 = 1`, `N` is odd.
+We need to find the largest `k` such that `N` has `k` trailing ones.
+This means `N` is `...X01...1` (where there are `k` ones).
+Then `x` should be `...X01...1` (same as `N`) but with the `k`-th bit from the right (which is `0` in `N`) flipped to `0`.
+No, this is confusing. Let's use the hint: "Try unsetting a single bit from `nums[i]`."
+Let `N = nums[i]`.
+If `N` is even, `ans[i] = -1`. (As derived above, `x OR (x+1)` is always odd).
+If `N` is odd:
+We are looking for `x` such that `x OR (x+1) = N`.
+This means `x` must be `N` with some bits potentially unset.
+Specifically, `x` must be `N` with its lowest *zero* bit unset.
+Let `N = 11 (1011_2)`. The lowest zero bit is at index 2. Unsetting it means `1011_2` becomes `1001_2 = 9`.
+Check: `9 OR (9+1) = 9 OR 10 = 1001_2 OR 1010_2 = 1011_2 = 11`. This works. `ans = 9`.
+Let `N = 13 (1101_2)`. The lowest zero bit is at index 2. Unsetting it means `1101_2` becomes `1100_2 = 12`.
+Check: `12 OR (12+1) = 12 OR 13 = 1100_2 OR 1101_2 = 1101_2 = 13`. This works. `ans = 12`.
+Let `N = 31 (11111_2)`. There are no zero bits. This implies `x` would be `N` itself, but `N OR (N+1)` is `N | (N+1)`. If `N` has all bits set, `N = 2^k - 1`. Then `N+1 = 2^k`. `N | (N+1) = (2^k - 1) | 2^k = 2^(k+1) - 1`. This is not `N`.
+So if `N` has all bits set (e.g., 3, 7, 15, 31, ...), then `N` itself cannot be `x`.
+In this case, `N = 3 (011_2)`. Lowest zero bit is at index 2 (conceptually, if we extend to higher bits). Unsetting it means `011_2` becomes `001_2 = 
 '''
 {% endraw %}
 {% endhighlight %}
 
   </div>
 
-  <div class="tab-panel" data-lang="kotlin">
+  <div class="tab-panel" data-lang="python3">
 
-{% highlight kotlin %}
+{% highlight python %}
 {% raw %}
-class Solution {
-    fun minBitwiseArray(nums: List<Int>): IntArray {
-        val ans = IntArray(nums.size)
-        for (i in nums.indices) {
-            val num = nums[i]
-            if (num % 2 == 0) {
-                ans[i] = -1
-            } else {
-                var m = 0
-                var temp = num
-                while (temp > 0 && (temp and 1) == 1) {
-                    m++
-                    temp = temp shr 1
-                }
-                ans[i] = num xor (1 shl (m - 1))
+class Solution:
+    def minBitwiseArray(self, nums: List[int]) -> List[int]:
+        ans = []
+
+        for N in nums:
+            current_ans = -1
+            # Iterate k from 29 down to 0.
+            # N <= 10^9, which is less than 2^30. So max bit position is 29.
+            for k in range(29, -1, -1):
+                # Condition 1: k-th bit of N must be 1
+                k_th_bit_is_set = ((N >> k) & 1) == 1
+
+                # Condition 2: All bits from 0 to k-1 of N must be 1
+                # (1 << k) - 1 creates a mask with k trailing ones (e.g., for k=3, mask is 0b111 = 7)
+                # If k=0, (1 << 0) - 1 = 0. (N & 0) == 0 is always true.
+                mask_k_minus_1 = (1 << k) - 1
+                lower_bits_are_all_set = (N & mask_k_minus_1) == mask_k_minus_1
+
+                if k_th_bit_is_set and lower_bits_are_all_set:
+                    current_ans = N - (1 << k)
+                    break # Found the largest k, which gives the smallest ans[i]
+            ans.append(current_ans)
+
+        return ans
+{% endraw %}
+{% endhighlight %}
+
+  </div>
+
+  <div class="tab-panel" data-lang="c">
+
+{% highlight c %}
+{% raw %}
+#include <stdlib.h> // For malloc
+#include <stdbool.h> // For bool
+
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+int* minBitwiseArray(int* nums, int numsSize, int* returnSize) {
+    int* ans = (int*)malloc(numsSize * sizeof(int));
+    *returnSize = numsSize;
+
+    for (int i = 0; i < numsSize; ++i) {
+        int N = nums[i];
+        int current_ans = -1;
+
+        // Iterate k from 29 down to 0.
+        // N <= 10^9, which is less than 2^30. So max bit position is 29.
+        for (int k = 29; k >= 0; --k) {
+            // Condition 1: k-th bit of N must be 1
+            bool k_th_bit_is_set = ((N >> k) & 1) == 1;
+
+            // Condition 2: All bits from 0 to k-1 of N must be 1
+            // (1 << k) - 1 creates a mask with k trailing ones (e.g., for k=3, mask is 0111_2 = 7)
+            // If k=0, (1 << 0) - 1 = 0. (N & 0) == 0 is always true.
+            int mask_k_minus_1 = (1 << k) - 1;
+            bool lower_bits_are_all_set = (N & mask_k_minus_1) == mask_k_minus_1;
+
+            if (k_th_bit_is_set && lower_bits_are_all_set) {
+                current_ans = N - (1 << k);
+                break; // Found the largest k, which gives the smallest ans[i]
             }
         }
+        ans[i] = current_ans;
+    }
+
+    return ans;
+}
+{% endraw %}
+{% endhighlight %}
+
+  </div>
+
+  <div class="tab-panel" data-lang="csharp">
+
+{% highlight csharp %}
+{% raw %}
+using System.Collections.Generic;
+
+public class Solution {
+    public int[] MinBitwiseArray(IList<int> nums) {
+        int[] ans = new int[nums.Count];
+
+        for (int i = 0; i < nums.Count; ++i) {
+            int N = nums[i];
+            int current_ans = -1;
+
+            // Iterate k from 29 down to 0.
+            // N <= 10^9, which is less than 2^30. So max bit position is 29.
+            for (int k = 29; k >= 0; --k) {
+                // Condition 1: k-th bit of N must be 1
+                bool k_th_bit_is_set = ((N >> k) & 1) == 1;
+
+                // Condition 2: All bits from 0 to k-1 of N must be 1
+                // (1 << k) - 1 creates a mask with k trailing ones (e.g., for k=3, mask is 0b111 = 7)
+                // If k=0, (1 << 0) - 1 = 0. (N & 0) == 0 is always true.
+                int mask_k_minus_1 = (1 << k) - 1;
+                bool lower_bits_are_all_set = (N & mask_k_minus_1) == mask_k_minus_1;
+
+                if (k_th_bit_is_set && lower_bits_are_all_set) {
+                    current_ans = N - (1 << k);
+                    break; // Found the largest k, which gives the smallest ans[i]
+                }
+            }
+            ans[i] = current_ans;
+        }
+
+        return ans;
+    }
+}
+{% endraw %}
+{% endhighlight %}
+
+  </div>
+
+  <div class="tab-panel" data-lang="javascript">
+
+{% highlight javascript %}
+{% raw %}
+/**
+ * @param {number[]} nums
+ * @return {number[]}
+ */
+var minBitwiseArray = function(nums) {
+    const ans = [];
+
+    for (const N of nums) {
+        let current_ans = -1;
+        // Iterate k from 29 down to 0.
+        // N <= 10^9, which is less than 2^30. So max bit position is 29.
+        for (let k = 29; k >= 0; --k) {
+            // Condition 1: k-th bit of N must be 1
+            const k_th_bit_is_set = ((N >> k) & 1) === 1;
+
+            // Condition 2: All bits from 0 to k-1 of N must be 1
+            // (1 << k) - 1 creates a mask with k trailing ones (e.g., for k=3, mask is 0b111 = 7)
+            // If k=0, (1 << 0) - 1 = 0. (N & 0) == 0 is always true.
+            const mask_k_minus_1 = (1 << k) - 1;
+            const lower_bits_are_all_set = (N & mask_k_minus_1) === mask_k_minus_1;
+
+            if (k_th_bit_is_set && lower_bits_are_all_set) {
+                current_ans = N - (1 << k);
+                break; // Found the largest k, which gives the smallest ans[i]
+            }
+        }
+        ans.push(current_ans);
+    }
+
+    return ans;
+};
+{% endraw %}
+{% endhighlight %}
+
+  </div>
+
+  <div class="tab-panel" data-lang="typescript">
+
+{% highlight typescript %}
+{% raw %}
+function minBitwiseArray(nums: number[]): number[] {
+    const ans: number[] = [];
+
+    for (const N of nums) {
+        let current_ans: number = -1;
+        // Iterate k from 29 down to 0.
+        // N <= 10^9, which is less than 2^30. So max bit position is 29.
+        for (let k = 29; k >= 0; --k) {
+            // Condition 1: k-th bit of N must be 1
+            const k_th_bit_is_set: boolean = ((N >> k) & 1) === 1;
+
+            // Condition 2: All bits from 0 to k-1 of N must be 1
+            // (1 << k) - 1 creates a mask with k trailing ones (e.g., for k=3, mask is 0b111 = 7)
+            // If k=0, (1 << 0) - 1 = 0. (N & 0) == 0 is always true.
+            const mask_k_minus_1: number = (1 << k) - 1;
+            const lower_bits_are_all_set: boolean = (N & mask_k_minus_1) === mask_k_minus_1;
+
+            if (k_th_bit_is_set && lower_bits_are_all_set) {
+                current_ans = N - (1 << k);
+                break; // Found the largest k, which gives the smallest ans[i]
+            }
+        }
+        ans.push(current_ans);
+    }
+
+    return ans;
+}
+{% endraw %}
+{% endhighlight %}
+
+  </div>
+
+  <div class="tab-panel" data-lang="php">
+
+{% highlight php %}
+{% raw %}
+<?php
+
+class Solution {
+
+    /**
+     * @param Integer[] $nums
+     * @return Integer[]
+     */
+    function minBitwiseArray($nums) {
+        $ans = [];
+
+        foreach ($nums as $N) {
+            $current_ans = -1;
+            // Iterate k from 29 down to 0.
+            // N <= 10^9, which is less than 2^30. So max bit position is 29.
+            for ($k = 29; $k >= 0; --$k) {
+                // Condition 1: k-th bit of N must be 1
+                $k_th_bit_is_set = (($N >> $k) & 1) == 1;
+
+                // Condition 2: All bits from 0 to k-1 of N must be 1
+                // (1 << k) - 1 creates a mask with k trailing ones (e.g., for k=3, mask is 0b111 = 7)
+                // If k=0, (1 << 0) - 1 = 0. (N & 0) == 0 is always true.
+                $mask_k_minus_1 = (1 << $k) - 1;
+                $lower_bits_are_all_set = ($N & $mask_k_minus_1) == $mask_k_minus_1;
+
+                if ($k_th_bit_is_set && $lower_bits_are_all_set) {
+                    $current_ans = $N - (1 << $k);
+                    break; // Found the largest k, which gives the smallest ans[i]
+                }
+            }
+            $ans[] = $current_ans;
+        }
+
+        return $ans;
+    }
+}
+{% endraw %}
+{% endhighlight %}
+
+  </div>
+
+  <div class="tab-panel" data-lang="swift">
+
+{% highlight swift %}
+{% raw %}
+class Solution {
+    func minBitwiseArray(_ nums: [Int]) -> [Int] {
+        var ans: [Int] = []
+
+        for N in nums {
+            var currentAns: Int = -1
+            // Iterate k from 29 down to 0.
+            // N <= 10^9, which is less than 2^30. So max bit position is 29.
+            for k in (0...29).reversed() {
+                // Condition 1: k-th bit of N must be 1
+                let kThBitIsSet = ((N >> k) & 1) == 1
+
+                // Condition 2: All bits from 0 to k-1 of N must be 1
+                // (1 << k) - 1 creates a mask with k trailing ones (e.g., for k=3, mask is 0b111 = 7)
+                // If k=0, (1 << 0) - 1 = 0. (N & 0) == 0 is always true.
+                let maskKMinus1 = (1 << k) - 1
+                let lowerBitsAreAllSet = (N & maskKMinus1) == maskKMinus1
+
+                if kThBitIsSet && lowerBitsAreAllSet {
+                    currentAns = N - (1 << k)
+                    break // Found the largest k, which gives the smallest ans[i]
+                }
+            }
+            ans.append(currentAns)
+        }
+
         return ans
     }
 }
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="dart">
-
-{% highlight dart %}
-{% raw %}
-class Solution {
-  List<int> minBitwiseArray(List<int> nums) {
-    final List<int> ans = List<int>.filled(nums.length, 0);
-    for (int i = 0; i < nums.length; i++) {
-      final int num = nums[i];
-      if (num % 2 == 0) {
-        ans[i] = -1;
-      } else {
-        int m = 0;
-        int temp = num;
-        while (temp > 0 && (temp & 1) == 1) {
-          m++;
-          temp >>= 1;
-        }
-        ans[i] = num ^ (1 << (m - 1));
-      }
-    }
-    return ans;
-  }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="go">
-
-{% highlight go %}
-{% raw %}
-func minBitwiseArray(nums []int) []int {
-    ans := make([]int, len(nums))
-    for i, num := range nums {
-        if num%2 == 0 {
-            ans[i] = -1
-        } else {
-            m := 0
-            temp := num
-            for temp > 0 && (temp&1) == 1 {
-                m++
-                temp >>= 1
-            }
-            ans[i] = num ^ (1 << (m - 1))
-        }
-    }
-    return ans
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="ruby">
-
-{% highlight ruby %}
-{% raw %}
-# @param {Integer[]} nums
-# @return {Integer[]}
-def min_bitwise_array(nums)
-    ans = []
-    nums.each do |num|
-        if num % 2 == 0
-            ans << -1
-        else
-            m = 0
-            temp = num
-            while temp > 0 && (temp & 1) == 1
-                m += 1
-                temp >>= 1
-            end
-            ans << (num ^ (1 << (m - 1)))
-        end
-    end
-    ans
-end
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="scala">
-
-{% highlight scala %}
-{% raw %}
-object Solution {
-    def minBitwiseArray(nums: List[Int]): Array[Int] = {
-        val ans = Array.ofDim[Int](nums.length)
-        for (i <- nums.indices) {
-            val num = nums(i)
-            if (num % 2 == 0) {
-                ans(i) = -1
-            } else {
-                var m = 0
-                var temp = num
-                while (temp > 0 && (temp & 1) == 1) {
-                    m += 1
-                    temp = temp >>> 1
-                }
-                ans(i) = num ^ (1 << (m - 1))
-            }
-        }
-        ans
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="rust">
-
-{% highlight rust %}
-{% raw %}
-impl Solution {
-    pub fn min_bitwise_array(nums: Vec<i32>) -> Vec<i32> {
-        let mut ans = Vec::with_capacity(nums.len());
-        for num in nums {
-            if num % 2 == 0 {
-                ans.push(-1);
-            } else {
-                let mut m = 0;
-                let mut temp = num;
-                while temp > 0 && (temp & 1) == 1 {
-                    m += 1;
-                    temp >>= 1;
-                }
-                ans.push(num ^ (1 << (m - 1)));
-            }
-        }
-        ans
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="racket">
-
-{% highlight racket %}
-{% raw %}
-(define/contract (min-bitwise-array nums)
-  (-> (listof exact-integer?) (listof exact-integer?))
-  (map (lambda (num)
-         (if (= (remainder num 2) 0)
-             -1
-             (let loop ((m 0) (temp num))
-               (if (and (> temp 0) (= (bitwise-and temp 1) 1))
-                   (loop (+ m 1) (arithmetic-shift temp -1))
-                   (bitwise-xor num (arithmetic-shift 1 (- m 1)))))))
-       nums))
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="erlang">
-
-{% highlight erlang %}
-{% raw %}
--spec min_bitwise_array(Nums :: [integer()]) -> [integer()].
-min_bitwise_array(Nums) ->
-  lists:map(fun(Num) ->
-    if
-      (Num rem 2) == 0 ->
-        -1;
-      true ->
-        M = count_trailing_ones(Num, 0, Num),
-        Num bxor (1 bsl (M - 1))
-    end
-  end, Nums).
-
-count_trailing_ones(Temp, M, _) when Temp =< 0 -> M;
-count_trailing_ones(Temp, M, _) when (Temp band 1) == 0 -> M;
-count_trailing_ones(Temp, M, Num) ->
-  count_trailing_ones(Temp bsr 1, M + 1, Num).
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="elixir">
-
-{% highlight elixir %}
-{% raw %}
-defmodule Solution do
-  @spec min_bitwise_array(nums :: [integer]) :: [integer]
-  def min_bitwise_array(nums) do
-    Enum.map(nums, fn num ->
-      if rem(num, 2) == 0 do
-        -1
-      else
-        m = count_trailing_ones(num, 0)
-        Bitwise.bxor(num, Bitwise.bsl(1, m - 1))
-      end
-    end)
-  end
-
-  defp count_trailing_ones(temp, m) when temp <= 0, do: m
-  defp count_trailing_ones(temp, m) when Bitwise.band(temp, 1) == 0, do: m
-  defp count_trailing_ones(temp, m) do
-    count_trailing_ones(Bitwise.bsr(temp, 1), m + 1)
-  end
-end
 {% endraw %}
 {% endhighlight %}
 
@@ -706,9 +922,9 @@ end
 
 ### Complexity Analysis
 
-- **Time Complexity:** The time complexity is O(L * log(max_val)), where L is the length of the `nums` array and `max_val` is the maximum value in `nums`. For each number, we iterate through its bits to count the trailing ones, which takes at most `log(max_val)` operations (approximately 30-31 for 10^9).
+- **Time Complexity:** The time complexity is O(M * log(max_N)), where M is the length of the `nums` array and `max_N` is the maximum value in `nums`. For each number in `nums`, we iterate through at most 30 possible bit positions (from 29 down to 0). Each iteration involves constant-time bitwise operations. Given `M <= 100` and `max_N <= 10^9`, this is roughly `100 * 30` operations, which is very efficient.
 
-- **Space Complexity:** The space complexity is O(L), where L is the length of the `nums` array. This is due to storing the `ans` array, which has the same length as the input array.
+- **Space Complexity:** The space complexity is O(M), where M is the length of the `nums` array. This is for storing the `ans` array, which has the same length as `nums`. No additional data structures are used that scale with the input values beyond a constant number of variables per iteration.
 
 </div>
 </details>
@@ -717,14 +933,14 @@ end
 <details class="ai-solution-card" markdown="1">
 <summary class="ai-solution-header">
   <span class="ai-model-badge">⚡ Solution from <strong>llama-3.3-70b-versatile</strong></span>
-  <small class="solution-timestamp">(2026-01-21 18:37:16 )</small>
+  <small class="solution-timestamp">(2026-01-21 19:46:02 )</small>
 </summary>
 
 <div class="ai-solution-content">
 
 ### Approach
 
-The problem requires constructing an array where each element's bitwise OR with its next element equals a given prime number. The key intuition is to analyze the binary representation of the prime numbers. For a number to satisfy the condition, it must have a specific bit set to 1, such that when it is ORed with the next number (which is essentially the current number plus 1), it results in the given prime number. This can be achieved by unsetting a single bit from the prime number, which will give us the required number. If the prime number is even, it is impossible to find such a number, so we set the answer to -1.
+The problem requires constructing an array where each element's bitwise OR with its next element equals a given prime number. We start by checking if the given number is even. If it is, we set the answer to -1 because there's no number that can satisfy the condition for even numbers. For odd numbers, we try to find the smallest number that satisfies the condition by unsetting a single bit from the given number. This approach works because the bitwise OR of a number and the number plus one will always result in a number with one more bit set than the original number, which is a property of binary representation.
 
 ### Code
 
@@ -780,11 +996,7 @@ public:
         vector<int> ans;
         for (int num : nums) {
             if (num % 2 == 0) ans.push_back(-1);
-            else {
-                int x = num;
-                while ((x | (x + 1)) != num) x--;
-                ans.push_back(x);
-            }
+            else ans.push_back(num - 1);
         }
         return ans;
     }
@@ -804,11 +1016,7 @@ class Solution {
         for (int i = 0; i < nums.size(); i++) {
             int num = nums.get(i);
             if (num % 2 == 0) ans[i] = -1;
-            else {
-                int x = num;
-                while ((x | (x + 1)) != num) x--;
-                ans[i] = x;
-            }
+            else ans[i] = num - 1;
         }
         return ans;
     }
@@ -824,14 +1032,7 @@ class Solution {
 {% raw %}
 class Solution(object):
     def minBitwiseArray(self, nums):
-        ans = []
-        for num in nums:
-            if num % 2 == 0: ans.append(-1)
-            else:
-                x = num
-                while (x | (x + 1)) != num: x -= 1
-                ans.append(x)
-        return ans
+        return [num - 1 if num % 2 else -1 for num in nums]
 {% endraw %}
 {% endhighlight %}
 
@@ -843,14 +1044,7 @@ class Solution(object):
 {% raw %}
 class Solution:
     def minBitwiseArray(self, nums: list[int]) -> list[int]:
-        ans = []
-        for num in nums:
-            if num % 2 == 0: ans.append(-1)
-            else:
-                x = num
-                while (x | (x + 1)) != num: x -= 1
-                ans.append(x)
-        return ans
+        return [num - 1 if num % 2 else -1 for num in nums]
 {% endraw %}
 {% endhighlight %}
 
@@ -864,13 +1058,8 @@ int* minBitwiseArray(int* nums, int numsSize, int* returnSize) {
     int* ans = (int*)malloc(numsSize * sizeof(int));
     *returnSize = numsSize;
     for (int i = 0; i < numsSize; i++) {
-        int num = nums[i];
-        if (num % 2 == 0) ans[i] = -1;
-        else {
-            int x = num;
-            while ((x | (x + 1)) != num) x--;
-            ans[i] = x;
-        }
+        if (nums[i] % 2 == 0) ans[i] = -1;
+        else ans[i] = nums[i] - 1;
     }
     return ans;
 }
@@ -889,11 +1078,7 @@ public class Solution {
         for (int i = 0; i < nums.Count; i++) {
             int num = nums[i];
             if (num % 2 == 0) ans[i] = -1;
-            else {
-                int x = num;
-                while ((x | (x + 1)) != num) x--;
-                ans[i] = x;
-            }
+            else ans[i] = num - 1;
         }
         return ans;
     }
@@ -908,16 +1093,7 @@ public class Solution {
 {% highlight javascript %}
 {% raw %}
 var minBitwiseArray = function(nums) {
-    let ans = [];
-    for (let num of nums) {
-        if (num % 2 == 0) ans.push(-1);
-        else {
-            let x = num;
-            while ((x | (x + 1)) != num) x--;
-            ans.push(x);
-        }
-    }
-    return ans;
+    return nums.map(num => num % 2 ? num - 1 : -1);
 };
 {% endraw %}
 {% endhighlight %}
@@ -929,16 +1105,7 @@ var minBitwiseArray = function(nums) {
 {% highlight typescript %}
 {% raw %}
 function minBitwiseArray(nums: number[]): number[] {
-    let ans: number[] = [];
-    for (let num of nums) {
-        if (num % 2 == 0) ans.push(-1);
-        else {
-            let x = num;
-            while ((x | (x + 1)) != num) x--;
-            ans.push(x);
-        }
-    }
-    return ans;
+    return nums.map(num => num % 2 ? num - 1 : -1);
 }
 {% endraw %}
 {% endhighlight %}
@@ -954,11 +1121,7 @@ class Solution {
         $ans = [];
         foreach ($nums as $num) {
             if ($num % 2 == 0) $ans[] = -1;
-            else {
-                $x = $num;
-                while (($x | ($x + 1)) != $num) $x--;
-                $ans[] = $x;
-            }
+            else $ans[] = $num - 1;
         }
         return $ans;
     }
@@ -974,16 +1137,7 @@ class Solution {
 {% raw %}
 class Solution {
     func minBitwiseArray(_ nums: [Int]) -> [Int] {
-        var ans: [Int] = []
-        for num in nums {
-            if num % 2 == 0 { ans.append(-1) }
-            else {
-                var x = num
-                while (x | (x + 1)) != num { x -= 1 }
-                ans.append(x)
-            }
-        }
-        return ans
+        return nums.map { $0 % 2 == 0 ? -1 : $0 - 1 }
     }
 }
 {% endraw %}
@@ -1050,7 +1204,7 @@ class Solution {
 func minBitwiseArray(nums []int) []int {
     result := make([]int, len(nums))
     for i, num := range nums {
-        if num%2 == 0 {
+        if num % 2 == 0 {
             result[i] = -1
         } else {
             j := num
@@ -1095,7 +1249,7 @@ end
 {% raw %}
 object Solution {
     def minBitwiseArray(nums: List[Int]): Array[Int] = {
-        val result = Array.ofDim[Int](nums.size)
+        val result = new Array[Int](nums.size)
         for (i <- nums.indices) {
             if (nums(i) % 2 == 0) {
                 result(i) = -1
@@ -1166,18 +1320,15 @@ impl Solution {
 
 {% highlight erlang %}
 {% raw %}
--spec min_bitwise_array(Nums :: [integer()]) -> [integer()].
+-module(solution).
+-export([min_bitwise_array/1]).
 min_bitwise_array(Nums) ->
-    lists:map(fun(N) ->
-        case N rem 2 of
-            0 -> -1;
-            _ ->
-                J = N,
-                while (bor(J, J + 1) =/= N) ->
-                    J - 1;
-                J
-        end
-    end, Nums).
+    lists:map(fun(N) when N rem 2 == 0 -> -1;
+                   (N) ->
+                       find_smallest(N, N)
+               end, Nums).
+find_smallest(N, J) when (J bor (J + 1)) == N -> J;
+find_smallest(N, J) -> find_smallest(N, J - 1).
 {% endraw %}
 {% endhighlight %}
 
@@ -1190,18 +1341,14 @@ min_bitwise_array(Nums) ->
 defmodule Solution do
   @spec min_bitwise_array(nums :: [integer]) :: [integer]
   def min_bitwise_array(nums) do
-    Enum.map(nums, fn num ->
-      if rem(num, 2) == 0 do
-        -1
-      else
-        j = num
-        while bor(j, j + 1) != num do
-          j = j - 1
-        end
-        j
-      end
+    Enum.map(nums, fn
+      num when rem(num, 2) == 0 -> -1
+      num -> find_smallest(num, num)
     end)
   end
+
+  defp find_smallest(num, j) when bor(j, j + 1) == num, do: j
+  defp find_smallest(num, j), do: find_smallest(num, j - 1)
 end
 {% endraw %}
 {% endhighlight %}
@@ -1212,9 +1359,9 @@ end
 
 ### Complexity Analysis
 
-- **Time Complexity:** The time complexity of this solution is O(n), where n is the number of elements in the input array. This is because we are iterating over each element in the array once and performing a constant amount of work for each element.
+- **Time Complexity:** The time complexity of this solution is O(n) where n is the number of elements in the input array. This is because we are iterating over the array once and performing a constant amount of work for each element.
 
-- **Space Complexity:** The space complexity of this solution is O(n), where n is the number of elements in the input array. This is because we are creating a new array of the same size as the input array to store the results.
+- **Space Complexity:** The space complexity of this solution is O(n) where n is the number of elements in the input array. This is because we are creating a new array of the same size as the input array to store the results.
 
 </div>
 </details>
