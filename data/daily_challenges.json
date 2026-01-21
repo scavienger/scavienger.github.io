@@ -322,5 +322,9 @@
   "2026-01-20": {
     "link": "/problems/construct-the-minimum-bitwise-array-i/",
     "titleSlug": "construct-the-minimum-bitwise-array-i"
+  },
+  "2026-01-21": {
+    "link": "/problems/construct-the-minimum-bitwise-array-ii/",
+    "titleSlug": "construct-the-minimum-bitwise-array-ii"
   }
 }
