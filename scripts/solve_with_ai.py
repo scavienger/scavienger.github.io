@@ -52,6 +52,8 @@ class AISolutionGenerator:
         }
     }
 
+    MAX_OUTPUT_TOKENS = 16384
+
     # Language batches (Split into smaller groups to avoid token limits/safety issues & improve template adherence)
     LANGUAGE_BATCHES = [
         ["C++", "Java", "Python", "Python3", "C", "C#", "JavaScript", "TypeScript", "PHP", "Swift"],
@@ -143,10 +145,10 @@ class AISolutionGenerator:
         """Get snippet filename key for a JSON output key."""
         return self.JSON_KEY_TO_FILENAME.get(json_key, json_key)
 
-    def create_prompt(self, problem_data: Dict, target_languages: list) -> str:
+    def create_prompt(self, problem_data: Dict, target_languages: list, include_metadata: bool = True) -> str:
         """Create a prompt for the AI models for specific languages"""
         title = problem_data.get('title', '')
-        content = problem_data.get('content', '')
+        content = problem_data.get('content_prompt') or problem_data.get('content', '')
         difficulty = problem_data.get('difficulty', '')
         hints = problem_data.get('hints', [])
         code_template = problem_data.get('code_template', '')
@@ -200,7 +202,8 @@ Problem Description:
             prompt += f"IMPORTANT CODE TEMPLATES:\n{snippets_prompt}\n"
 
         langs_str = ", ".join(target_languages)
-        prompt += f"""Please provide solutions ONLY for these languages (match this list exactly): {langs_str}
+        if include_metadata:
+            prompt += f"""Please provide solutions ONLY for these languages (match this list exactly): {langs_str}
 
 OUTPUT RULES (CRITICAL):
 - Return a single JSON object matching the schema below.
@@ -220,11 +223,32 @@ CODE FORMAT:
 COMPLEXITY:
 - 1 short paragraph for time complexity and 1 for space complexity.
 
-Format your response as JSON:
+Format as JSON:
 {{
   "approach": "Two-paragraph explanation",
   "time_complexity": "O(...) with one-paragraph explanation",
   "space_complexity": "O(...) with one-paragraph explanation",
+  "solutions": {{
+{sample_solutions}
+  }}
+}}
+"""
+        else:
+            prompt += f"""Please provide solutions ONLY for these languages (match this list exactly): {langs_str}
+
+OUTPUT RULES (CRITICAL):
+- Return a single JSON object containing only the "solutions" field.
+- No markdown, fences, or text outside the JSON.
+- Prefer ASCII; use Unicode only when necessary in strings.
+- Code strings must contain code only (no comments/narration). Escape every newline as \\n inside the JSON string, and use only valid JSON escapes: \\", \\\\, \\/, \\b, \\f, \\n, \\r, \\t, \\uXXXX. Never use backslash + space or other invalid forms.
+- Avoid HTML entities; use literal characters.
+
+CODE FORMAT:
+- Multi-line, properly indented code for each language; standard conventions; no explanatory comments.
+- **MUST USE THE PROVIDED TEMPLATES** for method signatures if available.
+
+Format as JSON:
+{{
   "solutions": {{
 {sample_solutions}
   }}
@@ -505,11 +529,23 @@ Format your response as JSON:
         if not new_solution:
             return
 
-        # Merge metadata (approach, complexity) - take the first valid one or longest
-        if not all_solutions.get("approach") or (new_solution.get("approach") and len(new_solution["approach"]) > len(all_solutions["approach"])):
-            all_solutions["approach"] = new_solution.get("approach", "N/A")
-            all_solutions["time_complexity"] = new_solution.get("time_complexity", "N/A")
-            all_solutions["space_complexity"] = new_solution.get("space_complexity", "N/A")
+        new_approach = new_solution.get("approach")
+        new_time = new_solution.get("time_complexity")
+        new_space = new_solution.get("space_complexity")
+
+        if isinstance(new_approach, str) and new_approach.strip():
+            existing_approach = all_solutions.get("approach", "")
+            if not existing_approach or len(new_approach) > len(existing_approach):
+                all_solutions["approach"] = new_approach
+                if isinstance(new_time, str) and new_time.strip():
+                    all_solutions["time_complexity"] = new_time
+                if isinstance(new_space, str) and new_space.strip():
+                    all_solutions["space_complexity"] = new_space
+
+        if isinstance(new_time, str) and new_time.strip() and not all_solutions.get("time_complexity"):
+            all_solutions["time_complexity"] = new_time
+        if isinstance(new_space, str) and new_space.strip() and not all_solutions.get("space_complexity"):
+            all_solutions["space_complexity"] = new_space
 
         # Merge solutions
         if "solutions" in new_solution:
@@ -551,10 +587,10 @@ Format your response as JSON:
         for i, batch in enumerate(self.LANGUAGE_BATCHES):
             print(f"  - Batch {i+1}/{len(self.LANGUAGE_BATCHES)}: {', '.join(batch)}", file=sys.stderr)
             try:
-                prompt = self.create_prompt(problem_data, batch)
+                prompt = self.create_prompt(problem_data, batch, include_metadata=(i == 0))
                 # Configure generation parameters for maximum output and JSON enforcement
                 generation_config = genai.types.GenerationConfig(
-                    max_output_tokens=65536,
+                    max_output_tokens=self.MAX_OUTPUT_TOKENS,
                     temperature=0.2,
                     response_mime_type="application/json"
                 )
@@ -641,7 +677,7 @@ Format your response as JSON:
         for i, batch in enumerate(self.LANGUAGE_BATCHES):
             print(f"  - Batch {i+1}/{len(self.LANGUAGE_BATCHES)}: {', '.join(batch)}", file=sys.stderr)
             try:
-                prompt = self.create_prompt(problem_data, batch)
+                prompt = self.create_prompt(problem_data, batch, include_metadata=(i == 0))
 
                 # Call Groq API (OpenAI-compatible endpoint)
                 start_time = time.time()
@@ -658,7 +694,7 @@ Format your response as JSON:
                             {"role": "user", "content": prompt}
                         ],
                         "temperature": 0.2,
-                        "max_completion_tokens": 32768  # Increased to prevent truncation
+                        "max_completion_tokens": self.MAX_OUTPUT_TOKENS
                     },
                     timeout=60
                 )

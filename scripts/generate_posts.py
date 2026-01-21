@@ -159,6 +159,25 @@ def validate_models(models: List[str]) -> List[str]:
     return models
 
 
+def normalize_prompt_content(html_content: str) -> str:
+    """Convert HTML content into compact plain text for AI prompts."""
+    if not html_content:
+        return ""
+    soup = BeautifulSoup(html_content, "html.parser")
+    text = soup.get_text(separator="\n")
+    lines = []
+    last_blank = False
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if line:
+            lines.append(line)
+            last_blank = False
+        elif not last_blank:
+            lines.append("")
+            last_blank = True
+    return "\n".join(lines).strip()
+
+
 def fetch_problem_by_slug(slug: str, snippet_dir: Optional[str] = None) -> Optional[Dict]:
     """
     Fetch problem details via LeetCode GraphQL by titleSlug.
@@ -215,6 +234,7 @@ def fetch_problem_by_slug(slug: str, snippet_dir: Optional[str] = None) -> Optio
         "question_id": question.get("questionFrontendId", ""),
         "difficulty": question.get("difficulty", "Unknown"),
         "content": question.get("content", ""),
+        "content_prompt": normalize_prompt_content(question.get("content", "")),
         "images": [],
         "topics": [tag.get("name") for tag in question.get("topicTags", [])],
         "hints": question.get("hints", []),
