@@ -212,6 +212,7 @@ OUTPUT RULES (CRITICAL):
 - Code strings must contain code only (no comments/narration). Escape every newline as \\n inside the JSON string, and use only valid JSON escapes: \\", \\\\, \\/, \\b, \\f, \\n, \\r, \\t, \\uXXXX. Never use backslash + space or other invalid forms.
 - Avoid HTML entities; use literal characters.
 - Do NOT use the pipe character '|' in text descriptions (Approach, Complexity) as it breaks Markdown table rendering. Use 'abs()' or escape it as '\|' or use LaTeX-style $...$.
+- Do NOT pad output to the maximum token limit. Keep the JSON as short as possible while complete for the requested languages.
 
 APPROACH:
 - Exactly 2 concise paragraphs describing the working algorithm and key intuition (no failed attempts).
@@ -242,6 +243,7 @@ OUTPUT RULES (CRITICAL):
 - Prefer ASCII; use Unicode only when necessary in strings.
 - Code strings must contain code only (no comments/narration). Escape every newline as \\n inside the JSON string, and use only valid JSON escapes: \\", \\\\, \\/, \\b, \\f, \\n, \\r, \\t, \\uXXXX. Never use backslash + space or other invalid forms.
 - Avoid HTML entities; use literal characters.
+- Do NOT pad output to the maximum token limit. Keep the JSON as short as possible while complete for the requested languages.
 
 CODE FORMAT:
 - Multi-line, properly indented code for each language; standard conventions; no explanatory comments.
