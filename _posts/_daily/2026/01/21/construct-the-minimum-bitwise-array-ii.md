@@ -8,164 +8,167 @@ difficulty: Medium
 leetcode_url: https://leetcode.com/problems/construct-the-minimum-bitwise-array-ii/
 ai_solutions:
   - solutions:
-      cpp: "class Solution {\npublic:\n    std::vector<int> minBitwiseArray(std::vector<int>&\
+      cpp: "#include <vector>\n#include <numeric>\n\nclass Solution {\npublic:\n   \
+        \ int countTrailingOnes(int n) {\n        int count = 0;\n        while ((n\
+        \ & 1) == 1) {\n            n >>= 1;\n            count++;\n        }\n    \
+        \    return count;\n    }\n\n    std::vector<int> minBitwiseArray(std::vector<int>&\
         \ nums) {\n        std::vector<int> ans;\n        ans.reserve(nums.size());\n\
-        \        for (int num : nums) {\n            if (num % 2 == 0) {\n         \
-        \       ans.push_back(-1);\n            }\n            else {\n            \
-        \    // num is odd\n                // Let x be the answer. We need x OR (x+1)\
-        \ == num.\n                // num must be of the form A1...1 (A followed by\
-        \ k ones).\n                // x must be of the form A01...1 (A followed by\
-        \ 0, then k-1 ones).\n                // This means x = num - 2^(k-1).\n   \
-        \             // k is the number of trailing ones in num.\n                //\
-        \ k is also the number of trailing zeros in num+1.\n                // (num+1)\
-        \ & -(num+1) gives 2^k.\n                int val = num + 1;\n              \
-        \  int lowest_bit = val & (-val); // This is 2^k\n                int ans_i\
-        \ = num - (lowest_bit >> 1); // This is num - 2^(k-1)\n                ans.push_back(ans_i);\n\
+        \n        for (int num : nums) {\n            if (num % 2 == 0) {\n        \
+        \        ans.push_back(-1);\n            } else {\n                int c = countTrailingOnes(num);\n\
+        \                int result = num - (1 << (c - 1));\n                ans.push_back(result);\n\
         \            }\n        }\n        return ans;\n    }\n};"
-      java: "import java.util.List;\nimport java.util.ArrayList;\n\nclass Solution {\n\
-        \    public int[] minBitwiseArray(List<Integer> nums) {\n        int[] ans =\
-        \ new int[nums.size()];\n        for (int i = 0; i < nums.size(); i++) {\n \
-        \           int num = nums.get(i);\n            if (num % 2 == 0) {\n      \
-        \          ans[i] = -1;\n            }\n            else {\n               \
-        \ // num is odd\n                // (val & -val) gives the lowest set bit, which\
-        \ is 2^k\n                // where k is the number of trailing zeros in val.\n\
-        \                // This k is also the number of trailing ones in num.\n   \
-        \             int val = num + 1;\n                int lowest_bit = val & (-val);\n\
-        \                // The answer is num - 2^(k-1)\n                ans[i] = num\
-        \ - (lowest_bit >> 1);\n            }\n        }\n        return ans;\n    }\n\
-        }"
-      python: "# Failed to parse response\n# Check logs for full output.\n# Full Response:\n\
-        '''\n{\n  \"solutions\": {\n    \"kotlin\": \"class Solution {\\n    fun minBitwiseArray(nums:\
-        \ List<Int>): IntArray {\\n        val ans = IntArray(nums.size)\\n        for\
-        \ (i in nums.indices) {\\n            val num = nums[i]\\n            if (num\
-        \ % 2 == 0) {\\n                ans[i] = -1\\n            } else {\\n      \
-        \          var m = 0\\n                var tempNum = num\\n                while\
-        \ ((tempNum and 1) == 1) {\\n                    m += 1\\n                 \
-        \   tempNum = tempNum shr 1\\n                }\\n                \\n      \
-        \          val A = num shr m\\n                val valForMMinus1Ones = (1 shl\
-        \ (m - 1)) - 1\\n                val x = (A shl m) or valForMMinus1Ones\\n \
-        \               ans[i] = x\\n            }\\n        }\\n        return ans\\\
-        n    }\\n}\",\n    \"dart\": \"class Solution {\\n  List<int> minBitwiseArray(List<int>\
-        \ nums) {\\n    List<int> ans = [];\\n    for (int num in nums) {\\n      if\
-        \ (num % 2 == 0) {\\n        ans.add(-1);\\n      } else {\\n        int m =\
-        \ 0;\\n        int tempNum = num;\\n        while ((tempNum & 1) == 1) {\\n\
-        \          m += 1;\\n          tempNum >>= 1;\\n        }\\n        \\n    \
-        \    int A = num >> m;\\n        int valForMMinus1Ones = (1 << (m - 1)) - 1;\\\
-        n        int x = (A << m) | valForMMinus1Ones;\\n        ans.add(x);\\n    \
-        \  }\\n    }\\n    return ans;\\n  }\\n}\",\n    \"go\": \"func minBitwiseArray(nums\
-        \ []int) []int {\\n    ans := make([]int, len(nums))\\n    for i, num := range\
-        \ nums {\\n        if num % 2 == 0 {\\n            ans[i] = -1\\n        } else\
-        \ {\\n            m := 0\\n            tempNum := num\\n            for (tempNum\
-        \ & 1) == 1 {\\n                m += 1\\n                tempNum >>= 1\\n  \
-        \          }\\n            \\n            A := num >> m\\n            valForMMinus1Ones\
-        \ := (1 << (m - 1)) - 1\\n            x := (A << m) | valForMMinus1Ones\\n \
-        \           ans[i] = x\\n        }\\n    }\\n    return ans\\n}\",\n    \"ruby\"\
-        : \"# @param {Integer[]} nums\\n# @return {Integer[]}\\ndef min_bitwise_array(nums\n\
-        '''"
+      java: "import java.util.ArrayList;\nimport java.util.List;\n\nclass Solution {\n\
+        \    private int countTrailingOnes(int n) {\n        int count = 0;\n      \
+        \  while ((n & 1) == 1) {\n            n >>= 1;\n            count++;\n    \
+        \    }\n        return count;\n    }\n\n    public int[] minBitwiseArray(List<Integer>\
+        \ nums) {\n        int[] ans = new int[nums.size()];\n\n        for (int i =\
+        \ 0; i < nums.size(); i++) {\n            int num = nums.get(i);\n         \
+        \   if (num % 2 == 0) {\n                ans[i] = -1;\n            } else {\n\
+        \                int c = countTrailingOnes(num);\n                int result\
+        \ = num - (1 << (c - 1));\n                ans[i] = result;\n            }\n\
+        \        }\n        return ans;\n    }\n}"
+      python: "class Solution(object):\n    def minBitwiseArray(self, nums):\n     \
+        \   \"\"\"\n        :type nums: List[int]\n        :rtype: List[int]\n     \
+        \   \"\"\"\n        ans = []\n        for num in nums:\n            if num %\
+        \ 2 == 0:\n                ans.append(-1)\n            else:\n             \
+        \   c = 0\n                temp_num = num\n                while (temp_num &\
+        \ 1) == 1:\n                    temp_num >>= 1\n                    c += 1\n\
+        \n                result = num - (1 << (c - 1))\n                ans.append(result)\n\
+        \        return ans"
       python3: "class Solution:\n    def minBitwiseArray(self, nums: List[int]) -> List[int]:\n\
         \        ans = []\n        for num in nums:\n            if num % 2 == 0:\n\
-        \                ans.append(-1)\n            else:\n                # num is\
-        \ odd\n                val = num + 1\n                lowest_bit = val & (-val)\n\
-        \                ans_i = num - (lowest_bit >> 1)\n                ans.append(ans_i)\n\
+        \                ans.append(-1)\n            else:\n                c = 0\n\
+        \                temp_num = num\n                while (temp_num & 1) == 1:\n\
+        \                    temp_num >>= 1\n                    c += 1\n\n        \
+        \        result = num - (1 << (c - 1))\n                ans.append(result)\n\
         \        return ans"
-      c: "#include <stdlib.h> // For malloc\n\n/**\n * Note: The returned array must\
-        \ be malloced, assume caller calls free().\n */\nint* minBitwiseArray(int* nums,\
-        \ int numsSize, int* returnSize) {\n    int* ans = (int*) malloc(numsSize *\
-        \ sizeof(int));\n    *returnSize = numsSize;\n\n    for (int i = 0; i < numsSize;\
-        \ i++) {\n        int num = nums[i];\n        if (num % 2 == 0) {\n        \
-        \    ans[i] = -1;\n        }\n        else {\n            // num is odd\n  \
-        \          // (val & -val) gives the lowest set bit, which is 2^k\n        \
-        \    // where k is the number of trailing zeros in val.\n            // This\
-        \ k is also the number of trailing ones in num.\n            int val = num +\
-        \ 1;\n            int lowest_bit = val & (-val);\n            // The answer\
-        \ is num - 2^(k-1)\n            ans[i] = num - (lowest_bit >> 1);\n        }\n\
-        \    }\n    return ans;\n}"
-      csharp: "using System.Collections.Generic;\n\npublic class Solution {\n    public\
-        \ int[] MinBitwiseArray(IList<int> nums) {\n        int[] ans = new int[nums.Count];\n\
-        \        for (int i = 0; i < nums.Count; i++) {\n            int num = nums[i];\n\
-        \            if (num % 2 == 0) {\n                ans[i] = -1;\n           \
-        \ }\n            else {\n                // num is odd\n                // (val\
-        \ & -val) gives the lowest set bit, which is 2^k\n                // where k\
-        \ is the number of trailing zeros in val.\n                // This k is also\
-        \ the number of trailing ones in num.\n                int val = num + 1;\n\
-        \                int lowest_bit = val & (-val);\n                // The answer\
-        \ is num - 2^(k-1)\n                ans[i] = num - (lowest_bit >> 1);\n    \
-        \        }\n        }\n        return ans;\n    }\n}"
+      c: "#include <stdlib.h>\n\n/**\n * Note: The returned array must be malloced,\
+        \ assume caller calls free().\n */\nint* minBitwiseArray(int* nums, int numsSize,\
+        \ int* returnSize) {\n    int* ans = (int*)malloc(numsSize * sizeof(int));\n\
+        \    *returnSize = numsSize;\n\n    for (int i = 0; i < numsSize; i++) {\n \
+        \       int num = nums[i];\n        if (num % 2 == 0) {\n            ans[i]\
+        \ = -1;\n        } else {\n            int c = 0;\n            int temp_num\
+        \ = num;\n            while ((temp_num & 1) == 1) {\n                temp_num\
+        \ >>= 1;\n                c++;\n            }\n\n            int result = num\
+        \ - (1 << (c - 1));\n            ans[i] = result;\n        }\n    }\n    return\
+        \ ans;\n}"
+      csharp: "using System;\nusing System.Collections.Generic;\n\npublic class Solution\
+        \ {\n    public int[] MinBitwiseArray(IList<int> nums) {\n        int[] ans\
+        \ = new int[nums.Count];\n\n        for (int i = 0; i < nums.Count; i++) {\n\
+        \            int num = nums[i];\n            if (num % 2 == 0) {\n         \
+        \       ans[i] = -1;\n            } else {\n                int c = 0;\n   \
+        \             int tempNum = num;\n                while ((tempNum & 1) == 1)\
+        \ {\n                    tempNum >>= 1;\n                    c++;\n        \
+        \        }\n\n                int result = num - (1 << (c - 1));\n         \
+        \       ans[i] = result;\n            }\n        }\n        return ans;\n  \
+        \  }\n}"
       javascript: "/**\n * @param {number[]} nums\n * @return {number[]}\n */\nvar minBitwiseArray\
         \ = function(nums) {\n    const ans = [];\n    for (let i = 0; i < nums.length;\
         \ i++) {\n        const num = nums[i];\n        if (num % 2 === 0) {\n     \
-        \       ans.push(-1);\n        }\n        else {\n            // num is odd\n\
-        \            // (val & -val) gives the lowest set bit, which is 2^k\n      \
-        \      // where k is the number of trailing zeros in val.\n            // This\
-        \ k is also the number of trailing ones in num.\n            const val = num\
-        \ + 1;\n            const lowest_bit = val & (-val);\n            // The answer\
-        \ is num - 2^(k-1)\n            ans.push(num - (lowest_bit >> 1));\n       \
-        \ }\n    }\n    return ans;\n};"
+        \       ans.push(-1);\n        } else {\n            let c = 0;\n          \
+        \  let tempNum = num;\n            while ((tempNum & 1) === 1) {\n         \
+        \       tempNum >>= 1;\n                c++;\n            }\n\n            const\
+        \ result = num - (1 << (c - 1));\n            ans.push(result);\n        }\n\
+        \    }\n    return ans;\n};"
       typescript: "function minBitwiseArray(nums: number[]): number[] {\n    const ans:\
         \ number[] = [];\n    for (let i = 0; i < nums.length; i++) {\n        const\
         \ num = nums[i];\n        if (num % 2 === 0) {\n            ans.push(-1);\n\
-        \        }\n        else {\n            // num is odd\n            // (val &\
-        \ -val) gives the lowest set bit, which is 2^k\n            // where k is the\
-        \ number of trailing zeros in val.\n            // This k is also the number\
-        \ of trailing ones in num.\n            const val: number = num + 1;\n     \
-        \       const lowest_bit: number = val & (-val);\n            // The answer\
-        \ is num - 2^(k-1)\n            ans.push(num - (lowest_bit >> 1));\n       \
-        \ }\n    }\n    return ans;\n};"
-      php: "class Solution {\n\n    /**\n     * @param Integer[] $nums\n     * @return\
-        \ Integer[]\n     */\n    function minBitwiseArray($nums) {\n        $ans =\
-        \ [];\n        foreach ($nums as $num) {\n            if ($num % 2 == 0) {\n\
-        \                $ans[] = -1;\n            }\n            else {\n         \
-        \       // num is odd\n                // (val & -val) gives the lowest set\
-        \ bit, which is 2^k\n                // where k is the number of trailing zeros\
-        \ in val.\n                // This k is also the number of trailing ones in\
-        \ num.\n                $val = $num + 1;\n                $lowest_bit = $val\
-        \ & (-$val);\n                // The answer is num - 2^(k-1)\n             \
-        \   $ans[] = $num - ($lowest_bit >> 1);\n            }\n        }\n        return\
-        \ $ans;\n    }\n}"
-      swift: "class Solution {\n    func minBitwiseArray(_ nums: [Int]) -> [Int] {\n\
-        \        var ans: [Int] = []\n        for num in nums {\n            if num\
-        \ % 2 == 0 {\n                ans.append(-1)\n            }\n            else\
-        \ {\n                // num is odd\n                // (val & -val) gives the\
-        \ lowest set bit, which is 2^k\n                // where k is the number of\
-        \ trailing zeros in val.\n                // This k is also the number of trailing\
-        \ ones in num.\n                let val = num + 1\n                let lowest_bit\
-        \ = val & (-val)\n                // The answer is num - 2^(k-1)\n         \
-        \       ans.append(num - (lowest_bit >> 1))\n            }\n        }\n    \
-        \    return ans\n    }\n}"
-    approach: "The problem requires us to find the smallest integer `ans[i]` such that\
-      \ `ans[i] OR (ans[i] + 1) == nums[i]`. Let's denote `ans[i]` as `x` and `nums[i]`\
-      \ as `N`. We analyze the bitwise OR operation `x OR (x + 1)`. If `x` is an even\
-      \ number, its binary representation ends in `0` (e.g., `...0`). Then `x + 1` ends\
-      \ in `1` (e.g., `...1`). Their bitwise OR, `(...0) OR (...1)`, will always end\
-      \ in `1`. If `x` is an odd number, its binary representation ends in `1` (e.g.,\
-      \ `...k11...1`, where `k` is the rightmost `0` or `x` is all `1`s). Then `x +\
-      \ 1` will flip the trailing `1`s to `0`s and the rightmost `0` to a `1` (e.g.,\
-      \ `...100...0`). In this case, `x OR (x + 1)` will also end in `1` because `x`\
-      \ itself has a `1` at the least significant bit. Therefore, `N` must always be\
-      \ an odd number. If `N` is even, no such `x` exists, and `ans[i]` should be set\
-      \ to `-1`. This covers the case where `nums[i] = 2`. All other prime numbers are\
-      \ odd. \n\nFor an odd `N`, let's consider the binary representation of `x`. If\
-      \ `x` has `k-1` trailing ones and a `0` at the `k-1`-th bit position (0-indexed\
-      \ from the right), i.e., `x = (prefix)01...1` (with `k-1` ones), then `x + 1`\
-      \ will be `(prefix)10...0` (with `k-1` zeros). The bitwise OR `x OR (x + 1)` will\
-      \ then be `(prefix)11...1` (with `k` ones). This result is `N`. This implies that\
-      \ `N` must have `k` trailing ones. To find `k`, we can observe that `N+1` will\
-      \ have `k` trailing zeros. The value `2^k` (which is the lowest set bit of `N+1`)\
-      \ can be efficiently calculated using the bitwise trick `(N+1) & -(N+1)`. Once\
-      \ `2^k` is known, `2^(k-1)` is simply `(2^k) / 2` or `(2^k) >> 1`. The desired\
-      \ `x` is then `N - 2^(k-1)`. This `x` is unique for a given `N` that satisfies\
-      \ the condition, thus it is the minimal `x`. The algorithm iterates through `nums`,\
-      \ applies this logic for each `num`, and stores the result in `ans`."
-    time_complexity: The time complexity is O(N) where N is the length of the `nums`
-      array. For each number in `nums`, we perform a constant number of arithmetic and
-      bitwise operations. These operations take constant time regardless of the magnitude
-      of the numbers (within standard integer limits).
-    space_complexity: The space complexity is O(N) where N is the length of the `nums`
-      array. We create an `ans` array to store the results, which has the same length
-      as the input `nums` array.
-    elapsed_time: 116.98492169380188
+        \        } else {\n            let c = 0;\n            let tempNum = num;\n\
+        \            while ((tempNum & 1) === 1) {\n                tempNum >>= 1;\n\
+        \                c++;\n            }\n\n            const result = num - (1\
+        \ << (c - 1));\n            ans.push(result);\n        }\n    }\n    return\
+        \ ans;\n};"
+      php: "<?php\n\nclass Solution {\n\n    /**\n     * @param Integer[] $nums\n  \
+        \   * @return Integer[]\n     */\n    function minBitwiseArray($nums) {\n  \
+        \      $ans = [];\n        foreach ($nums as $num) {\n            if ($num %\
+        \ 2 == 0) {\n                $ans[] = -1;\n            } else {\n          \
+        \      $c = 0;\n                $tempNum = $num;\n                while (($tempNum\
+        \ & 1) == 1) {\n                    $tempNum >>= 1;\n                    $c++;\n\
+        \                }\n\n                $result = $num - (1 << ($c - 1));\n  \
+        \              $ans[] = $result;\n            }\n        }\n        return $ans;\n\
+        \    }\n}"
+      swift: "import Foundation\n\nclass Solution {\n    func minBitwiseArray(_ nums:\
+        \ [Int]) -> [Int] {\n        var ans: [Int] = []\n        ans.reserveCapacity(nums.count)\n\
+        \n        for num in nums {\n            if num % 2 == 0 {\n               \
+        \ ans.append(-1)\n            } else {\n                var c = 0\n        \
+        \        var tempNum = num\n                while (tempNum & 1) == 1 {\n   \
+        \                 tempNum >>= 1\n                    c += 1\n              \
+        \  }\n\n                let result = num - (1 << (c - 1))\n                ans.append(result)\n\
+        \            }\n        }\n        return ans\n    }\n}"
+      kotlin: "class Solution {\n    fun minBitwiseArray(nums: List<Int>): IntArray\
+        \ {\n        val ans = IntArray(nums.size)\n        for (i in nums.indices)\
+        \ {\n            val num = nums[i]\n            if (num % 2 == 0) {\n      \
+        \          ans[i] = -1\n            } else {\n                var k0 = 0\n \
+        \               while ((num shr k0) and 1 == 1) {\n                    k0++\n\
+        \                }\n                ans[i] = num xor (1 shl (k0 - 1))\n    \
+        \        }\n        }\n        return ans\n    }\n}"
+      dart: "class Solution {\n  List<int> minBitwiseArray(List<int> nums) {\n    List<int>\
+        \ ans = List<int>.filled(nums.length, 0);\n    for (int i = 0; i < nums.length;\
+        \ i++) {\n      int num = nums[i];\n      if (num % 2 == 0) {\n        ans[i]\
+        \ = -1;\n      } else {\n        int k0 = 0;\n        while (((num >> k0) &\
+        \ 1) == 1) {\n          k0++;\n        }\n        ans[i] = num ^ (1 << (k0 -\
+        \ 1));\n      }\n    }\n    return ans;\n  }\n}"
+      go: "func minBitwiseArray(nums []int) []int {\n    ans := make([]int, len(nums))\n\
+        \    for i, num := range nums {\n        if num % 2 == 0 {\n            ans[i]\
+        \ = -1\n        } else {\n            k0 := 0\n            for ((num >> k0)\
+        \ & 1) == 1 {\n                k0++\n            }\n            ans[i] = num\
+        \ ^ (1 << (k0 - 1))\n        }\n    }\n    return ans\n}"
+      ruby: "# @param {Integer[]} nums\n# @return {Integer[]}\ndef min_bitwise_array(nums)\n\
+        \    ans = []\n    nums.each do |num|\n        if num % 2 == 0\n           \
+        \ ans << -1\n        else\n            k0 = 0\n            while ((num >> k0)\
+        \ & 1) == 1\n                k0 += 1\n            end\n            ans << (num\
+        \ ^ (1 << (k0 - 1)))\n        end\n    end\n    ans\nend"
+      scala: "object Solution {\n    def minBitwiseArray(nums: List[Int]): Array[Int]\
+        \ = {\n        val ans = Array.ofDim[Int](nums.length)\n        for (i <- nums.indices)\
+        \ {\n            val num = nums(i)\n            if (num % 2 == 0) {\n      \
+        \          ans(i) = -1\n            } else {\n                var k0 = 0\n \
+        \               while (((num >> k0) & 1) == 1) {\n                    k0 +=\
+        \ 1\n                }\n                ans(i) = num ^ (1 << (k0 - 1))\n   \
+        \         }\n        }\n        ans\n    }\n}"
+      rust: "impl Solution {\n    pub fn min_bitwise_array(nums: Vec<i32>) -> Vec<i32>\
+        \ {\n        let mut ans: Vec<i32> = Vec::with_capacity(nums.len());\n     \
+        \   for num in nums {\n            if num % 2 == 0 {\n                ans.push(-1);\n\
+        \            } else {\n                let mut k0 = 0;\n                while\
+        \ ((num >> k0) & 1) == 1 {\n                    k0 += 1;\n                }\n\
+        \                ans.push(num ^ (1 << (k0 - 1)));\n            }\n        }\n\
+        \        ans\n    }\n}"
+      racket: "(define/contract (min-bitwise-array nums)\n  (-> (listof exact-integer?)\
+        \ (listof exact-integer?))\n  (map (lambda (num)\n         (if (even? num)\n\
+        \             -1\n             (let loop ((k0 0))\n               (if (= (bitwise-and\
+        \ (bitwise-rshift num k0) 1) 1)\n                   (loop (+ k0 1))\n      \
+        \             (bitwise-xor num (bitwise-lshift 1 (- k0 1)))))))\n       nums))"
+      erlang: "-spec min_bitwise_array(Nums :: [integer()]) -> [integer()].\nmin_bitwise_array(Nums)\
+        \ ->\n  lists:map(fun(Num) ->\n                if\n                    Num rem\
+        \ 2 == 0 ->\n                        -1;\n                    true ->\n    \
+        \                    k0_loop(Num, 0)\n                end\n            end,\
+        \ Nums).\n\nk0_loop(Num, K0) ->\n    if\n        (bsr(Num, K0) band 1) == 1\
+        \ ->\n            k0_loop(Num, K0 + 1);\n        true ->\n            Num bxor\
+        \ (1 bsl (K0 - 1))\n    end."
+      elixir: "defmodule Solution do\n  @spec min_bitwise_array(nums :: [integer]) ::\
+        \ [integer]\n  def min_bitwise_array(nums) do\n    Enum.map(nums, fn num ->\n\
+        \      if rem(num, 2) == 0 do\n        -1\n      else\n        k0 = find_k0(num,\
+        \ 0)\n        Bitwise.bxor(num, Bitwise.bsl(1, k0 - 1))\n      end\n    end)\n\
+        \  end\n\n  defp find_k0(num, k0) do\n    if Bitwise.band(Bitwise.bsr(num, k0),\
+        \ 1) == 1 do\n      find_k0(num, k0 + 1)\n    else\n      k0\n    end\n  end\n\
+        end"
+    approach: The problem asks us to find the minimum `ans[i]` for each `nums[i]` such
+      that `ans[i] OR (ans[i] + 1) == nums[i]`. We analyze the bitwise OR operation
+      `x OR (x + 1)`. If `x` is an even number, its least significant bit (LSB) is 0.
+      Then `x = ...0` and `x + 1 = ...1`. Their bitwise OR, `x OR (x + 1)`, will always
+      have its LSB as 1, making it an odd number. Therefore, if `nums[i]` is even, no
+      `ans[i]` can satisfy the condition, and we set `ans[i] = -1`. This covers the
+      case where `nums[i] = 2` (the only even prime).
+    time_complexity: The time complexity is O(N * log(max_val)) where N is the length
+      of the `nums` array and `max_val` is the maximum value in `nums`. For each number
+      in `nums`, we perform a constant number of arithmetic operations and a loop to
+      count trailing ones. This loop iterates at most `log(max_val)` times (approximately
+      30 for `10^9`).
+    space_complexity: The space complexity is O(N) to store the `ans` array, where N
+      is the length of the `nums` array. No additional data structures are used that
+      scale with the input values.
+    elapsed_time: 120.6303162574768
     model: gemini-2.5-flash
-    generated_at: '2026-01-22 01:08:22 '
+    generated_at: '2026-01-22 02:33:31 '
   - solutions:
       cpp: "class Solution {\npublic:\n    vector<int> minBitwiseArray(vector<int>&\
         \ nums) {\n        vector<int> ans;\n        for (int num : nums) {\n      \
@@ -357,16 +360,14 @@ We've generated solutions using multiple AI models. Click to expand each solutio
 <details class="ai-solution-card" open markdown="1">
 <summary class="ai-solution-header">
   <span class="ai-model-badge">✨ Solution from <strong>gemini-2.5-flash</strong></span>
-  <small class="solution-timestamp">(2026-01-22 01:08:22 )</small>
+  <small class="solution-timestamp">(2026-01-22 02:33:31 )</small>
 </summary>
 
 <div class="ai-solution-content">
 
 ### Approach
 
-The problem requires us to find the smallest integer `ans[i]` such that `ans[i] OR (ans[i] + 1) == nums[i]`. Let's denote `ans[i]` as `x` and `nums[i]` as `N`. We analyze the bitwise OR operation `x OR (x + 1)`. If `x` is an even number, its binary representation ends in `0` (e.g., `...0`). Then `x + 1` ends in `1` (e.g., `...1`). Their bitwise OR, `(...0) OR (...1)`, will always end in `1`. If `x` is an odd number, its binary representation ends in `1` (e.g., `...k11...1`, where `k` is the rightmost `0` or `x` is all `1`s). Then `x + 1` will flip the trailing `1`s to `0`s and the rightmost `0` to a `1` (e.g., `...100...0`). In this case, `x OR (x + 1)` will also end in `1` because `x` itself has a `1` at the least significant bit. Therefore, `N` must always be an odd number. If `N` is even, no such `x` exists, and `ans[i]` should be set to `-1`. This covers the case where `nums[i] = 2`. All other prime numbers are odd. 
-
-For an odd `N`, let's consider the binary representation of `x`. If `x` has `k-1` trailing ones and a `0` at the `k-1`-th bit position (0-indexed from the right), i.e., `x = (prefix)01...1` (with `k-1` ones), then `x + 1` will be `(prefix)10...0` (with `k-1` zeros). The bitwise OR `x OR (x + 1)` will then be `(prefix)11...1` (with `k` ones). This result is `N`. This implies that `N` must have `k` trailing ones. To find `k`, we can observe that `N+1` will have `k` trailing zeros. The value `2^k` (which is the lowest set bit of `N+1`) can be efficiently calculated using the bitwise trick `(N+1) & -(N+1)`. Once `2^k` is known, `2^(k-1)` is simply `(2^k) / 2` or `(2^k) >> 1`. The desired `x` is then `N - 2^(k-1)`. This `x` is unique for a given `N` that satisfies the condition, thus it is the minimal `x`. The algorithm iterates through `nums`, applies this logic for each `num`, and stores the result in `ans`.
+The problem asks us to find the minimum `ans[i]` for each `nums[i]` such that `ans[i] OR (ans[i] + 1) == nums[i]`. We analyze the bitwise OR operation `x OR (x + 1)`. If `x` is an even number, its least significant bit (LSB) is 0. Then `x = ...0` and `x + 1 = ...1`. Their bitwise OR, `x OR (x + 1)`, will always have its LSB as 1, making it an odd number. Therefore, if `nums[i]` is even, no `ans[i]` can satisfy the condition, and we set `ans[i] = -1`. This covers the case where `nums[i] = 2` (the only even prime).
 
 ### Code
 
@@ -381,6 +382,15 @@ For an odd `N`, let's consider the binary representation of `x`. If `x` has `k-1
   <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-typescript-gemini-2-5-flash">
   <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-php-gemini-2-5-flash">
   <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-swift-gemini-2-5-flash">
+  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-kotlin-gemini-2-5-flash">
+  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-dart-gemini-2-5-flash">
+  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-go-gemini-2-5-flash">
+  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-ruby-gemini-2-5-flash">
+  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-scala-gemini-2-5-flash">
+  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-rust-gemini-2-5-flash">
+  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-racket-gemini-2-5-flash">
+  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-erlang-gemini-2-5-flash">
+  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-elixir-gemini-2-5-flash">
   <div class="tab-labels">
     <label for="lang-cpp-gemini-2-5-flash">C++</label>
     <label for="lang-java-gemini-2-5-flash">Java</label>
@@ -392,34 +402,46 @@ For an odd `N`, let's consider the binary representation of `x`. If `x` has `k-1
     <label for="lang-typescript-gemini-2-5-flash">TypeScript</label>
     <label for="lang-php-gemini-2-5-flash">PHP</label>
     <label for="lang-swift-gemini-2-5-flash">Swift</label>
+    <label for="lang-kotlin-gemini-2-5-flash">Kotlin</label>
+    <label for="lang-dart-gemini-2-5-flash">Dart</label>
+    <label for="lang-go-gemini-2-5-flash">Go</label>
+    <label for="lang-ruby-gemini-2-5-flash">Ruby</label>
+    <label for="lang-scala-gemini-2-5-flash">Scala</label>
+    <label for="lang-rust-gemini-2-5-flash">Rust</label>
+    <label for="lang-racket-gemini-2-5-flash">Racket</label>
+    <label for="lang-erlang-gemini-2-5-flash">Erlang</label>
+    <label for="lang-elixir-gemini-2-5-flash">Elixir</label>
   </div>
 
   <div class="tab-panel" data-lang="cpp">
 
 {% highlight cpp %}
 {% raw %}
+#include <vector>
+#include <numeric>
+
 class Solution {
 public:
+    int countTrailingOnes(int n) {
+        int count = 0;
+        while ((n & 1) == 1) {
+            n >>= 1;
+            count++;
+        }
+        return count;
+    }
+
     std::vector<int> minBitwiseArray(std::vector<int>& nums) {
         std::vector<int> ans;
         ans.reserve(nums.size());
+
         for (int num : nums) {
             if (num % 2 == 0) {
                 ans.push_back(-1);
-            }
-            else {
-                // num is odd
-                // Let x be the answer. We need x OR (x+1) == num.
-                // num must be of the form A1...1 (A followed by k ones).
-                // x must be of the form A01...1 (A followed by 0, then k-1 ones).
-                // This means x = num - 2^(k-1).
-                // k is the number of trailing ones in num.
-                // k is also the number of trailing zeros in num+1.
-                // (num+1) & -(num+1) gives 2^k.
-                int val = num + 1;
-                int lowest_bit = val & (-val); // This is 2^k
-                int ans_i = num - (lowest_bit >> 1); // This is num - 2^(k-1)
-                ans.push_back(ans_i);
+            } else {
+                int c = countTrailingOnes(num);
+                int result = num - (1 << (c - 1));
+                ans.push_back(result);
             }
         }
         return ans;
@@ -434,26 +456,30 @@ public:
 
 {% highlight java %}
 {% raw %}
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 class Solution {
+    private int countTrailingOnes(int n) {
+        int count = 0;
+        while ((n & 1) == 1) {
+            n >>= 1;
+            count++;
+        }
+        return count;
+    }
+
     public int[] minBitwiseArray(List<Integer> nums) {
         int[] ans = new int[nums.size()];
+
         for (int i = 0; i < nums.size(); i++) {
             int num = nums.get(i);
             if (num % 2 == 0) {
                 ans[i] = -1;
-            }
-            else {
-                // num is odd
-                // (val & -val) gives the lowest set bit, which is 2^k
-                // where k is the number of trailing zeros in val.
-                // This k is also the number of trailing ones in num.
-                int val = num + 1;
-                int lowest_bit = val & (-val);
-                // The answer is num - 2^(k-1)
-                ans[i] = num - (lowest_bit >> 1);
+            } else {
+                int c = countTrailingOnes(num);
+                int result = num - (1 << (c - 1));
+                ans[i] = result;
             }
         }
         return ans;
@@ -468,17 +494,26 @@ class Solution {
 
 {% highlight python %}
 {% raw %}
-# Failed to parse response
-# Check logs for full output.
-# Full Response:
-'''
-{
-  "solutions": {
-    "kotlin": "class Solution {\n    fun minBitwiseArray(nums: List<Int>): IntArray {\n        val ans = IntArray(nums.size)\n        for (i in nums.indices) {\n            val num = nums[i]\n            if (num % 2 == 0) {\n                ans[i] = -1\n            } else {\n                var m = 0\n                var tempNum = num\n                while ((tempNum and 1) == 1) {\n                    m += 1\n                    tempNum = tempNum shr 1\n                }\n                \n                val A = num shr m\n                val valForMMinus1Ones = (1 shl (m - 1)) - 1\n                val x = (A shl m) or valForMMinus1Ones\n                ans[i] = x\n            }\n        }\n        return ans\n    }\n}",
-    "dart": "class Solution {\n  List<int> minBitwiseArray(List<int> nums) {\n    List<int> ans = [];\n    for (int num in nums) {\n      if (num % 2 == 0) {\n        ans.add(-1);\n      } else {\n        int m = 0;\n        int tempNum = num;\n        while ((tempNum & 1) == 1) {\n          m += 1;\n          tempNum >>= 1;\n        }\n        \n        int A = num >> m;\n        int valForMMinus1Ones = (1 << (m - 1)) - 1;\n        int x = (A << m) | valForMMinus1Ones;\n        ans.add(x);\n      }\n    }\n    return ans;\n  }\n}",
-    "go": "func minBitwiseArray(nums []int) []int {\n    ans := make([]int, len(nums))\n    for i, num := range nums {\n        if num % 2 == 0 {\n            ans[i] = -1\n        } else {\n            m := 0\n            tempNum := num\n            for (tempNum & 1) == 1 {\n                m += 1\n                tempNum >>= 1\n            }\n            \n            A := num >> m\n            valForMMinus1Ones := (1 << (m - 1)) - 1\n            x := (A << m) | valForMMinus1Ones\n            ans[i] = x\n        }\n    }\n    return ans\n}",
-    "ruby": "# @param {Integer[]} nums\n# @return {Integer[]}\ndef min_bitwise_array(nums
-'''
+class Solution(object):
+    def minBitwiseArray(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[int]
+        """
+        ans = []
+        for num in nums:
+            if num % 2 == 0:
+                ans.append(-1)
+            else:
+                c = 0
+                temp_num = num
+                while (temp_num & 1) == 1:
+                    temp_num >>= 1
+                    c += 1
+
+                result = num - (1 << (c - 1))
+                ans.append(result)
+        return ans
 {% endraw %}
 {% endhighlight %}
 
@@ -495,11 +530,14 @@ class Solution:
             if num % 2 == 0:
                 ans.append(-1)
             else:
-                # num is odd
-                val = num + 1
-                lowest_bit = val & (-val)
-                ans_i = num - (lowest_bit >> 1)
-                ans.append(ans_i)
+                c = 0
+                temp_num = num
+                while (temp_num & 1) == 1:
+                    temp_num >>= 1
+                    c += 1
+
+                result = num - (1 << (c - 1))
+                ans.append(result)
         return ans
 {% endraw %}
 {% endhighlight %}
@@ -510,29 +548,29 @@ class Solution:
 
 {% highlight c %}
 {% raw %}
-#include <stdlib.h> // For malloc
+#include <stdlib.h>
 
 /**
  * Note: The returned array must be malloced, assume caller calls free().
  */
 int* minBitwiseArray(int* nums, int numsSize, int* returnSize) {
-    int* ans = (int*) malloc(numsSize * sizeof(int));
+    int* ans = (int*)malloc(numsSize * sizeof(int));
     *returnSize = numsSize;
 
     for (int i = 0; i < numsSize; i++) {
         int num = nums[i];
         if (num % 2 == 0) {
             ans[i] = -1;
-        }
-        else {
-            // num is odd
-            // (val & -val) gives the lowest set bit, which is 2^k
-            // where k is the number of trailing zeros in val.
-            // This k is also the number of trailing ones in num.
-            int val = num + 1;
-            int lowest_bit = val & (-val);
-            // The answer is num - 2^(k-1)
-            ans[i] = num - (lowest_bit >> 1);
+        } else {
+            int c = 0;
+            int temp_num = num;
+            while ((temp_num & 1) == 1) {
+                temp_num >>= 1;
+                c++;
+            }
+
+            int result = num - (1 << (c - 1));
+            ans[i] = result;
         }
     }
     return ans;
@@ -546,25 +584,27 @@ int* minBitwiseArray(int* nums, int numsSize, int* returnSize) {
 
 {% highlight csharp %}
 {% raw %}
+using System;
 using System.Collections.Generic;
 
 public class Solution {
     public int[] MinBitwiseArray(IList<int> nums) {
         int[] ans = new int[nums.Count];
+
         for (int i = 0; i < nums.Count; i++) {
             int num = nums[i];
             if (num % 2 == 0) {
                 ans[i] = -1;
-            }
-            else {
-                // num is odd
-                // (val & -val) gives the lowest set bit, which is 2^k
-                // where k is the number of trailing zeros in val.
-                // This k is also the number of trailing ones in num.
-                int val = num + 1;
-                int lowest_bit = val & (-val);
-                // The answer is num - 2^(k-1)
-                ans[i] = num - (lowest_bit >> 1);
+            } else {
+                int c = 0;
+                int tempNum = num;
+                while ((tempNum & 1) == 1) {
+                    tempNum >>= 1;
+                    c++;
+                }
+
+                int result = num - (1 << (c - 1));
+                ans[i] = result;
             }
         }
         return ans;
@@ -589,16 +629,16 @@ var minBitwiseArray = function(nums) {
         const num = nums[i];
         if (num % 2 === 0) {
             ans.push(-1);
-        }
-        else {
-            // num is odd
-            // (val & -val) gives the lowest set bit, which is 2^k
-            // where k is the number of trailing zeros in val.
-            // This k is also the number of trailing ones in num.
-            const val = num + 1;
-            const lowest_bit = val & (-val);
-            // The answer is num - 2^(k-1)
-            ans.push(num - (lowest_bit >> 1));
+        } else {
+            let c = 0;
+            let tempNum = num;
+            while ((tempNum & 1) === 1) {
+                tempNum >>= 1;
+                c++;
+            }
+
+            const result = num - (1 << (c - 1));
+            ans.push(result);
         }
     }
     return ans;
@@ -618,16 +658,16 @@ function minBitwiseArray(nums: number[]): number[] {
         const num = nums[i];
         if (num % 2 === 0) {
             ans.push(-1);
-        }
-        else {
-            // num is odd
-            // (val & -val) gives the lowest set bit, which is 2^k
-            // where k is the number of trailing zeros in val.
-            // This k is also the number of trailing ones in num.
-            const val: number = num + 1;
-            const lowest_bit: number = val & (-val);
-            // The answer is num - 2^(k-1)
-            ans.push(num - (lowest_bit >> 1));
+        } else {
+            let c = 0;
+            let tempNum = num;
+            while ((tempNum & 1) === 1) {
+                tempNum >>= 1;
+                c++;
+            }
+
+            const result = num - (1 << (c - 1));
+            ans.push(result);
         }
     }
     return ans;
@@ -641,6 +681,8 @@ function minBitwiseArray(nums: number[]): number[] {
 
 {% highlight php %}
 {% raw %}
+<?php
+
 class Solution {
 
     /**
@@ -652,16 +694,16 @@ class Solution {
         foreach ($nums as $num) {
             if ($num % 2 == 0) {
                 $ans[] = -1;
-            }
-            else {
-                // num is odd
-                // (val & -val) gives the lowest set bit, which is 2^k
-                // where k is the number of trailing zeros in val.
-                // This k is also the number of trailing ones in num.
-                $val = $num + 1;
-                $lowest_bit = $val & (-$val);
-                // The answer is num - 2^(k-1)
-                $ans[] = $num - ($lowest_bit >> 1);
+            } else {
+                $c = 0;
+                $tempNum = $num;
+                while (($tempNum & 1) == 1) {
+                    $tempNum >>= 1;
+                    $c++;
+                }
+
+                $result = $num - (1 << ($c - 1));
+                $ans[] = $result;
             }
         }
         return $ans;
@@ -676,22 +718,26 @@ class Solution {
 
 {% highlight swift %}
 {% raw %}
+import Foundation
+
 class Solution {
     func minBitwiseArray(_ nums: [Int]) -> [Int] {
         var ans: [Int] = []
+        ans.reserveCapacity(nums.count)
+
         for num in nums {
             if num % 2 == 0 {
                 ans.append(-1)
-            }
-            else {
-                // num is odd
-                // (val & -val) gives the lowest set bit, which is 2^k
-                // where k is the number of trailing zeros in val.
-                // This k is also the number of trailing ones in num.
-                let val = num + 1
-                let lowest_bit = val & (-val)
-                // The answer is num - 2^(k-1)
-                ans.append(num - (lowest_bit >> 1))
+            } else {
+                var c = 0
+                var tempNum = num
+                while (tempNum & 1) == 1 {
+                    tempNum >>= 1
+                    c += 1
+                }
+
+                let result = num - (1 << (c - 1))
+                ans.append(result)
             }
         }
         return ans
@@ -702,13 +748,246 @@ class Solution {
 
   </div>
 
+  <div class="tab-panel" data-lang="kotlin">
+
+{% highlight kotlin %}
+{% raw %}
+class Solution {
+    fun minBitwiseArray(nums: List<Int>): IntArray {
+        val ans = IntArray(nums.size)
+        for (i in nums.indices) {
+            val num = nums[i]
+            if (num % 2 == 0) {
+                ans[i] = -1
+            } else {
+                var k0 = 0
+                while ((num shr k0) and 1 == 1) {
+                    k0++
+                }
+                ans[i] = num xor (1 shl (k0 - 1))
+            }
+        }
+        return ans
+    }
+}
+{% endraw %}
+{% endhighlight %}
+
+  </div>
+
+  <div class="tab-panel" data-lang="dart">
+
+{% highlight dart %}
+{% raw %}
+class Solution {
+  List<int> minBitwiseArray(List<int> nums) {
+    List<int> ans = List<int>.filled(nums.length, 0);
+    for (int i = 0; i < nums.length; i++) {
+      int num = nums[i];
+      if (num % 2 == 0) {
+        ans[i] = -1;
+      } else {
+        int k0 = 0;
+        while (((num >> k0) & 1) == 1) {
+          k0++;
+        }
+        ans[i] = num ^ (1 << (k0 - 1));
+      }
+    }
+    return ans;
+  }
+}
+{% endraw %}
+{% endhighlight %}
+
+  </div>
+
+  <div class="tab-panel" data-lang="go">
+
+{% highlight go %}
+{% raw %}
+func minBitwiseArray(nums []int) []int {
+    ans := make([]int, len(nums))
+    for i, num := range nums {
+        if num % 2 == 0 {
+            ans[i] = -1
+        } else {
+            k0 := 0
+            for ((num >> k0) & 1) == 1 {
+                k0++
+            }
+            ans[i] = num ^ (1 << (k0 - 1))
+        }
+    }
+    return ans
+}
+{% endraw %}
+{% endhighlight %}
+
+  </div>
+
+  <div class="tab-panel" data-lang="ruby">
+
+{% highlight ruby %}
+{% raw %}
+# @param {Integer[]} nums
+# @return {Integer[]}
+def min_bitwise_array(nums)
+    ans = []
+    nums.each do |num|
+        if num % 2 == 0
+            ans << -1
+        else
+            k0 = 0
+            while ((num >> k0) & 1) == 1
+                k0 += 1
+            end
+            ans << (num ^ (1 << (k0 - 1)))
+        end
+    end
+    ans
+end
+{% endraw %}
+{% endhighlight %}
+
+  </div>
+
+  <div class="tab-panel" data-lang="scala">
+
+{% highlight scala %}
+{% raw %}
+object Solution {
+    def minBitwiseArray(nums: List[Int]): Array[Int] = {
+        val ans = Array.ofDim[Int](nums.length)
+        for (i <- nums.indices) {
+            val num = nums(i)
+            if (num % 2 == 0) {
+                ans(i) = -1
+            } else {
+                var k0 = 0
+                while (((num >> k0) & 1) == 1) {
+                    k0 += 1
+                }
+                ans(i) = num ^ (1 << (k0 - 1))
+            }
+        }
+        ans
+    }
+}
+{% endraw %}
+{% endhighlight %}
+
+  </div>
+
+  <div class="tab-panel" data-lang="rust">
+
+{% highlight rust %}
+{% raw %}
+impl Solution {
+    pub fn min_bitwise_array(nums: Vec<i32>) -> Vec<i32> {
+        let mut ans: Vec<i32> = Vec::with_capacity(nums.len());
+        for num in nums {
+            if num % 2 == 0 {
+                ans.push(-1);
+            } else {
+                let mut k0 = 0;
+                while ((num >> k0) & 1) == 1 {
+                    k0 += 1;
+                }
+                ans.push(num ^ (1 << (k0 - 1)));
+            }
+        }
+        ans
+    }
+}
+{% endraw %}
+{% endhighlight %}
+
+  </div>
+
+  <div class="tab-panel" data-lang="racket">
+
+{% highlight racket %}
+{% raw %}
+(define/contract (min-bitwise-array nums)
+  (-> (listof exact-integer?) (listof exact-integer?))
+  (map (lambda (num)
+         (if (even? num)
+             -1
+             (let loop ((k0 0))
+               (if (= (bitwise-and (bitwise-rshift num k0) 1) 1)
+                   (loop (+ k0 1))
+                   (bitwise-xor num (bitwise-lshift 1 (- k0 1)))))))
+       nums))
+{% endraw %}
+{% endhighlight %}
+
+  </div>
+
+  <div class="tab-panel" data-lang="erlang">
+
+{% highlight erlang %}
+{% raw %}
+-spec min_bitwise_array(Nums :: [integer()]) -> [integer()].
+min_bitwise_array(Nums) ->
+  lists:map(fun(Num) ->
+                if
+                    Num rem 2 == 0 ->
+                        -1;
+                    true ->
+                        k0_loop(Num, 0)
+                end
+            end, Nums).
+
+k0_loop(Num, K0) ->
+    if
+        (bsr(Num, K0) band 1) == 1 ->
+            k0_loop(Num, K0 + 1);
+        true ->
+            Num bxor (1 bsl (K0 - 1))
+    end.
+{% endraw %}
+{% endhighlight %}
+
+  </div>
+
+  <div class="tab-panel" data-lang="elixir">
+
+{% highlight elixir %}
+{% raw %}
+defmodule Solution do
+  @spec min_bitwise_array(nums :: [integer]) :: [integer]
+  def min_bitwise_array(nums) do
+    Enum.map(nums, fn num ->
+      if rem(num, 2) == 0 do
+        -1
+      else
+        k0 = find_k0(num, 0)
+        Bitwise.bxor(num, Bitwise.bsl(1, k0 - 1))
+      end
+    end)
+  end
+
+  defp find_k0(num, k0) do
+    if Bitwise.band(Bitwise.bsr(num, k0), 1) == 1 do
+      find_k0(num, k0 + 1)
+    else
+      k0
+    end
+  end
+end
+{% endraw %}
+{% endhighlight %}
+
+  </div>
+
 </div>
 
 ### Complexity Analysis
 
-- **Time Complexity:** The time complexity is O(N) where N is the length of the `nums` array. For each number in `nums`, we perform a constant number of arithmetic and bitwise operations. These operations take constant time regardless of the magnitude of the numbers (within standard integer limits).
+- **Time Complexity:** The time complexity is O(N * log(max_val)) where N is the length of the `nums` array and `max_val` is the maximum value in `nums`. For each number in `nums`, we perform a constant number of arithmetic operations and a loop to count trailing ones. This loop iterates at most `log(max_val)` times (approximately 30 for `10^9`).
 
-- **Space Complexity:** The space complexity is O(N) where N is the length of the `nums` array. We create an `ans` array to store the results, which has the same length as the input `nums` array.
+- **Space Complexity:** The space complexity is O(N) to store the `ans` array, where N is the length of the `nums` array. No additional data structures are used that scale with the input values.
 
 </div>
 </details>
