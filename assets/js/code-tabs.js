@@ -26,6 +26,9 @@
 
     // Hide non-Gemini AI solution cards in the UI
     filterAiSolutions();
+
+    // Fit AI solution headers to a single line
+    fitAiSolutionHeaders();
   }
 
   // Load user's preferred language from localStorage
@@ -75,6 +78,38 @@
       }
     });
   }
+
+  function fitAiSolutionHeaders() {
+    const targets = Array.from(document.querySelectorAll('h2, h3'))
+      .filter(el => (el.textContent || '').toLowerCase().includes('ai-generated solution'));
+    if (!targets.length) return;
+
+    targets.forEach(el => {
+      if (!el.dataset.originalFontSize) {
+        const computed = window.getComputedStyle(el);
+        el.dataset.originalFontSize = computed.fontSize;
+      }
+      el.style.whiteSpace = 'nowrap';
+      el.style.overflow = 'hidden';
+      el.style.textOverflow = 'clip';
+      const minSize = 12;
+      let size = parseFloat(el.dataset.originalFontSize);
+      el.style.fontSize = `${size}px`;
+
+      while (el.scrollWidth > el.clientWidth && size > minSize) {
+        size -= 0.5;
+        el.style.fontSize = `${size}px`;
+      }
+    });
+  }
+
+  let resizeTimer = null;
+  window.addEventListener('resize', () => {
+    window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(() => {
+      fitAiSolutionHeaders();
+    }, 120);
+  });
 
   // Initialize when DOM is ready
   if (document.readyState === 'loading') {
