@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is an automated LeetCode Daily Challenge blog powered by Jekyll and GitHub Pages. The system fetches daily LeetCode problems at 00:00 UTC (midnight UTC) via GitHub Actions, generates AI solutions in 19 programming languages using multiple AI models, and publishes them as interactive blog posts with modern features like dark mode, table of contents, code copy buttons, and multi-language code tabs.
+This is an automated LeetCode Daily Challenge blog powered by Jekyll and GitHub Pages. The system fetches daily LeetCode problems at 00:00 UTC (midnight UTC) via GitHub Actions, generates AI solutions in 19 programming languages using Gemini, and publishes them as interactive blog posts with modern features like dark mode, table of contents, code copy buttons, and multi-language code tabs.
 
 ## Key Features
 
@@ -13,7 +13,7 @@ This is an automated LeetCode Daily Challenge blog powered by Jekyll and GitHub 
 - **Table of Contents**: Auto-generated from headings with scroll-spy, collapsible on mobile, smart sticky behavior
 - **Code Tabs**: Pure CSS tabs for 19 programming languages with JavaScript enhancements for language preference persistence
 - **Code Copy**: One-click copy button for all code blocks with visual feedback
-- **Multiple AI Solutions**: Collapsible sections showing solutions from different AI models
+- **AI Solutions**: Gemini-generated solutions with detailed explanations
 - **Modern Design**: Hero section, statistics dashboard, card-based layout, breadcrumb navigation
 - **Related Posts**: Automatic suggestions based on difficulty level
 - **Responsive**: Mobile-first design with accessibility features
@@ -42,10 +42,8 @@ This is an automated LeetCode Daily Challenge blog powered by Jekyll and GitHub 
 19. Elixir
 
 ### AI Models
-- **Gemini 2.5 Flash** (Google, emoji: ✨): Fast, efficient, good at code generation
-- **Llama 3.3 70B** (Groq, emoji: ⚡): Powerful open-source model, detailed explanations
-- **Qwen 2.5 32B** (Groq, emoji: 🚀): Alternative Groq model
-- **Groq Compound** (Groq, emoji: 🧬): Compound reasoning model
+- **Gemini 3 Pro (Preview)**: Primary model (`gemini-3-pro-preview`)
+- **Gemini 3 Flash (Preview)**: Fallback on 429 (`gemini-3-flash-preview`)
 
 ## Key Commands
 
@@ -67,20 +65,12 @@ pip install -r scripts/requirements.txt
 The project now uses a **unified generator script** (`generate_posts.py`) that handles fetching, solving, and post generation in one step.
 
 ```bash
-# Generate post for today with default model (gemini-2.5-flash)
+# Generate post for today (Gemini only)
 export GEMINI_API_KEY="your-key"
 python scripts/generate_posts.py 2025-11-23
 
-# Generate with specific model
-python scripts/generate_posts.py 2025-11-23 llama-3.3-70b-versatile
-
-# Generate with multiple AI models (creates collapsible sections)
-export GEMINI_API_KEY="your-key"
-export GROQ_API_KEY="your-key"
-python scripts/generate_posts.py 2025-11-23 gemini-2.5-flash llama-3.3-70b-versatile
-
 # Generate for date range
-python scripts/generate_posts.py 2025-11-01 2025-11-10 gemini-2.5-flash
+python scripts/generate_posts.py 2025-11-01 2025-11-10
 ```
 
 ### Regenerate Solutions
@@ -88,21 +78,14 @@ python scripts/generate_posts.py 2025-11-01 2025-11-10 gemini-2.5-flash
 To update existing posts with new AI solutions:
 
 ```bash
-# Regenerate specific model for existing post (use defaults, only regen Llama)
-export GROQ_API_KEY="your-key"
-python scripts/generate_posts.py 2025-11-14 --update-models llama-3.3-70b-versatile
-
-# Regenerate multiple models
+# Regenerate solution for existing post
 export GEMINI_API_KEY="your-key"
-export GROQ_API_KEY="your-key"
-python scripts/generate_posts.py 2025-11-14 gemini-2.5-flash llama-3.3-70b-versatile --update-models gemini-2.5-flash,llama-3.3-70b-versatile
-
-Note: `--update-models` filters within the currently active model set. If you omit positional models, the defaults (`gemini-2.5-flash`, `llama-3.3-70b-versatile`) are used. To regen a non-default model (e.g., `qwen-2.5-32b`), add it positionally alongside `--update-models qwen-2.5-32b`.
+python scripts/generate_posts.py 2025-11-14
 ```
 
 You can also trigger regeneration via GitHub Actions:
-- **"Regenerate AI Solution for Post"**: Select date and model(s) to regenerate
-- **"Generate Post by Date"**: Generate post for specific date with multiple models
+- **"Regenerate AI Solution for Post"**: Select date to regenerate
+- **"Generate Post by Date"**: Generate post for specific date
 
 ### JavaScript Development
 
@@ -165,13 +148,12 @@ The daily automation workflow (`.github/workflows/leetcode-daily.yml`) runs at 0
    - Caches challenge mappings (date → link, titleSlug) in `data/daily_challenges.json`
    - Fetches problem details by titleSlug via GraphQL (question query)
    - Saves code snippets for all 19 languages to `_posts/_daily/YYYY/MM/DD/{lang}.txt`
-   - Calls `solve_with_ai.py` to generate AI solutions for each specified model
+   - Calls `solve_with_ai.py` to generate Gemini solutions
    - Calls `generate_post.py` to create Jekyll markdown post
    - Outputs to `_posts/_daily/YYYY/MM/DD/{slug}.md` (nested structure, no date prefix)
 
 2. **solve_with_ai.py**: Generates AI solution
-   - Supports 4 models: `gemini-2.5-flash`, `llama-3.3-70b-versatile`, `qwen-2.5-32b`, `groq/compound`
-   - Model selected via `AI_MODEL` environment variable
+   - Supports Gemini 3 Pro (primary) with Gemini 3 Flash fallback on 429
    - Prompts AI with strict JSON format requirements:
      - `approach`: 3 paragraph explanation (detailed)
      - `solutions`: Code in all 19 languages
@@ -185,7 +167,7 @@ The daily automation workflow (`.github/workflows/leetcode-daily.yml`) runs at 0
 3. **generate_post.py**: Creates Jekyll markdown post
    - Generates YAML frontmatter (title, date, tags, difficulty, leetcode_url)
    - Builds problem description with examples and constraints
-   - Creates collapsible `<details>` sections for multiple AI solutions (with `markdown="1"` attribute)
+   - Creates AI solution section with code tabs (with `markdown="1"` attribute)
    - Generates Pure CSS code tabs with unique IDs for each solution
    - Wraps all code blocks with `{% raw %}` and `{% endraw %}` to prevent Liquid parsing errors
    - Outputs to nested directory: `_posts/_daily/YYYY/MM/DD/{slug}.md`
@@ -222,7 +204,7 @@ leetcode_url: https://leetcode.com/problems/...
 
 <details class="ai-solution-card" open markdown="1">
 <summary class="ai-solution-header">
-  <span class="ai-model-badge">✨ Solution from <strong>gemini-2.5-flash</strong></span>
+  <span class="ai-model-badge">✨ Solution from <strong>gemini-3-pro-preview</strong></span>
   <small class="solution-timestamp">(YYYY-MM-DD HH:MM:SS)</small>
 </summary>
 <div class="ai-solution-content">
@@ -238,14 +220,6 @@ leetcode_url: https://leetcode.com/problems/...
 - **Space Complexity**: O(...)
 
 </div>
-</details>
-
-<details class="ai-solution-card" markdown="1">
-<summary class="ai-solution-header">
-  <span class="ai-model-badge">⚡ Solution from <strong>llama-3.3-70b-versatile</strong></span>
-  <small class="solution-timestamp">(YYYY-MM-DD HH:MM:SS)</small>
-</summary>
-[Similar structure]
 </details>
 ```
 
@@ -365,7 +339,7 @@ _posts/_daily/2025/11/23/
 
 ### Indentation Normalization System
 
-**Problem:** Some AI models (especially Llama) generate code with extra leading indentation (e.g., 7 extra spaces on every line).
+**Problem:** Some AI responses generate code with extra leading indentation (e.g., 7 extra spaces on every line).
 
 **Solution:** `solve_with_ai.py` implements multi-level indentation correction:
 
@@ -387,7 +361,7 @@ _posts/_daily/2025/11/23/
 
 **Why This Matters:**
 - Ensures consistent code formatting across all AI models
-- Removes Llama/Groq's common 7-space indentation bug
+- Removes common 7-space indentation bug
 - Preserves relative indentation within code (nested blocks)
 - Works for all 19 programming languages
 
@@ -399,7 +373,7 @@ _posts/_daily/2025/11/23/
 3. `generate_post.py` creates collapsible `<details>` sections
 4. Each section contains approach, code tabs, and complexity
 5. First solution is `open` by default, others are collapsed
-6. Model-specific emojis identify each solution (✨ Gemini, ⚡ Llama, 🚀 Qwen, 🧬 Compound)
+6. Model-specific emojis identify each solution (✨ Gemini)
 
 **Benefits:**
 - Compare different AI approaches
@@ -445,44 +419,20 @@ _posts/_daily/2025/11/23/
 
 ### Unified Generator Workflow
 
-**Single Model:**
+**Gemini-only:**
 ```
-generate_posts.py 2025-11-23 gemini-2.5-flash
+generate_posts.py 2025-11-23
   → Fetch from cache or GraphQL API
   → Fetch problem details (GraphQL)
   → Save code snippets
-  → Call solve_with_ai.py (model=gemini-2.5-flash)
+  → Call solve_with_ai.py (Gemini 3 Pro with Flash fallback)
   → Call generate_post.py
   → _posts/_daily/2025/11/23/{slug}.md
-```
-
-**Multi-Model:**
-```
-generate_posts.py 2025-11-23 gemini-2.5-flash llama-3.3-70b-versatile
-  → Fetch from cache or GraphQL API
-  → Fetch problem details (GraphQL)
-  → Save code snippets
-  → Call solve_with_ai.py for each model
-  → Aggregate solutions
-  → Call generate_post.py with multiple solutions
-  → _posts/_daily/2025/11/23/{slug}.md
-```
-
-**Regeneration with Update:**
-```
-generate_posts.py 2025-11-14 --update-models gemini-2.5-flash
-  → Load existing post
-  → Fetch problem details
-  → Generate only specified model(s) (defaults list still used for validation)
-  → Merge with existing solutions (replace same model)
-  → Overwrite post
 ```
 
 ### Code Tab ID Naming
 - Use suffix parameter to create unique IDs: `code-lang{suffix}`
 - Default suffix is `""` (empty string)
-- Multi-solution posts use model names as suffix: `"-gemini-2-5-flash"`, `"-llama-3-3-70b-versatile"`
-- Prevents radio button conflicts when multiple tab sets exist
 
 ### ⚠️ CRITICAL: Jekyll Liquid Escaping for Code Blocks
 
@@ -516,7 +466,7 @@ tabs_html.append('{% endhighlight %}\n\n')
 
 **MUST always dedent AI-generated code to remove extra indentation!**
 
-**Problem**: Some AI models (especially Llama) generate code with extra leading indentation (e.g., 7 extra spaces on every line). This makes the code look unprofessional and inconsistent across different AI solutions.
+**Problem**: Some AI responses generate code with extra leading indentation (e.g., 7 extra spaces on every line). This makes the code look unprofessional and inconsistent across different AI solutions.
 
 **Example Issue:**
 ```cpp
@@ -525,7 +475,7 @@ class Solution {
 public:
     int solve() {
 
-// Llama (wrong - extra 7 spaces)
+// (wrong - extra 7 spaces)
        class Solution {
               public:
                   int solve() {
@@ -536,7 +486,7 @@ public:
 # Remove leading/trailing whitespace
 cleaned = cleaned.strip()
 
-# Remove common leading indentation from all lines (fixes Llama extra indentation)
+# Remove common leading indentation from all lines (fixes extra indentation)
 cleaned = textwrap.dedent(cleaned)  # ← CRITICAL: Must not be removed!
 ```
 
@@ -558,7 +508,7 @@ if problem_slug and lang_slug:
 
 **Why This Matters**:
 - Ensures consistent code formatting across all AI models
-- Removes extra indentation from Llama/Groq responses
+- Removes extra indentation from AI responses
 - Preserves relative indentation within code (nested blocks)
 - Works for all 19 programming languages
 - Uses both template comparison and statistical analysis
@@ -688,37 +638,30 @@ See **BRANCHING_STRATEGY.md** for details.
 **Steps**:
 1. Checkout repository (master branch)
 2. Set up Python and install dependencies
-3. Run `generate_posts.py` with specified model(s)
+3. Run `generate_posts.py` (Gemini only)
 4. Commit and push to master if new post created
-
-**Manual Trigger Inputs**:
-- `ai_model`: Choose from `gemini-2.5-flash` or `llama-3.3-70b-versatile` (default: gemini)
 
 **Environment Variables**:
 - `GEMINI_API_KEY`: Secret for Gemini API
-- `GROQ_API_KEY`: Secret for Groq API
 
 ### regenerate-solution.yml (Manual Regeneration)
 **Triggers**: Manual dispatch only
 **Inputs**:
 - `date`: Post date in YYYY-MM-DD format
-- `ai_models`: Choose from single model or "Both (gemini + llama)"
 
 **Behavior**:
-- Uses `generate_posts.py` with `--update-models` flag
-- Updates existing post with new solutions
-- Merges with existing solutions (replaces same model)
+- Uses `generate_posts.py`
+- Updates existing post with new Gemini solutions
 - Commits to master
 
 ### generate-post-by-date.yml (Generate by Date)
 **Triggers**: Manual dispatch only
 **Inputs**:
 - `date`: Date in YYYY-MM-DD format
-- `models`: Space-separated model names (default: both Gemini and Llama)
 
 **Behavior**:
 - Uses `generate_posts.py`
-- Generates post with multiple AI solutions
+- Generates post with Gemini solutions
 - Useful for backfilling missing dates or regenerating old posts
 - Commits to master
 
@@ -732,9 +675,7 @@ See **BRANCHING_STRATEGY.md** for details.
 
 ### AI API Limits
 - **Gemini**: Free tier has rate limits (check Google AI Studio)
-- **Groq**: Free tier has rate limits (check Groq Console)
-- Scripts handle rate limit errors gracefully
-- Use delays between batch requests (5 seconds for Groq)
+- Scripts handle rate limit errors gracefully (Pro → Flash fallback, then sleep/retry)
 - Gemini supports up to 65536 output tokens
 
 ### GitHub Pages
@@ -757,7 +698,7 @@ See **BRANCHING_STRATEGY.md** for details.
 ```
 requests==2.31.0              # HTTP client for LeetCode and AI APIs
 python-dateutil==2.8.2        # Date parsing and manipulation
-google-generativeai==0.8.3    # Gemini API client
+google-genai                 # Gemini API client
 beautifulsoup4==4.12.3        # HTML parsing
 html2text==2024.2.26          # HTML to Markdown conversion
 PyYAML==6.0.2                 # YAML parsing for post frontmatter
@@ -861,7 +802,6 @@ jekyll-seo-tag (~> 2.8) # SEO meta tags
 - **Minima Theme**: https://github.com/jekyll/minima
 - **LeetCode GraphQL**: https://leetcode.com/graphql (introspection available)
 - **Gemini API**: https://ai.google.dev/docs
-- **Groq API**: https://console.groq.com/docs
 
 ### Tools
 - **Markdown**: https://www.markdownguide.org/
@@ -871,6 +811,6 @@ jekyll-seo-tag (~> 2.8) # SEO meta tags
 
 ---
 
-Last Updated: 2025-11-23
-Version: 3.0
+Last Updated: 2026-01-23
+Version: 3.1
 Maintained by: scavienger

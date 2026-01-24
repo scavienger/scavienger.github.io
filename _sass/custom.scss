@@ -131,6 +131,11 @@ pre code {
   line-height: 1.6;
 }
 
+/* Gemini-only AI solution view (handled in JS) */
+.ai-solution-tabs {
+  display: none;
+}
+
 /* Syntax highlighting */
 .highlight {
   border-radius: 8px;

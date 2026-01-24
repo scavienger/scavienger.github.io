@@ -6,7 +6,7 @@
 - [x] **Jekyll 블로그 기본 셋업** - Phase 1 완료
 - [x] **Archive & Tag Pages** - 문제 탐색 기능 완료
 - [x] **Visual Improvements** - 다크모드, 반응형 디자인 완료
-- [x] **AI Solution Generation** - Gemini/Groq 자동 솔루션 생성 완료
+- [x] **AI Solution Generation** - Gemini 자동 솔루션 생성 완료
 - [x] **GitHub Actions 자동화** - 매일 00:00 UTC 자동 실행
 
 ---
@@ -49,13 +49,13 @@
   - [ ] 권장 솔루션 하이라이트
 - [ ] Provider 관리
   - [ ] Gemini (무료)
-  - [ ] Groq (무료)
+  - [ ] Gemini 3 전환 점검
   - [ ] OpenAI (선택적, 유료)
   - [ ] Claude (선택적, 유료)
 - [ ] 워크플로우 설정
   ```yaml
   AI_COMPARISON_MODE: true  # 비교 모드 활성화
-  AI_PROVIDERS: "gemini,groq"  # 사용할 provider 목록
+  AI_PROVIDERS: "gemini"  # 사용할 provider 목록
   ```
 
 ### 3. 📊 Enhanced Statistics Dashboard
@@ -95,7 +95,7 @@
 ### 8. 🔒 Enhanced Error Handling (에러 처리 강화)
 - [ ] 재시도 메커니즘 추가 (API 실패시)
 - [ ] 중복 포스트 방지 로직 강화
-- [ ] Fallback chain: Gemini → Groq → 기본 템플릿
+- [ ] Fallback chain: Gemini Pro → Flash → 기본 템플릿
 
 ### 9. 🚀 SEO Optimization (SEO 최적화)
 - [ ] 메타 태그 최적화
@@ -136,10 +136,9 @@
 - [x] Gradient 효과 & 애니메이션
 
 ### Phase 4: AI 솔루션 생성
-- [x] Gemini API 연동 (gemini-2.5-flash)
-- [x] Groq API 연동 (llama-3.3-70b-versatile)
+- [x] Gemini API 연동 (gemini-3-pro-preview)
 - [x] 자동 솔루션 생성 (approach, code, complexity)
-- [x] Provider 선택 기능 (gemini/groq)
+- [x] Provider 선택 기능 (gemini)
 - [x] API 키 없이도 작동 (graceful fallback)
 - [x] 포스트에 AI 솔루션 포함
 
@@ -158,8 +157,7 @@
 - Python 3.11
 - GitHub Actions
 - LeetCode GraphQL API
-- Google Gemini API (gemini-2.5-flash)
-- Groq API (llama-3.3-70b-versatile)
+- Google Gemini API (gemini-3-pro-preview)
 
 ### 배포
 - GitHub Pages
@@ -170,7 +168,7 @@
 ## 작업 로그 📝
 
 ### 2025-11-15
-- ✅ AI Solution Generation 완료 (Gemini, Groq)
+- ✅ AI Solution Generation 완료 (Gemini)
 - ✅ Visual Improvements 완료 (다크모드, 반응형)
 - ✅ Archive & Tag Pages 완료
 - ✅ 첫 AI 솔루션 포스트 생성 성공

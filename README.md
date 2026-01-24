@@ -6,7 +6,7 @@ Automated blog that fetches and posts LeetCode Daily Challenge problems every da
 
 - **Automated Daily Posts**: GitHub Actions fetches the daily LeetCode problem and creates a new blog post automatically
 - **AI-Generated Solutions**: Solutions in 19 programming languages with Pure CSS tabs
-- **Multiple AI Models**: Choose from Gemini, Llama, Qwen, or Groq Compound - all with free tiers
+- **Gemini-only AI**: Gemini 3 Pro with Flash fallback on 429s
 - **Manual Regeneration**: Update existing posts with new AI solutions via workflow or command line
 - **Jekyll-powered**: Clean, fast static site hosted on GitHub Pages
 - **Modern UI**: Beautiful, responsive design with dark mode support and code copy buttons
@@ -32,30 +32,27 @@ Automated blog that fetches and posts LeetCode Daily Challenge problems every da
 
 To enable AI-generated solutions, add your API key:
 
-#### Choose Your AI Provider
-
-Both providers offer free tiers!
+#### Gemini (Only Provider)
 
 | Provider | Model | Secret Name | Get API Key |
 |----------|-------|-------------|-------------|
-| **Gemini** (Default) ✨ | gemini-2.5-flash | `GEMINI_API_KEY` | [Get Key](https://aistudio.google.com/app/apikey) |
-| **Groq** ⚡ | llama-3.3-70b-versatile | `GROQ_API_KEY` | [Get Key](https://console.groq.com/keys) |
+| **Gemini** ✨ | gemini-3-pro-preview (primary) / gemini-3-flash-preview (fallback) | `GEMINI_API_KEY` | [Get Key](https://aistudio.google.com/app/apikey) |
 
 #### Setup Instructions
 
 1. **Add API Key to GitHub Secrets**
    - Go to repository Settings → Secrets and variables → Actions
    - Click "New repository secret"
-   - Add `GEMINI_API_KEY` (for Gemini) and/or `GROQ_API_KEY` (for Groq)
+   - Add `GEMINI_API_KEY`
 
-2. **Change Model (Optional)**
-   - Default model is **Gemini 2.5 Flash**
-   - To use **Llama** instead, manually trigger the workflow and select the model
+2. **Model Behavior**
+   - Primary: **gemini-3-pro-preview**
+   - If 429 occurs: auto-fallback to **gemini-3-flash-preview**
+   - If flash also 429: sleep ~60s, retry pro
 
 **Notes:**
 - Only API keys go in Secrets (sensitive data)
-- Both providers offer generous free tiers
-- Without any API key, posts will only have problem descriptions without solutions
+- Without an API key, posts will only have problem descriptions without solutions
 
 ### 4. Test the Workflow
 
@@ -110,7 +107,7 @@ scavienger.github.io/
 4. **Fetch Problem Details**: Gets problem content, examples, hints, and code templates
 5. **Save Snippets**: Stores code templates for all 19 languages
 6. **AI Solutions**: Generates solutions in 19 languages with approach and complexity analysis
-7. **Generate Post**: Creates markdown file with collapsible sections for multiple AI models
+7. **Generate Post**: Creates markdown file with Gemini solution and code tabs
 8. **Auto Deploy**: GitHub Pages automatically builds and deploys the updated site
 
 ### Manual Regeneration
@@ -120,36 +117,26 @@ scavienger.github.io/
 1. Go to **Actions** → **Regenerate AI Solution for Post**
 2. Click **Run workflow**
 3. Enter the post date (YYYY-MM-DD format, e.g., `2025-11-23`)
-4. Select AI model(s) (Gemini, Llama, or Both)
-5. Click **Run workflow**
+4. Click **Run workflow**
 
 **Via Command Line:**
 
 ```bash
 # Set up environment
 export GEMINI_API_KEY="your-key-here"
-export GROQ_API_KEY="your-key-here"
 
-# Regenerate with single model (use defaults, but only regen Gemini)
-python scripts/generate_posts.py 2025-11-23 --update-models gemini-2.5-flash
-
-# Regenerate with multiple models
-python scripts/generate_posts.py 2025-11-23 gemini-2.5-flash llama-3.3-70b-versatile --update-models gemini-2.5-flash,llama-3.3-70b-versatile
-
-**How it works:** If you omit model arguments, the default set (`gemini-2.5-flash`, `llama-3.3-70b-versatile`) is used; `--update-models` restricts regeneration to the listed models that are also in the active model set. To regenerate a non-default model (e.g., qwen), include it positionally: `python scripts/generate_posts.py 2025-11-23 qwen-2.5-32b --update-models qwen-2.5-32b`.
+# Regenerate (Gemini only)
+python scripts/generate_posts.py 2025-11-23
 ```
 
 This is useful for:
-- Updating old posts with solutions from different AI models
 - Regenerating solutions with improved prompts
 - Adding solutions to posts that were created without AI keys
 
-## Supported AI Models
+## AI Models
 
-- **gemini-2.5-flash** (Google, emoji: ✨) - Default, fast and efficient
-- **llama-3.3-70b-versatile** (Groq, emoji: ⚡) - Powerful open-source model
-- **qwen-2.5-32b** (Groq, emoji: 🚀) - Alternative Groq model
-- **groq/compound** (Groq, emoji: 🧬) - Compound reasoning model
+- **gemini-3-pro-preview** (primary)
+- **gemini-3-flash-preview** (fallback on 429)
 
 ## Supported Programming Languages
 
@@ -205,13 +192,8 @@ pip install -r scripts/requirements.txt
 export GEMINI_API_KEY="your-key"
 python scripts/generate_posts.py 2025-11-23
 
-# Generate with multiple models
-export GEMINI_API_KEY="your-key"
-export GROQ_API_KEY="your-key"
-python scripts/generate_posts.py 2025-11-23 gemini-2.5-flash llama-3.3-70b-versatile
-
 # Generate for date range
-python scripts/generate_posts.py 2025-11-01 2025-11-10 gemini-2.5-flash
+python scripts/generate_posts.py 2025-11-01 2025-11-10
 ```
 
 ## Customization
@@ -252,7 +234,7 @@ The site uses the Minima theme with heavy customizations:
 ### AI Solutions Missing
 
 1. Verify API keys are added to GitHub Secrets
-2. Check API key names: `GEMINI_API_KEY` or `GROQ_API_KEY`
+2. Check API key name: `GEMINI_API_KEY`
 3. Check API rate limits (free tier has limits)
 
 ### Cache Issues
@@ -272,7 +254,7 @@ Generate posts for multiple dates:
 
 ```bash
 # Generate all posts for November 2025
-python scripts/generate_posts.py 2025-11-01 2025-11-30 gemini-2.5-flash
+python scripts/generate_posts.py 2025-11-01 2025-11-30
 ```
 
 **Note:** This will make many API calls. Use delays between requests to avoid rate limiting.
@@ -305,7 +287,7 @@ MIT License - Feel free to use this for your own LeetCode blog!
 
 - LeetCode for providing the daily challenge problems
 - Google for Gemini API
-- Groq for Llama and other open-source models
+- Gemini API for solution generation
 - Jekyll and Minima theme
 
 ---

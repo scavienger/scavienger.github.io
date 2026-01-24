@@ -128,10 +128,9 @@ class TestAISolutionGenerator(unittest.TestCase):
         self.assertEqual(base["solutions"]["python"], "old")
         self.assertEqual(base["solutions"]["cpp"], "new cpp")
 
-    @patch('solve_with_ai.genai.GenerativeModel')
-    def test_solve_with_gemini_mock(self, mock_model_class):
+    @patch.object(AISolutionGenerator, "_generate_content")
+    def test_solve_with_gemini_mock(self, mock_generate):
         # Setup Mock
-        mock_model = mock_model_class.return_value
         mock_response = MagicMock()
         mock_response.candidates = [MagicMock()]
         mock_response.candidates[0].finish_reason = 1
@@ -145,47 +144,18 @@ class TestAISolutionGenerator(unittest.TestCase):
         mock_usage.candidates_token_count = 20
         mock_usage.total_token_count = 30
         mock_response.usage_metadata = mock_usage
-        
-        mock_model.generate_content.return_value = mock_response
-        
-        self.generator.gemini_model = mock_model
-        self.generator.provider = 'gemini'
-        
+
+        mock_generate.return_value = mock_response
+
+        self.generator.client = MagicMock()
+
         result = self.generator.solve_with_gemini(self.sample_problem)
-        
+
         self.assertIsNotNone(result)
         self.assertIn("solutions", result)
         self.assertIn("python", result["solutions"])
         self.assertIn("elapsed_time", result)
         self.assertGreaterEqual(result["elapsed_time"], 0.0)
-
-    @patch('solve_with_ai.requests.post')
-    def test_solve_with_groq_mock(self, mock_post):
-        # Setup Mock
-        mock_response = MagicMock()
-        mock_response.ok = True
-        mock_response.json.return_value = {
-            "choices": [{
-                "message": {
-                    "content": json.dumps({
-                        "approach": "Groq Approach",
-                        "solutions": {"python": "print('groq')"}
-                    })
-                }
-            }],
-            "usage": {"total_tokens": 100}
-        }
-        mock_post.return_value = mock_response
-        
-        self.generator.groq_api_key = "mock_key"
-        self.generator.provider = 'groq'
-        
-        result = self.generator.solve_with_groq(self.sample_problem)
-        
-        self.assertIsNotNone(result)
-        self.assertIn("solutions", result)
-        self.assertIn("python", result["solutions"])
-        self.assertIn("elapsed_time", result)
 
 if __name__ == '__main__':
     unittest.main()

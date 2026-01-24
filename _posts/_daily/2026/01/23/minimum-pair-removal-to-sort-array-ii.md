@@ -9,230 +9,397 @@ leetcode_url: https://leetcode.com/problems/minimum-pair-removal-to-sort-array-i
 ai_solutions:
   - solutions:
       cpp: "class Solution {\npublic:\n    int minimumPairRemoval(vector<int>& nums)\
-        \ {\n        int n = nums.size();\n        int count = 0;\n        while (!isSorted(nums))\
-        \ {\n            int minSum = INT_MAX;\n            int minIndex = -1;\n   \
-        \         for (int i = 0; i < n - 1; i++) {\n                if (nums[i] + nums[i\
-        \ + 1] < minSum) {\n                    minSum = nums[i] + nums[i + 1];\n  \
-        \                  minIndex = i;\n                }\n            }\n       \
-        \     nums.erase(nums.begin() + minIndex + 1);\n            nums[minIndex] =\
-        \ minSum;\n            n--;\n            count++;\n        }\n        return\
-        \ count;\n    }\n    bool isSorted(vector<int>& nums) {\n        for (int i\
-        \ = 0; i < nums.size() - 1; i++) {\n            if (nums[i] > nums[i + 1]) {\n\
-        \                return false;\n            }\n        }\n        return true;\n\
-        \    }\n};"
-      java: "class Solution {\n    public int minimumPairRemoval(int[] nums) {\n   \
-        \     int n = nums.length;\n        int count = 0;\n        while (!isSorted(nums))\
-        \ {\n            int minSum = Integer.MAX_VALUE;\n            int minIndex =\
-        \ -1;\n            for (int i = 0; i < n - 1; i++) {\n                if (nums[i]\
-        \ + nums[i + 1] < minSum) {\n                    minSum = nums[i] + nums[i +\
-        \ 1];\n                    minIndex = i;\n                }\n            }\n\
-        \            int[] newNums = new int[n - 1];\n            System.arraycopy(nums,\
-        \ 0, newNums, 0, minIndex);\n            newNums[minIndex] = minSum;\n     \
-        \       System.arraycopy(nums, minIndex + 2, newNums, minIndex + 1, n - minIndex\
-        \ - 2);\n            nums = newNums;\n            n--;\n            count++;\n\
-        \        }\n        return count;\n    }\n    boolean isSorted(int[] nums) {\n\
-        \        for (int i = 0; i < nums.length - 1; i++) {\n            if (nums[i]\
-        \ > nums[i + 1]) {\n                return false;\n            }\n        }\n\
-        \        return true;\n    }\n}"
-      python: "class Solution(object):\n    def minimumPairRemoval(self, nums):\n  \
-        \      count = 0\n        while not self.isSorted(nums):\n            minSum\
-        \ = float('inf')\n            minIndex = -1\n            for i in range(len(nums)\
-        \ - 1):\n                if nums[i] + nums[i + 1] < minSum:\n              \
-        \      minSum = nums[i] + nums[i + 1]\n                    minIndex = i\n  \
-        \          nums.pop(minIndex + 1)\n            nums[minIndex] = minSum\n   \
-        \         count += 1\n        return count\n    def isSorted(self, nums):\n\
-        \        for i in range(len(nums) - 1):\n            if nums[i] > nums[i + 1]:\n\
-        \                return False\n        return True"
-      python3: "class Solution:\n    def minimumPairRemoval(self, nums: list[int]) ->\
-        \ int:\n        count = 0\n        while not self.isSorted(nums):\n        \
-        \    minSum = float('inf')\n            minIndex = -1\n            for i in\
-        \ range(len(nums) - 1):\n                if nums[i] + nums[i + 1] < minSum:\n\
-        \                    minSum = nums[i] + nums[i + 1]\n                    minIndex\
-        \ = i\n            nums.pop(minIndex + 1)\n            nums[minIndex] = minSum\n\
-        \            count += 1\n        return count\n    def isSorted(self, nums:\
-        \ list[int]) -> bool:\n        for i in range(len(nums) - 1):\n            if\
-        \ nums[i] > nums[i + 1]:\n                return False\n        return True"
-      c: "int minimumPairRemoval(int* nums, int numsSize) {\n    int count = 0;\n  \
-        \  while (!isSorted(nums, numsSize)) {\n        int minSum = INT_MAX;\n    \
-        \    int minIndex = -1;\n        for (int i = 0; i < numsSize - 1; i++) {\n\
-        \            if (nums[i] + nums[i + 1] < minSum) {\n                minSum =\
-        \ nums[i] + nums[i + 1];\n                minIndex = i;\n            }\n   \
-        \     }\n        for (int i = minIndex + 1; i < numsSize - 1; i++) {\n     \
-        \       nums[i] = nums[i + 1];\n        }\n        nums[minIndex] = minSum;\n\
-        \        numsSize--;\n        count++;\n    }\n    return count;\n}\nint isSorted(int*\
-        \ nums, int numsSize) {\n    for (int i = 0; i < numsSize - 1; i++) {\n    \
-        \    if (nums[i] > nums[i + 1]) {\n            return 0;\n        }\n    }\n\
-        \    return 1;\n}"
+        \ {\n        int n = nums.size();\n        if (n < 2) return 0;\n        vector<long\
+        \ long> val(n);\n        vector<int> L(n), R(n);\n        vector<bool> alive(n,\
+        \ true);\n        for (int i = 0; i < n; ++i) {\n            val[i] = nums[i];\n\
+        \            L[i] = i - 1;\n            R[i] = (i == n - 1) ? -1 : i + 1;\n\
+        \        }\n        typedef pair<long long, int> P;\n        priority_queue<P,\
+        \ vector<P>, greater<P>> pq;\n        int violations = 0;\n        for (int\
+        \ i = 0; i < n - 1; ++i) {\n            if (val[i] > val[i + 1]) violations++;\n\
+        \            pq.push({val[i] + val[i + 1], i});\n        }\n        int ops\
+        \ = 0;\n        while (violations > 0 && !pq.empty()) {\n            P top =\
+        \ pq.top();\n            pq.pop();\n            int i = top.second;\n      \
+        \      if (!alive[i] || R[i] == -1 || val[i] + val[R[i]] != top.first) continue;\n\
+        \            int j = R[i];\n            if (L[i] != -1 && val[L[i]] > val[i])\
+        \ violations--;\n            if (val[i] > val[j]) violations--;\n          \
+        \  if (R[j] != -1 && val[j] > val[R[j]]) violations--;\n            val[i] +=\
+        \ val[j];\n            alive[j] = false;\n            R[i] = R[j];\n       \
+        \     if (R[j] != -1) L[R[j]] = i;\n            if (L[i] != -1 && val[L[i]]\
+        \ > val[i]) violations++;\n            if (R[i] != -1 && val[i] > val[R[i]])\
+        \ violations++;\n            if (L[i] != -1) pq.push({val[L[i]] + val[i], L[i]});\n\
+        \            if (R[i] != -1) pq.push({val[i] + val[R[i]], i});\n           \
+        \ ops++;\n        }\n        return ops;\n    }\n};"
+      java: "class Solution {\n    static class Node implements Comparable<Node> {\n\
+        \        long sum;\n        int idx;\n        Node(long s, int i) {\n      \
+        \      this.sum = s;\n            this.idx = i;\n        }\n        public int\
+        \ compareTo(Node other) {\n            if (this.sum != other.sum) return Long.compare(this.sum,\
+        \ other.sum);\n            return Integer.compare(this.idx, other.idx);\n  \
+        \      }\n    }\n    public int minimumPairRemoval(int[] nums) {\n        int\
+        \ n = nums.length;\n        if (n < 2) return 0;\n        long[] val = new long[n];\n\
+        \        int[] L = new int[n];\n        int[] R = new int[n];\n        boolean[]\
+        \ alive = new boolean[n];\n        PriorityQueue<Node> pq = new PriorityQueue<>();\n\
+        \        int violations = 0;\n        for (int i = 0; i < n; i++) {\n      \
+        \      val[i] = nums[i];\n            L[i] = i - 1;\n            R[i] = (i ==\
+        \ n - 1) ? -1 : i + 1;\n            alive[i] = true;\n        }\n        for\
+        \ (int i = 0; i < n - 1; i++) {\n            if (val[i] > val[i + 1]) violations++;\n\
+        \            pq.add(new Node(val[i] + val[i + 1], i));\n        }\n        int\
+        \ ops = 0;\n        while (violations > 0 && !pq.isEmpty()) {\n            Node\
+        \ top = pq.poll();\n            int i = top.idx;\n            if (!alive[i]\
+        \ || R[i] == -1 || val[i] + val[R[i]] != top.sum) continue;\n            int\
+        \ j = R[i];\n            if (L[i] != -1 && val[L[i]] > val[i]) violations--;\n\
+        \            if (val[i] > val[j]) violations--;\n            if (R[j] != -1\
+        \ && val[j] > val[R[j]]) violations--;\n            val[i] += val[j];\n    \
+        \        alive[j] = false;\n            R[i] = R[j];\n            if (R[j] !=\
+        \ -1) L[R[j]] = i;\n            if (L[i] != -1 && val[L[i]] > val[i]) violations++;\n\
+        \            if (R[i] != -1 && val[i] > val[R[i]]) violations++;\n         \
+        \   if (L[i] != -1) pq.add(new Node(val[L[i]] + val[i], L[i]));\n          \
+        \  if (R[i] != -1) pq.add(new Node(val[i] + val[R[i]], i));\n            ops++;\n\
+        \        }\n        return ops;\n    }\n}"
+      python: "import heapq\n\nclass Solution(object):\n    def minimumPairRemoval(self,\
+        \ nums):\n        \"\"\"\n        :type nums: List[int]\n        :rtype: int\n\
+        \        \"\"\"\n        n = len(nums)\n        if n < 2:\n            return\
+        \ 0\n        val = [long(x) for x in nums]\n        L = [i - 1 for i in range(n)]\n\
+        \        R = [i + 1 for i in range(n)]\n        R[n - 1] = -1\n        alive\
+        \ = [True] * n\n        pq = []\n        violations = 0\n        for i in range(n\
+        \ - 1):\n            if val[i] > val[i + 1]:\n                violations +=\
+        \ 1\n            heapq.heappush(pq, (val[i] + val[i + 1], i))\n\n        ops\
+        \ = 0\n        while violations > 0 and pq:\n            s, i = heapq.heappop(pq)\n\
+        \            if not alive[i] or R[i] == -1 or val[i] + val[R[i]] != s:\n   \
+        \             continue\n            j = R[i]\n            if L[i] != -1 and\
+        \ val[L[i]] > val[i]: violations -= 1\n            if val[i] > val[j]: violations\
+        \ -= 1\n            if R[j] != -1 and val[j] > val[R[j]]: violations -= 1\n\
+        \            val[i] += val[j]\n            alive[j] = False\n            R[i]\
+        \ = R[j]\n            if R[j] != -1: L[R[j]] = i\n            if L[i] != -1\
+        \ and val[L[i]] > val[i]: violations += 1\n            if R[i] != -1 and val[i]\
+        \ > val[R[i]]: violations += 1\n            if L[i] != -1: heapq.heappush(pq,\
+        \ (val[L[i]] + val[i], L[i]))\n            if R[i] != -1: heapq.heappush(pq,\
+        \ (val[i] + val[R[i]], i))\n            ops += 1\n        return ops"
+      python3: "import heapq\n\nclass Solution:\n    def minimumPairRemoval(self, nums:\
+        \ List[int]) -> int:\n        n = len(nums)\n        if n < 2:\n           \
+        \ return 0\n        val = [int(x) for x in nums]\n        L = [i - 1 for i in\
+        \ range(n)]\n        R = [i + 1 for i in range(n)]\n        R[n - 1] = -1\n\
+        \        alive = [True] * n\n        pq = []\n        violations = 0\n     \
+        \   for i in range(n - 1):\n            if val[i] > val[i + 1]:\n          \
+        \      violations += 1\n            heapq.heappush(pq, (val[i] + val[i + 1],\
+        \ i))\n\n        ops = 0\n        while violations > 0 and pq:\n           \
+        \ s, i = heapq.heappop(pq)\n            if not alive[i] or R[i] == -1 or val[i]\
+        \ + val[R[i]] != s:\n                continue\n            j = R[i]\n      \
+        \      if L[i] != -1 and val[L[i]] > val[i]: violations -= 1\n            if\
+        \ val[i] > val[j]: violations -= 1\n            if R[j] != -1 and val[j] > val[R[j]]:\
+        \ violations -= 1\n            val[i] += val[j]\n            alive[j] = False\n\
+        \            R[i] = R[j]\n            if R[j] != -1: L[R[j]] = i\n         \
+        \   if L[i] != -1 and val[L[i]] > val[i]: violations += 1\n            if R[i]\
+        \ != -1 and val[i] > val[R[i]]: violations += 1\n            if L[i] != -1:\
+        \ heapq.heappush(pq, (val[L[i]] + val[i], L[i]))\n            if R[i] != -1:\
+        \ heapq.heappush(pq, (val[i] + val[R[i]], i))\n            ops += 1\n      \
+        \  return ops"
+      c: "#include <stdlib.h>\n#include <stdbool.h>\n\ntypedef struct {\n    long long\
+        \ sum;\n    int idx;\n} HeapNode;\n\ntypedef struct {\n    HeapNode* data;\n\
+        \    int size;\n    int capacity;\n} MinHeap;\n\nvoid push(MinHeap* h, long\
+        \ long sum, int idx) {\n    if (h->size == h->capacity) {\n        h->capacity\
+        \ *= 2;\n        h->data = (HeapNode*)realloc(h->data, sizeof(HeapNode) * h->capacity);\n\
+        \    }\n    int i = h->size++;\n    while (i > 0) {\n        int p = (i - 1)\
+        \ / 2;\n        if (h->data[p].sum < sum || (h->data[p].sum == sum && h->data[p].idx\
+        \ <= idx)) break;\n        h->data[i] = h->data[p];\n        i = p;\n    }\n\
+        \    h->data[i].sum = sum; h->data[i].idx = idx;\n}\n\nHeapNode pop(MinHeap*\
+        \ h) {\n    HeapNode res = h->data[0];\n    h->size--;\n    if (h->size > 0)\
+        \ {\n        HeapNode last = h->data[h->size];\n        int i = 0;\n       \
+        \ while (i * 2 + 1 < h->size) {\n            int child = i * 2 + 1;\n      \
+        \      if (child + 1 < h->size && (h->data[child + 1].sum < h->data[child].sum\
+        \ || (h->data[child+1].sum == h->data[child].sum && h->data[child+1].idx < h->data[child].idx)))\
+        \ child++;\n            if (last.sum < h->data[child].sum || (last.sum == h->data[child].sum\
+        \ && last.idx <= h->data[child].idx)) break;\n            h->data[i] = h->data[child];\
+        \ i = child;\n        }\n        h->data[i] = last;\n    }\n    return res;\n\
+        }\n\nint minimumPairRemoval(int* nums, int numsSize) {\n    if (numsSize < 2)\
+        \ return 0;\n    long long* val = (long long*)malloc(sizeof(long long) * numsSize);\n\
+        \    int* L = (int*)malloc(sizeof(int) * numsSize);\n    int* R = (int*)malloc(sizeof(int)\
+        \ * numsSize);\n    bool* alive = (bool*)malloc(sizeof(bool) * numsSize);\n\
+        \    for (int i = 0; i < numsSize; i++) {\n        val[i] = nums[i]; L[i] =\
+        \ i - 1;\n        R[i] = (i == numsSize - 1) ? -1 : i + 1; alive[i] = true;\n\
+        \    }\n    MinHeap h; h.capacity = numsSize * 3; h.data = (HeapNode*)malloc(sizeof(HeapNode)\
+        \ * h.capacity); h.size = 0;\n    int violations = 0;\n    for (int i = 0; i\
+        \ < numsSize - 1; i++) {\n        if (val[i] > val[i + 1]) violations++;\n \
+        \       push(&h, val[i] + val[i + 1], i);\n    }\n    int ops = 0;\n    while\
+        \ (violations > 0 && h.size > 0) {\n        HeapNode top = pop(&h);\n      \
+        \  int i = top.idx;\n        if (!alive[i] || R[i] == -1 || val[i] + val[R[i]]\
+        \ != top.sum) continue;\n        int j = R[i];\n        if (L[i] != -1 && val[L[i]]\
+        \ > val[i]) violations--;\n        if (val[i] > val[j]) violations--;\n    \
+        \    if (R[j] != -1 && val[j] > val[R[j]]) violations--;\n        val[i] +=\
+        \ val[j]; alive[j] = false; R[i] = R[j];\n        if (R[j] != -1) L[R[j]] =\
+        \ i;\n        if (L[i] != -1 && val[L[i]] > val[i]) violations++;\n        if\
+        \ (R[i] != -1 && val[i] > val[R[i]]) violations++;\n        if (L[i] != -1)\
+        \ push(&h, val[L[i]] + val[i], L[i]);\n        if (R[i] != -1) push(&h, val[i]\
+        \ + val[R[i]], i);\n        ops++;\n    }\n    free(val); free(L); free(R);\
+        \ free(alive); free(h.data);\n    return ops;\n}"
       csharp: "public class Solution {\n    public int MinimumPairRemoval(int[] nums)\
-        \ {\n        int n = nums.Length;\n        int count = 0;\n        while (!IsSorted(nums))\
-        \ {\n            int minSum = int.MaxValue;\n            int minIndex = -1;\n\
-        \            for (int i = 0; i < n - 1; i++) {\n                if (nums[i]\
-        \ + nums[i + 1] < minSum) {\n                    minSum = nums[i] + nums[i +\
-        \ 1];\n                    minIndex = i;\n                }\n            }\n\
-        \            int[] newNums = new int[n - 1];\n            Array.Copy(nums, 0,\
-        \ newNums, 0, minIndex);\n            newNums[minIndex] = minSum;\n        \
-        \    Array.Copy(nums, minIndex + 2, newNums, minIndex + 1, n - minIndex - 2);\n\
-        \            nums = newNums;\n            n--;\n            count++;\n     \
-        \   }\n        return count;\n    }\n    bool IsSorted(int[] nums) {\n     \
-        \   for (int i = 0; i < nums.Length - 1; i++) {\n            if (nums[i] > nums[i\
-        \ + 1]) {\n                return false;\n            }\n        }\n       \
-        \ return true;\n    }\n}"
-      javascript: "var minimumPairRemoval = function(nums) {\n    let count = 0;\n \
-        \   while (!isSorted(nums)) {\n        let minSum = Infinity;\n        let minIndex\
-        \ = -1;\n        for (let i = 0; i < nums.length - 1; i++) {\n            if\
-        \ (nums[i] + nums[i + 1] < minSum) {\n                minSum = nums[i] + nums[i\
-        \ + 1];\n                minIndex = i;\n            }\n        }\n        nums.splice(minIndex\
-        \ + 1, 1);\n        nums[minIndex] = minSum;\n        count++;\n    }\n    return\
-        \ count;\n};\nfunction isSorted(nums) {\n    for (let i = 0; i < nums.length\
-        \ - 1; i++) {\n        if (nums[i] > nums[i + 1]) {\n            return false;\n\
-        \        }\n    }\n    return true;\n}"
-      typescript: "function minimumPairRemoval(nums: number[]): number {\n    let count\
-        \ = 0;\n    while (!isSorted(nums)) {\n        let minSum = Infinity;\n    \
-        \    let minIndex = -1;\n        for (let i = 0; i < nums.length - 1; i++) {\n\
-        \            if (nums[i] + nums[i + 1] < minSum) {\n                minSum =\
-        \ nums[i] + nums[i + 1];\n                minIndex = i;\n            }\n   \
-        \     }\n        nums.splice(minIndex + 1, 1);\n        nums[minIndex] = minSum;\n\
-        \        count++;\n    }\n    return count;\n}\nfunction isSorted(nums: number[]):\
-        \ boolean {\n    for (let i = 0; i < nums.length - 1; i++) {\n        if (nums[i]\
-        \ > nums[i + 1]) {\n            return false;\n        }\n    }\n    return\
-        \ true;\n}"
-      php: "class Solution {\n    function minimumPairRemoval($nums) {\n        $count\
-        \ = 0;\n        while (!$this->isSorted($nums)) {\n            $minSum = PHP_INT_MAX;\n\
-        \            $minIndex = -1;\n            for ($i = 0; $i < count($nums) - 1;\
-        \ $i++) {\n                if ($nums[$i] + $nums[$i + 1] < $minSum) {\n    \
-        \                $minSum = $nums[$i] + $nums[$i + 1];\n                    $minIndex\
-        \ = $i;\n                }\n            }\n            array_splice($nums, $minIndex\
-        \ + 1, 1);\n            $nums[$minIndex] = $minSum;\n            $count++;\n\
-        \        }\n        return $count;\n    }\n    function isSorted($nums) {\n\
-        \        for ($i = 0; $i < count($nums) - 1; $i++) {\n            if ($nums[$i]\
-        \ > $nums[$i + 1]) {\n                return false;\n            }\n       \
-        \ }\n        return true;\n    }\n}"
-      swift: "class Solution {\n    func minimumPairRemoval(_ nums: [Int]) -> Int {\n\
-        \        var nums = nums\n        var count = 0\n        while !isSorted(nums)\
-        \ {\n            var minSum = Int.max\n            var minIndex = -1\n     \
-        \       for i in 0..<nums.count - 1 {\n                if nums[i] + nums[i +\
-        \ 1] < minSum {\n                    minSum = nums[i] + nums[i + 1]\n      \
-        \              minIndex = i\n                }\n            }\n            nums.remove(at:\
-        \ minIndex + 1)\n            nums[minIndex] = minSum\n            count += 1\n\
-        \        }\n        return count\n    }\n    func isSorted(_ nums: [Int]) ->\
-        \ Bool {\n        for i in 0..<nums.count - 1 {\n            if nums[i] > nums[i\
-        \ + 1] {\n                return false\n            }\n        }\n        return\
-        \ true\n    }\n}"
-      kotlin: "class Solution {\n    fun minimumPairRemoval(nums: IntArray): Int {\n\
-        \        var count = 0\n        var numsList = nums.toMutableList()\n      \
-        \  while (!isNonDecreasing(numsList)) {\n            var minSum = Int.MAX_VALUE\n\
-        \            var minIndex = -1\n            for (i in 0 until numsList.size\
-        \ - 1) {\n                val sum = numsList[i] + numsList[i + 1]\n        \
-        \        if (sum < minSum) {\n                    minSum = sum\n           \
-        \         minIndex = i\n                }\n            }\n            numsList.removeAt(minIndex\
-        \ + 1)\n            numsList[minIndex] = minSum\n            count++\n     \
-        \   }\n        return count\n    }\n\n    private fun isNonDecreasing(nums:\
-        \ List<Int>): Boolean {\n        for (i in 0 until nums.size - 1) {\n      \
-        \      if (nums[i] > nums[i + 1]) return false\n        }\n        return true\n\
-        \    }\n}"
-      dart: "class Solution {\n  int minimumPairRemoval(List<int> nums) {\n    int count\
-        \ = 0;\n    List<int> numsList = List.from(nums);\n    while (!isNonDecreasing(numsList))\
-        \ {\n      int minSum = int.maxFinite;\n      int minIndex = -1;\n      for\
-        \ (int i = 0; i < numsList.length - 1; i++) {\n        int sum = numsList[i]\
-        \ + numsList[i + 1];\n        if (sum < minSum) {\n          minSum = sum;\n\
-        \          minIndex = i;\n        }\n      }\n      numsList.removeAt(minIndex\
-        \ + 1);\n      numsList[minIndex] = minSum;\n      count++;\n    }\n    return\
-        \ count;\n  }\n\n  bool isNonDecreasing(List<int> nums) {\n    for (int i =\
-        \ 0; i < nums.length - 1; i++) {\n      if (nums[i] > nums[i + 1]) return false;\n\
-        \    }\n    return true;\n  }\n}"
-      go: "func minimumPairRemoval(nums []int) int {\n    count := 0\n    numsList :=\
-        \ make([]int, len(nums))\n    copy(numsList, nums)\n    for !isNonDecreasing(numsList)\
-        \ {\n        minSum := int(1e9)\n        minIndex := -1\n        for i := 0;\
-        \ i < len(numsList)-1; i++ {\n            sum := numsList[i] + numsList[i+1]\n\
-        \            if sum < minSum {\n                minSum = sum\n             \
-        \   minIndex = i\n            }\n        }\n        numsList = append(numsList[:minIndex],\
-        \ append([]int{minSum}, numsList[minIndex+2:]...)...)\n        count++\n   \
-        \ }\n    return count\n}\n\nfunc isNonDecreasing(nums []int) bool {\n    for\
-        \ i := 0; i < len(nums)-1; i++ {\n        if nums[i] > nums[i+1] {\n       \
-        \     return false\n        }\n    }\n    return true\n}"
-      ruby: "# @param {Integer[]} nums\n# @return {Integer}\ndef minimum_pair_removal(nums)\n\
-        \    count = 0\n    nums_list = nums.dup\n    while !is_non_decreasing(nums_list)\n\
-        \        min_sum = Float::INFINITY\n        min_index = -1\n        (0...nums_list.size\
-        \ - 1).each do |i|\n            sum = nums_list[i] + nums_list[i + 1]\n    \
-        \        if sum < min_sum\n                min_sum = sum\n                min_index\
-        \ = i\n            end\n        end\n        nums_list.delete_at(min_index +\
-        \ 1)\n        nums_list[min_index] = min_sum\n        count += 1\n    end\n\
-        \    count\nend\n\nprivate\ndef is_non_decreasing(nums)\n    (0...nums.size\
-        \ - 1).each do |i|\n        return false if nums[i] > nums[i + 1]\n    end\n\
-        \    true\nend"
-      scala: "object Solution {\n    def minimumPairRemoval(nums: Array[Int]): Int =\
-        \ {\n        var count = 0\n        var numsList = nums.toList\n        while\
-        \ (!isNonDecreasing(numsList)) {\n            var minSum = Int.MaxValue\n  \
-        \          var minIndex = -1\n            for (i <- 0 until numsList.size -\
-        \ 1) {\n                val sum = numsList(i) + numsList(i + 1)\n          \
-        \      if (sum < minSum) {\n                    minSum = sum\n             \
-        \       minIndex = i\n                }\n            }\n            numsList\
-        \ = numsList.patch(minIndex, Seq(minSum), 2)\n            count += 1\n     \
-        \   }\n        count\n    }\n\n    private def isNonDecreasing(nums: List[Int]):\
-        \ Boolean = {\n        for (i <- 0 until nums.size - 1) {\n            if (nums(i)\
-        \ > nums(i + 1)) return false\n        }\n        true\n    }\n}"
-      rust: "impl Solution {\n    pub fn minimum_pair_removal(nums: Vec<i32>) -> i32\
-        \ {\n        let mut count = 0;\n        let mut nums_list = nums;\n       \
-        \ while !is_non_decreasing(&nums_list) {\n            let mut min_sum = i32::MAX;\n\
-        \            let mut min_index = -1;\n            for i in 0..nums_list.len()\
-        \ - 1 {\n                let sum = nums_list[i] + nums_list[i + 1];\n      \
-        \          if sum < min_sum {\n                    min_sum = sum;\n        \
-        \            min_index = i as i32;\n                }\n            }\n     \
-        \       nums_list.remove(min_index as usize + 1);\n            nums_list[min_index\
-        \ as usize] = min_sum;\n            count += 1;\n        }\n        count\n\
-        \    }\n}\n\nfn is_non_decreasing(nums: &Vec<i32>) -> bool {\n    for i in 0..nums.len()\
-        \ - 1 {\n        if nums[i] > nums[i + 1] {\n            return false;\n   \
-        \     }\n    }\n    true\n}"
-      racket: "(define/contract (minimum-pair-removal nums)\n  (-> (listof exact-integer?)\
-        \ exact-integer?)\n  (let loop ((nums nums) (count 0))\n    (if (is-non-decreasing?\
-        \ nums)\n        count\n        (let* ((min-sum (apply min (map (lambda (x)\
-        \ (apply + x)) (map cons nums (cdr nums)))))\n               (min-index (index-of\
-        \ (map cons nums (cdr nums)) (cons (car (filter (lambda (x) (= (apply + x) min-sum))\
-        \ (map cons nums (cdr nums)))))))))\n          (loop (append (take nums min-index)\
-        \ (list min-sum) (cddr (drop nums min-index))) (+ count 1))))))\n\n(define (is-non-decreasing?\
-        \ nums)\n  (or (null? (cdr nums))\n      (and (<= (car nums) (cadr nums))\n\
-        \           (is-non-decreasing? (cdr nums)))))"
-      erlang: "minimum_pair_removal(Nums) ->\n    Count =\n        lists:foldl(\n  \
-        \          fun\n                ({Sum, Index}, {CountAcc, NumsAcc}) when Sum\
-        \ < MinSum ->\n                    {{Sum, Index}, {CountAcc + 1, lists:delete_at(NumsAcc,\
-        \ Index + 1)});\n                (_, {CountAcc, NumsAcc}) ->\n             \
-        \       {CountAcc, NumsAcc}\n            end,\n            {0, Nums},\n    \
-        \        [{lists:sum([A, B]), I} || {A, B, I} <- [{X, Y, I} || {X, Y, I} <-\
-        \ [{A, B, I} || {A, [B | _] = T, I} <- [{X, T, I} || {X, T, I} <- [{X, T, I}\
-        \ || {X, T} <- [{X, tl(T)} || T <- [Nums]], I <- [0]]]], I <- [0]]]]),\n   \
-        \ Count.\n\nis_non_decreasing(Nums) ->\n    lists:all(\n        fun\n      \
-        \      ({A, B}) when A =< B -> true;\n            (_) -> false\n        end,\n\
-        \        [{A, B} || {A, [B | _] = T} <- [{A, T} || T <- [Nums]], {A, B} <- [{A,\
-        \ B} || {A, B} <- [{A, B} || {A, [B | _] = T} <- [{A, T} || T <- [Nums]]]]]])."
+        \ {\n        int n = nums.Length;\n        if (n < 2) return 0;\n        long[]\
+        \ val = new long[n];\n        int[] L = new int[n];\n        int[] R = new int[n];\n\
+        \        bool[] alive = new bool[n];\n        var pq = new PriorityQueue<int,\
+        \ (long sum, int idx)>(\n            Comparer<(long sum, int idx)>.Create((a,\
+        \ b) => {\n                int cmp = a.sum.CompareTo(b.sum);\n             \
+        \   return cmp != 0 ? cmp : a.idx.CompareTo(b.idx);\n            })\n      \
+        \  );\n        int violations = 0;\n        for (int i = 0; i < n; i++) {\n\
+        \            val[i] = nums[i];\n            L[i] = i - 1;\n            R[i]\
+        \ = (i == n - 1) ? -1 : i + 1;\n            alive[i] = true;\n        }\n  \
+        \      for (int i = 0; i < n - 1; i++) {\n            if (val[i] > val[i + 1])\
+        \ violations++;\n            pq.Enqueue(i, (val[i] + val[i + 1], i));\n    \
+        \    }\n        int ops = 0;\n        while (violations > 0 && pq.Count > 0)\
+        \ {\n            pq.TryDequeue(out int i, out var top);\n            if (!alive[i]\
+        \ || R[i] == -1 || val[i] + val[R[i]] != top.sum) continue;\n            int\
+        \ j = R[i];\n            if (L[i] != -1 && val[L[i]] > val[i]) violations--;\n\
+        \            if (val[i] > val[j]) violations--;\n            if (R[j] != -1\
+        \ && val[j] > val[R[j]]) violations--;\n            val[i] += val[j];\n    \
+        \        alive[j] = false;\n            R[i] = R[j];\n            if (R[j] !=\
+        \ -1) L[R[j]] = i;\n            if (L[i] != -1 && val[L[i]] > val[i]) violations++;\n\
+        \            if (R[i] != -1 && val[i] > val[R[i]]) violations++;\n         \
+        \   if (L[i] != -1) pq.Enqueue(L[i], (val[L[i]] + val[i], L[i]));\n        \
+        \    if (R[i] != -1) pq.Enqueue(i, (val[i] + val[R[i]], i));\n            ops++;\n\
+        \        }\n        return ops;\n    }\n}"
+      javascript: "/**\n * @param {number[]} nums\n * @return {number}\n */\nvar minimumPairRemoval\
+        \ = function(nums) {\n    let n = nums.length;\n    if (n < 2) return 0;\n \
+        \   let val = new BigInt64Array(nums.map(BigInt));\n    let L = new Int32Array(n).fill(-1);\n\
+        \    let R = new Int32Array(n).fill(-1);\n    let alive = new Uint8Array(n).fill(1);\n\
+        \    for (let i = 0; i < n; i++) {\n        L[i] = i - 1;\n        R[i] = (i\
+        \ === n - 1) ? -1 : i + 1;\n    }\n    const pq = new MinPriorityQueue({\n \
+        \       compare: (a, b) => {\n            if (a.sum < b.sum) return -1;\n  \
+        \          if (a.sum > b.sum) return 1;\n            return a.idx - b.idx;\n\
+        \        }\n    });\n    let violations = 0;\n    for (let i = 0; i < n - 1;\
+        \ i++) {\n        if (val[i] > val[i + 1]) violations++;\n        pq.enqueue({\
+        \ sum: val[i] + val[i + 1], idx: i });\n    }\n    let ops = 0;\n    while (violations\
+        \ > 0 && !pq.isEmpty()) {\n        let { sum, idx } = pq.dequeue();\n      \
+        \  if (!alive[idx] || R[idx] === -1 || val[idx] + val[R[idx]] !== sum) continue;\n\
+        \        let nextIdx = R[idx];\n        if (L[idx] !== -1 && val[L[idx]] > val[idx])\
+        \ violations--;\n        if (val[idx] > val[nextIdx]) violations--;\n      \
+        \  if (R[nextIdx] !== -1 && val[nextIdx] > val[R[nextIdx]]) violations--;\n\
+        \        val[idx] += val[nextIdx];\n        alive[nextIdx] = 0;\n        R[idx]\
+        \ = R[nextIdx];\n        if (R[nextIdx] !== -1) L[R[nextIdx]] = idx;\n     \
+        \   if (L[idx] !== -1 && val[L[idx]] > val[idx]) violations++;\n        if (R[idx]\
+        \ !== -1 && val[idx] > val[R[idx]]) violations++;\n        if (L[idx] !== -1)\
+        \ pq.enqueue({ sum: val[L[idx]] + val[idx], idx: L[idx] });\n        if (R[idx]\
+        \ !== -1) pq.enqueue({ sum: val[idx] + val[R[idx]], idx: idx });\n        ops++;\n\
+        \    }\n    return ops;\n};"
+      typescript: '// Generation failed for TypeScript
+
+        // Reason: Generation failed: STOP'
+      php: '// Generation failed for PHP
+
+        // Reason: Generation failed: STOP'
+      swift: '// Generation failed for Swift
+
+        // Reason: Generation failed: STOP'
+      kotlin: '// Generation failed for Kotlin
+
+        // Reason: Generation failed: STOP'
+      dart: '// Generation failed for Dart
+
+        // Reason: Generation failed: STOP'
+      go: '// Generation failed for Go
+
+        // Reason: Generation failed: STOP'
+      ruby: "class MinHeap\n  def initialize\n    @heap = []\n  end\n  def push(val)\n\
+        \    @heap << val\n    bubble_up(@heap.size - 1)\n  end\n  def pop\n    return\
+        \ nil if @heap.empty?\n    return @heap.pop if @heap.size == 1\n    res = @heap[0]\n\
+        \    @heap[0] = @heap.pop\n    bubble_down(0)\n    res\n  end\n  def empty?\n\
+        \    @heap.empty?\n  end\n  private\n  def bubble_up(index)\n    while index\
+        \ > 0\n      parent = (index - 1) / 2\n      if @heap[index][0] < @heap[parent][0]\
+        \ || (@heap[index][0] == @heap[parent][0] && @heap[index][1] < @heap[parent][1])\n\
+        \        @heap[index], @heap[parent] = @heap[parent], @heap[index]\n       \
+        \ index = parent\n      else\n        break\n      end\n    end\n  end\n  def\
+        \ bubble_down(index)\n    while true\n      left = 2 * index + 1\n      right\
+        \ = 2 * index + 2\n      smallest = index\n      if left < @heap.size && (@heap[left][0]\
+        \ < @heap[smallest][0] || (@heap[left][0] == @heap[smallest][0] && @heap[left][1]\
+        \ < @heap[smallest][1]))\n        smallest = left\n      end\n      if right\
+        \ < @heap.size && (@heap[right][0] < @heap[smallest][0] || (@heap[right][0]\
+        \ == @heap[smallest][0] && @heap[right][1] < @heap[smallest][1]))\n        smallest\
+        \ = right\n      end\n      if smallest != index\n        @heap[index], @heap[smallest]\
+        \ = @heap[smallest], @heap[index]\n        index = smallest\n      else\n  \
+        \      break\n      end\n    end\n  end\nend\n\ndef minimum_pair_removal(nums)\n\
+        \  n = nums.length\n  return 0 if n <= 1\n  vals = nums.map(&:to_i)\n  nxt =\
+        \ Array.new(n) { |i| i == n - 1 ? -1 : i + 1 }\n  prv = Array.new(n) { |i| i\
+        \ == 0 ? -1 : i - 1 }\n  active = Array.new(n, true)\n  pq = MinHeap.new\n \
+        \ decreasing_count = 0\n  (0...n - 1).each do |i|\n    pq.push([vals[i] + vals[i\
+        \ + 1], i])\n    decreasing_count += 1 if vals[i] > vals[i + 1]\n  end\n  ops\
+        \ = 0\n  while decreasing_count > 0 && !pq.empty?\n    s, l = pq.pop\n    next\
+        \ if !active[l] || nxt[l] == -1\n    r = nxt[l]\n    next if !active[r] || vals[l]\
+        \ + vals[r] != s\n    p, nn = prv[l], nxt[r]\n    decreasing_count -= 1 if p\
+        \ != -1 && vals[p] > vals[l]\n    decreasing_count -= 1 if vals[l] > vals[r]\n\
+        \    decreasing_count -= 1 if nn != -1 && vals[r] > vals[nn]\n    vals[l] +=\
+        \ vals[r]\n    active[r] = false\n    nxt[l] = nn\n    prv[nn] = l if nn !=\
+        \ -1\n    decreasing_count += 1 if p != -1 && vals[p] > vals[l]\n    decreasing_count\
+        \ += 1 if nn != -1 && vals[l] > vals[nn]\n    pq.push([vals[p] + vals[l], p])\
+        \ if p != -1\n    pq.push([vals[l] + vals[nn], l]) if nn != -1\n    ops += 1\n\
+        \  end\n  ops\nend"
+      scala: "import scala.collection.mutable\n\nobject Solution {\n  def minimumPairRemoval(nums:\
+        \ Array[Int]): Int = {\n    val n = nums.length\n    if (n <= 1) return 0\n\
+        \    val vals = nums.map(_.toLong)\n    val nxt = Array.tabulate(n)(i => if\
+        \ (i == n - 1) -1 else i + 1)\n    val prv = Array.tabulate(n)(i => i - 1)\n\
+        \    val active = Array.fill(n)(true)\n    val pq = mutable.PriorityQueue.empty[(Long,\
+        \ Int)](\n      Ordering.by[(Long, Int), (Long, Int)](x => (-x._1, -x._2))\n\
+        \    )\n    for (i <- 0 until n - 1) pq.enqueue((vals(i) + vals(i + 1), i))\n\
+        \    var decCount = 0\n    for (i <- 0 until n - 1) if (vals(i) > vals(i + 1))\
+        \ decCount += 1\n    var ops = 0\n    while (decCount > 0 && pq.nonEmpty) {\n\
+        \      val (s, l) = pq.dequeue()\n      if (active(l) && nxt(l) != -1) {\n \
+        \       val r = nxt(l)\n        if (active(r) && vals(l) + vals(r) == s) {\n\
+        \          val p = prv(l)\n          val nn = nxt(r)\n          if (p != -1\
+        \ && vals(p) > vals(l)) decCount -= 1\n          if (vals(l) > vals(r)) decCount\
+        \ -= 1\n          if (nn != -1 && vals(r) > vals(nn)) decCount -= 1\n      \
+        \    vals(l) += vals(r)\n          active(r) = false\n          nxt(l) = nn\n\
+        \          if (nn != -1) prv(nn) = l\n          if (p != -1 && vals(p) > vals(l))\
+        \ decCount += 1\n          if (nn != -1 && vals(l) > vals(nn)) decCount += 1\n\
+        \          if (p != -1) pq.enqueue((vals(p) + vals(l), p))\n          if (nn\
+        \ != -1) pq.enqueue((vals(l) + vals(nn), l))\n          ops += 1\n        }\n\
+        \      }\n    }\n    ops\n  }\n}"
+      rust: "use std::collections::BinaryHeap;\nuse std::cmp::Reverse;\n\nimpl Solution\
+        \ {\n    pub fn minimum_pair_removal(nums: Vec<i32>) -> i32 {\n        let n\
+        \ = nums.len();\n        if n <= 1 { return 0; }\n        let mut vals: Vec<i64>\
+        \ = nums.into_iter().map(|x| x as i64).collect();\n        let mut nxt: Vec<i32>\
+        \ = (0..n as i32).map(|i| if i == (n as i32 - 1) { -1 } else { i + 1 }).collect();\n\
+        \        let mut prv: Vec<i32> = (0..n as i32).map(|i| if i == 0 { -1 } else\
+        \ { i - 1 }).collect();\n        let mut active = vec![true; n];\n        let\
+        \ mut pq = BinaryHeap::new();\n        for i in 0..n-1 {\n            pq.push(Reverse((vals[i]\
+        \ + vals[i+1], i)));\n        }\n        let mut dec_count = 0;\n        for\
+        \ i in 0..n-1 {\n            if vals[i] > vals[i+1] { dec_count += 1; }\n  \
+        \      }\n        let mut ops = 0;\n        while dec_count > 0 {\n        \
+        \    if let Some(Reverse((s, l_idx))) = pq.pop() {\n                let l =\
+        \ l_idx;\n                let r_idx = nxt[l];\n                if r_idx != -1\
+        \ {\n                    let r = r_idx as usize;\n                    if active[l]\
+        \ && active[r] && vals[l] + vals[r] == s {\n                        let p =\
+        \ prv[l];\n                        let nn = nxt[r];\n                      \
+        \  if p != -1 && vals[p as usize] > vals[l] { dec_count -= 1; }\n          \
+        \              if vals[l] > vals[r] { dec_count -= 1; }\n                  \
+        \      if nn != -1 && vals[r] > vals[nn as usize] { dec_count -= 1; }\n    \
+        \                    vals[l] += vals[r];\n                        active[r]\
+        \ = false;\n                        nxt[l] = nn;\n                        if\
+        \ nn != -1 { prv[nn as usize] = l as i32; }\n                        if p !=\
+        \ -1 && vals[p as usize] > vals[l] { dec_count += 1; }\n                   \
+        \     if nn != -1 && vals[l] > vals[nn as usize] { dec_count += 1; }\n     \
+        \                   if p != -1 { pq.push(Reverse((vals[p as usize] + vals[l],\
+        \ p as usize))); }\n                        if nn != -1 { pq.push(Reverse((vals[l]\
+        \ + vals[nn as usize], l))); }\n                        ops += 1;\n        \
+        \            }\n                }\n            } else { break; }\n        }\n\
+        \        ops\n    }\n}"
+      racket: "(require data/heap)\n(define/contract (minimum-pair-removal nums)\n \
+        \ (-> (listof exact-integer?) exact-integer?)\n  (let* ([n (length nums)])\n\
+        \    (if (<= n 1) 0\n        (let ([vals (list->vector nums)] [nxt (make-vector\
+        \ n -1)] [prv (make-vector n -1)] [active (make-vector n #t)]\n            \
+        \  [pq (make-heap (lambda (a b) (if (= (car a) (car b)) (<= (cdr a) (cdr b))\
+        \ (< (car a) (car b)))))])\n          (for ([i (in-range (- n 1))])\n      \
+        \      (vector-set! nxt i (+ i 1))\n            (vector-set! prv (+ i 1) i)\n\
+        \            (heap-add! pq (cons (+ (vector-ref vals i) (vector-ref vals (+\
+        \ i 1))) i)))\n          (let ([dc 0])\n            (for ([i (in-range (- n\
+        \ 1))]) (when (> (vector-ref vals i) (vector-ref vals (+ i 1))) (set! dc (+\
+        \ dc 1))))\n            (let loop ([dc dc] [ops 0])\n              (if (<= dc\
+        \ 0) ops\n                  (if (= (heap-count pq) 0) ops\n                \
+        \      (let* ([top (heap-min pq)] [s (car top)] [l (cdr top)])\n           \
+        \             (heap-remove-min! pq)\n                        (let ([r (vector-ref\
+        \ nxt l)])\n                          (if (and (not (= r -1)) (vector-ref active\
+        \ l) (vector-ref active r) (= (+ (vector-ref vals l) (vector-ref vals r)) s))\n\
+        \                              (let* ([p (vector-ref prv l)] [nn (vector-ref\
+        \ nxt r)] [new-dc dc])\n                                (when (and (not (= p\
+        \ -1)) (> (vector-ref vals p) (vector-ref vals l))) (set! new-dc (- new-dc 1)))\n\
+        \                                (when (> (vector-ref vals l) (vector-ref vals\
+        \ r)) (set! new-dc (- new-dc 1)))\n                                (when (and\
+        \ (not (= nn -1)) (> (vector-ref vals r) (vector-ref vals nn))) (set! new-dc\
+        \ (- new-dc 1)))\n                                (vector-set! vals l (+ (vector-ref\
+        \ vals l) (vector-ref vals r)))\n                                (vector-set!\
+        \ active r #f) (vector-set! nxt l nn)\n                                (when\
+        \ (not (= nn -1)) (vector-set! prv nn l))\n                                (when\
+        \ (and (not (= p -1)) (> (vector-ref vals p) (vector-ref vals l))) (set! new-dc\
+        \ (+ new-dc 1)))\n                                (when (and (not (= nn -1))\
+        \ (> (vector-ref vals l) (vector-ref vals nn))) (set! new-dc (+ new-dc 1)))\n\
+        \                                (when (not (= p -1)) (heap-add! pq (cons (+\
+        \ (vector-ref vals p) (vector-ref vals l)) p)))\n                          \
+        \      (when (not (= nn -1)) (heap-add! pq (cons (+ (vector-ref vals l) (vector-ref\
+        \ vals nn)) l)))\n                                (loop new-dc (+ ops 1))) (loop\
+        \ dc ops)))))))))))"
+      erlang: "-spec minimum_pair_removal(Nums :: [integer()]) -> integer().\nminimum_pair_removal(Nums)\
+        \ ->\n  N = length(Nums),\n  if N =< 1 -> 0; true ->\n    Idxs = lists:seq(0,\
+        \ N-1), Vals = maps:from_list(lists:zip(Idxs, Nums)),\n    Nxt = maps:from_list(lists:zip(lists:droplast(Idxs),\
+        \ lists:nthtail(1, Idxs))),\n    Prv = maps:from_list(lists:zip(lists:nthtail(1,\
+        \ Idxs), lists:droplast(Idxs))),\n    PQ = lists:foldl(fun(I, Acc) -> gb_sets:add({maps:get(I,\
+        \ Vals) + maps:get(I+1, Vals), I}, Acc) end, gb_sets:new(), lists:droplast(Idxs)),\n\
+        \    DC = lists:foldl(fun(I, Acc) -> if maps:get(I, Vals) > maps:get(I+1, Vals)\
+        \ -> Acc + 1; true -> Acc end end, 0, lists:droplast(Idxs)),\n    simulate(Vals,\
+        \ Nxt, Prv, PQ, DC, 0) end.\nsimulate(_, _, _, _, 0, Ops) -> Ops;\nsimulate(Vals,\
+        \ Nxt, Prv, PQ, DC, Ops) ->\n  case gb_sets:is_empty(PQ) of true -> Ops; false\
+        \ -> {{S, L}, PQ1} = gb_sets:take_smallest(PQ),\n    case maps:find(L, Nxt)\
+        \ of {ok, R} -> SumLR = maps:get(L, Vals) + maps:get(R, Vals),\n      if SumLR\
+        \ == S -> P = maps:get(L, Prv, -1), NN = maps:get(R, Nxt, -1),\n        D1 =\
+        \ if P /= -1 andalso maps:get(P, Vals) > maps:get(L, Vals) -> DC - 1; true ->\
+        \ DC end,\n        D2 = if maps:get(L, Vals) > maps:get(R, Vals) -> D1 - 1;\
+        \ true -> D1 end,\n        D3 = if NN /= -1 andalso maps:get(R, Vals) > maps:get(NN,\
+        \ Vals) -> D2 - 1; true -> D2 end,\n        NV = maps:put(L, SumLR, maps:remove(R,\
+        \ Vals)), NX = maps:remove(R, Nxt), PV = maps:remove(R, Prv),\n        {NX2,\
+        \ PV2} = if NN /= -1 -> {maps:put(L, NN, NX), maps:put(NN, L, PV)}; true ->\
+        \ {maps:remove(L, NX), PV} end,\n        D4 = if P /= -1 andalso maps:get(P,\
+        \ NV) > maps:get(L, NV) -> D3 + 1; true -> D3 end,\n        D5 = if NN /= -1\
+        \ andalso maps:get(L, NV) > maps:get(NN, NV) -> D4 + 1; true -> D4 end,\n  \
+        \      PQ2 = if P /= -1 -> gb_sets:add({maps:get(P, NV) + maps:get(L, NV), P},\
+        \ PQ1); true -> PQ1 end,\n        PQ3 = if NN /= -1 -> gb_sets:add({maps:get(L,\
+        \ NV) + maps:get(NN, NV), L}, PQ2); true -> PQ2 end,\n        simulate(NV, NX2,\
+        \ PV2, PQ3, D5, Ops + 1); true -> simulate(Vals, Nxt, Prv, PQ1, DC, Ops) end;\n\
+        \      error -> simulate(Vals, Nxt, Prv, PQ1, DC, Ops) end end."
       elixir: "defmodule Solution do\n  @spec minimum_pair_removal(nums :: [integer])\
-        \ :: integer\n  def minimum_pair_removal(nums) do\n    count = 0\n    nums_list\
-        \ = Enum.to_list(nums)\n    while !is_non_decreasing(nums_list) do\n      min_sum\
-        \ = :math.pow(2, 31) - 1\n      min_index = -1\n      Enum.reduce(0..length(nums_list)\
-        \ - 2, {min_sum, min_index}, fn i, {min_sum, min_index} ->\n        sum = Enum.at(nums_list,\
-        \ i) + Enum.at(nums_list, i + 1)\n        if sum < min_sum do\n          {sum,\
-        \ i}\n        else\n          {min_sum, min_index}\n        end\n      end)\n\
-        \      |> (fn {min_sum, min_index} ->\n           nums_list = List.delete_at(nums_list,\
-        \ min_index + 1)\n           List.update_at(nums_list, min_index, fn _ -> min_sum\
-        \ end)\n           {count + 1, nums_list}\n         end)\n    end\n    count\n\
-        \  end\n\n  defp is_non_decreasing(nums) do\n    Enum.all?(0..length(nums) -\
-        \ 2, fn i -> Enum.at(nums, i) <= Enum.at(nums, i + 1) end)\n  end\nend"
-    approach: The problem can be solved by using a priority queue to store the pairs
-      of adjacent elements in the array along with their sum. We start by initializing
-      the priority queue with all pairs of adjacent elements. Then, we enter a loop
-      where we keep removing the pair with the minimum sum from the priority queue and
-      replace it with their sum in the array until the array becomes non-decreasing.
-      The number of operations performed is the minimum number of operations needed
-      to make the array non-decreasing.
-    time_complexity: The time complexity of this solution is O(n^2 log n) where n is
-      the number of elements in the array. This is because in the worst case, we might
-      have to remove all pairs from the array, and each removal operation takes O(log
-      n) time due to the priority queue.
-    space_complexity: The space complexity of this solution is O(n) where n is the number
-      of elements in the array. This is because we are storing all pairs of adjacent
-      elements in the priority queue.
-    elapsed_time: 10.216416835784912
-    model: llama-3.3-70b-versatile
-    generated_at: '2026-01-23 01:13:10 '
+        \ :: integer\n  def minimum_pair_removal(nums) do\n    n = length(nums)\n  \
+        \  if n <= 1 do 0 else\n      vals = nums |> Enum.with_index() |> Enum.reduce(%{},\
+        \ fn {v, i}, acc -> Map.put(acc, i, v) end)\n      nxt = if n > 1, do: 0..(n-2)\
+        \ |> Enum.reduce(%{}, fn i, acc -> Map.put(acc, i, i + 1) end), else: %{}\n\
+        \      prv = if n > 1, do: 1..(n-1) |> Enum.reduce(%{}, fn i, acc -> Map.put(acc,\
+        \ i, i - 1) end), else: %{}\n      pq = if n > 1, do: 0..(n-2) |> Enum.reduce(:gb_sets.new(),\
+        \ fn i, acc -> :gb_sets.add({Map.get(vals, i) + Map.get(vals, i + 1), i}, acc)\
+        \ end), else: :gb_sets.new()\n      dc = if n > 1, do: 0..(n-2) |> Enum.count(fn\
+        \ i -> Map.get(vals, i) > Map.get(vals, i + 1) end), else: 0\n      simulate(vals,\
+        \ nxt, prv, pq, dc, 0)\n    end\n  end\n  defp simulate(vals, nxt, prv, pq,\
+        \ dc, ops) do\n    if dc == 0 do ops else\n      case :gb_sets.is_empty(pq)\
+        \ do\n        true -> ops\n        false -> {{s, l}, pq} = :gb_sets.take_smallest(pq)\n\
+        \          case Map.get(nxt, l) do\n            nil -> simulate(vals, nxt, prv,\
+        \ pq, dc, ops)\n            r -> if Map.get(vals, l) + Map.get(vals, r) == s\
+        \ do\n                p = Map.get(prv, l, -1)\n                nn = Map.get(nxt,\
+        \ r, -1)\n                new_dc = dc\n                if p != -1 and Map.get(vals,\
+        \ p) > Map.get(vals, l), do: new_dc = new_dc - 1\n                if Map.get(vals,\
+        \ l) > Map.get(vals, r), do: new_dc = new_dc - 1\n                if nn != -1\
+        \ and Map.get(vals, r) > Map.get(vals, nn), do: new_dc = new_dc - 1\n      \
+        \          sum = Map.get(vals, l) + Map.get(vals, r)\n                new_vals\
+        \ = vals |> Map.put(l, sum) |> Map.delete(r)\n                new_nxt = nxt\
+        \ |> Map.delete(r)\n                new_nxt = if nn != -1, do: Map.put(new_nxt,\
+        \ l, nn), else: Map.delete(new_nxt, l)\n                new_prv = prv |> Map.delete(r)\n\
+        \                if nn != -1, do: new_prv = Map.put(new_prv, nn, l)\n      \
+        \          if p != -1 and Map.get(new_vals, p) > Map.get(new_vals, l), do: new_dc\
+        \ = new_dc + 1\n                if nn != -1 and Map.get(new_vals, l) > Map.get(new_vals,\
+        \ nn), do: new_dc = new_dc + 1\n                new_pq = pq\n              \
+        \  if p != -1, do: new_pq = :gb_sets.add({Map.get(new_vals, p) + Map.get(new_vals,\
+        \ l), p}, new_pq)\n                if nn != -1, do: new_pq = :gb_sets.add({Map.get(new_vals,\
+        \ l) + Map.get(new_vals, nn), l}, new_pq)\n                simulate(new_vals,\
+        \ new_nxt, new_prv, new_pq, new_dc, ops + 1)\n              else\n         \
+        \       simulate(vals, nxt, prv, pq, dc, ops)\n              end\n         \
+        \ end\n      end\n    end\n  end\nend"
+    approach: 'The problem specifies a deterministic simulation process where the adjacent
+      pair with the minimum sum (and the leftmost one in case of ties) is repeatedly
+      merged until the array is non-decreasing. To implement this efficiently, we use
+      a doubly linked list structure (represented by arrays L and R for left and right
+      neighbors) to manage the merges and a Min-Priority Queue to quickly find the pair
+      with the minimum sum. We also maintain a count of ''violations'' (where nums[i]
+      > nums[i+1]) to quickly determine when the array becomes non-decreasing.
+
+
+      Each merge operation involves popping the minimum sum pair (s, i) from the priority
+      queue and verifying its validity (checking if indices are still alive and if their
+      current sum matches ''s''). Upon a valid merge of index i and its right neighbor
+      j, we update the value at index i to the new sum, update the adjacency pointers,
+      and decrement the violation count if the removed pairs (L[i], i), (i, j), and
+      (j, R[j]) were violations. We then increment the violation count based on the
+      new pairs (L[i], i) and (i, R[j]). New sums for these adjacent pairs are pushed
+      into the priority queue. This approach ensures each merge and update is O(log
+      N), leading to an overall efficient simulation.'
+    time_complexity: O(N log N), where N is the length of the array. Each of the at
+      most N-1 merges involves popping from and pushing into the priority queue, which
+      takes logarithmic time. The total number of elements pushed into the queue is
+      proportional to N.
+    space_complexity: O(N), as we maintain several arrays (L, R, val, alive) and a priority
+      queue, each storing at most O(N) elements to manage the state of the simulation.
+    elapsed_time: 479.20956921577454
+    model: gemini-3-pro-preview
+    generated_at: '2026-01-23 14:55:35 '
 ---
 
 ## Problem #3510: Minimum Pair Removal to Sort Array II
@@ -305,65 +472,56 @@ ai_solutions:
 
 5. Keep the 3 structures in sync during the removals.
 
-## 🤖 AI-Generated Solutions
-
-We've generated solutions using multiple AI models. Click to expand each solution:
-
-
-<details class="ai-solution-card" open markdown="1">
-<summary class="ai-solution-header">
-  <span class="ai-model-badge">⚡ Solution from <strong>llama-3.3-70b-versatile</strong></span>
-  <small class="solution-timestamp">(2026-01-23 01:13:10 )</small>
-</summary>
-
-<div class="ai-solution-content">
+## ✨ AI-Generated Solution (gemini-3-pro-preview)
 
 ### Approach
 
-The problem can be solved by using a priority queue to store the pairs of adjacent elements in the array along with their sum. We start by initializing the priority queue with all pairs of adjacent elements. Then, we enter a loop where we keep removing the pair with the minimum sum from the priority queue and replace it with their sum in the array until the array becomes non-decreasing. The number of operations performed is the minimum number of operations needed to make the array non-decreasing.
+The problem specifies a deterministic simulation process where the adjacent pair with the minimum sum (and the leftmost one in case of ties) is repeatedly merged until the array is non-decreasing. To implement this efficiently, we use a doubly linked list structure (represented by arrays L and R for left and right neighbors) to manage the merges and a Min-Priority Queue to quickly find the pair with the minimum sum. We also maintain a count of 'violations' (where nums[i] > nums[i+1]) to quickly determine when the array becomes non-decreasing.
+
+Each merge operation involves popping the minimum sum pair (s, i) from the priority queue and verifying its validity (checking if indices are still alive and if their current sum matches 's'). Upon a valid merge of index i and its right neighbor j, we update the value at index i to the new sum, update the adjacency pointers, and decrement the violation count if the removed pairs (L[i], i), (i, j), and (j, R[j]) were violations. We then increment the violation count based on the new pairs (L[i], i) and (i, R[j]). New sums for these adjacent pairs are pushed into the priority queue. This approach ensures each merge and update is O(log N), leading to an overall efficient simulation.
 
 ### Code
 
 <div class="code-tabs" markdown="0">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-cpp-llama-3-3-70b-versatile" checked>
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-java-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-python-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-python3-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-c-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-csharp-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-javascript-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-typescript-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-php-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-swift-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-kotlin-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-dart-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-go-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-ruby-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-scala-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-rust-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-racket-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-erlang-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-elixir-llama-3-3-70b-versatile">
+  <input type="radio" name="code-lang" id="lang-cpp" checked>
+  <input type="radio" name="code-lang" id="lang-java">
+  <input type="radio" name="code-lang" id="lang-python">
+  <input type="radio" name="code-lang" id="lang-python3">
+  <input type="radio" name="code-lang" id="lang-c">
+  <input type="radio" name="code-lang" id="lang-csharp">
+  <input type="radio" name="code-lang" id="lang-javascript">
+  <input type="radio" name="code-lang" id="lang-typescript">
+  <input type="radio" name="code-lang" id="lang-php">
+  <input type="radio" name="code-lang" id="lang-swift">
+  <input type="radio" name="code-lang" id="lang-kotlin">
+  <input type="radio" name="code-lang" id="lang-dart">
+  <input type="radio" name="code-lang" id="lang-go">
+  <input type="radio" name="code-lang" id="lang-ruby">
+  <input type="radio" name="code-lang" id="lang-scala">
+  <input type="radio" name="code-lang" id="lang-rust">
+  <input type="radio" name="code-lang" id="lang-racket">
+  <input type="radio" name="code-lang" id="lang-erlang">
+  <input type="radio" name="code-lang" id="lang-elixir">
   <div class="tab-labels">
-    <label for="lang-cpp-llama-3-3-70b-versatile">C++</label>
-    <label for="lang-java-llama-3-3-70b-versatile">Java</label>
-    <label for="lang-python-llama-3-3-70b-versatile">Python</label>
-    <label for="lang-python3-llama-3-3-70b-versatile">Python3</label>
-    <label for="lang-c-llama-3-3-70b-versatile">C</label>
-    <label for="lang-csharp-llama-3-3-70b-versatile">C#</label>
-    <label for="lang-javascript-llama-3-3-70b-versatile">JavaScript</label>
-    <label for="lang-typescript-llama-3-3-70b-versatile">TypeScript</label>
-    <label for="lang-php-llama-3-3-70b-versatile">PHP</label>
-    <label for="lang-swift-llama-3-3-70b-versatile">Swift</label>
-    <label for="lang-kotlin-llama-3-3-70b-versatile">Kotlin</label>
-    <label for="lang-dart-llama-3-3-70b-versatile">Dart</label>
-    <label for="lang-go-llama-3-3-70b-versatile">Go</label>
-    <label for="lang-ruby-llama-3-3-70b-versatile">Ruby</label>
-    <label for="lang-scala-llama-3-3-70b-versatile">Scala</label>
-    <label for="lang-rust-llama-3-3-70b-versatile">Rust</label>
-    <label for="lang-racket-llama-3-3-70b-versatile">Racket</label>
-    <label for="lang-erlang-llama-3-3-70b-versatile">Erlang</label>
-    <label for="lang-elixir-llama-3-3-70b-versatile">Elixir</label>
+    <label for="lang-cpp">C++</label>
+    <label for="lang-java">Java</label>
+    <label for="lang-python">Python</label>
+    <label for="lang-python3">Python3</label>
+    <label for="lang-c">C</label>
+    <label for="lang-csharp">C#</label>
+    <label for="lang-javascript">JavaScript</label>
+    <label for="lang-typescript">TypeScript</label>
+    <label for="lang-php">PHP</label>
+    <label for="lang-swift">Swift</label>
+    <label for="lang-kotlin">Kotlin</label>
+    <label for="lang-dart">Dart</label>
+    <label for="lang-go">Go</label>
+    <label for="lang-ruby">Ruby</label>
+    <label for="lang-scala">Scala</label>
+    <label for="lang-rust">Rust</label>
+    <label for="lang-racket">Racket</label>
+    <label for="lang-erlang">Erlang</label>
+    <label for="lang-elixir">Elixir</label>
   </div>
 
   <div class="tab-panel" data-lang="cpp">
@@ -374,30 +532,43 @@ class Solution {
 public:
     int minimumPairRemoval(vector<int>& nums) {
         int n = nums.size();
-        int count = 0;
-        while (!isSorted(nums)) {
-            int minSum = INT_MAX;
-            int minIndex = -1;
-            for (int i = 0; i < n - 1; i++) {
-                if (nums[i] + nums[i + 1] < minSum) {
-                    minSum = nums[i] + nums[i + 1];
-                    minIndex = i;
-                }
-            }
-            nums.erase(nums.begin() + minIndex + 1);
-            nums[minIndex] = minSum;
-            n--;
-            count++;
+        if (n < 2) return 0;
+        vector<long long> val(n);
+        vector<int> L(n), R(n);
+        vector<bool> alive(n, true);
+        for (int i = 0; i < n; ++i) {
+            val[i] = nums[i];
+            L[i] = i - 1;
+            R[i] = (i == n - 1) ? -1 : i + 1;
         }
-        return count;
-    }
-    bool isSorted(vector<int>& nums) {
-        for (int i = 0; i < nums.size() - 1; i++) {
-            if (nums[i] > nums[i + 1]) {
-                return false;
-            }
+        typedef pair<long long, int> P;
+        priority_queue<P, vector<P>, greater<P>> pq;
+        int violations = 0;
+        for (int i = 0; i < n - 1; ++i) {
+            if (val[i] > val[i + 1]) violations++;
+            pq.push({val[i] + val[i + 1], i});
         }
-        return true;
+        int ops = 0;
+        while (violations > 0 && !pq.empty()) {
+            P top = pq.top();
+            pq.pop();
+            int i = top.second;
+            if (!alive[i] || R[i] == -1 || val[i] + val[R[i]] != top.first) continue;
+            int j = R[i];
+            if (L[i] != -1 && val[L[i]] > val[i]) violations--;
+            if (val[i] > val[j]) violations--;
+            if (R[j] != -1 && val[j] > val[R[j]]) violations--;
+            val[i] += val[j];
+            alive[j] = false;
+            R[i] = R[j];
+            if (R[j] != -1) L[R[j]] = i;
+            if (L[i] != -1 && val[L[i]] > val[i]) violations++;
+            if (R[i] != -1 && val[i] > val[R[i]]) violations++;
+            if (L[i] != -1) pq.push({val[L[i]] + val[i], L[i]});
+            if (R[i] != -1) pq.push({val[i] + val[R[i]], i});
+            ops++;
+        }
+        return ops;
     }
 };
 {% endraw %}
@@ -410,35 +581,57 @@ public:
 {% highlight java %}
 {% raw %}
 class Solution {
+    static class Node implements Comparable<Node> {
+        long sum;
+        int idx;
+        Node(long s, int i) {
+            this.sum = s;
+            this.idx = i;
+        }
+        public int compareTo(Node other) {
+            if (this.sum != other.sum) return Long.compare(this.sum, other.sum);
+            return Integer.compare(this.idx, other.idx);
+        }
+    }
     public int minimumPairRemoval(int[] nums) {
         int n = nums.length;
-        int count = 0;
-        while (!isSorted(nums)) {
-            int minSum = Integer.MAX_VALUE;
-            int minIndex = -1;
-            for (int i = 0; i < n - 1; i++) {
-                if (nums[i] + nums[i + 1] < minSum) {
-                    minSum = nums[i] + nums[i + 1];
-                    minIndex = i;
-                }
-            }
-            int[] newNums = new int[n - 1];
-            System.arraycopy(nums, 0, newNums, 0, minIndex);
-            newNums[minIndex] = minSum;
-            System.arraycopy(nums, minIndex + 2, newNums, minIndex + 1, n - minIndex - 2);
-            nums = newNums;
-            n--;
-            count++;
+        if (n < 2) return 0;
+        long[] val = new long[n];
+        int[] L = new int[n];
+        int[] R = new int[n];
+        boolean[] alive = new boolean[n];
+        PriorityQueue<Node> pq = new PriorityQueue<>();
+        int violations = 0;
+        for (int i = 0; i < n; i++) {
+            val[i] = nums[i];
+            L[i] = i - 1;
+            R[i] = (i == n - 1) ? -1 : i + 1;
+            alive[i] = true;
         }
-        return count;
-    }
-    boolean isSorted(int[] nums) {
-        for (int i = 0; i < nums.length - 1; i++) {
-            if (nums[i] > nums[i + 1]) {
-                return false;
-            }
+        for (int i = 0; i < n - 1; i++) {
+            if (val[i] > val[i + 1]) violations++;
+            pq.add(new Node(val[i] + val[i + 1], i));
         }
-        return true;
+        int ops = 0;
+        while (violations > 0 && !pq.isEmpty()) {
+            Node top = pq.poll();
+            int i = top.idx;
+            if (!alive[i] || R[i] == -1 || val[i] + val[R[i]] != top.sum) continue;
+            int j = R[i];
+            if (L[i] != -1 && val[L[i]] > val[i]) violations--;
+            if (val[i] > val[j]) violations--;
+            if (R[j] != -1 && val[j] > val[R[j]]) violations--;
+            val[i] += val[j];
+            alive[j] = false;
+            R[i] = R[j];
+            if (R[j] != -1) L[R[j]] = i;
+            if (L[i] != -1 && val[L[i]] > val[i]) violations++;
+            if (R[i] != -1 && val[i] > val[R[i]]) violations++;
+            if (L[i] != -1) pq.add(new Node(val[L[i]] + val[i], L[i]));
+            if (R[i] != -1) pq.add(new Node(val[i] + val[R[i]], i));
+            ops++;
+        }
+        return ops;
     }
 }
 {% endraw %}
@@ -450,25 +643,48 @@ class Solution {
 
 {% highlight python %}
 {% raw %}
+import heapq
+
 class Solution(object):
     def minimumPairRemoval(self, nums):
-        count = 0
-        while not self.isSorted(nums):
-            minSum = float('inf')
-            minIndex = -1
-            for i in range(len(nums) - 1):
-                if nums[i] + nums[i + 1] < minSum:
-                    minSum = nums[i] + nums[i + 1]
-                    minIndex = i
-            nums.pop(minIndex + 1)
-            nums[minIndex] = minSum
-            count += 1
-        return count
-    def isSorted(self, nums):
-        for i in range(len(nums) - 1):
-            if nums[i] > nums[i + 1]:
-                return False
-        return True
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        n = len(nums)
+        if n < 2:
+            return 0
+        val = [long(x) for x in nums]
+        L = [i - 1 for i in range(n)]
+        R = [i + 1 for i in range(n)]
+        R[n - 1] = -1
+        alive = [True] * n
+        pq = []
+        violations = 0
+        for i in range(n - 1):
+            if val[i] > val[i + 1]:
+                violations += 1
+            heapq.heappush(pq, (val[i] + val[i + 1], i))
+
+        ops = 0
+        while violations > 0 and pq:
+            s, i = heapq.heappop(pq)
+            if not alive[i] or R[i] == -1 or val[i] + val[R[i]] != s:
+                continue
+            j = R[i]
+            if L[i] != -1 and val[L[i]] > val[i]: violations -= 1
+            if val[i] > val[j]: violations -= 1
+            if R[j] != -1 and val[j] > val[R[j]]: violations -= 1
+            val[i] += val[j]
+            alive[j] = False
+            R[i] = R[j]
+            if R[j] != -1: L[R[j]] = i
+            if L[i] != -1 and val[L[i]] > val[i]: violations += 1
+            if R[i] != -1 and val[i] > val[R[i]]: violations += 1
+            if L[i] != -1: heapq.heappush(pq, (val[L[i]] + val[i], L[i]))
+            if R[i] != -1: heapq.heappush(pq, (val[i] + val[R[i]], i))
+            ops += 1
+        return ops
 {% endraw %}
 {% endhighlight %}
 
@@ -478,25 +694,44 @@ class Solution(object):
 
 {% highlight python %}
 {% raw %}
+import heapq
+
 class Solution:
-    def minimumPairRemoval(self, nums: list[int]) -> int:
-        count = 0
-        while not self.isSorted(nums):
-            minSum = float('inf')
-            minIndex = -1
-            for i in range(len(nums) - 1):
-                if nums[i] + nums[i + 1] < minSum:
-                    minSum = nums[i] + nums[i + 1]
-                    minIndex = i
-            nums.pop(minIndex + 1)
-            nums[minIndex] = minSum
-            count += 1
-        return count
-    def isSorted(self, nums: list[int]) -> bool:
-        for i in range(len(nums) - 1):
-            if nums[i] > nums[i + 1]:
-                return False
-        return True
+    def minimumPairRemoval(self, nums: List[int]) -> int:
+        n = len(nums)
+        if n < 2:
+            return 0
+        val = [int(x) for x in nums]
+        L = [i - 1 for i in range(n)]
+        R = [i + 1 for i in range(n)]
+        R[n - 1] = -1
+        alive = [True] * n
+        pq = []
+        violations = 0
+        for i in range(n - 1):
+            if val[i] > val[i + 1]:
+                violations += 1
+            heapq.heappush(pq, (val[i] + val[i + 1], i))
+
+        ops = 0
+        while violations > 0 and pq:
+            s, i = heapq.heappop(pq)
+            if not alive[i] or R[i] == -1 or val[i] + val[R[i]] != s:
+                continue
+            j = R[i]
+            if L[i] != -1 and val[L[i]] > val[i]: violations -= 1
+            if val[i] > val[j]: violations -= 1
+            if R[j] != -1 and val[j] > val[R[j]]: violations -= 1
+            val[i] += val[j]
+            alive[j] = False
+            R[i] = R[j]
+            if R[j] != -1: L[R[j]] = i
+            if L[i] != -1 and val[L[i]] > val[i]: violations += 1
+            if R[i] != -1 and val[i] > val[R[i]]: violations += 1
+            if L[i] != -1: heapq.heappush(pq, (val[L[i]] + val[i], L[i]))
+            if R[i] != -1: heapq.heappush(pq, (val[i] + val[R[i]], i))
+            ops += 1
+        return ops
 {% endraw %}
 {% endhighlight %}
 
@@ -506,33 +741,87 @@ class Solution:
 
 {% highlight c %}
 {% raw %}
-int minimumPairRemoval(int* nums, int numsSize) {
-    int count = 0;
-    while (!isSorted(nums, numsSize)) {
-        int minSum = INT_MAX;
-        int minIndex = -1;
-        for (int i = 0; i < numsSize - 1; i++) {
-            if (nums[i] + nums[i + 1] < minSum) {
-                minSum = nums[i] + nums[i + 1];
-                minIndex = i;
-            }
-        }
-        for (int i = minIndex + 1; i < numsSize - 1; i++) {
-            nums[i] = nums[i + 1];
-        }
-        nums[minIndex] = minSum;
-        numsSize--;
-        count++;
+#include <stdlib.h>
+#include <stdbool.h>
+
+typedef struct {
+    long long sum;
+    int idx;
+} HeapNode;
+
+typedef struct {
+    HeapNode* data;
+    int size;
+    int capacity;
+} MinHeap;
+
+void push(MinHeap* h, long long sum, int idx) {
+    if (h->size == h->capacity) {
+        h->capacity *= 2;
+        h->data = (HeapNode*)realloc(h->data, sizeof(HeapNode) * h->capacity);
     }
-    return count;
+    int i = h->size++;
+    while (i > 0) {
+        int p = (i - 1) / 2;
+        if (h->data[p].sum < sum || (h->data[p].sum == sum && h->data[p].idx <= idx)) break;
+        h->data[i] = h->data[p];
+        i = p;
+    }
+    h->data[i].sum = sum; h->data[i].idx = idx;
 }
-int isSorted(int* nums, int numsSize) {
-    for (int i = 0; i < numsSize - 1; i++) {
-        if (nums[i] > nums[i + 1]) {
-            return 0;
+
+HeapNode pop(MinHeap* h) {
+    HeapNode res = h->data[0];
+    h->size--;
+    if (h->size > 0) {
+        HeapNode last = h->data[h->size];
+        int i = 0;
+        while (i * 2 + 1 < h->size) {
+            int child = i * 2 + 1;
+            if (child + 1 < h->size && (h->data[child + 1].sum < h->data[child].sum || (h->data[child+1].sum == h->data[child].sum && h->data[child+1].idx < h->data[child].idx))) child++;
+            if (last.sum < h->data[child].sum || (last.sum == h->data[child].sum && last.idx <= h->data[child].idx)) break;
+            h->data[i] = h->data[child]; i = child;
         }
+        h->data[i] = last;
     }
-    return 1;
+    return res;
+}
+
+int minimumPairRemoval(int* nums, int numsSize) {
+    if (numsSize < 2) return 0;
+    long long* val = (long long*)malloc(sizeof(long long) * numsSize);
+    int* L = (int*)malloc(sizeof(int) * numsSize);
+    int* R = (int*)malloc(sizeof(int) * numsSize);
+    bool* alive = (bool*)malloc(sizeof(bool) * numsSize);
+    for (int i = 0; i < numsSize; i++) {
+        val[i] = nums[i]; L[i] = i - 1;
+        R[i] = (i == numsSize - 1) ? -1 : i + 1; alive[i] = true;
+    }
+    MinHeap h; h.capacity = numsSize * 3; h.data = (HeapNode*)malloc(sizeof(HeapNode) * h.capacity); h.size = 0;
+    int violations = 0;
+    for (int i = 0; i < numsSize - 1; i++) {
+        if (val[i] > val[i + 1]) violations++;
+        push(&h, val[i] + val[i + 1], i);
+    }
+    int ops = 0;
+    while (violations > 0 && h.size > 0) {
+        HeapNode top = pop(&h);
+        int i = top.idx;
+        if (!alive[i] || R[i] == -1 || val[i] + val[R[i]] != top.sum) continue;
+        int j = R[i];
+        if (L[i] != -1 && val[L[i]] > val[i]) violations--;
+        if (val[i] > val[j]) violations--;
+        if (R[j] != -1 && val[j] > val[R[j]]) violations--;
+        val[i] += val[j]; alive[j] = false; R[i] = R[j];
+        if (R[j] != -1) L[R[j]] = i;
+        if (L[i] != -1 && val[L[i]] > val[i]) violations++;
+        if (R[i] != -1 && val[i] > val[R[i]]) violations++;
+        if (L[i] != -1) push(&h, val[L[i]] + val[i], L[i]);
+        if (R[i] != -1) push(&h, val[i] + val[R[i]], i);
+        ops++;
+    }
+    free(val); free(L); free(R); free(alive); free(h.data);
+    return ops;
 }
 {% endraw %}
 {% endhighlight %}
@@ -546,33 +835,47 @@ int isSorted(int* nums, int numsSize) {
 public class Solution {
     public int MinimumPairRemoval(int[] nums) {
         int n = nums.Length;
-        int count = 0;
-        while (!IsSorted(nums)) {
-            int minSum = int.MaxValue;
-            int minIndex = -1;
-            for (int i = 0; i < n - 1; i++) {
-                if (nums[i] + nums[i + 1] < minSum) {
-                    minSum = nums[i] + nums[i + 1];
-                    minIndex = i;
-                }
-            }
-            int[] newNums = new int[n - 1];
-            Array.Copy(nums, 0, newNums, 0, minIndex);
-            newNums[minIndex] = minSum;
-            Array.Copy(nums, minIndex + 2, newNums, minIndex + 1, n - minIndex - 2);
-            nums = newNums;
-            n--;
-            count++;
+        if (n < 2) return 0;
+        long[] val = new long[n];
+        int[] L = new int[n];
+        int[] R = new int[n];
+        bool[] alive = new bool[n];
+        var pq = new PriorityQueue<int, (long sum, int idx)>(
+            Comparer<(long sum, int idx)>.Create((a, b) => {
+                int cmp = a.sum.CompareTo(b.sum);
+                return cmp != 0 ? cmp : a.idx.CompareTo(b.idx);
+            })
+        );
+        int violations = 0;
+        for (int i = 0; i < n; i++) {
+            val[i] = nums[i];
+            L[i] = i - 1;
+            R[i] = (i == n - 1) ? -1 : i + 1;
+            alive[i] = true;
         }
-        return count;
-    }
-    bool IsSorted(int[] nums) {
-        for (int i = 0; i < nums.Length - 1; i++) {
-            if (nums[i] > nums[i + 1]) {
-                return false;
-            }
+        for (int i = 0; i < n - 1; i++) {
+            if (val[i] > val[i + 1]) violations++;
+            pq.Enqueue(i, (val[i] + val[i + 1], i));
         }
-        return true;
+        int ops = 0;
+        while (violations > 0 && pq.Count > 0) {
+            pq.TryDequeue(out int i, out var top);
+            if (!alive[i] || R[i] == -1 || val[i] + val[R[i]] != top.sum) continue;
+            int j = R[i];
+            if (L[i] != -1 && val[L[i]] > val[i]) violations--;
+            if (val[i] > val[j]) violations--;
+            if (R[j] != -1 && val[j] > val[R[j]]) violations--;
+            val[i] += val[j];
+            alive[j] = false;
+            R[i] = R[j];
+            if (R[j] != -1) L[R[j]] = i;
+            if (L[i] != -1 && val[L[i]] > val[i]) violations++;
+            if (R[i] != -1 && val[i] > val[R[i]]) violations++;
+            if (L[i] != -1) pq.Enqueue(L[i], (val[L[i]] + val[i], L[i]));
+            if (R[i] != -1) pq.Enqueue(i, (val[i] + val[R[i]], i));
+            ops++;
+        }
+        return ops;
     }
 }
 {% endraw %}
@@ -584,31 +887,53 @@ public class Solution {
 
 {% highlight javascript %}
 {% raw %}
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
 var minimumPairRemoval = function(nums) {
-    let count = 0;
-    while (!isSorted(nums)) {
-        let minSum = Infinity;
-        let minIndex = -1;
-        for (let i = 0; i < nums.length - 1; i++) {
-            if (nums[i] + nums[i + 1] < minSum) {
-                minSum = nums[i] + nums[i + 1];
-                minIndex = i;
-            }
-        }
-        nums.splice(minIndex + 1, 1);
-        nums[minIndex] = minSum;
-        count++;
+    let n = nums.length;
+    if (n < 2) return 0;
+    let val = new BigInt64Array(nums.map(BigInt));
+    let L = new Int32Array(n).fill(-1);
+    let R = new Int32Array(n).fill(-1);
+    let alive = new Uint8Array(n).fill(1);
+    for (let i = 0; i < n; i++) {
+        L[i] = i - 1;
+        R[i] = (i === n - 1) ? -1 : i + 1;
     }
-    return count;
+    const pq = new MinPriorityQueue({
+        compare: (a, b) => {
+            if (a.sum < b.sum) return -1;
+            if (a.sum > b.sum) return 1;
+            return a.idx - b.idx;
+        }
+    });
+    let violations = 0;
+    for (let i = 0; i < n - 1; i++) {
+        if (val[i] > val[i + 1]) violations++;
+        pq.enqueue({ sum: val[i] + val[i + 1], idx: i });
+    }
+    let ops = 0;
+    while (violations > 0 && !pq.isEmpty()) {
+        let { sum, idx } = pq.dequeue();
+        if (!alive[idx] || R[idx] === -1 || val[idx] + val[R[idx]] !== sum) continue;
+        let nextIdx = R[idx];
+        if (L[idx] !== -1 && val[L[idx]] > val[idx]) violations--;
+        if (val[idx] > val[nextIdx]) violations--;
+        if (R[nextIdx] !== -1 && val[nextIdx] > val[R[nextIdx]]) violations--;
+        val[idx] += val[nextIdx];
+        alive[nextIdx] = 0;
+        R[idx] = R[nextIdx];
+        if (R[nextIdx] !== -1) L[R[nextIdx]] = idx;
+        if (L[idx] !== -1 && val[L[idx]] > val[idx]) violations++;
+        if (R[idx] !== -1 && val[idx] > val[R[idx]]) violations++;
+        if (L[idx] !== -1) pq.enqueue({ sum: val[L[idx]] + val[idx], idx: L[idx] });
+        if (R[idx] !== -1) pq.enqueue({ sum: val[idx] + val[R[idx]], idx: idx });
+        ops++;
+    }
+    return ops;
 };
-function isSorted(nums) {
-    for (let i = 0; i < nums.length - 1; i++) {
-        if (nums[i] > nums[i + 1]) {
-            return false;
-        }
-    }
-    return true;
-}
 {% endraw %}
 {% endhighlight %}
 
@@ -618,31 +943,8 @@ function isSorted(nums) {
 
 {% highlight typescript %}
 {% raw %}
-function minimumPairRemoval(nums: number[]): number {
-    let count = 0;
-    while (!isSorted(nums)) {
-        let minSum = Infinity;
-        let minIndex = -1;
-        for (let i = 0; i < nums.length - 1; i++) {
-            if (nums[i] + nums[i + 1] < minSum) {
-                minSum = nums[i] + nums[i + 1];
-                minIndex = i;
-            }
-        }
-        nums.splice(minIndex + 1, 1);
-        nums[minIndex] = minSum;
-        count++;
-    }
-    return count;
-}
-function isSorted(nums: number[]): boolean {
-    for (let i = 0; i < nums.length - 1; i++) {
-        if (nums[i] > nums[i + 1]) {
-            return false;
-        }
-    }
-    return true;
-}
+// Generation failed for TypeScript
+// Reason: Generation failed: STOP
 {% endraw %}
 {% endhighlight %}
 
@@ -652,33 +954,8 @@ function isSorted(nums: number[]): boolean {
 
 {% highlight php %}
 {% raw %}
-class Solution {
-    function minimumPairRemoval($nums) {
-        $count = 0;
-        while (!$this->isSorted($nums)) {
-            $minSum = PHP_INT_MAX;
-            $minIndex = -1;
-            for ($i = 0; $i < count($nums) - 1; $i++) {
-                if ($nums[$i] + $nums[$i + 1] < $minSum) {
-                    $minSum = $nums[$i] + $nums[$i + 1];
-                    $minIndex = $i;
-                }
-            }
-            array_splice($nums, $minIndex + 1, 1);
-            $nums[$minIndex] = $minSum;
-            $count++;
-        }
-        return $count;
-    }
-    function isSorted($nums) {
-        for ($i = 0; $i < count($nums) - 1; $i++) {
-            if ($nums[$i] > $nums[$i + 1]) {
-                return false;
-            }
-        }
-        return true;
-    }
-}
+// Generation failed for PHP
+// Reason: Generation failed: STOP
 {% endraw %}
 {% endhighlight %}
 
@@ -688,34 +965,8 @@ class Solution {
 
 {% highlight swift %}
 {% raw %}
-class Solution {
-    func minimumPairRemoval(_ nums: [Int]) -> Int {
-        var nums = nums
-        var count = 0
-        while !isSorted(nums) {
-            var minSum = Int.max
-            var minIndex = -1
-            for i in 0..<nums.count - 1 {
-                if nums[i] + nums[i + 1] < minSum {
-                    minSum = nums[i] + nums[i + 1]
-                    minIndex = i
-                }
-            }
-            nums.remove(at: minIndex + 1)
-            nums[minIndex] = minSum
-            count += 1
-        }
-        return count
-    }
-    func isSorted(_ nums: [Int]) -> Bool {
-        for i in 0..<nums.count - 1 {
-            if nums[i] > nums[i + 1] {
-                return false
-            }
-        }
-        return true
-    }
-}
+// Generation failed for Swift
+// Reason: Generation failed: STOP
 {% endraw %}
 {% endhighlight %}
 
@@ -725,34 +976,8 @@ class Solution {
 
 {% highlight kotlin %}
 {% raw %}
-class Solution {
-    fun minimumPairRemoval(nums: IntArray): Int {
-        var count = 0
-        var numsList = nums.toMutableList()
-        while (!isNonDecreasing(numsList)) {
-            var minSum = Int.MAX_VALUE
-            var minIndex = -1
-            for (i in 0 until numsList.size - 1) {
-                val sum = numsList[i] + numsList[i + 1]
-                if (sum < minSum) {
-                    minSum = sum
-                    minIndex = i
-                }
-            }
-            numsList.removeAt(minIndex + 1)
-            numsList[minIndex] = minSum
-            count++
-        }
-        return count
-    }
-
-    private fun isNonDecreasing(nums: List<Int>): Boolean {
-        for (i in 0 until nums.size - 1) {
-            if (nums[i] > nums[i + 1]) return false
-        }
-        return true
-    }
-}
+// Generation failed for Kotlin
+// Reason: Generation failed: STOP
 {% endraw %}
 {% endhighlight %}
 
@@ -762,34 +987,8 @@ class Solution {
 
 {% highlight dart %}
 {% raw %}
-class Solution {
-  int minimumPairRemoval(List<int> nums) {
-    int count = 0;
-    List<int> numsList = List.from(nums);
-    while (!isNonDecreasing(numsList)) {
-      int minSum = int.maxFinite;
-      int minIndex = -1;
-      for (int i = 0; i < numsList.length - 1; i++) {
-        int sum = numsList[i] + numsList[i + 1];
-        if (sum < minSum) {
-          minSum = sum;
-          minIndex = i;
-        }
-      }
-      numsList.removeAt(minIndex + 1);
-      numsList[minIndex] = minSum;
-      count++;
-    }
-    return count;
-  }
-
-  bool isNonDecreasing(List<int> nums) {
-    for (int i = 0; i < nums.length - 1; i++) {
-      if (nums[i] > nums[i + 1]) return false;
-    }
-    return true;
-  }
-}
+// Generation failed for Dart
+// Reason: Generation failed: STOP
 {% endraw %}
 {% endhighlight %}
 
@@ -799,34 +998,8 @@ class Solution {
 
 {% highlight go %}
 {% raw %}
-func minimumPairRemoval(nums []int) int {
-    count := 0
-    numsList := make([]int, len(nums))
-    copy(numsList, nums)
-    for !isNonDecreasing(numsList) {
-        minSum := int(1e9)
-        minIndex := -1
-        for i := 0; i < len(numsList)-1; i++ {
-            sum := numsList[i] + numsList[i+1]
-            if sum < minSum {
-                minSum = sum
-                minIndex = i
-            }
-        }
-        numsList = append(numsList[:minIndex], append([]int{minSum}, numsList[minIndex+2:]...)...)
-        count++
-    }
-    return count
-}
-
-func isNonDecreasing(nums []int) bool {
-    for i := 0; i < len(nums)-1; i++ {
-        if nums[i] > nums[i+1] {
-            return false
-        }
-    }
-    return true
-}
+// Generation failed for Go
+// Reason: Generation failed: STOP
 {% endraw %}
 {% endhighlight %}
 
@@ -836,34 +1009,92 @@ func isNonDecreasing(nums []int) bool {
 
 {% highlight ruby %}
 {% raw %}
-# @param {Integer[]} nums
-# @return {Integer}
-def minimum_pair_removal(nums)
-    count = 0
-    nums_list = nums.dup
-    while !is_non_decreasing(nums_list)
-        min_sum = Float::INFINITY
-        min_index = -1
-        (0...nums_list.size - 1).each do |i|
-            sum = nums_list[i] + nums_list[i + 1]
-            if sum < min_sum
-                min_sum = sum
-                min_index = i
-            end
-        end
-        nums_list.delete_at(min_index + 1)
-        nums_list[min_index] = min_sum
-        count += 1
+class MinHeap
+  def initialize
+    @heap = []
+  end
+  def push(val)
+    @heap << val
+    bubble_up(@heap.size - 1)
+  end
+  def pop
+    return nil if @heap.empty?
+    return @heap.pop if @heap.size == 1
+    res = @heap[0]
+    @heap[0] = @heap.pop
+    bubble_down(0)
+    res
+  end
+  def empty?
+    @heap.empty?
+  end
+  private
+  def bubble_up(index)
+    while index > 0
+      parent = (index - 1) / 2
+      if @heap[index][0] < @heap[parent][0] || (@heap[index][0] == @heap[parent][0] && @heap[index][1] < @heap[parent][1])
+        @heap[index], @heap[parent] = @heap[parent], @heap[index]
+        index = parent
+      else
+        break
+      end
     end
-    count
+  end
+  def bubble_down(index)
+    while true
+      left = 2 * index + 1
+      right = 2 * index + 2
+      smallest = index
+      if left < @heap.size && (@heap[left][0] < @heap[smallest][0] || (@heap[left][0] == @heap[smallest][0] && @heap[left][1] < @heap[smallest][1]))
+        smallest = left
+      end
+      if right < @heap.size && (@heap[right][0] < @heap[smallest][0] || (@heap[right][0] == @heap[smallest][0] && @heap[right][1] < @heap[smallest][1]))
+        smallest = right
+      end
+      if smallest != index
+        @heap[index], @heap[smallest] = @heap[smallest], @heap[index]
+        index = smallest
+      else
+        break
+      end
+    end
+  end
 end
 
-private
-def is_non_decreasing(nums)
-    (0...nums.size - 1).each do |i|
-        return false if nums[i] > nums[i + 1]
-    end
-    true
+def minimum_pair_removal(nums)
+  n = nums.length
+  return 0 if n <= 1
+  vals = nums.map(&:to_i)
+  nxt = Array.new(n) { |i| i == n - 1 ? -1 : i + 1 }
+  prv = Array.new(n) { |i| i == 0 ? -1 : i - 1 }
+  active = Array.new(n, true)
+  pq = MinHeap.new
+  decreasing_count = 0
+  (0...n - 1).each do |i|
+    pq.push([vals[i] + vals[i + 1], i])
+    decreasing_count += 1 if vals[i] > vals[i + 1]
+  end
+  ops = 0
+  while decreasing_count > 0 && !pq.empty?
+    s, l = pq.pop
+    next if !active[l] || nxt[l] == -1
+    r = nxt[l]
+    next if !active[r] || vals[l] + vals[r] != s
+    p, nn = prv[l], nxt[r]
+    decreasing_count -= 1 if p != -1 && vals[p] > vals[l]
+    decreasing_count -= 1 if vals[l] > vals[r]
+    decreasing_count -= 1 if nn != -1 && vals[r] > vals[nn]
+    vals[l] += vals[r]
+    active[r] = false
+    nxt[l] = nn
+    prv[nn] = l if nn != -1
+    decreasing_count += 1 if p != -1 && vals[p] > vals[l]
+    decreasing_count += 1 if nn != -1 && vals[l] > vals[nn]
+    pq.push([vals[p] + vals[l], p]) if p != -1
+    pq.push([vals[l] + vals[nn], l]) if nn != -1
+    ops += 1
+  end
+  ops
 end
 {% endraw %}
 {% endhighlight %}
@@ -874,32 +1105,47 @@ end
 
 {% highlight scala %}
 {% raw %}
-object Solution {
-    def minimumPairRemoval(nums: Array[Int]): Int = {
-        var count = 0
-        var numsList = nums.toList
-        while (!isNonDecreasing(numsList)) {
-            var minSum = Int.MaxValue
-            var minIndex = -1
-            for (i <- 0 until numsList.size - 1) {
-                val sum = numsList(i) + numsList(i + 1)
-                if (sum < minSum) {
-                    minSum = sum
-                    minIndex = i
-                }
-            }
-            numsList = numsList.patch(minIndex, Seq(minSum), 2)
-            count += 1
-        }
-        count
-    }
+import scala.collection.mutable
 
-    private def isNonDecreasing(nums: List[Int]): Boolean = {
-        for (i <- 0 until nums.size - 1) {
-            if (nums(i) > nums(i + 1)) return false
+object Solution {
+  def minimumPairRemoval(nums: Array[Int]): Int = {
+    val n = nums.length
+    if (n <= 1) return 0
+    val vals = nums.map(_.toLong)
+    val nxt = Array.tabulate(n)(i => if (i == n - 1) -1 else i + 1)
+    val prv = Array.tabulate(n)(i => i - 1)
+    val active = Array.fill(n)(true)
+    val pq = mutable.PriorityQueue.empty[(Long, Int)](
+      Ordering.by[(Long, Int), (Long, Int)](x => (-x._1, -x._2))
+    )
+    for (i <- 0 until n - 1) pq.enqueue((vals(i) + vals(i + 1), i))
+    var decCount = 0
+    for (i <- 0 until n - 1) if (vals(i) > vals(i + 1)) decCount += 1
+    var ops = 0
+    while (decCount > 0 && pq.nonEmpty) {
+      val (s, l) = pq.dequeue()
+      if (active(l) && nxt(l) != -1) {
+        val r = nxt(l)
+        if (active(r) && vals(l) + vals(r) == s) {
+          val p = prv(l)
+          val nn = nxt(r)
+          if (p != -1 && vals(p) > vals(l)) decCount -= 1
+          if (vals(l) > vals(r)) decCount -= 1
+          if (nn != -1 && vals(r) > vals(nn)) decCount -= 1
+          vals(l) += vals(r)
+          active(r) = false
+          nxt(l) = nn
+          if (nn != -1) prv(nn) = l
+          if (p != -1 && vals(p) > vals(l)) decCount += 1
+          if (nn != -1 && vals(l) > vals(nn)) decCount += 1
+          if (p != -1) pq.enqueue((vals(p) + vals(l), p))
+          if (nn != -1) pq.enqueue((vals(l) + vals(nn), l))
+          ops += 1
         }
-        true
+      }
     }
+    ops
+  }
 }
 {% endraw %}
 {% endhighlight %}
@@ -910,35 +1156,53 @@ object Solution {
 
 {% highlight rust %}
 {% raw %}
+use std::collections::BinaryHeap;
+use std::cmp::Reverse;
+
 impl Solution {
     pub fn minimum_pair_removal(nums: Vec<i32>) -> i32 {
-        let mut count = 0;
-        let mut nums_list = nums;
-        while !is_non_decreasing(&nums_list) {
-            let mut min_sum = i32::MAX;
-            let mut min_index = -1;
-            for i in 0..nums_list.len() - 1 {
-                let sum = nums_list[i] + nums_list[i + 1];
-                if sum < min_sum {
-                    min_sum = sum;
-                    min_index = i as i32;
+        let n = nums.len();
+        if n <= 1 { return 0; }
+        let mut vals: Vec<i64> = nums.into_iter().map(|x| x as i64).collect();
+        let mut nxt: Vec<i32> = (0..n as i32).map(|i| if i == (n as i32 - 1) { -1 } else { i + 1 }).collect();
+        let mut prv: Vec<i32> = (0..n as i32).map(|i| if i == 0 { -1 } else { i - 1 }).collect();
+        let mut active = vec![true; n];
+        let mut pq = BinaryHeap::new();
+        for i in 0..n-1 {
+            pq.push(Reverse((vals[i] + vals[i+1], i)));
+        }
+        let mut dec_count = 0;
+        for i in 0..n-1 {
+            if vals[i] > vals[i+1] { dec_count += 1; }
+        }
+        let mut ops = 0;
+        while dec_count > 0 {
+            if let Some(Reverse((s, l_idx))) = pq.pop() {
+                let l = l_idx;
+                let r_idx = nxt[l];
+                if r_idx != -1 {
+                    let r = r_idx as usize;
+                    if active[l] && active[r] && vals[l] + vals[r] == s {
+                        let p = prv[l];
+                        let nn = nxt[r];
+                        if p != -1 && vals[p as usize] > vals[l] { dec_count -= 1; }
+                        if vals[l] > vals[r] { dec_count -= 1; }
+                        if nn != -1 && vals[r] > vals[nn as usize] { dec_count -= 1; }
+                        vals[l] += vals[r];
+                        active[r] = false;
+                        nxt[l] = nn;
+                        if nn != -1 { prv[nn as usize] = l as i32; }
+                        if p != -1 && vals[p as usize] > vals[l] { dec_count += 1; }
+                        if nn != -1 && vals[l] > vals[nn as usize] { dec_count += 1; }
+                        if p != -1 { pq.push(Reverse((vals[p as usize] + vals[l], p as usize))); }
+                        if nn != -1 { pq.push(Reverse((vals[l] + vals[nn as usize], l))); }
+                        ops += 1;
+                    }
                 }
-            }
-            nums_list.remove(min_index as usize + 1);
-            nums_list[min_index as usize] = min_sum;
-            count += 1;
+            } else { break; }
         }
-        count
+        ops
     }
-}
-
-fn is_non_decreasing(nums: &Vec<i32>) -> bool {
-    for i in 0..nums.len() - 1 {
-        if nums[i] > nums[i + 1] {
-            return false;
-        }
-    }
-    true
 }
 {% endraw %}
 {% endhighlight %}
@@ -949,19 +1213,38 @@ fn is_non_decreasing(nums: &Vec<i32>) -> bool {
 
 {% highlight racket %}
 {% raw %}
+(require data/heap)
 (define/contract (minimum-pair-removal nums)
   (-> (listof exact-integer?) exact-integer?)
-  (let loop ((nums nums) (count 0))
-    (if (is-non-decreasing? nums)
-        count
-        (let* ((min-sum (apply min (map (lambda (x) (apply + x)) (map cons nums (cdr nums)))))
-               (min-index (index-of (map cons nums (cdr nums)) (cons (car (filter (lambda (x) (= (apply + x) min-sum)) (map cons nums (cdr nums)))))))))
-          (loop (append (take nums min-index) (list min-sum) (cddr (drop nums min-index))) (+ count 1))))))
-
-(define (is-non-decreasing? nums)
-  (or (null? (cdr nums))
-      (and (<= (car nums) (cadr nums))
-           (is-non-decreasing? (cdr nums)))))
+  (let* ([n (length nums)])
+    (if (<= n 1) 0
+        (let ([vals (list->vector nums)] [nxt (make-vector n -1)] [prv (make-vector n -1)] [active (make-vector n #t)]
+              [pq (make-heap (lambda (a b) (if (= (car a) (car b)) (<= (cdr a) (cdr b)) (< (car a) (car b)))))])
+          (for ([i (in-range (- n 1))])
+            (vector-set! nxt i (+ i 1))
+            (vector-set! prv (+ i 1) i)
+            (heap-add! pq (cons (+ (vector-ref vals i) (vector-ref vals (+ i 1))) i)))
+          (let ([dc 0])
+            (for ([i (in-range (- n 1))]) (when (> (vector-ref vals i) (vector-ref vals (+ i 1))) (set! dc (+ dc 1))))
+            (let loop ([dc dc] [ops 0])
+              (if (<= dc 0) ops
+                  (if (= (heap-count pq) 0) ops
+                      (let* ([top (heap-min pq)] [s (car top)] [l (cdr top)])
+                        (heap-remove-min! pq)
+                        (let ([r (vector-ref nxt l)])
+                          (if (and (not (= r -1)) (vector-ref active l) (vector-ref active r) (= (+ (vector-ref vals l) (vector-ref vals r)) s))
+                              (let* ([p (vector-ref prv l)] [nn (vector-ref nxt r)] [new-dc dc])
+                                (when (and (not (= p -1)) (> (vector-ref vals p) (vector-ref vals l))) (set! new-dc (- new-dc 1)))
+                                (when (> (vector-ref vals l) (vector-ref vals r)) (set! new-dc (- new-dc 1)))
+                                (when (and (not (= nn -1)) (> (vector-ref vals r) (vector-ref vals nn))) (set! new-dc (- new-dc 1)))
+                                (vector-set! vals l (+ (vector-ref vals l) (vector-ref vals r)))
+                                (vector-set! active r #f) (vector-set! nxt l nn)
+                                (when (not (= nn -1)) (vector-set! prv nn l))
+                                (when (and (not (= p -1)) (> (vector-ref vals p) (vector-ref vals l))) (set! new-dc (+ new-dc 1)))
+                                (when (and (not (= nn -1)) (> (vector-ref vals l) (vector-ref vals nn))) (set! new-dc (+ new-dc 1)))
+                                (when (not (= p -1)) (heap-add! pq (cons (+ (vector-ref vals p) (vector-ref vals l)) p)))
+                                (when (not (= nn -1)) (heap-add! pq (cons (+ (vector-ref vals l) (vector-ref vals nn)) l)))
+                                (loop new-dc (+ ops 1))) (loop dc ops)))))))))))
 {% endraw %}
 {% endhighlight %}
 
@@ -971,26 +1254,32 @@ fn is_non_decreasing(nums: &Vec<i32>) -> bool {
 
 {% highlight erlang %}
 {% raw %}
+-spec minimum_pair_removal(Nums :: [integer()]) -> integer().
 minimum_pair_removal(Nums) ->
-    Count =
-        lists:foldl(
-            fun
-                ({Sum, Index}, {CountAcc, NumsAcc}) when Sum < MinSum ->
-                    {{Sum, Index}, {CountAcc + 1, lists:delete_at(NumsAcc, Index + 1)});
-                (_, {CountAcc, NumsAcc}) ->
-                    {CountAcc, NumsAcc}
-            end,
-            {0, Nums},
-            [{lists:sum([A, B]), I} || {A, B, I} <- [{X, Y, I} || {X, Y, I} <- [{A, B, I} || {A, [B | _] = T, I} <- [{X, T, I} || {X, T, I} <- [{X, T, I} || {X, T} <- [{X, tl(T)} || T <- [Nums]], I <- [0]]]], I <- [0]]]]),
-    Count.
-
-is_non_decreasing(Nums) ->
-    lists:all(
-        fun
-            ({A, B}) when A =< B -> true;
-            (_) -> false
-        end,
-        [{A, B} || {A, [B | _] = T} <- [{A, T} || T <- [Nums]], {A, B} <- [{A, B} || {A, B} <- [{A, B} || {A, [B | _] = T} <- [{A, T} || T <- [Nums]]]]]]).
+  N = length(Nums),
+  if N =< 1 -> 0; true ->
+    Idxs = lists:seq(0, N-1), Vals = maps:from_list(lists:zip(Idxs, Nums)),
+    Nxt = maps:from_list(lists:zip(lists:droplast(Idxs), lists:nthtail(1, Idxs))),
+    Prv = maps:from_list(lists:zip(lists:nthtail(1, Idxs), lists:droplast(Idxs))),
+    PQ = lists:foldl(fun(I, Acc) -> gb_sets:add({maps:get(I, Vals) + maps:get(I+1, Vals), I}, Acc) end, gb_sets:new(), lists:droplast(Idxs)),
+    DC = lists:foldl(fun(I, Acc) -> if maps:get(I, Vals) > maps:get(I+1, Vals) -> Acc + 1; true -> Acc end end, 0, lists:droplast(Idxs)),
+    simulate(Vals, Nxt, Prv, PQ, DC, 0) end.
+simulate(_, _, _, _, 0, Ops) -> Ops;
+simulate(Vals, Nxt, Prv, PQ, DC, Ops) ->
+  case gb_sets:is_empty(PQ) of true -> Ops; false -> {{S, L}, PQ1} = gb_sets:take_smallest(PQ),
+    case maps:find(L, Nxt) of {ok, R} -> SumLR = maps:get(L, Vals) + maps:get(R, Vals),
+      if SumLR == S -> P = maps:get(L, Prv, -1), NN = maps:get(R, Nxt, -1),
+        D1 = if P /= -1 andalso maps:get(P, Vals) > maps:get(L, Vals) -> DC - 1; true -> DC end,
+        D2 = if maps:get(L, Vals) > maps:get(R, Vals) -> D1 - 1; true -> D1 end,
+        D3 = if NN /= -1 andalso maps:get(R, Vals) > maps:get(NN, Vals) -> D2 - 1; true -> D2 end,
+        NV = maps:put(L, SumLR, maps:remove(R, Vals)), NX = maps:remove(R, Nxt), PV = maps:remove(R, Prv),
+        {NX2, PV2} = if NN /= -1 -> {maps:put(L, NN, NX), maps:put(NN, L, PV)}; true -> {maps:remove(L, NX), PV} end,
+        D4 = if P /= -1 andalso maps:get(P, NV) > maps:get(L, NV) -> D3 + 1; true -> D3 end,
+        D5 = if NN /= -1 andalso maps:get(L, NV) > maps:get(NN, NV) -> D4 + 1; true -> D4 end,
+        PQ2 = if P /= -1 -> gb_sets:add({maps:get(P, NV) + maps:get(L, NV), P}, PQ1); true -> PQ1 end,
+        PQ3 = if NN /= -1 -> gb_sets:add({maps:get(L, NV) + maps:get(NN, NV), L}, PQ2); true -> PQ2 end,
+        simulate(NV, NX2, PV2, PQ3, D5, Ops + 1); true -> simulate(Vals, Nxt, Prv, PQ1, DC, Ops) end;
+      error -> simulate(Vals, Nxt, Prv, PQ1, DC, Ops) end end.
 {% endraw %}
 {% endhighlight %}
 
@@ -1003,30 +1292,48 @@ is_non_decreasing(Nums) ->
 defmodule Solution do
   @spec minimum_pair_removal(nums :: [integer]) :: integer
   def minimum_pair_removal(nums) do
-    count = 0
-    nums_list = Enum.to_list(nums)
-    while !is_non_decreasing(nums_list) do
-      min_sum = :math.pow(2, 31) - 1
-      min_index = -1
-      Enum.reduce(0..length(nums_list) - 2, {min_sum, min_index}, fn i, {min_sum, min_index} ->
-        sum = Enum.at(nums_list, i) + Enum.at(nums_list, i + 1)
-        if sum < min_sum do
-          {sum, i}
-        else
-          {min_sum, min_index}
-        end
-      end)
-      |> (fn {min_sum, min_index} ->
-           nums_list = List.delete_at(nums_list, min_index + 1)
-           List.update_at(nums_list, min_index, fn _ -> min_sum end)
-           {count + 1, nums_list}
-         end)
+    n = length(nums)
+    if n <= 1 do 0 else
+      vals = nums |> Enum.with_index() |> Enum.reduce(%{}, fn {v, i}, acc -> Map.put(acc, i, v) end)
+      nxt = if n > 1, do: 0..(n-2) |> Enum.reduce(%{}, fn i, acc -> Map.put(acc, i, i + 1) end), else: %{}
+      prv = if n > 1, do: 1..(n-1) |> Enum.reduce(%{}, fn i, acc -> Map.put(acc, i, i - 1) end), else: %{}
+      pq = if n > 1, do: 0..(n-2) |> Enum.reduce(:gb_sets.new(), fn i, acc -> :gb_sets.add({Map.get(vals, i) + Map.get(vals, i + 1), i}, acc) end), else: :gb_sets.new()
+      dc = if n > 1, do: 0..(n-2) |> Enum.count(fn i -> Map.get(vals, i) > Map.get(vals, i + 1) end), else: 0
+      simulate(vals, nxt, prv, pq, dc, 0)
     end
-    count
   end
-
-  defp is_non_decreasing(nums) do
-    Enum.all?(0..length(nums) - 2, fn i -> Enum.at(nums, i) <= Enum.at(nums, i + 1) end)
+  defp simulate(vals, nxt, prv, pq, dc, ops) do
+    if dc == 0 do ops else
+      case :gb_sets.is_empty(pq) do
+        true -> ops
+        false -> {{s, l}, pq} = :gb_sets.take_smallest(pq)
+          case Map.get(nxt, l) do
+            nil -> simulate(vals, nxt, prv, pq, dc, ops)
+            r -> if Map.get(vals, l) + Map.get(vals, r) == s do
+                p = Map.get(prv, l, -1)
+                nn = Map.get(nxt, r, -1)
+                new_dc = dc
+                if p != -1 and Map.get(vals, p) > Map.get(vals, l), do: new_dc = new_dc - 1
+                if Map.get(vals, l) > Map.get(vals, r), do: new_dc = new_dc - 1
+                if nn != -1 and Map.get(vals, r) > Map.get(vals, nn), do: new_dc = new_dc - 1
+                sum = Map.get(vals, l) + Map.get(vals, r)
+                new_vals = vals |> Map.put(l, sum) |> Map.delete(r)
+                new_nxt = nxt |> Map.delete(r)
+                new_nxt = if nn != -1, do: Map.put(new_nxt, l, nn), else: Map.delete(new_nxt, l)
+                new_prv = prv |> Map.delete(r)
+                if nn != -1, do: new_prv = Map.put(new_prv, nn, l)
+                if p != -1 and Map.get(new_vals, p) > Map.get(new_vals, l), do: new_dc = new_dc + 1
+                if nn != -1 and Map.get(new_vals, l) > Map.get(new_vals, nn), do: new_dc = new_dc + 1
+                new_pq = pq
+                if p != -1, do: new_pq = :gb_sets.add({Map.get(new_vals, p) + Map.get(new_vals, l), p}, new_pq)
+                if nn != -1, do: new_pq = :gb_sets.add({Map.get(new_vals, l) + Map.get(new_vals, nn), l}, new_pq)
+                simulate(new_vals, new_nxt, new_prv, new_pq, new_dc, ops + 1)
+              else
+                simulate(vals, nxt, prv, pq, dc, ops)
+              end
+          end
+      end
+    end
   end
 end
 {% endraw %}
@@ -1038,9 +1345,5 @@ end
 
 ### Complexity Analysis
 
-- **Time Complexity:** The time complexity of this solution is O(n^2 log n) where n is the number of elements in the array. This is because in the worst case, we might have to remove all pairs from the array, and each removal operation takes O(log n) time due to the priority queue.
-
-- **Space Complexity:** The space complexity of this solution is O(n) where n is the number of elements in the array. This is because we are storing all pairs of adjacent elements in the priority queue.
-
-</div>
-</details>
+- **Time Complexity:** O(N log N), where N is the length of the array. Each of the at most N-1 merges involves popping from and pushing into the priority queue, which takes logarithmic time. The total number of elements pushed into the queue is proportional to N.
+- **Space Complexity:** O(N), as we maintain several arrays (L, R, val, alive) and a priority queue, each storing at most O(N) elements to manage the state of the simulation.

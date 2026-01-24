@@ -7,15 +7,6 @@ on:
         description: 'Post date (YYYY-MM-DD)'
         required: true
         type: string
-      ai_models:
-        description: 'AI Models (select one or both)'
-        required: true
-        type: choice
-        options:
-          - gemini-2.5-flash
-          - llama-3.3-70b-versatile
-          - Both (gemini + llama)
-        default: Both (gemini + llama)
 
 jobs:
   regenerate:
@@ -38,24 +29,12 @@ jobs:
         run: |
           pip install -r scripts/requirements.txt
 
-      - name: Determine models to use
-        id: models
-        run: |
-          if [ "${{ inputs.ai_models }}" = "Both (gemini + llama)" ]; then
-            echo "models=gemini-2.5-flash llama-3.3-70b-versatile" >> $GITHUB_OUTPUT
-          else
-            echo "models=${{ inputs.ai_models }}" >> $GITHUB_OUTPUT
-          fi
-
       - name: Regenerate AI solution(s)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: |
-          MODELS="${{ steps.models.outputs.models }}"
-          UPDATE_MODELS=$(echo "$MODELS" | tr ' ' ',')
-          echo "Using AI models: $MODELS"
-          python scripts/generate_posts.py "${{ inputs.date }}" $MODELS --update-models "$UPDATE_MODELS"
+          echo "Regenerating AI solution for date: ${{ inputs.date }}"
+          python scripts/generate_posts.py "${{ inputs.date }}"
 
       - name: Commit and push changes
         run: |
@@ -72,5 +51,5 @@ jobs:
           fi
 
           # Commit changes
-          git commit -m "Regenerate AI solution(s) for ${{ inputs.date }} using ${{ inputs.ai_models }}"
+          git commit -m "Regenerate AI solution(s) for ${{ inputs.date }}"
           git push origin master

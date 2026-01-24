@@ -228,9 +228,14 @@ class PostGenerator:
         ai_solution = question_data.get('ai_solution', {})
         ai_solutions = question_data.get('ai_solutions', [])
 
-        # Handle both old format (single solution) and new format (multiple solutions)
         if ai_solutions:
-            # New format: multiple AI solutions
+            # Prefer Gemini-only solutions if present
+            gemini_only = [s for s in ai_solutions if "gemini" in str(s.get("model", "")).lower()]
+            if gemini_only:
+                ai_solutions = gemini_only
+
+        # Multi-solution block only when there are truly multiple entries
+        if ai_solutions and len(ai_solutions) > 1:
             body_parts.append("## 🤖 AI-Generated Solutions\n")
             body_parts.append("We've generated solutions using multiple AI models. Click to expand each solution:\n")
 
@@ -241,8 +246,9 @@ class PostGenerator:
 
                 # Model emoji mapping
                 model_emojis = {
+                    'gemini-3-pro-preview': '✨',
+                    'gemini-3-flash-preview': '✨',
                     'gemini-2.5-flash': '✨',
-                    'llama-3.3-70b-versatile': '⚡'
                 }
                 emoji = model_emojis.get(model_name, '🤖')
 
@@ -278,12 +284,14 @@ class PostGenerator:
                 body_parts.append(f"- **Time Complexity:** {solution.get('time_complexity', 'N/A')}\n")
                 body_parts.append(f"- **Space Complexity:** {solution.get('space_complexity', 'N/A')}\n")
 
-
-
                 body_parts.append('</div>')
                 body_parts.append('</details>\n')
 
-        elif ai_solution:
+        else:
+            if not ai_solution and ai_solutions:
+                ai_solution = ai_solutions[0]
+
+        if ai_solution:
             # Old format: single AI solution
             # Get model name (new format) or fallback to provider (old format)
             model_name = ai_solution.get('model')
@@ -291,16 +299,14 @@ class PostGenerator:
                 # Fallback for old format
                 provider = ai_solution.get('provider', 'AI').upper()
                 model_name = {
-                    'GEMINI': 'gemini-2.5-flash',
-                    'GROQ': 'llama-3.3-70b-versatile'
+                    'GEMINI': 'gemini-3-pro-preview'
                 }.get(provider, 'AI')
 
             # Model emoji mapping
             model_emojis = {
-                'gemini-2.5-flash': '✨',
-                'llama-3.3-70b-versatile': '⚡',
-                'qwen-2.5-32b': '🚀',
-                'groq/compound': '🧬'
+                'gemini-3-pro-preview': '✨',
+                'gemini-3-flash-preview': '✨',
+                'gemini-2.5-flash': '✨'
             }
             emoji = model_emojis.get(model_name, '🤖')
 

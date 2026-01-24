@@ -23,6 +23,9 @@
 
     // Load user's preferred language
     loadPreferredLanguage();
+
+    // Hide non-Gemini AI solution cards in the UI
+    filterAiSolutions();
   }
 
   // Load user's preferred language from localStorage
@@ -36,6 +39,41 @@
       // Activate the first matching radio button (handles both suffixed and non-suffixed IDs)
       radioButtons[0].checked = true;
     }
+  }
+
+  function filterAiSolutions() {
+    const cards = Array.from(document.querySelectorAll('.ai-solution-card'));
+    if (cards.length === 0) return;
+
+    const isGeminiCard = (card) => {
+      const badge = card.querySelector('.ai-model-badge');
+      const text = (badge ? badge.textContent : card.textContent || '').toLowerCase();
+      return text.includes('gemini');
+    };
+
+    const geminiCards = cards.filter(isGeminiCard);
+    const hideNonGemini = true;
+
+    cards.forEach(card => {
+      const isGemini = isGeminiCard(card);
+      if (hideNonGemini && !isGemini) {
+        card.style.display = 'none';
+      }
+      if (!geminiCards.length) {
+        card.style.display = 'none';
+      }
+    });
+
+    const separators = document.querySelectorAll('.ai-solution-separator, hr.ai-solution-separator');
+    separators.forEach(sep => {
+      const prev = sep.previousElementSibling;
+      const next = sep.nextElementSibling;
+      const prevHidden = prev && prev.classList && prev.classList.contains('ai-solution-card') && prev.style.display === 'none';
+      const nextHidden = next && next.classList && next.classList.contains('ai-solution-card') && next.style.display === 'none';
+      if (prevHidden || nextHidden) {
+        sep.style.display = 'none';
+      }
+    });
   }
 
   // Initialize when DOM is ready

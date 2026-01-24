@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 AI Solution Generator for LeetCode Problems
-Supports Gemini (default) and Groq providers
+Gemini-only (Gemini 3 Pro with Flash fallback)
 """
 
 import json
@@ -13,8 +13,12 @@ import re
 import time
 from typing import Dict, Optional
 from datetime import datetime, timezone
-import requests
-from google import generativeai as genai
+try:
+    from google import genai
+    _GENAI_IMPORT_ERROR = None
+except Exception as _genai_err:
+    genai = None
+    _GENAI_IMPORT_ERROR = _genai_err
 
 # Fix Windows console encoding
 if sys.platform == 'win32':
@@ -30,34 +34,20 @@ if sys.platform == 'win32':
 
 
 class AISolutionGenerator:
-    """Generates solutions using AI providers"""
+    """Generates solutions using Gemini models"""
 
-    # Model configurations
-    MODEL_CONFIGS = {
-        'gemini-2.5-flash': {
-            'provider': 'gemini',
-            'api_key_env': 'GEMINI_API_KEY'
-        },
-        'llama-3.3-70b-versatile': {
-            'provider': 'groq',
-            'api_key_env': 'GROQ_API_KEY'
-        },
-        'qwen-2.5-32b': {
-            'provider': 'groq',
-            'api_key_env': 'GROQ_API_KEY'
-        },
-        'groq/compound': {
-            'provider': 'groq',
-            'api_key_env': 'GROQ_API_KEY'
-        }
-    }
-
-    MAX_OUTPUT_TOKENS = 16384
+    PRIMARY_MODEL = "gemini-3-pro-preview"
+    FALLBACK_MODEL = "gemini-3-flash-preview"
+    MAX_OUTPUT_TOKENS = 30000
+    TEMPERATURE = 1.0
+    RATE_LIMIT_SLEEP_SECONDS = 60
+    OVERLOADED_SLEEP_SECONDS = 120
 
     # Language batches (Split into smaller groups to avoid token limits/safety issues & improve template adherence)
     LANGUAGE_BATCHES = [
-        ["C++", "Java", "Python", "Python3", "C", "C#", "JavaScript", "TypeScript", "PHP", "Swift"],
-        ["Kotlin", "Dart", "Go", "Ruby", "Scala", "Rust", "Racket", "Erlang", "Elixir"]
+        ["C++", "Java", "Python", "Python3", "C", "C#", "JavaScript"],
+        ["TypeScript", "PHP", "Swift", "Kotlin", "Dart", "Go"],
+        ["Ruby", "Scala", "Rust", "Racket", "Erlang", "Elixir"]
     ]
 
     # Map Language Name (from batches) -> JSON Output Key
@@ -74,31 +64,17 @@ class AISolutionGenerator:
     }
 
     def __init__(self):
-        # Get model name from environment (default: gemini-2.5-flash)
-        self.model_name = os.getenv('AI_MODEL', 'gemini-2.5-flash')
+        self.model_name = self.PRIMARY_MODEL
+        self.primary_model = self.PRIMARY_MODEL
+        self.fallback_model = self.FALLBACK_MODEL
+        self.active_model = self.primary_model
 
-        # Get model config
-        model_config = self.MODEL_CONFIGS.get(self.model_name)
-        if not model_config:
-            print(f"Error: Unknown model '{self.model_name}'. Supported models: {', '.join(self.MODEL_CONFIGS.keys())}", file=sys.stderr)
-            sys.exit(1)
-
-        self.provider = model_config['provider']
-
-        # Initialize API clients based on available keys
-        self.gemini_model = None
-        self.groq_api_key = None
-
-        # Gemini setup
-        if self.provider == 'gemini':
-            gemini_key = os.getenv('GEMINI_API_KEY')
-            if gemini_key:
-                genai.configure(api_key=gemini_key)
-                self.gemini_model = genai.GenerativeModel(self.model_name)
-
-        # Groq setup
-        if self.provider == 'groq':
-            self.groq_api_key = os.getenv('GROQ_API_KEY')
+        # Initialize Gemini client
+        self.client = None
+        self.import_error = _GENAI_IMPORT_ERROR
+        gemini_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+        if genai and gemini_key:
+            self.client = genai.Client(api_key=gemini_key)
 
         # Batch delay configuration
         try:
@@ -107,35 +83,108 @@ class AISolutionGenerator:
             self.batch_delay = 5.0
 
     
-    def _extract_detail_message(self, response) -> Optional[str]:
-        """Extract a human-readable error/detail message from an HTTP response."""
-        if not response or not getattr(response, "text", ""):
+    def _is_rate_limited(self, error: Exception) -> bool:
+        """Best-effort detection of 429/rate-limit errors across SDK versions."""
+        status = getattr(error, "status_code", None)
+        if status in (429, 503):
+            return True
+        code = getattr(error, "code", None)
+        if code in (429, 503):
+            return True
+        message = str(error).lower()
+        return (
+            "429" in message
+            or "rate limit" in message
+            or "resource_exhausted" in message
+            or "503" in message
+            or "unavailable" in message
+            or "overloaded" in message
+        )
+
+    def _is_overloaded(self, error: Exception) -> bool:
+        """Detect 503/unavailable overload errors for longer backoff."""
+        status = getattr(error, "status_code", None)
+        if status == 503:
+            return True
+        code = getattr(error, "code", None)
+        if code == 503:
+            return True
+        message = str(error).lower()
+        return "503" in message or "unavailable" in message or "overloaded" in message
+
+    def _normalize_finish_reason(self, finish_reason) -> Optional[str]:
+        if finish_reason is None:
             return None
+        if isinstance(finish_reason, int):
+            reason_map = {
+                1: "STOP",
+                2: "MAX_TOKENS",
+                3: "SAFETY",
+                4: "RECITATION",
+                5: "OTHER",
+            }
+            return reason_map.get(finish_reason, str(finish_reason))
+        if hasattr(finish_reason, "name"):
+            return str(finish_reason.name)
+        if isinstance(finish_reason, str):
+            if "FinishReason." in finish_reason:
+                return finish_reason.split("FinishReason.")[-1]
+            return finish_reason
+        return str(finish_reason)
+
+    def _generate_with_backoff(self, prompt: str, batch_index: int):
+        last_error = None
+        attempts = 0
+        while attempts < 3:
+            try:
+                return self._generate_content(self.active_model, prompt)
+            except Exception as e:
+                last_error = e
+                if not self._is_rate_limited(e):
+                    raise
+                overloaded = self._is_overloaded(e)
+                reason_label = "503" if overloaded else "429"
+                if self.active_model == self.primary_model:
+                    if overloaded:
+                        print(f"[Gemini] Batch {batch_index} 503 on {self.primary_model}. Sleeping {self.OVERLOADED_SLEEP_SECONDS}s before switching to {self.fallback_model}.", file=sys.stderr)
+                        time.sleep(self.OVERLOADED_SLEEP_SECONDS)
+                    self.active_model = self.fallback_model
+                    print(f"[Gemini] Batch {batch_index} {reason_label} on {self.primary_model}. Switching to {self.fallback_model}.", file=sys.stderr)
+                else:
+                    sleep_seconds = self.OVERLOADED_SLEEP_SECONDS if overloaded else self.RATE_LIMIT_SLEEP_SECONDS
+                    print(f"[Gemini] Batch {batch_index} {reason_label} on {self.fallback_model}. Sleeping {sleep_seconds}s then retrying {self.primary_model}.", file=sys.stderr)
+                    time.sleep(sleep_seconds)
+                    self.active_model = self.primary_model
+                attempts += 1
+        if last_error:
+            raise last_error
+        raise RuntimeError("Unknown Gemini generation error")
+
+    def _build_generation_config(self):
+        config_kwargs = {
+            "temperature": self.TEMPERATURE,
+            "max_output_tokens": self.MAX_OUTPUT_TOKENS,
+            "response_mime_type": "application/json",
+        }
+        if hasattr(genai, "types") and hasattr(genai.types, "GenerateContentConfig"):
+            return genai.types.GenerateContentConfig(**config_kwargs)
+        return config_kwargs
+
+    def _generate_content(self, model_name: str, prompt: str):
+        config = self._build_generation_config()
         try:
-            data = response.json()
-        except ValueError:
-            return None
-
-        def _from_obj(obj):
-            if isinstance(obj, str):
-                return obj
-            if isinstance(obj, dict):
-                for key in ("detail", "message", "error"):
-                    val = obj.get(key)
-                    if isinstance(val, str):
-                        return val
-                    if isinstance(val, dict):
-                        inner = _from_obj(val)
-                        if inner:
-                            return inner
-            if isinstance(obj, list):
-                for item in obj:
-                    inner = _from_obj(item)
-                    if inner:
-                        return inner
-            return None
-
-        return _from_obj(data)
+            return self.client.models.generate_content(
+                model=model_name,
+                contents=prompt,
+                config=config,
+            )
+        except TypeError:
+            # Fallback for older call signatures
+            return self.client.models.generate_content(
+                model=model_name,
+                contents=prompt,
+                generation_config=config,
+            )
 
     def _get_json_key(self, lang_name: str) -> str:
         """Get JSON output key for a language name."""
@@ -211,8 +260,9 @@ OUTPUT RULES (CRITICAL):
 - Prefer ASCII; use Unicode only when necessary in strings.
 - Code strings must contain code only (no comments/narration). Escape every newline as \\n inside the JSON string, and use only valid JSON escapes: \\", \\\\, \\/, \\b, \\f, \\n, \\r, \\t, \\uXXXX. Never use backslash + space or other invalid forms.
 - Avoid HTML entities; use literal characters.
-- Do NOT use the pipe character '|' in text descriptions (Approach, Complexity) as it breaks Markdown table rendering. Use 'abs()' or escape it as '\|' or use LaTeX-style $...$.
+- Do NOT use the pipe character '|' in text descriptions (Approach, Complexity) as it breaks Markdown table rendering. Use 'abs()' or escape it as '\\|' or use LaTeX-style $...$.
 - Do NOT pad output to the maximum token limit. Keep the JSON as short as possible while complete for the requested languages.
+- Output length must be driven by content only; never try to expand toward max_output_tokens.
 
 APPROACH:
 - Exactly 2 concise paragraphs describing the working algorithm and key intuition (no failed attempts).
@@ -454,6 +504,8 @@ Format as JSON:
 
     def parse_json_response(self, response_text: str, problem_slug: str = "", problem_date: str = "") -> Dict:
         """Extract and parse JSON from AI response"""
+        if not response_text or not isinstance(response_text, str):
+            return self._create_error_response("" if response_text is None else str(response_text))
         try:
             # 1. Try to find JSON within markdown code blocks first
             json_match = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", response_text, re.DOTALL)
@@ -507,6 +559,8 @@ Format as JSON:
 
     def _create_error_response(self, response_text: str) -> Dict:
         """Create a fallback response when parsing fails"""
+        if response_text is None:
+            response_text = ""
         # Log the full response to stderr so failures are visible in console
         if response_text:
             cleaned = response_text.replace("```", "'''").replace("\r", "")
@@ -518,6 +572,7 @@ Format as JSON:
         safe_response = response_text.replace("```", "'''")
         
         return {
+            "_parse_error": True,
             "approach": "Failed to parse AI response",
             "time_complexity": "N/A",
             "space_complexity": "N/A",
@@ -557,8 +612,12 @@ Format as JSON:
 
     def solve_with_gemini(self, problem_data: Dict) -> Optional[Dict]:
         """Generate solution using Gemini (Batched)"""
-        if not self.gemini_model:
-            print("Gemini API key not found", file=sys.stderr)
+        if self.import_error:
+            print("Gemini SDK import failed. Install dependencies with: pip install -r scripts/requirements.txt", file=sys.stderr)
+            print(f"Import error: {self.import_error}", file=sys.stderr)
+            return None
+        if not self.client:
+            print("Gemini API key not found. Set GEMINI_API_KEY or GOOGLE_API_KEY.", file=sys.stderr)
             return None
 
         problem_slug = problem_data.get('title_slug', '')
@@ -566,43 +625,13 @@ Format as JSON:
         final_solution = {"solutions": {}}
         total_elapsed_time = 0.0
         
-        # Safety settings to block fewer responses
-        safety_settings = [
-            {
-                "category": "HARM_CATEGORY_HARASSMENT",
-                "threshold": "BLOCK_NONE"
-            },
-            {
-                "category": "HARM_CATEGORY_HATE_SPEECH",
-                "threshold": "BLOCK_NONE"
-            },
-            {
-                "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-                "threshold": "BLOCK_NONE"
-            },
-            {
-                "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-                "threshold": "BLOCK_NONE"
-            }
-        ]
-
         for i, batch in enumerate(self.LANGUAGE_BATCHES):
             print(f"  - Batch {i+1}/{len(self.LANGUAGE_BATCHES)}: {', '.join(batch)}", file=sys.stderr)
             try:
-                prompt = self.create_prompt(problem_data, batch, include_metadata=(i == 0))
-                # Configure generation parameters for maximum output and JSON enforcement
-                generation_config = genai.types.GenerationConfig(
-                    max_output_tokens=self.MAX_OUTPUT_TOKENS,
-                    temperature=0.2,
-                    response_mime_type="application/json"
-                )
-                
+                include_metadata = (i == 0) or not final_solution.get("approach")
+                prompt = self.create_prompt(problem_data, batch, include_metadata=include_metadata)
                 start_time = time.time()
-                response = self.gemini_model.generate_content(
-                    prompt,
-                    generation_config=generation_config,
-                    safety_settings=safety_settings
-                )
+                response = self._generate_with_backoff(prompt, i + 1)
                 end_time = time.time()
                 batch_time = end_time - start_time
                 total_elapsed_time += batch_time
@@ -614,7 +643,7 @@ Format as JSON:
 
                 # Check for blocked/empty response or finish reason
                 # Safely access candidate
-                if not response.candidates:
+                if not getattr(response, "candidates", None):
                      print(f"[Gemini] Batch {i+1} Failed: No candidates returned.", file=sys.stderr)
                      if hasattr(response, 'prompt_feedback'):
                          print(f"[Gemini] Prompt Feedback: {response.prompt_feedback}", file=sys.stderr)
@@ -622,31 +651,30 @@ Format as JSON:
                      continue
 
                 candidate = response.candidates[0]
-                if candidate.finish_reason != 1: # 1 is STOP (success)
-                    reason_map = {
-                        1: "STOP",
-                        2: "MAX_TOKENS",
-                        3: "SAFETY",
-                        4: "RECITATION",
-                        5: "OTHER"
-                    }
-                    reason_str = reason_map.get(candidate.finish_reason, f"UNKNOWN({candidate.finish_reason})")
+                finish_reason = getattr(candidate, "finish_reason", None)
+                reason_str = self._normalize_finish_reason(finish_reason)
+                if reason_str not in (None, "STOP"):
                     print(f"[Gemini] Batch {i+1} stopped. Reason: {reason_str}", file=sys.stderr)
-                    
-                    if candidate.finish_reason == 3:
+
+                    if reason_str == "SAFETY":
                         print(f"[Gemini] Safety Ratings: {candidate.safety_ratings}", file=sys.stderr)
-                    
-                    # If it's safety or recitation, we might not have text parts
-                    if not candidate.content.parts:
-                        # Handle empty response for this batch
-                        self._fill_failed_batch(final_solution, batch, f"Generation failed: {reason_str}")
-                        continue
+
+                # If it's safety/recitation or empty content, we might not have text parts
+                if not getattr(candidate, "content", None) or not getattr(candidate.content, "parts", None):
+                    reason = reason_str or "No content"
+                    self._fill_failed_batch(final_solution, batch, f"Generation failed: {reason}")
+                    continue
 
                 # Store raw response safely
                 try:
-                    response_text = response.text
+                    response_text = getattr(response, "text", None)
+                    if not isinstance(response_text, str):
+                        response_text = "" if response_text is None else str(response_text)
                     batch_result = self.parse_json_response(response_text, problem_slug, problem_date)
-                    if batch_result and "solutions" in batch_result:
+                    if batch_result and batch_result.get("_parse_error"):
+                        self._fill_failed_batch(final_solution, batch, "Parsing failed")
+                    elif batch_result and "solutions" in batch_result:
+                        batch_result.pop("_parse_error", None)
                         self._merge_solutions(final_solution, batch_result)
                     else:
                         self._fill_failed_batch(final_solution, batch, "Parsing failed")
@@ -665,87 +693,6 @@ Format as JSON:
         final_solution["elapsed_time"] = total_elapsed_time
         return final_solution
 
-    def solve_with_groq(self, problem_data: Dict) -> Optional[Dict]:
-        """Generate solution using Groq (Batched)"""
-        if not self.groq_api_key:
-            print("Groq API key not found", file=sys.stderr)
-            return None
-
-        problem_slug = problem_data.get('title_slug', '')
-        problem_date = problem_data.get('date', '')
-        final_solution = {"solutions": {}}
-        total_elapsed_time = 0.0
-
-        for i, batch in enumerate(self.LANGUAGE_BATCHES):
-            print(f"  - Batch {i+1}/{len(self.LANGUAGE_BATCHES)}: {', '.join(batch)}", file=sys.stderr)
-            try:
-                prompt = self.create_prompt(problem_data, batch, include_metadata=(i == 0))
-
-                # Call Groq API (OpenAI-compatible endpoint)
-                start_time = time.time()
-                response = requests.post(
-                    "https://api.groq.com/openai/v1/chat/completions",
-                    headers={
-                        "Authorization": f"Bearer {self.groq_api_key}",
-                        "Content-Type": "application/json"
-                    },
-                    json={
-                        "model": self.model_name,
-                        "messages": [
-                            {"role": "system", "content": "You are an expert programmer solving LeetCode problems. Always format code with proper line breaks and indentation."},
-                            {"role": "user", "content": prompt}
-                        ],
-                        "temperature": 0.2,
-                        "max_completion_tokens": self.MAX_OUTPUT_TOKENS
-                    },
-                    timeout=60
-                )
-                end_time = time.time()
-                batch_time = end_time - start_time
-                total_elapsed_time += batch_time
-                
-                if not response.ok:
-                    detail_msg = self._extract_detail_message(response)
-                    if response.status_code == 429:
-                        print(f"[Groq] Batch {i+1} Error: Rate limit exceeded (429).", file=sys.stderr)
-                        if detail_msg:
-                            print(f"[Groq] Detail: {detail_msg}", file=sys.stderr)
-                    else:
-                        print(f"[Groq] Batch {i+1} HTTP {response.status_code} Error.", file=sys.stderr)
-                        if detail_msg:
-                            print(f"[Groq] Detail: {detail_msg}", file=sys.stderr)
-                        else:
-                            print(f"[Groq] Full Body:\n{response.text}", file=sys.stderr)
-
-                    error_reason = f"HTTP Error {response.status_code}"
-                    if detail_msg:
-                        error_reason = f"{error_reason} - {detail_msg}"
-                    self._fill_failed_batch(final_solution, batch, error_reason)
-                    continue
-
-                data = response.json()
-                if 'usage' in data:
-                    print(f"[Groq] Batch {i+1} Usage: {data['usage']}", file=sys.stderr)
-                
-                content = data['choices'][0]['message']['content']
-                # print(f"[Groq] Batch {i+1} Raw Content:\n{content}", file=sys.stderr)
-                batch_result = self.parse_json_response(content, problem_slug, problem_date)
-                
-                if batch_result and "solutions" in batch_result:
-                    self._merge_solutions(final_solution, batch_result)
-                else:
-                    self._fill_failed_batch(final_solution, batch, "Parsing failed")
-
-            except Exception as e:
-                print(f"Error with Groq Batch {i+1}: {e}", file=sys.stderr)
-                self._fill_failed_batch(final_solution, batch, f"Error: {str(e)}")
-            
-            # Add delay to prevent rate limiting (429)
-            if i < len(self.LANGUAGE_BATCHES) - 1:
-                time.sleep(self.batch_delay)
-
-        final_solution["elapsed_time"] = total_elapsed_time
-        return final_solution
     def _fill_failed_batch(self, final_solution: Dict, batch: list, error_msg: str) -> None:
         """Fill failed languages with error placeholders"""
         if "solutions" not in final_solution:
@@ -756,16 +703,9 @@ Format as JSON:
             final_solution["solutions"][key] = f"// Generation failed for {lang}\n// Reason: {error_msg}"
 
     def generate_solution(self, problem_data: Dict) -> Optional[Dict]:
-        """Generate solution using the configured model"""
+        """Generate solution using Gemini"""
         print(f"Generating solution with {self.model_name}...", file=sys.stderr)
-
-        if self.provider == 'groq':
-            return self.solve_with_groq(problem_data)
-        elif self.provider == 'gemini':
-            return self.solve_with_gemini(problem_data)
-        else:
-            print(f"Unknown provider: {self.provider}, falling back to Gemini", file=sys.stderr)
-            return self.solve_with_gemini(problem_data)
+        return self.solve_with_gemini(problem_data)
 
 
 def main():

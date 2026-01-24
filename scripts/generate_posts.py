@@ -6,7 +6,7 @@ Unified post generator / regenerator.
 Features:
   - Fetch LeetCode Daily Challenges via problemset __NEXT_DATA__ and cache date->(link,titleSlug)
   - Generate or overwrite posts for a date or date range
-  - Multiple AI models (defaults: gemini-2.5-flash, llama-3.3-70b-versatile, groq/compound); validates model names
+  - Gemini-only AI solutions (Gemini 3 Pro with Flash fallback)
   - If post exists, overwrite AI solution sections; if missing, create new post
 """
 
@@ -26,8 +26,7 @@ from solve_with_ai import AISolutionGenerator
 from generate_post import PostGenerator
 
 # Constants
-SUPPORTED_MODELS = ['gemini-2.5-flash', 'llama-3.3-70b-versatile', 'groq/compound']
-DEFAULT_MODELS = ['gemini-2.5-flash', 'llama-3.3-70b-versatile']
+DEFAULT_MODEL = "gemini-3-pro-preview"
 CACHE_PATH = os.path.join("data", "daily_challenges.json")
 DAILY_POSTS_DIR = os.path.join("_posts", "_daily")
 
@@ -150,15 +149,6 @@ def build_date_list(start_date: str, end_date: Optional[str]) -> List[str]:
     return dates
 
 
-def validate_models(models: List[str]) -> List[str]:
-    if not models:
-        return DEFAULT_MODELS
-    invalid = [m for m in models if m not in SUPPORTED_MODELS]
-    if invalid:
-        raise ValueError(f"Invalid model(s): {', '.join(invalid)}. Supported: {', '.join(SUPPORTED_MODELS)}")
-    return models
-
-
 def normalize_prompt_content(html_content: str) -> str:
     """Convert HTML content into compact plain text for AI prompts."""
     if not html_content:
@@ -242,28 +232,31 @@ def fetch_problem_by_slug(slug: str, snippet_dir: Optional[str] = None) -> Optio
     }
 
 
-def generate_ai_solutions(problem_data: Dict, model_names: List[str]) -> List[Dict]:
-    solutions = []
-    for model in model_names:
-        os.environ["AI_MODEL"] = model
-        generator = AISolutionGenerator()
-        sol = generator.generate_solution(problem_data)
-        # Consider it a failure if generator returned nothing, or if it returned an error placeholder.
-        approach_text = (sol or {}).get("approach", "")
-        has_solutions = bool(sol and sol.get("solutions"))
-        looks_like_error = isinstance(approach_text, str) and approach_text.lower().startswith("failed to parse ai response")
+def generate_ai_solutions(problem_data: Dict) -> List[Dict]:
+    generator = AISolutionGenerator()
+    sol = generator.generate_solution(problem_data)
+    # Consider it a failure if generator returned nothing, or if it returned an error placeholder.
+    approach_text = (sol or {}).get("approach", "")
+    solutions = (sol or {}).get("solutions", {}) if sol else {}
+    has_solutions = bool(sol and solutions)
+    def _is_placeholder_solution(code: object) -> bool:
+        if not isinstance(code, str):
+            return False
+        lowered = code.lower()
+        return "generation failed" in lowered or "failed to parse response" in lowered
+    has_real_solution = any(not _is_placeholder_solution(code) for code in solutions.values())
+    looks_like_error = isinstance(approach_text, str) and approach_text.lower().startswith("failed to parse ai response")
 
-        if sol and has_solutions and not looks_like_error:
-            sol["model"] = model
-            sol["generated_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S %z")
-            solutions.append(sol)
-            elapsed = sol.get("elapsed_time", 0.0)
-            print(f"✅ Generated with {model} -> {elapsed:.2f}s", file=sys.stderr)
-        else:
-            reason = "missing result" if not sol else "parse/validation error"
-            # Use ❌ to clearly indicate failure in logs
-            print(f"❌ Failed to generate with {model} ({reason})", file=sys.stderr)
-    return solutions
+    if sol and has_solutions and has_real_solution and not looks_like_error:
+        sol["model"] = generator.model_name or DEFAULT_MODEL
+        sol["generated_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S %z")
+        elapsed = sol.get("elapsed_time", 0.0)
+        print(f"✅ Generated with {sol['model']} -> {elapsed:.2f}s", file=sys.stderr)
+        return [sol]
+
+    reason = "missing result" if not sol else "parse/validation error"
+    print(f"❌ Failed to generate with {DEFAULT_MODEL} ({reason})", file=sys.stderr)
+    return []
 
 
 def find_post_file(date_str: str, posts_dir: str, slug: str) -> Optional[str]:
@@ -299,25 +292,6 @@ def load_existing_post(filepath: str) -> Dict:
     return meta
 
 
-def merge_solutions(existing: List[Dict], new: List[Dict], model_order: List[str]) -> List[Dict]:
-    """Replace or add solutions by model name, preserving model order."""
-    existing_by_model = {s.get("model"): s for s in existing or [] if s.get("model")}
-    for sol in new:
-        if sol.get("model"):
-            existing_by_model[sol.get("model")] = sol
-
-    ordered = []
-    for m in model_order:
-        if m in existing_by_model:
-            ordered.append(existing_by_model[m])
-
-    # Append any extra models not in the configured order
-    for key, sol in existing_by_model.items():
-        if key not in model_order:
-            ordered.append(sol)
-
-    return ordered
-
 def build_question_data(problem: Dict, date_str: str, link: str, slug: str) -> Dict:
     """Create the dictionary that will be fed to PostGenerator."""
     return {
@@ -336,7 +310,7 @@ def build_question_data(problem: Dict, date_str: str, link: str, slug: str) -> D
         "ai_solutions": [],   # will be filled later
     }
 
-def process_date(date_str: str, link: str, slug: str, model_names: List[str], posts_dir: str, update_models: Optional[List[str]] = None) -> bool:
+def process_date(date_str: str, link: str, slug: str, posts_dir: str) -> bool:
     print(f"\n=== Processing {date_str} ({slug}) [{os.path.basename(posts_dir)}] ===", file=sys.stderr)
     post_path = build_post_path(posts_dir, date_str, slug)
     snippet_dir = os.path.dirname(post_path)
@@ -354,29 +328,9 @@ def process_date(date_str: str, link: str, slug: str, model_names: List[str], po
     existing_meta = load_existing_post(existing_post_path) if existing_post_path else {}
     existing_solutions = existing_meta.get("ai_solutions", [])
 
-    # Determine which models we actually need to generate
-    if update_models:
-        needed_models = update_models
-    else:
-        # No update flag: always regenerate all requested models
-        needed_models = model_names
-
-    if not needed_models:
-        print(f"?? All requested models already present for {date_str}. Skipping generation.", file=sys.stderr)
-        # Still write post to ensure any other fields are up-to-date
-        qdata = build_question_data(problem, date_str, f"https://leetcode.com{link}", slug)
-        qdata["ai_solutions"] = existing_solutions
-        generator = PostGenerator(posts_dir)
-        ensure_posts_dirs()
-        generator.generate_post(qdata)
-        return True
-
     qdata = build_question_data(problem, date_str, f"https://leetcode.com{link}", slug)
-    # Generate only needed models
-    new_solutions = generate_ai_solutions(problem, needed_models)
-    # Merge with existing solutions (replace same model)
-    merged = merge_solutions(existing_solutions, new_solutions, model_names)
-    qdata["ai_solutions"] = merged
+    new_solutions = generate_ai_solutions(problem)
+    qdata["ai_solutions"] = new_solutions if new_solutions else existing_solutions
 
     generator = PostGenerator(posts_dir)
     ensure_posts_dirs()
@@ -393,19 +347,10 @@ def main():
     parser = argparse.ArgumentParser(description="Generate LeetCode daily challenge posts.")
     parser.add_argument("start_date", help="YYYY-MM-DD")
     parser.add_argument("end_date", nargs="?", help="YYYY-MM-DD (optional)")
-    parser.add_argument("models", nargs="*", help="Model names to use (default: all supported)")
-    parser.add_argument("--update-models", dest="update_models", default="", help="Comma‑separated list of models to re‑generate for existing posts")
     args = parser.parse_args()
 
-    # Determine if the second positional argument is actually an end_date or a model name.
-    # If it does not match the YYYY-MM-DD pattern, treat it as part of the models list.
     date_pattern = re.compile(r"^\d{4}-\d{2}-\d{2}$")
     end_date = args.end_date if args.end_date and date_pattern.match(args.end_date) else None
-    models_list = []
-    if args.end_date and not date_pattern.match(args.end_date):
-        # args.end_date is actually a model name; prepend it to models list
-        models_list.append(args.end_date)
-    models_list.extend(args.models)
 
     try:
         dates = build_date_list(args.start_date, end_date)
@@ -413,24 +358,8 @@ def main():
         print(f"Error: {e}", file=sys.stderr)
         return 1
 
-    update_models = [m.strip() for m in args.update_models.split(',') if m.strip()] if args.update_models else None
-
-    try:
-        # If no positional models are provided, fall back to update_models (if any) or defaults.
-        if models_list:
-            models = validate_models(models_list)
-        elif update_models:
-            models = validate_models(update_models)
-        else:
-            models = validate_models(models_list)  # returns DEFAULT_MODELS
-    except ValueError as e:
-        print(f"Error: {e}", file=sys.stderr)
-        return 1
-
     print(f"Dates: {', '.join(dates)}", file=sys.stderr)
-    print(f"Models: {', '.join(models)}", file=sys.stderr)
-    if update_models:
-        print(f"Update‑only models: {', '.join(update_models)}", file=sys.stderr)
+    print(f"Model: {DEFAULT_MODEL}", file=sys.stderr)
 
     cache = update_cache_if_needed(dates)
 
@@ -439,7 +368,7 @@ def main():
         info = cache.get(d)
 
         if info:
-            ok = process_date(d, info["link"], info["titleSlug"], models, DAILY_POSTS_DIR, update_models)
+            ok = process_date(d, info["link"], info["titleSlug"], DAILY_POSTS_DIR)
             overall_success = overall_success and ok
         else:
             print(f"ℹ️ No daily challenge for {d} in cache. Skipping.", file=sys.stderr)

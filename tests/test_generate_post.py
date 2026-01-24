@@ -27,7 +27,7 @@ class TestPostGenerator(unittest.TestCase):
             "question_id": "1",
             "ai_solutions": [
                 {
-                    "model": "gemini-2.5-flash",
+                    "model": "gemini-3-pro-preview",
                     "generated_at": "2025-01-01 12:00:00",
                     "approach": "Test approach",
                     "solutions": {
@@ -51,7 +51,7 @@ class TestPostGenerator(unittest.TestCase):
         self.assertIn('fmt.Println', content)
 
     def test_partial_model_failure(self):
-        """Test Case 2: Verify that if one model fails, the other still renders correctly."""
+        """Test Case 2: Verify failed solution still renders correctly."""
         data = {
             "title": "Partial Failure Test",
             "date": "2025-01-02",
@@ -61,7 +61,7 @@ class TestPostGenerator(unittest.TestCase):
             "question_id": "2",
             "ai_solutions": [
                 {
-                    "model": "gemini-2.5-flash",
+                    "model": "gemini-3-pro-preview",
                     "generated_at": "2025-01-02 12:00:00",
                     "approach": "Failed to parse AI response",
                     "solutions": {
@@ -69,16 +69,6 @@ class TestPostGenerator(unittest.TestCase):
                     },
                     "time_complexity": "N/A",
                     "space_complexity": "N/A"
-                },
-                {
-                    "model": "llama-3.3-70b-versatile",
-                    "generated_at": "2025-01-02 12:00:05",
-                    "approach": "Success approach",
-                    "solutions": {
-                        "python": "print('Success')"
-                    },
-                    "time_complexity": "O(N)",
-                    "space_complexity": "O(1)"
                 }
             ]
         }
@@ -88,14 +78,8 @@ class TestPostGenerator(unittest.TestCase):
         with open(filepath, 'r', encoding='utf-8') as f:
             content = f.read()
             
-        # Gemini should show error message
+        # Error message should show
         self.assertIn("Failed to parse AI response", content)
-        self.assertIn("⚠️ Failed to parse AI response", content)
-        
-        # Llama should show code tabs
-        self.assertIn("Success approach", content)
-        self.assertIn("print('Success')", content)
-        self.assertIn('class="code-tabs"', content)
 
     def test_full_success_indentation(self):
         """Test Case 3: Verify full success and correct indentation."""
@@ -108,7 +92,7 @@ class TestPostGenerator(unittest.TestCase):
             "question_id": "3",
             "ai_solutions": [
                 {
-                    "model": "gemini-2.5-flash",
+                    "model": "gemini-3-pro-preview",
                     "generated_at": "2025-01-03 12:00:00",
                     "approach": "Approach 1",
                     "solutions": {
@@ -116,16 +100,6 @@ class TestPostGenerator(unittest.TestCase):
                     },
                     "time_complexity": "O(1)",
                     "space_complexity": "O(1)"
-                },
-                {
-                    "model": "llama-3.3-70b-versatile",
-                    "generated_at": "2025-01-03 12:00:05",
-                    "approach": "Approach 2",
-                    "solutions": {
-                        "python": "class Solution:\\n    def solve(self):\\n        pass"
-                    },
-                    "time_complexity": "O(N)",
-                    "space_complexity": "O(N)"
                 }
             ]
         }
@@ -139,9 +113,6 @@ class TestPostGenerator(unittest.TestCase):
         self.assertIn("def test():", content)
         self.assertIn("return True", content)
         
-        # Check indentation for Llama (already correct)
-        self.assertIn("class Solution:", content)
-        self.assertIn("def solve(self):", content)
 
     def test_raw_html_rendering(self):
         """Test Case 4: Verify HTML is rendered as-is with LeetCode styling."""

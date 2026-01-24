@@ -22,15 +22,13 @@ def _run_main(monkeypatch, argv: List[str], daily_map: Dict[str, Dict]):
     def fake_update_cache(target_dates):
         return daily_map
 
-    def fake_process_date(date_str, link, slug, model_names, posts_dir, update_models=None):
+    def fake_process_date(date_str, link, slug, posts_dir):
         calls.append(
             {
                 "date": date_str,
                 "link": link,
                 "slug": slug,
-                "models": tuple(model_names),
                 "posts_dir": posts_dir,
-                "update_models": update_models,
             }
         )
         return True
@@ -51,9 +49,7 @@ def test_single_date_all_default_models(monkeypatch):
     assert code == 0
     assert len(calls) == 1
     assert calls[0]["date"] == "2025-11-01"
-    assert calls[0]["models"] == tuple(gp.DEFAULT_MODELS)
     assert calls[0]["posts_dir"] == gp.DAILY_POSTS_DIR
-    assert calls[0]["update_models"] is None
 
 
 def test_date_range_all_default_models(monkeypatch):
@@ -66,34 +62,3 @@ def test_date_range_all_default_models(monkeypatch):
     assert code == 0
     assert len(calls) == 2
     assert [c["date"] for c in calls] == ["2025-11-01", "2025-11-02"]
-    assert all(call["models"] == tuple(gp.DEFAULT_MODELS) for call in calls)
-
-
-def test_single_date_specific_model(monkeypatch):
-    daily = {"2025-11-03": {"link": "/problems/baz/", "titleSlug": "baz"}}
-    chosen_model = "gemini-2.5-flash"
-    code, calls = _run_main(monkeypatch, ["2025-11-03", chosen_model], daily)
-
-    assert code == 0
-    assert len(calls) == 1
-    assert calls[0]["models"] == (chosen_model,)
-    assert calls[0]["posts_dir"] == gp.DAILY_POSTS_DIR
-
-
-def test_date_range_specific_model(monkeypatch):
-    daily = {
-        "2025-11-01": {"link": "/problems/foo/", "titleSlug": "foo"},
-        "2025-11-02": {"link": "/problems/bar/", "titleSlug": "bar"},
-        "2025-11-03": {"link": "/problems/baz/", "titleSlug": "baz"},
-    }
-    chosen_model = "gemini-2.5-flash"
-    code, calls = _run_main(
-        monkeypatch,
-        ["2025-11-01", "2025-11-03", chosen_model],
-        daily,
-    )
-
-    assert code == 0
-    assert len(calls) == 3
-    assert [c["date"] for c in calls] == ["2025-11-01", "2025-11-02", "2025-11-03"]
-    assert all(call["models"] == (chosen_model,) for call in calls)

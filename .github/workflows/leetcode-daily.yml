@@ -5,17 +5,8 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
-  # Allow manual trigger with branch and model selection
+  # Allow manual trigger
   workflow_dispatch:
-    inputs:
-      ai_model:
-        description: 'AI Model'
-        required: false
-        type: choice
-        options:
-          - gemini-2.5-flash
-          - llama-3.3-70b-versatile
-        default: gemini-2.5-flash
 
   # Run on push to develop (for testing)
   push:
@@ -49,16 +40,10 @@ jobs:
       - name: Generate post with unified generator
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: |
           DATE=$(date -u +"%Y-%m-%d")
-          MODELS="${{ github.event.inputs.ai_model }}"
-          if [ -z "$MODELS" ]; then
-            # Default: generate with both models for daily automation
-            MODELS="gemini-2.5-flash llama-3.3-70b-versatile"
-          fi
-          echo "Generating post for $DATE with models: $MODELS"
-          python scripts/generate_posts.py "$DATE" $MODELS
+          echo "Generating post for $DATE with Gemini"
+          python scripts/generate_posts.py "$DATE"
 
       - name: Commit and push changes
         run: |
