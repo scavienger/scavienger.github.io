@@ -136,7 +136,7 @@
 - [x] Gradient 효과 & 애니메이션
 
 ### Phase 4: AI 솔루션 생성
-- [x] Gemini API 연동 (gemini-3-pro-preview)
+- [x] Gemini API 연동 (gemini-3-flash-preview)
 - [x] 자동 솔루션 생성 (approach, code, complexity)
 - [x] Provider 선택 기능 (gemini)
 - [x] API 키 없이도 작동 (graceful fallback)
@@ -157,7 +157,7 @@
 - Python 3.11
 - GitHub Actions
 - LeetCode GraphQL API
-- Google Gemini API (gemini-3-pro-preview)
+- Google Gemini API (gemini-3-flash-preview)
 
 ### 배포
 - GitHub Pages

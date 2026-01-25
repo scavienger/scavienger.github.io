@@ -299,7 +299,7 @@ class PostGenerator:
                 # Fallback for old format
                 provider = ai_solution.get('provider', 'AI').upper()
                 model_name = {
-                    'GEMINI': 'gemini-3-pro-preview'
+                    'GEMINI': 'gemini-3-flash-preview'
                 }.get(provider, 'AI')
 
             # Model emoji mapping

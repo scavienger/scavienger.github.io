@@ -26,7 +26,7 @@ from solve_with_ai import AISolutionGenerator
 from generate_post import PostGenerator
 
 # Constants
-DEFAULT_MODEL = "gemini-3-pro-preview"
+DEFAULT_MODEL = "gemini-3-flash-preview"
 CACHE_PATH = os.path.join("data", "daily_challenges.json")
 DAILY_POSTS_DIR = os.path.join("_posts", "_daily")
 

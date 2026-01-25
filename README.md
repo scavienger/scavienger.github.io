@@ -36,7 +36,7 @@ To enable AI-generated solutions, add your API key:
 
 | Provider | Model | Secret Name | Get API Key |
 |----------|-------|-------------|-------------|
-| **Gemini** ✨ | gemini-3-pro-preview (primary) / gemini-3-flash-preview (fallback) | `GEMINI_API_KEY` | [Get Key](https://aistudio.google.com/app/apikey) |
+| **Gemini** ✨ | gemini-3-flash-preview | `GEMINI_API_KEY` | [Get Key](https://aistudio.google.com/app/apikey) |
 
 #### Setup Instructions
 
@@ -46,9 +46,7 @@ To enable AI-generated solutions, add your API key:
    - Add `GEMINI_API_KEY`
 
 2. **Model Behavior**
-   - Primary: **gemini-3-pro-preview**
-   - If 429 occurs: auto-fallback to **gemini-3-flash-preview**
-   - If flash also 429: sleep ~60s, retry pro
+   - **gemini-3-flash-preview**
 
 **Notes:**
 - Only API keys go in Secrets (sensitive data)
@@ -135,8 +133,7 @@ This is useful for:
 
 ## AI Models
 
-- **gemini-3-pro-preview** (primary)
-- **gemini-3-flash-preview** (fallback on 429)
+- **gemini-3-flash-preview**
 
 ## Supported Programming Languages
 

@@ -27,7 +27,7 @@ class TestPostGenerator(unittest.TestCase):
             "question_id": "1",
             "ai_solutions": [
                 {
-                    "model": "gemini-3-pro-preview",
+                    "model": "gemini-3-flash-preview",
                     "generated_at": "2025-01-01 12:00:00",
                     "approach": "Test approach",
                     "solutions": {
@@ -61,7 +61,7 @@ class TestPostGenerator(unittest.TestCase):
             "question_id": "2",
             "ai_solutions": [
                 {
-                    "model": "gemini-3-pro-preview",
+                    "model": "gemini-3-flash-preview",
                     "generated_at": "2025-01-02 12:00:00",
                     "approach": "Failed to parse AI response",
                     "solutions": {
@@ -92,7 +92,7 @@ class TestPostGenerator(unittest.TestCase):
             "question_id": "3",
             "ai_solutions": [
                 {
-                    "model": "gemini-3-pro-preview",
+                    "model": "gemini-3-flash-preview",
                     "generated_at": "2025-01-03 12:00:00",
                     "approach": "Approach 1",
                     "solutions": {

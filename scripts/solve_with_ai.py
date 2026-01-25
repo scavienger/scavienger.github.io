@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 AI Solution Generator for LeetCode Problems
-Gemini-only (Gemini 3 Pro with Flash fallback)
+Gemini-only (Gemini 3 Flash)
 """
 
 import json
@@ -36,8 +36,7 @@ if sys.platform == 'win32':
 class AISolutionGenerator:
     """Generates solutions using Gemini models"""
 
-    PRIMARY_MODEL = "gemini-3-pro-preview"
-    FALLBACK_MODEL = "gemini-3-flash-preview"
+    MODEL_NAME = "gemini-3-flash-preview"
     MAX_OUTPUT_TOKENS = 30000
     TEMPERATURE = 1.0
     RATE_LIMIT_SLEEP_SECONDS = 60
@@ -64,10 +63,8 @@ class AISolutionGenerator:
     }
 
     def __init__(self):
-        self.model_name = self.PRIMARY_MODEL
-        self.primary_model = self.PRIMARY_MODEL
-        self.fallback_model = self.FALLBACK_MODEL
-        self.active_model = self.primary_model
+        self.model_name = self.MODEL_NAME
+        self.active_model = self.MODEL_NAME
 
         # Initialize Gemini client
         self.client = None
@@ -137,24 +134,16 @@ class AISolutionGenerator:
         attempts = 0
         while attempts < 3:
             try:
-                return self._generate_content(self.active_model, prompt)
+                return self._generate_content(self.model_name, prompt)
             except Exception as e:
                 last_error = e
                 if not self._is_rate_limited(e):
                     raise
                 overloaded = self._is_overloaded(e)
                 reason_label = "503" if overloaded else "429"
-                if self.active_model == self.primary_model:
-                    if overloaded:
-                        print(f"[Gemini] Batch {batch_index} 503 on {self.primary_model}. Sleeping {self.OVERLOADED_SLEEP_SECONDS}s before switching to {self.fallback_model}.", file=sys.stderr)
-                        time.sleep(self.OVERLOADED_SLEEP_SECONDS)
-                    self.active_model = self.fallback_model
-                    print(f"[Gemini] Batch {batch_index} {reason_label} on {self.primary_model}. Switching to {self.fallback_model}.", file=sys.stderr)
-                else:
-                    sleep_seconds = self.OVERLOADED_SLEEP_SECONDS if overloaded else self.RATE_LIMIT_SLEEP_SECONDS
-                    print(f"[Gemini] Batch {batch_index} {reason_label} on {self.fallback_model}. Sleeping {sleep_seconds}s then retrying {self.primary_model}.", file=sys.stderr)
-                    time.sleep(sleep_seconds)
-                    self.active_model = self.primary_model
+                sleep_seconds = self.OVERLOADED_SLEEP_SECONDS if overloaded else self.RATE_LIMIT_SLEEP_SECONDS
+                print(f"[Gemini] Batch {batch_index} {reason_label} on {self.model_name}. Sleeping {sleep_seconds}s then retrying.", file=sys.stderr)
+                time.sleep(sleep_seconds)
                 attempts += 1
         if last_error:
             raise last_error

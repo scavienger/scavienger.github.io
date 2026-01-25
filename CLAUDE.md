@@ -42,8 +42,7 @@ This is an automated LeetCode Daily Challenge blog powered by Jekyll and GitHub 
 19. Elixir
 
 ### AI Models
-- **Gemini 3 Pro (Preview)**: Primary model (`gemini-3-pro-preview`)
-- **Gemini 3 Flash (Preview)**: Fallback on 429 (`gemini-3-flash-preview`)
+- **Gemini 3 Flash (Preview)**: Default model (`gemini-3-flash-preview`)
 
 ## Key Commands
 
@@ -204,7 +203,7 @@ leetcode_url: https://leetcode.com/problems/...
 
 <details class="ai-solution-card" open markdown="1">
 <summary class="ai-solution-header">
-  <span class="ai-model-badge">✨ Solution from <strong>gemini-3-pro-preview</strong></span>
+  <span class="ai-model-badge">✨ Solution from <strong>gemini-3-flash-preview</strong></span>
   <small class="solution-timestamp">(YYYY-MM-DD HH:MM:SS)</small>
 </summary>
 <div class="ai-solution-content">
