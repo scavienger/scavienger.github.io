@@ -338,5 +338,9 @@
   "2026-01-24": {
     "link": "/problems/minimize-maximum-pair-sum-in-array/",
     "titleSlug": "minimize-maximum-pair-sum-in-array"
+  },
+  "2026-01-25": {
+    "link": "/problems/minimum-difference-between-highest-and-lowest-of-k-scores/",
+    "titleSlug": "minimum-difference-between-highest-and-lowest-of-k-scores"
   }
 }
