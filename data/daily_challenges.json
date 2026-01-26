@@ -342,5 +342,9 @@
   "2026-01-25": {
     "link": "/problems/minimum-difference-between-highest-and-lowest-of-k-scores/",
     "titleSlug": "minimum-difference-between-highest-and-lowest-of-k-scores"
+  },
+  "2026-01-26": {
+    "link": "/problems/minimum-absolute-difference/",
+    "titleSlug": "minimum-absolute-difference"
   }
 }
