@@ -346,5 +346,9 @@
   "2026-01-26": {
     "link": "/problems/minimum-absolute-difference/",
     "titleSlug": "minimum-absolute-difference"
+  },
+  "2026-01-27": {
+    "link": "/problems/minimum-cost-path-with-edge-reversals/",
+    "titleSlug": "minimum-cost-path-with-edge-reversals"
   }
 }
