@@ -350,5 +350,9 @@
   "2026-01-27": {
     "link": "/problems/minimum-cost-path-with-edge-reversals/",
     "titleSlug": "minimum-cost-path-with-edge-reversals"
+  },
+  "2026-01-28": {
+    "link": "/problems/minimum-cost-path-with-teleportations/",
+    "titleSlug": "minimum-cost-path-with-teleportations"
   }
 }
