@@ -358,5 +358,9 @@
   "2026-01-29": {
     "link": "/problems/minimum-cost-to-convert-string-i/",
     "titleSlug": "minimum-cost-to-convert-string-i"
+  },
+  "2026-01-30": {
+    "link": "/problems/minimum-cost-to-convert-string-ii/",
+    "titleSlug": "minimum-cost-to-convert-string-ii"
   }
 }
