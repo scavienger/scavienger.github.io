@@ -362,5 +362,9 @@
   "2026-01-30": {
     "link": "/problems/minimum-cost-to-convert-string-ii/",
     "titleSlug": "minimum-cost-to-convert-string-ii"
+  },
+  "2026-01-31": {
+    "link": "/problems/find-smallest-letter-greater-than-target/",
+    "titleSlug": "find-smallest-letter-greater-than-target"
   }
 }
