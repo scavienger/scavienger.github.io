@@ -366,5 +366,9 @@
   "2026-01-31": {
     "link": "/problems/find-smallest-letter-greater-than-target/",
     "titleSlug": "find-smallest-letter-greater-than-target"
+  },
+  "2026-02-01": {
+    "link": "/problems/divide-an-array-into-subarrays-with-minimum-cost-i/",
+    "titleSlug": "divide-an-array-into-subarrays-with-minimum-cost-i"
   }
 }
