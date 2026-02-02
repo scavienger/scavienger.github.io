@@ -370,5 +370,9 @@
   "2026-02-01": {
     "link": "/problems/divide-an-array-into-subarrays-with-minimum-cost-i/",
     "titleSlug": "divide-an-array-into-subarrays-with-minimum-cost-i"
+  },
+  "2026-02-02": {
+    "link": "/problems/divide-an-array-into-subarrays-with-minimum-cost-ii/",
+    "titleSlug": "divide-an-array-into-subarrays-with-minimum-cost-ii"
   }
 }
