@@ -374,5 +374,9 @@
   "2026-02-02": {
     "link": "/problems/divide-an-array-into-subarrays-with-minimum-cost-ii/",
     "titleSlug": "divide-an-array-into-subarrays-with-minimum-cost-ii"
+  },
+  "2026-02-03": {
+    "link": "/problems/trionic-array-i/",
+    "titleSlug": "trionic-array-i"
   }
 }
