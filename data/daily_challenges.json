@@ -378,5 +378,9 @@
   "2026-02-03": {
     "link": "/problems/trionic-array-i/",
     "titleSlug": "trionic-array-i"
+  },
+  "2026-02-04": {
+    "link": "/problems/trionic-array-ii/",
+    "titleSlug": "trionic-array-ii"
   }
 }
