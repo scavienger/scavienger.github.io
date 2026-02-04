@@ -8,397 +8,445 @@ difficulty: Hard
 leetcode_url: https://leetcode.com/problems/divide-an-array-into-subarrays-with-minimum-cost-ii/
 ai_solutions:
   - solutions:
-      cpp: '// Generation failed for C++
-
-        // Reason: Parsing failed'
-      java: '// Generation failed for Java
-
-        // Reason: Parsing failed'
-      python: '// Generation failed for Python
-
-        // Reason: Parsing failed'
-      python3: '// Generation failed for Python3
-
-        // Reason: Parsing failed'
-      c: '// Generation failed for C
-
-        // Reason: Parsing failed'
-      csharp: '// Generation failed for C#
-
-        // Reason: Parsing failed'
-      javascript: '// Generation failed for JavaScript
-
-        // Reason: Parsing failed'
-      typescript: "function minimumCost(nums: number[], k: number, dist: number): number\
-        \ {\n    const n = nums.length;\n    const sub = nums.slice(1);\n    const sortedSub\
-        \ = [...sub].sort((a, b) => a - b);\n    const unique: number[] = [];\n    if\
-        \ (sortedSub.length > 0) {\n        unique.push(sortedSub[0]);\n        for\
-        \ (let i = 1; i < sortedSub.length; i++) {\n            if (sortedSub[i] !==\
-        \ sortedSub[i - 1]) unique.push(sortedSub[i]);\n        }\n    }\n\n    const\
-        \ uSize = unique.length;\n    const map = new Map<number, number>();\n    unique.forEach((v,\
-        \ i) => map.set(v, i + 1));\n\n    const countTree = new Float64Array(uSize\
-        \ + 1);\n    const sumTree = new Float64Array(uSize + 1);\n\n    function update(i:\
-        \ number, delta: number, val: number) {\n        for (; i <= uSize; i += i &\
-        \ -i) {\n            countTree[i] += delta;\n            sumTree[i] += val;\n\
-        \        }\n    }\n\n    function query(m: number): number {\n        let idx\
-        \ = 0, currC = 0, currS = 0;\n        let logN = uSize > 0 ? Math.floor(Math.log2(uSize))\
-        \ : 0;\n        for (let i = logN; i >= 0; i--) {\n            let nextIdx =\
-        \ idx + (1 << i);\n            if (nextIdx <= uSize && currC + countTree[nextIdx]\
-        \ < m) {\n                idx = nextIdx;\n                currC += countTree[idx];\n\
-        \                currS += sumTree[idx];\n            }\n        }\n        return\
-        \ currS + (m - currC) * unique[idx];\n    }\n\n    for (let i = 1; i <= dist\
-        \ + 1; i++) {\n        update(map.get(nums[i])!, 1, nums[i]);\n    }\n\n   \
-        \ let minSum = query(k - 1);\n    for (let i = dist + 2; i < n; i++) {\n   \
-        \     update(map.get(nums[i - dist - 1])!, -1, -nums[i - dist - 1]);\n     \
-        \   update(map.get(nums[i])!, 1, nums[i]);\n        minSum = Math.min(minSum,\
-        \ query(k - 1));\n    }\n\n    return nums[0] + minSum;\n}"
+      cpp: "class Solution {\npublic:\n    long long minimumCost(vector<int>& nums,\
+        \ int k, int dist) {\n        int n = nums.size();\n        multiset<int> small,\
+        \ large;\n        long long small_sum = 0;\n        int k_minus_2 = k - 2;\n\
+        \n        auto add = [&](int val) {\n            small.insert(val);\n      \
+        \      small_sum += val;\n            if (small.size() > k_minus_2) {\n    \
+        \            auto it = prev(small.end());\n                int v = *it;\n  \
+        \              small_sum -= v;\n                large.insert(v);\n         \
+        \       small.erase(it);\n            }\n        };\n\n        auto remove =\
+        \ [&](int val) {\n            auto it = small.find(val);\n            if (it\
+        \ != small.end()) {\n                small_sum -= val;\n                small.erase(it);\n\
+        \                if (!large.empty()) {\n                    auto it2 = large.begin();\n\
+        \                    int v = *it2;\n                    small_sum += v;\n  \
+        \                  small.insert(v);\n                    large.erase(it2);\n\
+        \                }\n            } else {\n                large.erase(large.find(val));\n\
+        \            }\n        };\n\n        for (int i = 2; i <= 1 + dist && i < n;\
+        \ i++) add(nums[i]);\n        long long ans = (long long)nums[0] + nums[1] +\
+        \ small_sum;\n\n        for (int i1 = 2; i1 <= n - k + 1; i1++) {\n        \
+        \    remove(nums[i1]);\n            if (i1 + dist < n) add(nums[i1 + dist]);\n\
+        \            ans = min(ans, (long long)nums[0] + nums[i1] + small_sum);\n  \
+        \      }\n\n        return ans;\n    }\n};"
+      java: "import java.util.*;\n\nclass Solution {\n    private TreeMap<Integer, Integer>\
+        \ small = new TreeMap<>();\n    private TreeMap<Integer, Integer> large = new\
+        \ TreeMap<>();\n    private int smallCount = 0;\n    private long smallSum =\
+        \ 0;\n\n    public long minimumCost(int[] nums, int k, int dist) {\n       \
+        \ int n = nums.length;\n        int k2 = k - 2;\n        for (int i = 2; i <=\
+        \ 1 + dist && i < n; i++) add(nums[i], k2);\n        long ans = (long) nums[0]\
+        \ + nums[1] + smallSum;\n\n        for (int i1 = 2; i1 <= n - k + 1; i1++) {\n\
+        \            remove(nums[i1], k2);\n            if (i1 + dist < n) add(nums[i1\
+        \ + dist], k2);\n            ans = Math.min(ans, (long) nums[0] + nums[i1] +\
+        \ smallSum);\n        }\n        return ans;\n    }\n\n    private void add(int\
+        \ val, int k2) {\n        small.put(val, small.getOrDefault(val, 0) + 1);\n\
+        \        smallSum += val;\n        smallCount++;\n        if (smallCount > k2)\
+        \ {\n            int last = small.lastKey();\n            smallSum -= last;\n\
+        \            removeOne(small, last);\n            smallCount--;\n          \
+        \  large.put(last, large.getOrDefault(last, 0) + 1);\n        }\n    }\n\n \
+        \   private void remove(int val, int k2) {\n        if (small.containsKey(val))\
+        \ {\n            removeOne(small, val);\n            smallSum -= val;\n    \
+        \        smallCount--;\n            if (!large.isEmpty()) {\n              \
+        \  int first = large.firstKey();\n                small.put(first, small.getOrDefault(first,\
+        \ 0) + 1);\n                smallSum += first;\n                smallCount++;\n\
+        \                removeOne(large, first);\n            }\n        } else {\n\
+        \            removeOne(large, val);\n        }\n    }\n\n    private void removeOne(TreeMap<Integer,\
+        \ Integer> map, int val) {\n        int count = map.get(val);\n        if (count\
+        \ == 1) map.remove(val);\n        else map.put(val, count - 1);\n    }\n}"
+      python: "class Solution(object):\n    def minimumCost(self, nums, k, dist):\n\
+        \        n = len(nums)\n        k_small = k - 2\n        unique_vals = sorted(list(set(nums[1:])))\n\
+        \        val_map = {v: i + 1 for i, v in enumerate(unique_vals)}\n        n_uniq\
+        \ = len(unique_vals)\n        bit_cnt = [0] * (n_uniq + 1)\n        bit_sum\
+        \ = [0] * (n_uniq + 1)\n\n        def update(val, delta):\n            idx =\
+        \ val_map[val]\n            s = val * delta\n            while idx <= n_uniq:\n\
+        \                bit_cnt[idx] += delta\n                bit_sum[idx] += s\n\
+        \                idx += idx & -idx\n\n        def query(target):\n         \
+        \   pos = 0\n            cnt = 0\n            sm = 0\n            for i in range(n_uniq.bit_length(),\
+        \ -1, -1):\n                pw = 1 << i\n                if pos + pw <= n_uniq\
+        \ and cnt + bit_cnt[pos + pw] < target:\n                    pos += pw\n   \
+        \                 cnt += bit_cnt[pos]\n                    sm += bit_sum[pos]\n\
+        \            return sm + (target - cnt) * unique_vals[pos]\n\n        for i\
+        \ in range(2, min(n, 2 + dist)):\n            update(nums[i], 1)\n        ans\
+        \ = nums[0] + nums[1] + query(k_small)\n\n        for i1 in range(2, n - k +\
+        \ 2):\n            update(nums[i1], -1)\n            if i1 + dist < n:\n   \
+        \             update(nums[i1 + dist], 1)\n            ans = min(ans, nums[0]\
+        \ + nums[i1] + query(k_small))\n        return ans"
+      python3: "class Solution:\n    def minimumCost(self, nums: List[int], k: int,\
+        \ dist: int) -> int:\n        n = len(nums)\n        k_small = k - 2\n     \
+        \   unique_vals = sorted(list(set(nums[1:])))\n        val_map = {v: i + 1 for\
+        \ i, v in enumerate(unique_vals)}\n        n_uniq = len(unique_vals)\n     \
+        \   bit_cnt = [0] * (n_uniq + 1)\n        bit_sum = [0] * (n_uniq + 1)\n\n \
+        \       def update(val, delta):\n            idx = val_map[val]\n          \
+        \  s = val * delta\n            while idx <= n_uniq:\n                bit_cnt[idx]\
+        \ += delta\n                bit_sum[idx] += s\n                idx += idx &\
+        \ -idx\n\n        def query(target):\n            pos = 0\n            cnt =\
+        \ 0\n            sm = 0\n            for i in range(n_uniq.bit_length(), -1,\
+        \ -1):\n                pw = 1 << i\n                if pos + pw <= n_uniq and\
+        \ cnt + bit_cnt[pos + pw] < target:\n                    pos += pw\n       \
+        \             cnt += bit_cnt[pos]\n                    sm += bit_sum[pos]\n\
+        \            return sm + (target - cnt) * unique_vals[pos]\n\n        for i\
+        \ in range(2, min(n, 2 + dist)):\n            update(nums[i], 1)\n        ans\
+        \ = nums[0] + nums[1] + query(k_small)\n\n        for i1 in range(2, n - k +\
+        \ 2):\n            update(nums[i1], -1)\n            if i1 + dist < n:\n   \
+        \             update(nums[i1 + dist], 1)\n            ans = min(ans, nums[0]\
+        \ + nums[i1] + query(k_small))\n        return ans"
+      c: "#include <stdlib.h>\n#include <string.h>\n\nint compare_ints(const void* a,\
+        \ const void* b) {\n    int arg1 = *(const int*)a;\n    int arg2 = *(const int*)b;\n\
+        \    if (arg1 < arg2) return -1;\n    if (arg1 > arg2) return 1;\n    return\
+        \ 0;\n}\n\nlong long bit_cnt[100005], bit_sum[100005];\nint num_uniq;\n\nvoid\
+        \ update(int idx, int delta, int val, int n) {\n    long long s = (long long)val\
+        \ * delta;\n    for (; idx <= n; idx += idx & -idx) {\n        bit_cnt[idx]\
+        \ += delta;\n        bit_sum[idx] += s;\n    }\n}\n\nlong long query(int k,\
+        \ int* unique_vals) {\n    int pos = 0;\n    long long cnt = 0, sum = 0;\n \
+        \   for (int i = 1 << 17; i > 0; i >>= 1) {\n        if (pos + i <= num_uniq\
+        \ && cnt + bit_cnt[pos + i] < k) {\n            pos += i;\n            cnt +=\
+        \ bit_cnt[pos];\n            sum += bit_sum[pos];\n        }\n    }\n    return\
+        \ sum + (long long)(k - cnt) * unique_vals[pos];\n}\n\nlong long minimumCost(int*\
+        \ nums, int n, int k, int dist) {\n    int* sorted_nums = (int*)malloc((n -\
+        \ 1) * sizeof(int));\n    for (int i = 0; i < n - 1; i++) sorted_nums[i] = nums[i\
+        \ + 1];\n    qsort(sorted_nums, n - 1, sizeof(int), compare_ints);\n\n    int*\
+        \ unique_vals = (int*)malloc((n - 1) * sizeof(int));\n    num_uniq = 0;\n  \
+        \  if (n > 1) unique_vals[num_uniq++] = sorted_nums[0];\n    for (int i = 1;\
+        \ i < n - 1; i++) {\n        if (sorted_nums[i] != sorted_nums[i - 1]) unique_vals[num_uniq++]\
+        \ = sorted_nums[i];\n    }\n\n    memset(bit_cnt, 0, sizeof(bit_cnt));\n   \
+        \ memset(bit_sum, 0, sizeof(bit_sum));\n\n    int get_rank(int val) {\n    \
+        \    int l = 0, r = num_uniq - 1;\n        while (l <= r) {\n            int\
+        \ mid = l + (r - l) / 2;\n            if (unique_vals[mid] == val) return mid\
+        \ + 1;\n            if (unique_vals[mid] < val) l = mid + 1;\n            else\
+        \ r = mid - 1;\n        }\n        return -1;\n    }\n\n    for (int i = 2;\
+        \ i <= 1 + dist && i < n; i++) update(get_rank(nums[i]), 1, nums[i], num_uniq);\n\
+        \    long long ans = (long long)nums[0] + nums[1] + query(k - 2, unique_vals);\n\
+        \n    for (int i1 = 2; i1 <= n - k + 1; i1++) {\n        update(get_rank(nums[i1]),\
+        \ -1, nums[i1], num_uniq);\n        if (i1 + dist < n) update(get_rank(nums[i1\
+        \ + dist]), 1, nums[i1 + dist], num_uniq);\n        long long cur = (long long)nums[0]\
+        \ + nums[i1] + query(k - 2, unique_vals);\n        if (cur < ans) ans = cur;\n\
+        \    }\n\n    free(sorted_nums); free(unique_vals);\n    return ans;\n}"
+      csharp: "using System;\nusing System.Collections.Generic;\nusing System.Linq;\n\
+        \npublic class Solution {\n    public long MinimumCost(int[] nums, int k, int\
+        \ dist) {\n        int n = nums.Length;\n        int k2 = k - 2;\n        SortedSet<(int\
+        \ val, int idx)> small = new SortedSet<(int val, int idx)>();\n        SortedSet<(int\
+        \ val, int idx)> large = new SortedSet<(int val, int idx)>();\n        long\
+        \ smallSum = 0;\n\n        void Add(int val, int i) {\n            small.Add((val,\
+        \ i));\n            smallSum += val;\n            if (small.Count > k2) {\n\
+        \                var last = small.Max;\n                smallSum -= last.val;\n\
+        \                small.Remove(last);\n                large.Add(last);\n   \
+        \         }\n        }\n\n        void Remove(int val, int i) {\n          \
+        \  if (small.Contains((val, i))) {\n                small.Remove((val, i));\n\
+        \                smallSum -= val;\n                if (large.Count > 0) {\n\
+        \                    var first = large.Min;\n                    smallSum +=\
+        \ first.val;\n                    small.Add(first);\n                    large.Remove(first);\n\
+        \                }\n            } else {\n                large.Remove((val,\
+        \ i));\n            }\n        }\n\n        for (int i = 2; i <= 1 + dist &&\
+        \ i < n; i++) Add(nums[i], i);\n        long ans = (long)nums[0] + nums[1] +\
+        \ smallSum;\n\n        for (int i1 = 2; i1 <= n - k + 1; i1++) {\n         \
+        \   Remove(nums[i1], i1);\n            if (i1 + dist < n) Add(nums[i1 + dist],\
+        \ i1 + dist);\n            ans = Math.min(ans, (long)nums[0] + nums[i1] + smallSum);\n\
+        \        }\n        return ans;\n    }\n}"
+      javascript: "/**\n * @param {number[]} nums\n * @param {number} k\n * @param {number}\
+        \ dist\n * @return {number}\n */\nvar minimumCost = function(nums, k, dist)\
+        \ {\n    const n = nums.length;\n    const k2 = k - 2;\n    const uniqueVals\
+        \ = Array.from(new Set(nums.slice(1))).sort((a, b) => a - b);\n    const valMap\
+        \ = new Map();\n    uniqueVals.forEach((v, i) => valMap.set(v, i + 1));\n  \
+        \  const nUniq = uniqueVals.length;\n    const bitCnt = new Float64Array(nUniq\
+        \ + 1);\n    const bitSum = new Float64Array(nUniq + 1);\n\n    function update(val,\
+        \ delta) {\n        let idx = valMap.get(val);\n        const s = val * delta;\n\
+        \        while (idx <= nUniq) {\n            bitCnt[idx] += delta;\n       \
+        \     bitSum[idx] += s;\n            idx += idx & -idx;\n        }\n    }\n\n\
+        \    function query(target) {\n        let pos = 0, cnt = 0, sm = 0;\n     \
+        \   for (let i = Math.floor(Math.log2(nUniq)); i >= 0; i--) {\n            const\
+        \ pw = 1 << i;\n            if (pos + pw <= nUniq && cnt + bitCnt[pos + pw]\
+        \ < target) {\n                pos += pw;\n                cnt += bitCnt[pos];\n\
+        \                sm += bitSum[pos];\n            }\n        }\n        return\
+        \ sm + (target - cnt) * uniqueVals[pos];\n    }\n\n    for (let i = 2; i <=\
+        \ 1 + dist && i < n; i++) update(nums[i], 1);\n    let ans = nums[0] + nums[1]\
+        \ + query(k2);\n\n    for (let i1 = 2; i1 <= n - k + 1; i1++) {\n        update(nums[i1],\
+        \ -1);\n        if (i1 + dist < n) update(nums[i1 + dist], 1);\n        ans\
+        \ = Math.min(ans, nums[0] + nums[i1] + query(k2));\n    }\n    return ans;\n\
+        };"
+      typescript: "class TreapNode {\n  value: number;\n  priority: number;\n  size:\
+        \ number;\n  sum: number;\n  left: TreapNode | null = null;\n  right: TreapNode\
+        \ | null = null;\n  constructor(value: number) {\n    this.value = value;\n\
+        \    this.priority = Math.random();\n    this.size = 1;\n    this.sum = value;\n\
+        \  }\n}\n\nfunction getSize(node: TreapNode | null): number {\n  return node\
+        \ ? node.size : 0;\n}\n\nfunction getSum(node: TreapNode | null): number {\n\
+        \  return node ? node.sum : 0;\n}\n\nfunction update(node: TreapNode | null)\
+        \ {\n  if (node) {\n    node.size = 1 + getSize(node.left) + getSize(node.right);\n\
+        \    node.sum = node.value + getSum(node.left) + getSum(node.right);\n  }\n\
+        }\n\nfunction splitBySize(node: TreapNode | null, k: number): [TreapNode | null,\
+        \ TreapNode | null] {\n  if (!node) return [null, null];\n  const leftSize =\
+        \ getSize(node.left);\n  if (leftSize >= k) {\n    const [left, right] = splitBySize(node.left,\
+        \ k);\n    node.left = right;\n    update(node);\n    return [left, node];\n\
+        \  } else {\n    const [left, right] = splitBySize(node.right, k - leftSize\
+        \ - 1);\n    node.right = left;\n    update(node);\n    return [node, right];\n\
+        \  }\n}\n\nfunction splitByValue(node: TreapNode | null, value: number): [TreapNode\
+        \ | null, TreapNode | null] {\n  if (!node) return [null, null];\n  if (node.value\
+        \ <= value) {\n    const [l, r] = splitByValue(node.right, value);\n    node.right\
+        \ = l;\n    update(node);\n    return [node, r];\n  } else {\n    const [l,\
+        \ r] = splitByValue(node.left, value);\n    node.left = r;\n    update(node);\n\
+        \    return [l, node];\n  }\n}\n\nfunction merge(left: TreapNode | null, right:\
+        \ TreapNode | null): TreapNode | null {\n  if (!left || !right) return left\
+        \ || right;\n  if (left.priority > right.priority) {\n    left.right = merge(left.right,\
+        \ right);\n    update(left);\n    return left;\n  } else {\n    right.left =\
+        \ merge(left, right.left);\n    update(right);\n    return right;\n  }\n}\n\n\
+        function minimumCost(nums: number[], k: number, dist: number): number {\n  const\
+        \ n = nums.length;\n  const m = k - 2;\n  let root: TreapNode | null = null;\n\
+        \  for (let j = 2; j <= Math.min(1 + dist, n - 1); j++) {\n    root = merge(root,\
+        \ null);\n    const [l, r] = splitByValue(root, nums[j]);\n    root = merge(merge(l,\
+        \ new TreapNode(nums[j])), r);\n  }\n\n  const getSmallestSum = (k: number):\
+        \ number => {\n    if (k === 0) return 0;\n    const [l, r] = splitBySize(root,\
+        \ k);\n    const res = getSum(l);\n    root = merge(l, r);\n    return res;\n\
+        \  };\n\n  let minCost = nums[0] + nums[1] + getSmallestSum(m);\n\n  for (let\
+        \ i = 2; i <= n - k + 1; i++) {\n    let [l, r] = splitByValue(root, nums[i]\
+        \ - 1);\n    let [mid, rr] = splitByValue(r, nums[i]);\n    let [one, rest]\
+        \ = splitBySize(mid, 1);\n    root = merge(l, merge(rest, rr));\n    if (i +\
+        \ dist < n) {\n      let [l2, r2] = splitByValue(root, nums[i + dist]);\n  \
+        \    root = merge(merge(l2, new TreapNode(nums[i + dist])), r2);\n    }\n  \
+        \  minCost = Math.min(minCost, nums[0] + nums[i] + getSmallestSum(m));\n  }\n\
+        \n  return minCost;\n}"
       php: "class Solution {\n    function minimumCost($nums, $k, $dist) {\n       \
-        \ $n = count($nums);\n        $sub = array_slice($nums, 1);\n        $unique\
-        \ = array_unique($sub);\n        sort($unique);\n        $unique = array_values($unique);\n\
-        \        $uSize = count($unique);\n        $map = array_flip($unique);\n\n \
-        \       $countTree = array_fill(0, $uSize + 1, 0);\n        $sumTree = array_fill(0,\
-        \ $uSize + 1, 0);\n\n        $update = function($i, $delta, $val) use (&$countTree,\
-        \ &$sumTree, $uSize) {\n            $i++;\n            for (; $i <= $uSize;\
-        \ $i += $i & -$i) {\n                $countTree[$i] += $delta;\n           \
-        \     $sumTree[$i] += $val;\n            }\n        };\n\n        $query = function($m)\
-        \ use (&$countTree, &$sumTree, $unique, $uSize) {\n            $idx = 0; $currC\
-        \ = 0; $currS = 0;\n            $logN = $uSize > 0 ? (int)log($uSize, 2) : 0;\n\
-        \            for ($i = $logN; $i >= 0; $i--) {\n                $nextIdx = $idx\
-        \ + (1 << $i);\n                if ($nextIdx <= $uSize && $currC + $countTree[$nextIdx]\
-        \ < $m) {\n                    $idx = $nextIdx;\n                    $currC\
-        \ += $countTree[$idx];\n                    $currS += $sumTree[$idx];\n    \
-        \            }\n            }\n            return $currS + ($m - $currC) * $unique[$idx];\n\
-        \        };\n\n        for ($i = 1; $i <= $dist + 1; $i++) {\n            $update($map[$nums[$i]],\
-        \ 1, $nums[$i]);\n        }\n\n        $minSum = $query($k - 1);\n        for\
-        \ ($i = $dist + 2; $i < $n; $i++) {\n            $update($map[$nums[$i - $dist\
-        \ - 1]], -1, -$nums[$i - $dist - 1]);\n            $update($map[$nums[$i]],\
-        \ 1, $nums[$i]);\n            $minSum = min($minSum, $query($k - 1));\n    \
-        \    }\n\n        return $nums[0] + $minSum;\n    }\n}"
-      swift: "class Solution {\n    func minimumCost(_ nums: [Int], _ k: Int, _ dist:\
-        \ Int) -> Int {\n        let n = nums.count\n        let sub = Array(nums[1...])\n\
-        \        let unique = Array(Set(sub)).sorted()\n        let uSize = unique.count\n\
-        \        var map = [Int: Int]()\n        for (i, v) in unique.enumerated() {\n\
-        \            map[v] = i + 1\n        }\n\n        var countTree = [Int](repeating:\
-        \ 0, count: uSize + 1)\n        var sumTree = [Int](repeating: 0, count: uSize\
-        \ + 1)\n\n        func update(_ i: Int, _ delta: Int, _ val: Int) {\n      \
-        \      var idx = i\n            while idx <= uSize {\n                countTree[idx]\
-        \ += delta\n                sumTree[idx] += val\n                idx += idx\
-        \ & -idx\n            }\n        }\n\n        func query(_ m: Int) -> Int {\n\
-        \            var idx = 0, currC = 0, currS = 0\n            let logN = uSize\
-        \ > 0 ? Int(log2(Double(uSize))) : 0\n            for i in (0...logN).reversed()\
-        \ {\n                let nextIdx = idx + (1 << i)\n                if nextIdx\
-        \ <= uSize && currC + countTree[nextIdx] < m {\n                    idx = nextIdx\n\
-        \                    currC += countTree[idx]\n                    currS += sumTree[idx]\n\
-        \                }\n            }\n            return currS + (m - currC) *\
-        \ unique[idx]\n        }\n\n        for i in 1...(dist + 1) {\n            update(map[nums[i]]!,\
-        \ 1, nums[i])\n        }\n\n        var minSum = query(k - 1)\n        if dist\
-        \ + 2 < n {\n            for i in (dist + 2)..<n {\n                update(map[nums[i\
-        \ - dist - 1]]!, -1, -nums[i - dist - 1])\n                update(map[nums[i]]!,\
-        \ 1, nums[i])\n                minSum = min(minSum, query(k - 1))\n        \
-        \    }\n        }\n\n        return nums[0] + minSum\n    }\n}"
-      kotlin: "class Solution {\n    fun minimumCost(nums: IntArray, k: Int, dist: Int):\
-        \ Long {\n        val n = nums.size\n        val sub = nums.copyOfRange(1, n)\n\
-        \        val unique = sub.distinct().sorted()\n        val uSize = unique.size\n\
-        \        val map = unique.withIndex().associate { it.value to it.index + 1 }\n\
-        \n        val countTree = LongArray(uSize + 1)\n        val sumTree = LongArray(uSize\
-        \ + 1)\n\n        fun update(i: Int, delta: Long, value: Long) {\n         \
-        \   var idx = i\n            while (idx <= uSize) {\n                countTree[idx]\
-        \ += delta\n                sumTree[idx] += value\n                idx += idx\
-        \ and -idx\n            }\n        }\n\n        fun query(m: Int): Long {\n\
-        \            var idx = 0\n            var currC = 0L\n            var currS\
-        \ = 0L\n            val logN = if (uSize > 0) 31 - Integer.numberOfLeadingZeros(uSize)\
-        \ else 0\n            for (i in logN downTo 0) {\n                val nextIdx\
-        \ = idx + (1 shl i)\n                if (nextIdx <= uSize && currC + countTree[nextIdx]\
-        \ < m) {\n                    idx = nextIdx\n                    currC += countTree[idx]\n\
-        \                    currS += sumTree[idx]\n                }\n            }\n\
-        \            return currS + (m - currC) * unique[idx].toLong()\n        }\n\n\
-        \        for (i in 1..dist + 1) {\n            update(map[nums[i]]!!, 1L, nums[i].toLong())\n\
-        \        }\n\n        var minSum = query(k - 1)\n        for (i in dist + 2\
-        \ until n) {\n            update(map[nums[i - dist - 1]]!!, -1L, -nums[i - dist\
-        \ - 1].toLong())\n            update(map[nums[i]]!!, 1L, nums[i].toLong())\n\
-        \            val current = query(k - 1)\n            if (current < minSum) minSum\
-        \ = current\n        }\n\n        return nums[0].toLong() + minSum\n    }\n}"
-      dart: "import 'dart:math';\n\nclass Solution {\n  int minimumCost(List<int> nums,\
-        \ int k, int dist) {\n    int n = nums.length;\n    List<int> sub = nums.sublist(1);\n\
-        \    List<int> unique = sub.toSet().toList()..sort();\n    int uSize = unique.length;\n\
-        \    Map<int, int> map = {};\n    for (int i = 0; i < uSize; i++) {\n      map[unique[i]]\
-        \ = i + 1;\n    }\n\n    List<int> countTree = List.filled(uSize + 1, 0);\n\
-        \    List<int> sumTree = List.filled(uSize + 1, 0);\n\n    void update(int i,\
-        \ int delta, int val) {\n      while (i <= uSize) {\n        countTree[i] +=\
-        \ delta;\n        sumTree[i] += val;\n        i += i & -i;\n      }\n    }\n\
-        \n    int query(int m) {\n      int idx = 0, currC = 0, currS = 0;\n      int\
-        \ logN = uSize > 0 ? (uSize.bitLength - 1) : 0;\n      for (int i = logN; i\
-        \ >= 0; i--) {\n        int nextIdx = idx + (1 << i);\n        if (nextIdx <=\
-        \ uSize && currC + countTree[nextIdx] < m) {\n          idx = nextIdx;\n   \
-        \       currC += countTree[idx];\n          currS += sumTree[idx];\n       \
-        \ }\n      }\n      return currS + (m - currC) * unique[idx];\n    }\n\n   \
-        \ for (int i = 1; i <= dist + 1; i++) {\n      update(map[nums[i]]!, 1, nums[i]);\n\
-        \    }\n\n    int minSum = query(k - 1);\n    for (int i = dist + 2; i < n;\
-        \ i++) {\n      update(map[nums[i - dist - 1]]!, -1, -nums[i - dist - 1]);\n\
-        \      update(map[nums[i]]!, 1, nums[i]);\n      int current = query(k - 1);\n\
-        \      if (current < minSum) minSum = current\n    }\n\n    return nums[0] +\
-        \ minSum;\n  }\n}"
-      go: "import (\n\t\"math\"\n\t\"math/bits\"\n\t\"sort\"\n)\n\nfunc minimumCost(nums\
-        \ []int, k int, dist int) int64 {\n\tn := len(nums)\n\tsortedNums := make([]int,\
-        \ n-1)\n\tcopy(sortedNums, nums[1:])\n\tsort.Ints(sortedNums)\n\n\tunique :=\
-        \ sortedNums[:0]\n\tif n > 1 {\n\t\tunique = append(unique, sortedNums[0])\n\
-        \t\tfor i := 1; i < n-1; i++ {\n\t\tif sortedNums[i] != sortedNums[i-1] {\n\t\
-        \t\t\tunique = append(unique, sortedNums[i])\n\t\t\t}\n\t\t}\n\t}\n\tuSize :=\
-        \ len(unique)\n\tvalMap := make(map[int]int)\n\tfor i, v := range unique {\n\
-        \t\tvalMap[v] = i + 1\n\t}\n\n\tcountTree := make([]int64, uSize+1)\n\tsumTree\
-        \ := make([]int64, uSize+1)\n\n\tupdate := func(i int, delta int64, val int64)\
-        \ {\n\t\tfor ; i <= uSize; i += i & -i {\n\t\t\tcountTree[i] += delta\n\t\t\t\
-        sumTree[i] += val\n\t\t}\n\t}\n\n\tquery := func(m int) int64 {\n\t\tidx :=\
-        \ 0\n\t\tvar currC, currS int64\n\t\tlogN := 0\n\t\tif uSize > 0 {\n\t\t\tlogN\
-        \ = bits.Len(uint(uSize)) - 1\n\t\t}\n\t\tfor i := logN; i >= 0; i-- {\n\t\t\
-        \tnextIdx := idx + (1 << i)\n\t\t\tif nextIdx <= uSize && currC+countTree[nextIdx]\
-        \ < int64(m) {\n\t\t\t\tidx = nextIdx\n\t\t\t\tcurrC += countTree[idx]\n\t\t\
-        \t\tcurrS += sumTree[idx]\n\t\t\t}\n\t\t}\n\t\treturn currS + (int64(m)-currC)*int64(unique[idx])\n\
-        \t}\n\n\tfor i := 1; i <= dist+1; i++ {\n\t\tupdate(valMap[nums[i]], 1, int64(nums[i]))\n\
-        \t}\n\n\tminSum := query(k - 1)\n\tfor i := dist + 2; i < n; i++ {\n\t\tupdate(valMap[nums[i-dist-1]],\
-        \ -1, -int64(nums[i-dist-1]))\n\t\tupdate(valMap[nums[i]], 1, int64(nums[i]))\n\
-        \t\tcurrent := query(k - 1)\n\t\tif current < minSum {\n\t\t\tminSum = current\n\
-        \t\t}\n\t}\n\n\treturn int64(nums[0]) + minSum\n}"
-      ruby: "def minimum_cost(nums, k, dist)\n  n = nums.length\n  m_count = k - 2\n\
-        \  sorted_unique = nums.uniq.sort\n  m = sorted_unique.length\n  rank_map =\
-        \ {}\n  sorted_unique.each_with_index { |v, i| rank_map[v] = i + 1 }\n\n  count_bit\
-        \ = Array.new(m + 1, 0)\n  sum_bit = Array.new(m + 1, 0)\n\n  update = lambda\
-        \ do |bit, idx, delta|\n    while idx <= m\n      bit[idx] += delta\n      idx\
-        \ += idx & -idx\n    end\n  end\n\n  query = lambda do |bit, idx|\n    s = 0\n\
-        \    while idx > 0\n      s += bit[idx]\n      idx -= idx & -idx\n    end\n\
-        \    s\n  end\n\n  find_kth = lambda do |k_val|\n    idx = 0\n    p = 1\n  \
-        \  p *= 2 while p * 2 <= m\n    while p > 0\n      next_idx = idx + p\n    \
-        \  if next_idx <= m && count_bit[next_idx] < k_val\n        idx = next_idx\n\
-        \        k_val -= count_bit[idx]\n      end\n      p /= 2\n    end\n    idx\
-        \ + 1\n  end\n\n  get_low_sum = lambda do\n    rank = find_kth.call(m_count)\n\
-        \    c_prev = query.call(count_bit, rank - 1)\n    s_prev = query.call(sum_bit,\
-        \ rank - 1)\n    s_prev + (m_count - c_prev) * sorted_unique[rank - 1]\n  end\n\
-        \n  add = lambda { |val| r = rank_map[val]; update.call(count_bit, r, 1); update.call(sum_bit,\
-        \ r, val) }\n  remove = lambda { |val| r = rank_map[val]; update.call(count_bit,\
-        \ r, -1); update.call(sum_bit, r, -val) }\n\n  (2..[1 + dist, n - 1].min).each\
-        \ { |i| add.call(nums[i]) }\n\n  min_cost = 10**18\n  (1..n - k + 1).each do\
-        \ |i1|\n    low_sum_val = get_low_sum.call\n    current_cost = nums[0] + nums[i1]\
-        \ + low_sum_val\n    min_cost = [min_cost, current_cost].min\n\n    if i1 <\
-        \ n - k + 1\n      remove.call(nums[i1 + 1])\n      add.call(nums[i1 + 1 + dist])\
-        \ if i1 + 1 + dist < n\n    end\n  end\n\n  min_cost\nend"
-      scala: "import java.util.Arrays\n\nobject Solution {\n  def minimumCost(nums:\
-        \ Array[Int], k: Int, dist: Int): Long = {\n    val n = nums.length\n    val\
-        \ mCount = k - 2\n    val sortedUnique = nums.distinct.sorted\n    val m = sortedUnique.length\n\
-        \n    val countBit = new Array[Int](m + 1)\n    val sumBit = new Array[Long](m\
-        \ + 1)\n\n    def update(bit: Array[Int], idx: Int, delta: Int): Unit = {\n\
-        \      var i = idx\n      while (i <= m) {\n        bit(i) += delta\n      \
-        \  i += i & -i\n      }\n    }\n\n    def updateLong(bit: Array[Long], idx:\
-        \ Int, delta: Long): Unit = {\n      var i = idx\n      while (i <= m) {\n \
-        \       bit(i) += delta\n        i += i & -i\n      }\n    }\n\n    def query(bit:\
-        \ Array[Int], idx: Int): Int = {\n      var i = idx\n      var s = 0\n     \
-        \ while (i > 0) {\n        s += bit(i)\n        i -= i & -i\n      }\n     \
-        \ s\n    }\n\n    def queryLong(bit: Array[Long], idx: Int): Long = {\n    \
-        \  var i = idx\n      var s = 0L\n      while (i > 0) {\n        s += bit(i)\n\
-        \        i -= i & -i\n      }\n      s\n    }\n\n    def findKth(kVal: Int):\
-        \ Int = {\n      var idx = 0\n      var kv = kVal\n      var p = 1\n      while\
-        \ (p * 2 <= m) p *= 2\n      while (p > 0) {\n        val nextIdx = idx + p\n\
-        \        if (nextIdx <= m && countBit(nextIdx) < kv) {\n          idx = nextIdx\n\
-        \          kv -= countBit(idx)\n        }\n        p /= 2\n      }\n      idx\
-        \ + 1\n    }\n\n    def getLowSum(): Long = {\n      val rank = findKth(mCount)\n\
-        \      val cPrev = query(countBit, rank - 1)\n      val sPrev = queryLong(sumBit,\
-        \ rank - 1)\n      sPrev + (mCount - cPrev).toLong * sortedUnique(rank - 1)\n\
-        \    }\n\n    def add(valIn: Int): Unit = {\n      val r = Arrays.binarySearch(sortedUnique,\
-        \ valIn) + 1\n      update(countBit, r, 1)\n      updateLong(sumBit, r, valIn.toLong)\n\
-        \    }\n\n    def remove(valIn: Int): Unit = {\n      val r = Arrays.binarySearch(sortedUnique,\
-        \ valIn) + 1\n      update(countBit, r, -1)\n      updateLong(sumBit, r, -valIn.toLong)\n\
-        \    }\n\n    for (i <- 2 to Math.min(1 + dist, n - 1)) add(nums(i))\n\n   \
-        \ var minCost = Long.MaxValue\n    for (i1 <- 1 to n - k + 1) {\n      val lowSumVal\
-        \ = getLowSum()\n      minCost = Math.min(minCost, nums(0).toLong + nums(i1).toLong\
-        \ + lowSumVal)\n      if (i1 < n - k + 1) {\n        remove(nums(i1 + 1))\n\
-        \        if (i1 + 1 + dist < n) add(nums(i1 + 1 + dist))\n      }\n    }\n \
-        \   minCost\n  }\n}"
-      rust: "impl Solution {\n    pub fn minimum_cost(nums: Vec<i32>, k: i32, dist:\
-        \ i32) -> i64 {\n        let n = nums.len();\n        let m_count = k - 2;\n\
-        \        let mut sorted_unique = nums.clone();\n        sorted_unique.sort();\n\
-        \        sorted_unique.dedup();\n        let m = sorted_unique.len();\n\n  \
-        \      let mut count_bit = vec![0; m + 1];\n        let mut sum_bit = vec![0i64;\
-        \ m + 1];\n\n        fn update_count(bit: &mut Vec<i32>, mut idx: usize, delta:\
-        \ i32) {\n            let m = bit.len() - 1;\n            while idx <= m {\n\
-        \                bit[idx] += delta;\n                idx += (idx as i32 & -(idx\
-        \ as i32)) as usize;\n            }\n        }\n\n        fn update_sum(bit:\
-        \ &mut Vec<i64>, mut idx: usize, delta: i64) {\n            let m = bit.len()\
-        \ - 1;\n            while idx <= m {\n                bit[idx] += delta;\n \
-        \               idx += (idx as i32 & -(idx as i32)) as usize;\n            }\n\
-        \        }\n\n        fn query_count(bit: &Vec<i32>, mut idx: usize) -> i32\
-        \ {\n            let mut s = 0;\n            while idx > 0 {\n             \
-        \   s += bit[idx];\n                idx -= (idx as i32 & -(idx as i32)) as usize;\n\
-        \            }\n            s\n        }\n\n        fn query_sum(bit: &Vec<i64>,\
-        \ mut idx: usize) -> i64 {\n            let mut s = 0;\n            while idx\
-        \ > 0 {\n                s += bit[idx];\n                idx -= (idx as i32\
-        \ & -(idx as i32)) as usize;\n            }\n            s\n        }\n\n  \
-        \      fn find_kth(bit: &Vec<i32>, mut k_val: i32, m: usize) -> usize {\n  \
-        \          let mut idx = 0;\n            let mut p = 1;\n            while p\
-        \ * 2 <= m { p *= 2; }\n            while p > 0 {\n                let next_idx\
-        \ = idx + p;\n                if next_idx <= m && bit[next_idx] < k_val {\n\
-        \                    idx = next_idx;\n                    k_val -= bit[idx];\n\
-        \                }\n                p /= 2;\n            }\n            idx\
-        \ + 1\n        }\n\n        let get_rank = |val: i32| sorted_unique.binary_search(&val).unwrap()\
-        \ + 1;\n\n        for i in 2..=((1 + dist as usize).min(n - 1)) {\n        \
-        \    let r = get_rank(nums[i]);\n            update_count(&mut count_bit, r,\
-        \ 1);\n            update_sum(&mut sum_bit, r, nums[i] as i64);\n        }\n\
-        \n        let mut min_cost = i64::MAX;\n        for i1 in 1..=n - k as usize\
-        \ + 1 {\n            let rank = find_kth(&count_bit, m_count, m);\n        \
-        \    let c_prev = query_count(&count_bit, rank - 1);\n            let s_prev\
-        \ = query_sum(&sum_bit, rank - 1);\n            let low_sum_val = s_prev + (m_count\
-        \ - c_prev) as i64 * sorted_unique[rank - 1] as i64;\n            min_cost =\
-        \ min_cost.min(nums[0] as i64 + nums[i1] as i64 + low_sum_val);\n\n        \
-        \    if i1 < n - k as usize + 1 {\n                let r_remove = get_rank(nums[i1\
-        \ + 1]);\n                update_count(&mut count_bit, r_remove, -1);\n    \
-        \            update_sum(&mut sum_bit, r_remove, -(nums[i1 + 1] as i64));\n \
-        \               if i1 + 1 + dist as usize < n {\n                    let r_add\
-        \ = get_rank(nums[i1 + 1 + dist as usize]);\n                    update_count(&mut\
-        \ count_bit, r_add, 1);\n                    update_sum(&mut sum_bit, r_add,\
-        \ nums[i1 + 1 + dist as usize] as i64);\n                }\n            }\n\
-        \        }\n        min_cost\n    }\n}"
-      racket: "(define/contract (minimum-cost nums k dist)\n  (-> (listof exact-integer?)\
-        \ exact-integer? exact-integer? exact-integer?)\n  (let* ([n (length nums)]\n\
-        \         [nums-vec (list->vector nums)]\n         [m-count (- k 2)]\n     \
-        \    [sorted-unique (sort (remove-duplicates nums) <)]\n         [m (length\
-        \ sorted-unique)]\n         [sorted-unique-vec (list->vector sorted-unique)]\n\
-        \         [rank-map (make-hash (for/list ([v sorted-unique] [i (in-naturals\
-        \ 1)]) (cons v i)))]\n         [count-bit (make-vector (+ m 1) 0)]\n       \
-        \  [sum-bit (make-vector (+ m 1) 0)])\n\n    (define (update-bit! bit idx delta)\n\
-        \      (let loop ([i idx])\n        (when (<= i m)\n          (vector-set! bit\
-        \ i (+ (vector-ref bit i) delta))\n          (loop (+ i (bitwise-and i (- i)))))))\n\
-        \n    (define (query-bit bit idx)\n      (let loop ([i idx] [s 0])\n       \
-        \ (if (<= i 0) s (loop (- i (bitwise-and i (- i))) (+ s (vector-ref bit i))))))\n\
-        \n    (define (find-kth kv)\n      (let* ([p (let loop ([val 1]) (if (> (* val\
-        \ 2) m) val (loop (* val 2))))])\n        (let loop ([idx 0] [p p] [k-val kv])\n\
-        \          (if (= p 0)\n              (+ idx 1)\n              (let ([next-idx\
-        \ (+ idx p)])\n                (if (and (<= next-idx m) (< (vector-ref count-bit\
-        \ next-idx) k-val))\n                    (loop next-idx (quotient p 2) (- k-val\
-        \ (vector-ref count-bit next-idx)))\n                    (loop idx (quotient\
-        \ p 2) k-val)))))))\n\n    (define (get-low-sum)\n      (let* ([rank (find-kth\
-        \ m-count)]\n             [c-prev (query-bit count-bit (- rank 1))]\n      \
-        \       [s-prev (query-bit sum-bit (- rank 1))])\n        (+ s-prev (* (- m-count\
-        \ c-prev) (vector-ref sorted-unique-vec (- rank 1))))))\n\n    (define (add\
-        \ val)\n      (let ([r (hash-ref rank-map val)])\n        (update-bit! count-bit\
-        \ r 1)\n        (update-bit! sum-bit r val)))\n\n    (define (remove val)\n\
-        \      (let ([r (hash-ref rank-map val)])\n        (update-bit! count-bit r\
-        \ -1)\n        (update-bit! sum-bit r (- val))))\n\n    (for ([i (in-range 2\
-        \ (+ 1 (min (+ 1 dist) (- n 1))))])\n      (add (vector-ref nums-vec i)))\n\n\
-        \    (let loop ([i1 1] [min-cost 1000000000000000])\n      (if (> i1 (- n k\
-        \ -1))\n          min-cost\n          (let* ([low-sum-val (get-low-sum)]\n \
-        \                [current-cost (+ (vector-ref nums-vec 0) (vector-ref nums-vec\
-        \ i1) low-sum-val)]\n                 [next-min-cost (min min-cost current-cost)])\n\
-        \            (if (< i1 (- n k -1))\n                (begin\n               \
-        \   (remove (vector-ref nums-vec (+ i1 1)))\n                  (when (< (+ i1\
-        \ 1 dist) n)\n                    (add (vector-ref nums-vec (+ i1 1 dist))))\n\
-        \                  (loop (+ i1 1) next-min-cost))\n                next-min-cost))))))"
-      erlang: "minimum_cost(Nums, K, Dist) ->\n    N = length(Nums),\n    NumsArr =\
-        \ array:from_list(Nums),\n    MCount = K - 2,\n    SortedUnique = lists:usort(Nums),\n\
-        \    M = length(SortedUnique),\n    RankMap = maps:from_list(lists:zip(SortedUnique,\
-        \ lists:seq(1, M))),\n    ValueTuple = list_to_tuple(SortedUnique),\n\n    CountBIT\
-        \ = array:new([{size, M + 1}, {default, 0}]),\n    SumBIT = array:new([{size,\
-        \ M + 1}, {default, 0}]),\n\n    Update = fun Up(BIT, Idx, Delta) when Idx =<\
-        \ M ->\n                    Up(array:set(Idx, array:get(Idx, BIT) + Delta, BIT),\
-        \ Idx + (Idx band -Idx), Delta);\n                 Up(BIT, _, _) -> BIT\n  \
-        \           end,\n\n    Query = fun Q(BIT, Idx, S) when Idx > 0 ->\n       \
-        \             Q(BIT, Idx - (Idx band -Idx), S + array:get(Idx, BIT));\n    \
-        \            Q(_, _, S) -> S\n            end,\n\n    P = get_p(M),\n    FindKth\
-        \ = fun F(BIT, KV, Idx, Pow) when Pow > 0 ->\n                      NextIdx\
-        \ = Idx + Pow,\n                      if NextIdx =< M andalso array:get(NextIdx,\
-        \ BIT) < KV ->\n                             F(BIT, KV - array:get(NextIdx,\
-        \ BIT), NextIdx, Pow div 2);\n                         true ->\n           \
-        \                  F(BIT, KV, Idx, Pow div 2)\n                      end;\n\
-        \                  F(_, _, Idx, _) -> Idx + 1\n              end,\n\n    InitWindow\
-        \ = fun Init(CB, SB, I) when I =< 1 + Dist, I < N ->\n                     \
-        \    Val = array:get(I, NumsArr),\n                         Rank = maps:get(Val,\
-        \ RankMap),\n                         Init(Update(CB, Rank, 1), Update(SB, Rank,\
-        \ Val), I + 1);\n                     Init(CB, SB, _) -> {CB, SB}\n        \
-        \         end,\n\n    {CBIT0, SBIT0} = InitWindow(CountBIT, SumBIT, 2),\n\n\
-        \    Solve = fun S(I1, CBIT, SBIT, MinCost) when I1 =< N - K + 1 ->\n      \
-        \              Rank = FindKth(CBIT, MCount, 0, P),\n                    CPrev\
-        \ = Query(CBIT, Rank - 1, 0),\n                    SPrev = Query(SBIT, Rank\
-        \ - 1, 0),\n                    LowSum = SPrev + (MCount - CPrev) * element(Rank,\
-        \ ValueTuple),\n                    Cost = array:get(0, NumsArr) + array:get(I1,\
-        \ NumsArr) + LowSum,\n                    NewMinCost = if Cost < MinCost ->\
-        \ Cost; true -> MinCost end,\n                    if I1 < N - K + 1 ->\n   \
-        \                        VRem = array:get(I1 + 1, NumsArr),\n              \
-        \             RRem = maps:get(VRem, RankMap),\n                           CBIT1\
-        \ = Update(CBIT, RRem, -1),\n                           SBIT1 = Update(SBIT,\
-        \ RRem, -VRem),\n                           {CBIT2, SBIT2} = if I1 + 1 + Dist\
-        \ < N ->\n                                                   VAdd = array:get(I1\
-        \ + 1 + Dist, NumsArr),\n                                                  \
-        \ RAdd = maps:get(VAdd, RankMap),\n                                        \
-        \           {Update(CBIT1, RAdd, 1), Update(SBIT1, RAdd, VAdd)};\n         \
-        \                                      true -> {CBIT1, SBIT1}\n            \
-        \                                end,\n                           S(I1 + 1,\
-        \ CBIT2, SBIT2, NewMinCost);\n                       true -> NewMinCost\n  \
-        \                  end;\n                S(_, _, _, MinCost) -> MinCost\n  \
-        \          end,\n    Solve(1, CBIT0, SBIT0, 1000000000000000).\n\nget_p(M) ->\
-        \ get_p(M, 1).\nget_p(M, P) when P * 2 =< M -> get_p(M, P * 2);\nget_p(_, P)\
-        \ -> P."
-      elixir: "defmodule Solution do\n  import Bitwise\n\n  @spec minimum_cost(nums\
-        \ :: [integer], k :: integer, dist :: integer) :: integer\n  def minimum_cost(nums,\
-        \ k, dist) do\n    n = length(nums)\n    nums_tuple = List.to_tuple(nums)\n\
-        \    m_count = k - 2\n    sorted_unique = Enum.uniq(nums) |> Enum.sort()\n \
-        \   m = length(sorted_unique)\n    rank_map = sorted_unique |> Enum.with_index(1)\
-        \ |> Enum.into(%{})\n    value_tuple = List.to_tuple(sorted_unique)\n\n    count_bit\
-        \ = %{}\n    sum_bit = %{}\n\n    update = fn bit, idx, delta ->\n      let_update\
-        \ = fn f, b, i, d ->\n        if i <= m do\n          f.(f, Map.put(b, i, Map.get(b,\
-        \ i, 0) + d), i + (i &&& -i), d)\n        else\n          b\n        end\n \
-        \     end\n      let_update.(let_update, bit, idx, delta)\n    end\n\n    query\
-        \ = fn bit, idx ->\n      let_query = fn f, b, i, s ->\n        if i > 0 do\n\
-        \          f.(f, b, i - (i &&& -i), s + Map.get(b, i, 0))\n        else\n  \
-        \        s\n        end\n      end\n      let_query.(let_query, bit, idx, 0)\n\
-        \    end\n\n    p = get_p(m)\n    find_kth = fn kv, bit ->\n      let_find =\
-        \ fn f, kv_val, idx, pow ->\n        if pow > 0 do\n          next_idx = idx\
-        \ + pow\n          if next_idx <= m && Map.get(bit, next_idx, 0) < kv_val do\n\
-        \            f.(f, kv_val - Map.get(bit, next_idx, 0), next_idx, div(pow, 2))\n\
-        \          else\n            f.(f, kv_val, idx, div(pow, 2))\n          end\n\
-        \        else\n          idx + 1\n        end\n      end\n      let_find.(let_find,\
-        \ kv, 0, p)\n    end\n\n    {cbit, sbit} = Enum.reduce(2..min(1 + dist, n -\
-        \ 1), {count_bit, sum_bit}, fn i, {cb, sb} ->\n      val = elem(nums_tuple,\
-        \ i)\n      r = Map.get(rank_map, val)\n      {update.(cb, r, 1), update.(sb,\
-        \ r, val)}\n    end)\n\n    solve(1, n, k, dist, nums_tuple, cbit, sbit, rank_map,\
-        \ value_tuple, m, m_count, find_kth, query, update, 1_000_000_000_000_000)\n\
-        \  end\n\n  defp get_p(m) do\n    let_p = fn f, cur -> if cur * 2 <= m, do:\
-        \ f.(f, cur * 2), else: cur end\n    let_p.(let_p, 1)\n  end\n\n  defp solve(i1,\
-        \ n, k, dist, nums_tuple, cbit, sbit, rank_map, value_tuple, m, m_count, find_kth,\
-        \ query, update, min_cost) do\n    rank = find_kth.(m_count, cbit)\n    c_prev\
-        \ = query.(cbit, rank - 1)\n    s_prev = query.(sbit, rank - 1)\n    low_sum\
-        \ = s_prev + (m_count - c_prev) * elem(value_tuple, rank - 1)\n    cost = elem(nums_tuple,\
-        \ 0) + elem(nums_tuple, i1) + low_sum\n    new_min_cost = min(min_cost, cost)\n\
-        \n    if i1 < n - k + 1 do\n      v_rem = elem(nums_tuple, i1 + 1)\n      r_rem\
-        \ = Map.get(rank_map, v_rem)\n      cbit1 = update.(cbit, r_rem, -1)\n     \
-        \ sbit1 = update.(sbit, r_rem, -v_rem)\n      {cbit2, sbit2} = if i1 + 1 + dist\
-        \ < n do\n        v_add = elem(nums_tuple, i1 + 1 + dist)\n        r_add = Map.get(rank_map,\
-        \ v_add)\n        {update.(cbit1, r_add, 1), update.(sbit1, r_add, v_add)}\n\
-        \      else\n        {cbit1, sbit1}\n      end\n      solve(i1 + 1, n, k, dist,\
-        \ nums_tuple, cbit2, sbit2, rank_map, value_tuple, m, m_count, find_kth, query,\
-        \ update, new_min_cost)\n    else\n      new_min_cost\n    end\n  end\nend"
-    approach: 'The problem asks for the minimum sum of $k$ subarrays'' costs, which
-      is equivalent to $nums[0]$ plus the sum of the $k-1$ smallest elements chosen
-      from $nums[1 \dots n-1]$, such that the index difference between the first and
-      last chosen elements is at most $dist$. This constraint implies that we are looking
-      for a window of indices $[i_1, i_{k-1}]$ such that $i_{k-1} - i_1 \le dist$. Such
-      a set of indices is always contained within some window of fixed size $dist+1$.
-      Therefore, the problem reduces to finding the minimum sum of $k-1$ smallest elements
-      within any sliding window of size $dist+1$ in $nums[1 \dots n-1]$.
+        \ $n = count($nums);\n        $m = $k - 2;\n        $root = null;\n        for\
+        \ ($j = 2; $j <= min(1 + $dist, $n - 1); $j++) {\n            $root = $this->add($root,\
+        \ $nums[$j]);\n        }\n        $minCost = $nums[0] + $nums[1] + $this->sumOfSmallest($root,\
+        \ $m);\n        for ($i = 2; $i <= $n - $k + 1; $i++) {\n            $root =\
+        \ $this->remove($root, $nums[$i]);\n            if ($i + $dist < $n) {\n   \
+        \             $root = $this->add($root, $nums[$i + $dist]);\n            }\n\
+        \            $currentCost = $nums[0] + $nums[$i] + $this->sumOfSmallest($root,\
+        \ $m);\n            if ($currentCost < $minCost) {\n                $minCost\
+        \ = $currentCost;\n            }\n        }\n        return $minCost;\n    }\n\
+        \n    private function add($root, $val) {\n        [$l, $r] = $this->splitByValue($root,\
+        \ $val);\n        return $this->merge($this->merge($l, new TreapNode($val)),\
+        \ $r);\n    }\n\n    private function remove($root, $val) {\n        [$l, $r]\
+        \ = $this->splitByValue($root, $val - 1);\n        [$mid, $rr] = $this->splitByValue($r,\
+        \ $val);\n        [$one, $rest] = $this->splitBySize($mid, 1);\n        return\
+        \ $this->merge($this->merge($l, $rest), $rr);\n    }\n\n    private function\
+        \ sumOfSmallest(&$root, $k) {\n        if ($k <= 0) return 0;\n        [$l,\
+        \ $r] = $this->splitBySize($root, $k);\n        $res = $l ? $l->sum : 0;\n \
+        \       $root = $this->merge($l, $r);\n        return $res;\n    }\n\n    private\
+        \ function splitByValue($node, $val) {\n        if (!$node) return [null, null];\n\
+        \        if ($node->value <= $val) {\n            [$l, $r] = $this->splitByValue($node->right,\
+        \ $val);\n            $node->right = $l;\n            $node->update();\n   \
+        \         return [$node, $r];\n        } else {\n            [$l, $r] = $this->splitByValue($node->left,\
+        \ $val);\n            $node->left = $r;\n            $node->update();\n    \
+        \        return [$l, $node];\n        }\n    }\n\n    private function splitBySize($node,\
+        \ $k) {\n        if (!$node) return [null, null];\n        $leftSize = $node->left\
+        \ ? $node->left->size : 0;\n        if ($leftSize >= $k) {\n            [$l,\
+        \ $r] = $this->splitBySize($node->left, $k);\n            $node->left = $r;\n\
+        \            $node->update();\n            return [$l, $node];\n        } else\
+        \ {\n            [$l, $r] = $this->splitBySize($node->right, $k - $leftSize\
+        \ - 1);\n            $node->right = $l;\n            $node->update();\n    \
+        \        return [$node, $r];\n        }\n    }\n\n    private function merge($l,\
+        \ $r) {\n        if (!$l || !$r) return $l ?: $r;\n        if ($l->priority\
+        \ > $r->priority) {\n            $l->right = $this->merge($l->right, $r);\n\
+        \            $l->update();\n            return $l;\n        } else {\n     \
+        \       $r->left = $this->merge($l, $r->left);\n            $r->update();\n\
+        \            return $r;\n        }\n    }\n}\n\nclass TreapNode {\n    public\
+        \ $value, $priority, $size, $sum, $left, $right;\n    function __construct($val)\
+        \ {\n        $this->value = $val;\n        $this->priority = mt_rand(0, 1000000000);\n\
+        \        $this->size = 1;\n        $this->sum = $val;\n    }\n    function update()\
+        \ {\n        $this->size = 1 + ($this->left ? $this->left->size : 0) + ($this->right\
+        \ ? $this->right->size : 0);\n        $this->sum = $this->value + ($this->left\
+        \ ? $this->left->sum : 0) + ($this->right ? $this->right->sum : 0);\n    }\n\
+        }"
+      swift: "class Solution {\n    class TreapNode {\n        var value: Int\n    \
+        \    var priority: Int\n        var size: Int\n        var sum: Int\n      \
+        \  var left: TreapNode? = nil\n        var right: TreapNode? = nil\n       \
+        \ init(_ val: Int) {\n            self.value = val\n            self.priority\
+        \ = Int.random(in: 0...Int.max)\n            self.size = 1\n            self.sum\
+        \ = val\n        }\n        func update() {\n            size = 1 + (left?.size\
+        \ ?? 0) + (right?.size ?? 0)\n            sum = value + (left?.sum ?? 0) + (right?.sum\
+        \ ?? 0)\n        }\n    }\n\n    func splitByValue(_ node: TreapNode?, _ val:\
+        \ Int) -> (TreapNode?, TreapNode?) {\n        guard let node = node else { return\
+        \ (nil, nil) }\n        if node.value <= val {\n            let (l, r) = splitByValue(node.right,\
+        \ val)\n            node.right = l\n            node.update()\n            return\
+        \ (node, r)\n        } else {\n            let (l, r) = splitByValue(node.left,\
+        \ val)\n            node.left = r\n            node.update()\n            return\
+        \ (l, node)\n        }\n    }\n\n    func splitBySize(_ node: TreapNode?, _\
+        \ k: Int) -> (TreapNode?, TreapNode?) {\n        guard let node = node else\
+        \ { return (nil, nil) }\n        let leftSize = node.left?.size ?? 0\n     \
+        \   if leftSize >= k {\n            let (l, r) = splitBySize(node.left, k)\n\
+        \            node.left = r\n            node.update()\n            return (l,\
+        \ node)\n        } else {\n            let (l, r) = splitBySize(node.right,\
+        \ k - leftSize - 1)\n            node.right = l\n            node.update()\n\
+        \            return (node, r)\n        }\n    }\n\n    func merge(_ l: TreapNode?,\
+        \ _ r: TreapNode?) -> TreapNode? {\n        if l == nil { return r }\n     \
+        \   if r == nil { return l }\n        if l!.priority > r!.priority {\n     \
+        \       l!.right = merge(l!.right, r)\n            l!.update()\n           \
+        \ return l\n        } else {\n            r!.left = merge(l, r!.left)\n    \
+        \        r!.update()\n            return r\n        }\n    }\n\n    func minimumCost(_\
+        \ nums: [Int], _ k: Int, _ dist: Int) -> Int {\n        let n = nums.count\n\
+        \        let m = k - 2\n        var root: TreapNode? = nil\n\n        func add(_\
+        \ val: Int) {\n            let (l, r) = splitByValue(root, val)\n          \
+        \  root = merge(merge(l, TreapNode(val)), r)\n        }\n\n        func remove(_\
+        \ val: Int) {\n            let (l, r) = splitByValue(root, val - 1)\n      \
+        \      let (mid, rr) = splitByValue(r, val)\n            let (_, rest) = splitBySize(mid,\
+        \ 1)\n            root = merge(merge(l, rest), rr)\n        }\n\n        func\
+        \ sumOfSmallest(_ k: Int) -> Int {\n            if k <= 0 { return 0 }\n   \
+        \         let (l, r) = splitBySize(root, k)\n            let res = l?.sum ??\
+        \ 0\n            root = merge(l, r)\n            return res\n        }\n\n \
+        \       for j in 2...min(1 + dist, n - 1) {\n            add(nums[j])\n    \
+        \    }\n\n        var minCost = nums[0] + nums[1] + sumOfSmallest(m)\n\n   \
+        \     for i in 2...(n - k + 1) {\n            remove(nums[i])\n            if\
+        \ i + dist < n {\n                add(nums[i + dist])\n            }\n     \
+        \       let currentCost = nums[0] + nums[i] + sumOfSmallest(m)\n           \
+        \ if currentCost < minCost { minCost = currentCost }\n        }\n\n        return\
+        \ minCost\n    }\n}"
+      kotlin: "import kotlin.math.min\nimport kotlin.random.Random\n\nclass Solution\
+        \ {\n    class TreapNode(val value: Int) {\n        val priority = Random.nextInt()\n\
+        \        var size = 1\n        var sum = value.toLong()\n        var left: TreapNode?\
+        \ = null\n        var right: TreapNode? = null\n\n        fun update() {\n \
+        \           size = 1 + (left?.size ?: 0) + (right?.size ?: 0)\n            sum\
+        \ = value.toLong() + (left?.sum ?: 0L) + (right?.sum ?: 0L)\n        }\n   \
+        \ }\n\n    private fun splitByValue(node: TreapNode?, value: Int): Pair<TreapNode?,\
+        \ TreapNode?> {\n        if (node == null) return null to null\n        return\
+        \ if (node.value <= value) {\n            val (l, r) = splitByValue(node.right,\
+        \ value)\n            node.right = l\n            node.update()\n          \
+        \  node to r\n        } else {\n            val (l, r) = splitByValue(node.left,\
+        \ value)\n            node.left = r\n            node.update()\n           \
+        \ l to node\n        }\n    }\n\n    private fun splitBySize(node: TreapNode?,\
+        \ k: Int): Pair<TreapNode?, TreapNode?> {\n        if (node == null) return\
+        \ null to null\n        val leftSize = node.left?.size ?: 0\n        return\
+        \ if (leftSize >= k) {\n            val (l, r) = splitBySize(node.left, k)\n\
+        \            node.left = r\n            node.update()\n            l to node\n\
+        \        } else {\n            val (l, r) = splitBySize(node.right, k - leftSize\
+        \ - 1)\n            node.right = l\n            node.update()\n            node\
+        \ to r\n        }\n    }\n\n    private fun merge(l: TreapNode?, r: TreapNode?):\
+        \ TreapNode? {\n        if (l == null) return r\n        if (r == null) return\
+        \ l\n        return if (l.priority > r.priority) {\n            l.right = merge(l.right,\
+        \ r)\n            l.update()\n            l\n        } else {\n            r.left\
+        \ = merge(l, r.left)\n            r.update()\n            r\n        }\n   \
+        \ }\n\n    fun minimumCost(nums: IntArray, k: Int, dist: Int): Long {\n    \
+        \    val n = nums.size\n        val m = k - 2\n        var root: TreapNode?\
+        \ = null\n\n        fun add(val0: Int) {\n            val (l, r) = splitByValue(root,\
+        \ val0)\n            root = merge(merge(l, TreapNode(val0)), r)\n        }\n\
+        \n        fun remove(val0: Int) {\n            val (l, r) = splitByValue(root,\
+        \ val0 - 1)\n            val (mid, rr) = splitByValue(r, val0)\n           \
+        \ val (_, rest) = splitBySize(mid, 1)\n            root = merge(merge(l, rest),\
+        \ rr)\n        }\n\n        fun sumOfSmallest(k0: Int): Long {\n           \
+        \ if (k0 <= 0) return 0L\n            val (l, r) = splitBySize(root, k0)\n \
+        \           val res = l?.sum ?: 0L\n            root = merge(l, r)\n       \
+        \     return res\n        }\n\n        for (j in 2..min(1 + dist, n - 1)) {\n\
+        \            add(nums[j])\n        }\n\n        var minCost = nums[0].toLong()\
+        \ + nums[1].toLong() + sumOfSmallest(m)\n\n        for (i in 2..n - k + 1) {\n\
+        \            remove(nums[i])\n            if (i + dist < n) {\n            \
+        \    add(nums[i + dist])\n            }\n            val curr = nums[0].toLong()\
+        \ + nums[i].toLong() + sumOfSmallest(m)\n            if (curr < minCost) minCost\
+        \ = curr\n        }\n\n        return minCost\n    }\n}"
+      dart: "import 'dart:math';\n\nclass TreapNode {\n  int value;\n  int priority;\n\
+        \  int size = 1;\n  int sum;\n  TreapNode? left, right;\n\n  TreapNode(this.value)\
+        \ : priority = Random().nextInt(1 << 31), sum = value;\n\n  void update() {\n\
+        \    size = 1 + (left?.size ?? 0) + (right?.size ?? 0);\n    sum = value + (left?.sum\
+        \ ?? 0) + (right?.sum ?? 0);\n  }\n}\n\nclass Solution {\n  TreapNode? merge(TreapNode?\
+        \ l, TreapNode? r) {\n    if (l == null) return r;\n    if (r == null) return\
+        \ l;\n    if (l.priority > r.priority) {\n      l.right = merge(l.right, r);\n\
+        \      l.update();\n      return l;\n    } else {\n      r.left = merge(l, r.left);\n\
+        \      r.update();\n      return r;\n    }\n  }\n\n  List<TreapNode?> splitByValue(TreapNode?\
+        \ node, int val) {\n    if (node == null) return [null, null];\n    if (node.value\
+        \ <= val) {\n      var res = splitByValue(node.right, val);\n      node.right\
+        \ = res[0];\n      node.update();\n      return [node, res[1]];\n    } else\
+        \ {\n      var res = splitByValue(node.left, val);\n      node.left = res[1];\n\
+        \      node.update();\n      return [res[0], node];\n    }\n  }\n\n  List<TreapNode?>\
+        \ splitBySize(TreapNode? node, int k) {\n    if (node == null) return [null,\
+        \ null];\n    int leftSize = node.left?.size ?? 0;\n    if (leftSize >= k) {\n\
+        \      var res = splitBySize(node.left, k);\n      node.left = res[1];\n   \
+        \   node.update();\n      return [res[0], node];\n    } else {\n      var res\
+        \ = splitBySize(node.right, k - leftSize - 1);\n      node.right = res[0];\n\
+        \      node.update();\n      return [node, res[1]];\n    }\n  }\n\n  int minimumCost(List<int>\
+        \ nums, int k, int dist) {\n    int n = nums.length;\n    int m = k - 2;\n \
+        \   TreapNode? root;\n\n    TreapNode? add(TreapNode? r, int val) {\n      var\
+        \ parts = splitByValue(r, val);\n      return merge(merge(parts[0], TreapNode(val)),\
+        \ parts[1]);\n    }\n\n    TreapNode? remove(TreapNode? r, int val) {\n    \
+        \  var parts1 = splitByValue(r, val - 1);\n      var parts2 = splitByValue(parts1[1],\
+        \ val);\n      var parts3 = splitBySize(parts2[0], 1);\n      return merge(merge(parts1[0],\
+        \ parts3[1]), parts2[1]);\n    }\n\n    int sumSmallest(int count) {\n     \
+        \ if (count <= 0) return 0;\n      var parts = splitBySize(root, count);\n \
+        \     int res = parts[0]?.sum ?? 0;\n      root = merge(parts[0], parts[1]);\n\
+        \      return res;\n    }\n\n    for (int j = 2; j <= min(1 + dist, n - 1);\
+        \ j++) {\n      root = add(root, nums[j]);\n    }\n\n    int minCost = nums[0]\
+        \ + nums[1] + sumSmallest(m);\n    for (int i = 2; i <= n - k + 1; i++) {\n\
+        \      root = remove(root, nums[i]);\n      if (i + dist < n) {\n        root\
+        \ = add(root, nums[i + dist]);\n      }\n      int currentCost = nums[0] + nums[i]\
+        \ + sumSmallest(m);\n      if (currentCost < minCost) minCost = currentCost;\n\
+        \    }\n    return minCost;\n  }\n}"
+      go: "import (\n\t\"math/rand\"\n)\n\ntype TreapNode struct {\n\tvalue, size int\n\
+        \tpriority    int64\n\tsum         int64\n\tleft, right *TreapNode\n}\n\nfunc\
+        \ newNode(val int) *TreapNode {\n\treturn &TreapNode{value: val, size: 1, priority:\
+        \ rand.Int63(), sum: int64(val)}\n}\n\nfunc (n *TreapNode) update() {\n\tn.size\
+        \ = 1\n\tn.sum = int64(n.value)\n\tif n.left != nil {\n\t\tn.size += n.left.size\n\
+        \t\tn.sum += n.left.sum\n\t}\n\tif n.right != nil {\n\t\tn.size += n.right.size\n\
+        \t\tn.sum += n.right.sum\n\t}\n}\n\nfunc splitByValue(node *TreapNode, val int)\
+        \ (*TreapNode, *TreapNode) {\n\tif node == nil {\n\t\treturn nil, nil\n\t}\n\
+        \tif node.value <= val {\n\t\tl, r := splitByValue(node.right, val)\n\t\tnode.right\
+        \ = l\n\t\tnode.update()\n\t\treturn node, r\n\t} else {\n\t\tl, r := splitByValue(node.left,\
+        \ val)\n\t\tnode.left = r\n\t\tnode.update()\n\t\treturn l, node\n\t}\n}\n\n\
+        func splitBySize(node *TreapNode, k int) (*TreapNode, *TreapNode) {\n\tif node\
+        \ == nil {\n\t\treturn nil, nil\n\t}\n\tleftSize := 0\n\tif node.left != nil\
+        \ {\n\t\tleftSize = node.left.size\n\t}\n\tif leftSize >= k {\n\t\tl, r := splitBySize(node.left,\
+        \ k)\n\t\tnode.left = r\n\t\tnode.update()\n\t\treturn l, node\n\t} else {\n\
+        \t\tl, r := splitBySize(node.right, k-leftSize-1)\n\t\tnode.right = l\n\t\t\
+        node.update()\n\t\treturn node, r\n\t}\n}\n\nfunc merge(l, r *TreapNode) *TreapNode\
+        \ {\n\tif l == nil {\n\t\treturn r\n\t}\n\tif r == nil {\n\t\treturn l\n\t}\n\
+        \tif l.priority > r.priority {\n\t\tl.right = merge(l.right, r)\n\t\tl.update()\n\
+        \t\treturn l\n\t} else {\n\t\tr.left = merge(l, r.left)\n\t\tr.update()\n\t\t\
+        return r\n\t}\n}\n\nfunc minimumCost(nums []int, k int, dist int) int64 {\n\t\
+        n := len(nums)\n\tm := k - 2\n\tvar root *TreapNode\n\n\tadd := func(val int)\
+        \ {\n\t\tl, r := splitByValue(root, val)\n\t\troot = merge(merge(l, newNode(val)),\
+        \ r)\n\t}\n\tremove := func(val int) {\n\t\tl, r := splitByValue(root, val-1)\n\
+        \t\tmid, rr := splitByValue(r, val)\n\t\t_, rest := splitBySize(mid, 1)\n\t\t\
+        root = merge(merge(l, rest), rr)\n\t}\n\tsumSmallest := func(count int) int64\
+        \ {\n\t\tif count <= 0 {\n\t\t\treturn 0\n\t\t}\n\t\tl, r := splitBySize(root,\
+        \ count)\n\t\tres := l.sum\n\t\troot = merge(l, r)\n\t\treturn res\n\t}\n\n\t\
+        limit := 1 + dist\n\tif n-1 < limit {\n\t\tlimit = n - 1\n\t}\n\tfor j := 2;\
+        \ j <= limit; j++ {\n\t\tadd(nums[j])\n\t}\n\n\tminCost := int64(nums[0]) +\
+        \ int64(nums[1]) + sumSmallest(m)\n\tfor i := 2; i <= n-k+1; i++ {\n\t\tremove(nums[i])\n\
+        \t\tif i+dist < n {\n\t\t\tadd(nums[i+dist])\n\t\t}\n\t\tcurr := int64(nums[0])\
+        \ + int64(nums[i]) + sumSmallest(m)\n\t\tif curr < minCost {\n\t\t\tminCost\
+        \ = curr\n\t\t}\n\t}\n\treturn minCost\n}"
+      ruby: '// Generation failed for Ruby
+
+        // Reason: Parsing failed'
+      scala: '// Generation failed for Scala
+
+        // Reason: Parsing failed'
+      rust: '// Generation failed for Rust
+
+        // Reason: Parsing failed'
+      racket: '// Generation failed for Racket
+
+        // Reason: Parsing failed'
+      erlang: '// Generation failed for Erlang
+
+        // Reason: Parsing failed'
+      elixir: '// Generation failed for Elixir
+
+        // Reason: Parsing failed'
+    approach: 'The problem asks to find the minimum cost to divide an array into $k$
+      contiguous subarrays. The cost is the sum of the first elements of these subarrays.
+      Given the condition that the difference between the starting index of the second
+      and the $k$-th subarray is at most `dist`, the problem reduces to picking $k-1$
+      indices $i_1, i_2, \dots, i_{k-1}$ such that $1 \le i_1 < i_2 < \dots < i_{k-1}
+      \le n-1$ and $i_{k-1} - i_1 \le dist$. The total cost is $\text{nums}[0] + \text{nums}[i_1]
+      + \sum_{j=2}^{k-1} \text{nums}[i_j]$. For a fixed $i_1$, to minimize this sum,
+      we must pick the $k-2$ smallest elements from the range of indices $(i_1, i_1
+      + dist]$ that are within the bounds of the array.
 
 
-      To efficiently solve the sliding window smallest sum problem, we use coordinate
-      compression on the values in $nums[1 \dots n-1]$ and maintain a Fenwick tree (Binary
-      Indexed Tree) that stores frequencies and sums of values currently in the window.
-      For each window, we perform a binary lifting search on the Fenwick tree to find
-      the sum of the $k-1$ smallest elements in $O(\log n)$ time. The window is updated
-      by adding the entering element and removing the exiting element as it slides from
-      index $1$ to $n-1$, resulting in an overall time complexity of $O(n \log n)$.'
-    time_complexity: O(n log n) because we perform coordinate compression in O(n log
-      n), and then process n elements through a sliding window where each insertion,
-      deletion, and M-smallest sum query takes O(log n) time using a Fenwick tree and
-      binary lifting.
-    space_complexity: O(n) to store the Fenwick trees (frequency and sum), the coordinate
-      compression map, and the array of unique values.
-    elapsed_time: 489.08460903167725
+      We utilize a sliding window approach as $i_1$ moves from $1$ to $n-k+1$. The candidate
+      pool for the remaining $k-2$ indices is the window of elements $\text{nums}[i_1+1
+      \dots \min(n-1, i_1+dist)]$. To efficiently maintain and query the sum of the
+      $k-2$ smallest elements in this sliding window, we use different data structures
+      depending on the language''s capabilities. In C++ and Java, we use multisets or
+      TreeMaps. In languages like C, Python, and JavaScript, we use coordinate compression
+      combined with a Binary Indexed Tree (Fenwick Tree) to perform $O(\log N)$ updates
+      and $O(\log N)$ queries using binary lifting to find the $k$-th smallest prefix
+      sum. This ensures an overall time complexity of $O(n \log n)$.'
+    time_complexity: O(n \log n) where n is the length of the array. Sorting for coordinate
+      compression takes $O(n \log n)$, and the sliding window iterates through the array
+      once, with each update and query on the Fenwick Tree or Balanced BST taking $O(\log
+      n)$.
+    space_complexity: O(n) to store the Fenwick tree or other data structures, the coordinate
+      compression mapping, and the input array.
+    elapsed_time: 422.7920169830322
     model: gemini-3-flash-preview
-    generated_at: '2026-02-02 01:32:47 '
+    generated_at: '2026-02-04 05:34:29 '
 ---
 
 ## Problem #3013: Divide an Array Into Subarrays With Minimum Cost II
@@ -472,9 +520,9 @@ It can be shown that there is no possible way to divide nums into 3 subarrays at
 
 ### Approach
 
-The problem asks for the minimum sum of $k$ subarrays' costs, which is equivalent to $nums[0]$ plus the sum of the $k-1$ smallest elements chosen from $nums[1 \dots n-1]$, such that the index difference between the first and last chosen elements is at most $dist$. This constraint implies that we are looking for a window of indices $[i_1, i_{k-1}]$ such that $i_{k-1} - i_1 \le dist$. Such a set of indices is always contained within some window of fixed size $dist+1$. Therefore, the problem reduces to finding the minimum sum of $k-1$ smallest elements within any sliding window of size $dist+1$ in $nums[1 \dots n-1]$.
+The problem asks to find the minimum cost to divide an array into $k$ contiguous subarrays. The cost is the sum of the first elements of these subarrays. Given the condition that the difference between the starting index of the second and the $k$-th subarray is at most `dist`, the problem reduces to picking $k-1$ indices $i_1, i_2, \dots, i_{k-1}$ such that $1 \le i_1 < i_2 < \dots < i_{k-1} \le n-1$ and $i_{k-1} - i_1 \le dist$. The total cost is $\text{nums}[0] + \text{nums}[i_1] + \sum_{j=2}^{k-1} \text{nums}[i_j]$. For a fixed $i_1$, to minimize this sum, we must pick the $k-2$ smallest elements from the range of indices $(i_1, i_1 + dist]$ that are within the bounds of the array.
 
-To efficiently solve the sliding window smallest sum problem, we use coordinate compression on the values in $nums[1 \dots n-1]$ and maintain a Fenwick tree (Binary Indexed Tree) that stores frequencies and sums of values currently in the window. For each window, we perform a binary lifting search on the Fenwick tree to find the sum of the $k-1$ smallest elements in $O(\log n)$ time. The window is updated by adding the entering element and removing the exiting element as it slides from index $1$ to $n-1$, resulting in an overall time complexity of $O(n \log n)$.
+We utilize a sliding window approach as $i_1$ moves from $1$ to $n-k+1$. The candidate pool for the remaining $k-2$ indices is the window of elements $\text{nums}[i_1+1 \dots \min(n-1, i_1+dist)]$. To efficiently maintain and query the sum of the $k-2$ smallest elements in this sliding window, we use different data structures depending on the language's capabilities. In C++ and Java, we use multisets or TreeMaps. In languages like C, Python, and JavaScript, we use coordinate compression combined with a Binary Indexed Tree (Fenwick Tree) to perform $O(\log N)$ updates and $O(\log N)$ queries using binary lifting to find the $k$-th smallest prefix sum. This ensures an overall time complexity of $O(n \log n)$.
 
 ### Code
 
@@ -524,8 +572,55 @@ To efficiently solve the sliding window smallest sum problem, we use coordinate 
 
 {% highlight cpp %}
 {% raw %}
-// Generation failed for C++
-// Reason: Parsing failed
+class Solution {
+public:
+    long long minimumCost(vector<int>& nums, int k, int dist) {
+        int n = nums.size();
+        multiset<int> small, large;
+        long long small_sum = 0;
+        int k_minus_2 = k - 2;
+
+        auto add = [&](int val) {
+            small.insert(val);
+            small_sum += val;
+            if (small.size() > k_minus_2) {
+                auto it = prev(small.end());
+                int v = *it;
+                small_sum -= v;
+                large.insert(v);
+                small.erase(it);
+            }
+        };
+
+        auto remove = [&](int val) {
+            auto it = small.find(val);
+            if (it != small.end()) {
+                small_sum -= val;
+                small.erase(it);
+                if (!large.empty()) {
+                    auto it2 = large.begin();
+                    int v = *it2;
+                    small_sum += v;
+                    small.insert(v);
+                    large.erase(it2);
+                }
+            } else {
+                large.erase(large.find(val));
+            }
+        };
+
+        for (int i = 2; i <= 1 + dist && i < n; i++) add(nums[i]);
+        long long ans = (long long)nums[0] + nums[1] + small_sum;
+
+        for (int i1 = 2; i1 <= n - k + 1; i1++) {
+            remove(nums[i1]);
+            if (i1 + dist < n) add(nums[i1 + dist]);
+            ans = min(ans, (long long)nums[0] + nums[i1] + small_sum);
+        }
+
+        return ans;
+    }
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -535,8 +630,64 @@ To efficiently solve the sliding window smallest sum problem, we use coordinate 
 
 {% highlight java %}
 {% raw %}
-// Generation failed for Java
-// Reason: Parsing failed
+import java.util.*;
+
+class Solution {
+    private TreeMap<Integer, Integer> small = new TreeMap<>();
+    private TreeMap<Integer, Integer> large = new TreeMap<>();
+    private int smallCount = 0;
+    private long smallSum = 0;
+
+    public long minimumCost(int[] nums, int k, int dist) {
+        int n = nums.length;
+        int k2 = k - 2;
+        for (int i = 2; i <= 1 + dist && i < n; i++) add(nums[i], k2);
+        long ans = (long) nums[0] + nums[1] + smallSum;
+
+        for (int i1 = 2; i1 <= n - k + 1; i1++) {
+            remove(nums[i1], k2);
+            if (i1 + dist < n) add(nums[i1 + dist], k2);
+            ans = Math.min(ans, (long) nums[0] + nums[i1] + smallSum);
+        }
+        return ans;
+    }
+
+    private void add(int val, int k2) {
+        small.put(val, small.getOrDefault(val, 0) + 1);
+        smallSum += val;
+        smallCount++;
+        if (smallCount > k2) {
+            int last = small.lastKey();
+            smallSum -= last;
+            removeOne(small, last);
+            smallCount--;
+            large.put(last, large.getOrDefault(last, 0) + 1);
+        }
+    }
+
+    private void remove(int val, int k2) {
+        if (small.containsKey(val)) {
+            removeOne(small, val);
+            smallSum -= val;
+            smallCount--;
+            if (!large.isEmpty()) {
+                int first = large.firstKey();
+                small.put(first, small.getOrDefault(first, 0) + 1);
+                smallSum += first;
+                smallCount++;
+                removeOne(large, first);
+            }
+        } else {
+            removeOne(large, val);
+        }
+    }
+
+    private void removeOne(TreeMap<Integer, Integer> map, int val) {
+        int count = map.get(val);
+        if (count == 1) map.remove(val);
+        else map.put(val, count - 1);
+    }
+}
 {% endraw %}
 {% endhighlight %}
 
@@ -546,8 +697,46 @@ To efficiently solve the sliding window smallest sum problem, we use coordinate 
 
 {% highlight python %}
 {% raw %}
-// Generation failed for Python
-// Reason: Parsing failed
+class Solution(object):
+    def minimumCost(self, nums, k, dist):
+        n = len(nums)
+        k_small = k - 2
+        unique_vals = sorted(list(set(nums[1:])))
+        val_map = {v: i + 1 for i, v in enumerate(unique_vals)}
+        n_uniq = len(unique_vals)
+        bit_cnt = [0] * (n_uniq + 1)
+        bit_sum = [0] * (n_uniq + 1)
+
+        def update(val, delta):
+            idx = val_map[val]
+            s = val * delta
+            while idx <= n_uniq:
+                bit_cnt[idx] += delta
+                bit_sum[idx] += s
+                idx += idx & -idx
+
+        def query(target):
+            pos = 0
+            cnt = 0
+            sm = 0
+            for i in range(n_uniq.bit_length(), -1, -1):
+                pw = 1 << i
+                if pos + pw <= n_uniq and cnt + bit_cnt[pos + pw] < target:
+                    pos += pw
+                    cnt += bit_cnt[pos]
+                    sm += bit_sum[pos]
+            return sm + (target - cnt) * unique_vals[pos]
+
+        for i in range(2, min(n, 2 + dist)):
+            update(nums[i], 1)
+        ans = nums[0] + nums[1] + query(k_small)
+
+        for i1 in range(2, n - k + 2):
+            update(nums[i1], -1)
+            if i1 + dist < n:
+                update(nums[i1 + dist], 1)
+            ans = min(ans, nums[0] + nums[i1] + query(k_small))
+        return ans
 {% endraw %}
 {% endhighlight %}
 
@@ -557,8 +746,46 @@ To efficiently solve the sliding window smallest sum problem, we use coordinate 
 
 {% highlight python %}
 {% raw %}
-// Generation failed for Python3
-// Reason: Parsing failed
+class Solution:
+    def minimumCost(self, nums: List[int], k: int, dist: int) -> int:
+        n = len(nums)
+        k_small = k - 2
+        unique_vals = sorted(list(set(nums[1:])))
+        val_map = {v: i + 1 for i, v in enumerate(unique_vals)}
+        n_uniq = len(unique_vals)
+        bit_cnt = [0] * (n_uniq + 1)
+        bit_sum = [0] * (n_uniq + 1)
+
+        def update(val, delta):
+            idx = val_map[val]
+            s = val * delta
+            while idx <= n_uniq:
+                bit_cnt[idx] += delta
+                bit_sum[idx] += s
+                idx += idx & -idx
+
+        def query(target):
+            pos = 0
+            cnt = 0
+            sm = 0
+            for i in range(n_uniq.bit_length(), -1, -1):
+                pw = 1 << i
+                if pos + pw <= n_uniq and cnt + bit_cnt[pos + pw] < target:
+                    pos += pw
+                    cnt += bit_cnt[pos]
+                    sm += bit_sum[pos]
+            return sm + (target - cnt) * unique_vals[pos]
+
+        for i in range(2, min(n, 2 + dist)):
+            update(nums[i], 1)
+        ans = nums[0] + nums[1] + query(k_small)
+
+        for i1 in range(2, n - k + 2):
+            update(nums[i1], -1)
+            if i1 + dist < n:
+                update(nums[i1 + dist], 1)
+            ans = min(ans, nums[0] + nums[i1] + query(k_small))
+        return ans
 {% endraw %}
 {% endhighlight %}
 
@@ -568,8 +795,80 @@ To efficiently solve the sliding window smallest sum problem, we use coordinate 
 
 {% highlight c %}
 {% raw %}
-// Generation failed for C
-// Reason: Parsing failed
+#include <stdlib.h>
+#include <string.h>
+
+int compare_ints(const void* a, const void* b) {
+    int arg1 = *(const int*)a;
+    int arg2 = *(const int*)b;
+    if (arg1 < arg2) return -1;
+    if (arg1 > arg2) return 1;
+    return 0;
+}
+
+long long bit_cnt[100005], bit_sum[100005];
+int num_uniq;
+
+void update(int idx, int delta, int val, int n) {
+    long long s = (long long)val * delta;
+    for (; idx <= n; idx += idx & -idx) {
+        bit_cnt[idx] += delta;
+        bit_sum[idx] += s;
+    }
+}
+
+long long query(int k, int* unique_vals) {
+    int pos = 0;
+    long long cnt = 0, sum = 0;
+    for (int i = 1 << 17; i > 0; i >>= 1) {
+        if (pos + i <= num_uniq && cnt + bit_cnt[pos + i] < k) {
+            pos += i;
+            cnt += bit_cnt[pos];
+            sum += bit_sum[pos];
+        }
+    }
+    return sum + (long long)(k - cnt) * unique_vals[pos];
+}
+
+long long minimumCost(int* nums, int n, int k, int dist) {
+    int* sorted_nums = (int*)malloc((n - 1) * sizeof(int));
+    for (int i = 0; i < n - 1; i++) sorted_nums[i] = nums[i + 1];
+    qsort(sorted_nums, n - 1, sizeof(int), compare_ints);
+
+    int* unique_vals = (int*)malloc((n - 1) * sizeof(int));
+    num_uniq = 0;
+    if (n > 1) unique_vals[num_uniq++] = sorted_nums[0];
+    for (int i = 1; i < n - 1; i++) {
+        if (sorted_nums[i] != sorted_nums[i - 1]) unique_vals[num_uniq++] = sorted_nums[i];
+    }
+
+    memset(bit_cnt, 0, sizeof(bit_cnt));
+    memset(bit_sum, 0, sizeof(bit_sum));
+
+    int get_rank(int val) {
+        int l = 0, r = num_uniq - 1;
+        while (l <= r) {
+            int mid = l + (r - l) / 2;
+            if (unique_vals[mid] == val) return mid + 1;
+            if (unique_vals[mid] < val) l = mid + 1;
+            else r = mid - 1;
+        }
+        return -1;
+    }
+
+    for (int i = 2; i <= 1 + dist && i < n; i++) update(get_rank(nums[i]), 1, nums[i], num_uniq);
+    long long ans = (long long)nums[0] + nums[1] + query(k - 2, unique_vals);
+
+    for (int i1 = 2; i1 <= n - k + 1; i1++) {
+        update(get_rank(nums[i1]), -1, nums[i1], num_uniq);
+        if (i1 + dist < n) update(get_rank(nums[i1 + dist]), 1, nums[i1 + dist], num_uniq);
+        long long cur = (long long)nums[0] + nums[i1] + query(k - 2, unique_vals);
+        if (cur < ans) ans = cur;
+    }
+
+    free(sorted_nums); free(unique_vals);
+    return ans;
+}
 {% endraw %}
 {% endhighlight %}
 
@@ -579,8 +878,55 @@ To efficiently solve the sliding window smallest sum problem, we use coordinate 
 
 {% highlight csharp %}
 {% raw %}
-// Generation failed for C#
-// Reason: Parsing failed
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public class Solution {
+    public long MinimumCost(int[] nums, int k, int dist) {
+        int n = nums.Length;
+        int k2 = k - 2;
+        SortedSet<(int val, int idx)> small = new SortedSet<(int val, int idx)>();
+        SortedSet<(int val, int idx)> large = new SortedSet<(int val, int idx)>();
+        long smallSum = 0;
+
+        void Add(int val, int i) {
+            small.Add((val, i));
+            smallSum += val;
+            if (small.Count > k2) {
+                var last = small.Max;
+                smallSum -= last.val;
+                small.Remove(last);
+                large.Add(last);
+            }
+        }
+
+        void Remove(int val, int i) {
+            if (small.Contains((val, i))) {
+                small.Remove((val, i));
+                smallSum -= val;
+                if (large.Count > 0) {
+                    var first = large.Min;
+                    smallSum += first.val;
+                    small.Add(first);
+                    large.Remove(first);
+                }
+            } else {
+                large.Remove((val, i));
+            }
+        }
+
+        for (int i = 2; i <= 1 + dist && i < n; i++) Add(nums[i], i);
+        long ans = (long)nums[0] + nums[1] + smallSum;
+
+        for (int i1 = 2; i1 <= n - k + 1; i1++) {
+            Remove(nums[i1], i1);
+            if (i1 + dist < n) Add(nums[i1 + dist], i1 + dist);
+            ans = Math.min(ans, (long)nums[0] + nums[i1] + smallSum);
+        }
+        return ans;
+    }
+}
 {% endraw %}
 {% endhighlight %}
 
@@ -590,8 +936,55 @@ To efficiently solve the sliding window smallest sum problem, we use coordinate 
 
 {% highlight javascript %}
 {% raw %}
-// Generation failed for JavaScript
-// Reason: Parsing failed
+/**
+ * @param {number[]} nums
+ * @param {number} k
+ * @param {number} dist
+ * @return {number}
+ */
+var minimumCost = function(nums, k, dist) {
+    const n = nums.length;
+    const k2 = k - 2;
+    const uniqueVals = Array.from(new Set(nums.slice(1))).sort((a, b) => a - b);
+    const valMap = new Map();
+    uniqueVals.forEach((v, i) => valMap.set(v, i + 1));
+    const nUniq = uniqueVals.length;
+    const bitCnt = new Float64Array(nUniq + 1);
+    const bitSum = new Float64Array(nUniq + 1);
+
+    function update(val, delta) {
+        let idx = valMap.get(val);
+        const s = val * delta;
+        while (idx <= nUniq) {
+            bitCnt[idx] += delta;
+            bitSum[idx] += s;
+            idx += idx & -idx;
+        }
+    }
+
+    function query(target) {
+        let pos = 0, cnt = 0, sm = 0;
+        for (let i = Math.floor(Math.log2(nUniq)); i >= 0; i--) {
+            const pw = 1 << i;
+            if (pos + pw <= nUniq && cnt + bitCnt[pos + pw] < target) {
+                pos += pw;
+                cnt += bitCnt[pos];
+                sm += bitSum[pos];
+            }
+        }
+        return sm + (target - cnt) * uniqueVals[pos];
+    }
+
+    for (let i = 2; i <= 1 + dist && i < n; i++) update(nums[i], 1);
+    let ans = nums[0] + nums[1] + query(k2);
+
+    for (let i1 = 2; i1 <= n - k + 1; i1++) {
+        update(nums[i1], -1);
+        if (i1 + dist < n) update(nums[i1 + dist], 1);
+        ans = Math.min(ans, nums[0] + nums[i1] + query(k2));
+    }
+    return ans;
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -601,58 +994,113 @@ To efficiently solve the sliding window smallest sum problem, we use coordinate 
 
 {% highlight typescript %}
 {% raw %}
+class TreapNode {
+  value: number;
+  priority: number;
+  size: number;
+  sum: number;
+  left: TreapNode | null = null;
+  right: TreapNode | null = null;
+  constructor(value: number) {
+    this.value = value;
+    this.priority = Math.random();
+    this.size = 1;
+    this.sum = value;
+  }
+}
+
+function getSize(node: TreapNode | null): number {
+  return node ? node.size : 0;
+}
+
+function getSum(node: TreapNode | null): number {
+  return node ? node.sum : 0;
+}
+
+function update(node: TreapNode | null) {
+  if (node) {
+    node.size = 1 + getSize(node.left) + getSize(node.right);
+    node.sum = node.value + getSum(node.left) + getSum(node.right);
+  }
+}
+
+function splitBySize(node: TreapNode | null, k: number): [TreapNode | null, TreapNode | null] {
+  if (!node) return [null, null];
+  const leftSize = getSize(node.left);
+  if (leftSize >= k) {
+    const [left, right] = splitBySize(node.left, k);
+    node.left = right;
+    update(node);
+    return [left, node];
+  } else {
+    const [left, right] = splitBySize(node.right, k - leftSize - 1);
+    node.right = left;
+    update(node);
+    return [node, right];
+  }
+}
+
+function splitByValue(node: TreapNode | null, value: number): [TreapNode | null, TreapNode | null] {
+  if (!node) return [null, null];
+  if (node.value <= value) {
+    const [l, r] = splitByValue(node.right, value);
+    node.right = l;
+    update(node);
+    return [node, r];
+  } else {
+    const [l, r] = splitByValue(node.left, value);
+    node.left = r;
+    update(node);
+    return [l, node];
+  }
+}
+
+function merge(left: TreapNode | null, right: TreapNode | null): TreapNode | null {
+  if (!left || !right) return left || right;
+  if (left.priority > right.priority) {
+    left.right = merge(left.right, right);
+    update(left);
+    return left;
+  } else {
+    right.left = merge(left, right.left);
+    update(right);
+    return right;
+  }
+}
+
 function minimumCost(nums: number[], k: number, dist: number): number {
-    const n = nums.length;
-    const sub = nums.slice(1);
-    const sortedSub = [...sub].sort((a, b) => a - b);
-    const unique: number[] = [];
-    if (sortedSub.length > 0) {
-        unique.push(sortedSub[0]);
-        for (let i = 1; i < sortedSub.length; i++) {
-            if (sortedSub[i] !== sortedSub[i - 1]) unique.push(sortedSub[i]);
-        }
+  const n = nums.length;
+  const m = k - 2;
+  let root: TreapNode | null = null;
+  for (let j = 2; j <= Math.min(1 + dist, n - 1); j++) {
+    root = merge(root, null);
+    const [l, r] = splitByValue(root, nums[j]);
+    root = merge(merge(l, new TreapNode(nums[j])), r);
+  }
+
+  const getSmallestSum = (k: number): number => {
+    if (k === 0) return 0;
+    const [l, r] = splitBySize(root, k);
+    const res = getSum(l);
+    root = merge(l, r);
+    return res;
+  };
+
+  let minCost = nums[0] + nums[1] + getSmallestSum(m);
+
+  for (let i = 2; i <= n - k + 1; i++) {
+    let [l, r] = splitByValue(root, nums[i] - 1);
+    let [mid, rr] = splitByValue(r, nums[i]);
+    let [one, rest] = splitBySize(mid, 1);
+    root = merge(l, merge(rest, rr));
+    if (i + dist < n) {
+      let [l2, r2] = splitByValue(root, nums[i + dist]);
+      root = merge(merge(l2, new TreapNode(nums[i + dist])), r2);
     }
+    minCost = Math.min(minCost, nums[0] + nums[i] + getSmallestSum(m));
+  }
 
-    const uSize = unique.length;
-    const map = new Map<number, number>();
-    unique.forEach((v, i) => map.set(v, i + 1));
-
-    const countTree = new Float64Array(uSize + 1);
-    const sumTree = new Float64Array(uSize + 1);
-
-    function update(i: number, delta: number, val: number) {
-        for (; i <= uSize; i += i & -i) {
-            countTree[i] += delta;
-            sumTree[i] += val;
-        }
-    }
-
-    function query(m: number): number {
-        let idx = 0, currC = 0, currS = 0;
-        let logN = uSize > 0 ? Math.floor(Math.log2(uSize)) : 0;
-        for (let i = logN; i >= 0; i--) {
-            let nextIdx = idx + (1 << i);
-            if (nextIdx <= uSize && currC + countTree[nextIdx] < m) {
-                idx = nextIdx;
-                currC += countTree[idx];
-                currS += sumTree[idx];
-            }
-        }
-        return currS + (m - currC) * unique[idx];
-    }
-
-    for (let i = 1; i <= dist + 1; i++) {
-        update(map.get(nums[i])!, 1, nums[i]);
-    }
-
-    let minSum = query(k - 1);
-    for (let i = dist + 2; i < n; i++) {
-        update(map.get(nums[i - dist - 1])!, -1, -nums[i - dist - 1]);
-        update(map.get(nums[i])!, 1, nums[i]);
-        minSum = Math.min(minSum, query(k - 1));
-    }
-
-    return nums[0] + minSum;
+  return minCost;
 }
 {% endraw %}
 {% endhighlight %}
@@ -666,50 +1114,101 @@ function minimumCost(nums: number[], k: number, dist: number): number {
 class Solution {
     function minimumCost($nums, $k, $dist) {
         $n = count($nums);
-        $sub = array_slice($nums, 1);
-        $unique = array_unique($sub);
-        sort($unique);
-        $unique = array_values($unique);
-        $uSize = count($unique);
-        $map = array_flip($unique);
-
-        $countTree = array_fill(0, $uSize + 1, 0);
-        $sumTree = array_fill(0, $uSize + 1, 0);
-
-        $update = function($i, $delta, $val) use (&$countTree, &$sumTree, $uSize) {
-            $i++;
-            for (; $i <= $uSize; $i += $i & -$i) {
-                $countTree[$i] += $delta;
-                $sumTree[$i] += $val;
-            }
-        };
-
-        $query = function($m) use (&$countTree, &$sumTree, $unique, $uSize) {
-            $idx = 0; $currC = 0; $currS = 0;
-            $logN = $uSize > 0 ? (int)log($uSize, 2) : 0;
-            for ($i = $logN; $i >= 0; $i--) {
-                $nextIdx = $idx + (1 << $i);
-                if ($nextIdx <= $uSize && $currC + $countTree[$nextIdx] < $m) {
-                    $idx = $nextIdx;
-                    $currC += $countTree[$idx];
-                    $currS += $sumTree[$idx];
-                }
-            }
-            return $currS + ($m - $currC) * $unique[$idx];
-        };
-
-        for ($i = 1; $i <= $dist + 1; $i++) {
-            $update($map[$nums[$i]], 1, $nums[$i]);
+        $m = $k - 2;
+        $root = null;
+        for ($j = 2; $j <= min(1 + $dist, $n - 1); $j++) {
+            $root = $this->add($root, $nums[$j]);
         }
-
-        $minSum = $query($k - 1);
-        for ($i = $dist + 2; $i < $n; $i++) {
-            $update($map[$nums[$i - $dist - 1]], -1, -$nums[$i - $dist - 1]);
-            $update($map[$nums[$i]], 1, $nums[$i]);
-            $minSum = min($minSum, $query($k - 1));
+        $minCost = $nums[0] + $nums[1] + $this->sumOfSmallest($root, $m);
+        for ($i = 2; $i <= $n - $k + 1; $i++) {
+            $root = $this->remove($root, $nums[$i]);
+            if ($i + $dist < $n) {
+                $root = $this->add($root, $nums[$i + $dist]);
+            }
+            $currentCost = $nums[0] + $nums[$i] + $this->sumOfSmallest($root, $m);
+            if ($currentCost < $minCost) {
+                $minCost = $currentCost;
+            }
         }
+        return $minCost;
+    }
 
-        return $nums[0] + $minSum;
+    private function add($root, $val) {
+        [$l, $r] = $this->splitByValue($root, $val);
+        return $this->merge($this->merge($l, new TreapNode($val)), $r);
+    }
+
+    private function remove($root, $val) {
+        [$l, $r] = $this->splitByValue($root, $val - 1);
+        [$mid, $rr] = $this->splitByValue($r, $val);
+        [$one, $rest] = $this->splitBySize($mid, 1);
+        return $this->merge($this->merge($l, $rest), $rr);
+    }
+
+    private function sumOfSmallest(&$root, $k) {
+        if ($k <= 0) return 0;
+        [$l, $r] = $this->splitBySize($root, $k);
+        $res = $l ? $l->sum : 0;
+        $root = $this->merge($l, $r);
+        return $res;
+    }
+
+    private function splitByValue($node, $val) {
+        if (!$node) return [null, null];
+        if ($node->value <= $val) {
+            [$l, $r] = $this->splitByValue($node->right, $val);
+            $node->right = $l;
+            $node->update();
+            return [$node, $r];
+        } else {
+            [$l, $r] = $this->splitByValue($node->left, $val);
+            $node->left = $r;
+            $node->update();
+            return [$l, $node];
+        }
+    }
+
+    private function splitBySize($node, $k) {
+        if (!$node) return [null, null];
+        $leftSize = $node->left ? $node->left->size : 0;
+        if ($leftSize >= $k) {
+            [$l, $r] = $this->splitBySize($node->left, $k);
+            $node->left = $r;
+            $node->update();
+            return [$l, $node];
+        } else {
+            [$l, $r] = $this->splitBySize($node->right, $k - $leftSize - 1);
+            $node->right = $l;
+            $node->update();
+            return [$node, $r];
+        }
+    }
+
+    private function merge($l, $r) {
+        if (!$l || !$r) return $l ?: $r;
+        if ($l->priority > $r->priority) {
+            $l->right = $this->merge($l->right, $r);
+            $l->update();
+            return $l;
+        } else {
+            $r->left = $this->merge($l, $r->left);
+            $r->update();
+            return $r;
+        }
+    }
+}
+
+class TreapNode {
+    public $value, $priority, $size, $sum, $left, $right;
+    function __construct($val) {
+        $this->value = $val;
+        $this->priority = mt_rand(0, 1000000000);
+        $this->size = 1;
+        $this->sum = $val;
+    }
+    function update() {
+        $this->size = 1 + ($this->left ? $this->left->size : 0) + ($this->right ? $this->right->size : 0);
+        $this->sum = $this->value + ($this->left ? $this->left->sum : 0) + ($this->right ? $this->right->sum : 0);
     }
 }
 {% endraw %}
@@ -722,56 +1221,111 @@ class Solution {
 {% highlight swift %}
 {% raw %}
 class Solution {
+    class TreapNode {
+        var value: Int
+        var priority: Int
+        var size: Int
+        var sum: Int
+        var left: TreapNode? = nil
+        var right: TreapNode? = nil
+        init(_ val: Int) {
+            self.value = val
+            self.priority = Int.random(in: 0...Int.max)
+            self.size = 1
+            self.sum = val
+        }
+        func update() {
+            size = 1 + (left?.size ?? 0) + (right?.size ?? 0)
+            sum = value + (left?.sum ?? 0) + (right?.sum ?? 0)
+        }
+    }
+
+    func splitByValue(_ node: TreapNode?, _ val: Int) -> (TreapNode?, TreapNode?) {
+        guard let node = node else { return (nil, nil) }
+        if node.value <= val {
+            let (l, r) = splitByValue(node.right, val)
+            node.right = l
+            node.update()
+            return (node, r)
+        } else {
+            let (l, r) = splitByValue(node.left, val)
+            node.left = r
+            node.update()
+            return (l, node)
+        }
+    }
+
+    func splitBySize(_ node: TreapNode?, _ k: Int) -> (TreapNode?, TreapNode?) {
+        guard let node = node else { return (nil, nil) }
+        let leftSize = node.left?.size ?? 0
+        if leftSize >= k {
+            let (l, r) = splitBySize(node.left, k)
+            node.left = r
+            node.update()
+            return (l, node)
+        } else {
+            let (l, r) = splitBySize(node.right, k - leftSize - 1)
+            node.right = l
+            node.update()
+            return (node, r)
+        }
+    }
+
+    func merge(_ l: TreapNode?, _ r: TreapNode?) -> TreapNode? {
+        if l == nil { return r }
+        if r == nil { return l }
+        if l!.priority > r!.priority {
+            l!.right = merge(l!.right, r)
+            l!.update()
+            return l
+        } else {
+            r!.left = merge(l, r!.left)
+            r!.update()
+            return r
+        }
+    }
+
     func minimumCost(_ nums: [Int], _ k: Int, _ dist: Int) -> Int {
         let n = nums.count
-        let sub = Array(nums[1...])
-        let unique = Array(Set(sub)).sorted()
-        let uSize = unique.count
-        var map = [Int: Int]()
-        for (i, v) in unique.enumerated() {
-            map[v] = i + 1
+        let m = k - 2
+        var root: TreapNode? = nil
+
+        func add(_ val: Int) {
+            let (l, r) = splitByValue(root, val)
+            root = merge(merge(l, TreapNode(val)), r)
         }
 
-        var countTree = [Int](repeating: 0, count: uSize + 1)
-        var sumTree = [Int](repeating: 0, count: uSize + 1)
+        func remove(_ val: Int) {
+            let (l, r) = splitByValue(root, val - 1)
+            let (mid, rr) = splitByValue(r, val)
+            let (_, rest) = splitBySize(mid, 1)
+            root = merge(merge(l, rest), rr)
+        }
 
-        func update(_ i: Int, _ delta: Int, _ val: Int) {
-            var idx = i
-            while idx <= uSize {
-                countTree[idx] += delta
-                sumTree[idx] += val
-                idx += idx & -idx
+        func sumOfSmallest(_ k: Int) -> Int {
+            if k <= 0 { return 0 }
+            let (l, r) = splitBySize(root, k)
+            let res = l?.sum ?? 0
+            root = merge(l, r)
+            return res
+        }
+
+        for j in 2...min(1 + dist, n - 1) {
+            add(nums[j])
+        }
+
+        var minCost = nums[0] + nums[1] + sumOfSmallest(m)
+
+        for i in 2...(n - k + 1) {
+            remove(nums[i])
+            if i + dist < n {
+                add(nums[i + dist])
             }
+            let currentCost = nums[0] + nums[i] + sumOfSmallest(m)
+            if currentCost < minCost { minCost = currentCost }
         }
 
-        func query(_ m: Int) -> Int {
-            var idx = 0, currC = 0, currS = 0
-            let logN = uSize > 0 ? Int(log2(Double(uSize))) : 0
-            for i in (0...logN).reversed() {
-                let nextIdx = idx + (1 << i)
-                if nextIdx <= uSize && currC + countTree[nextIdx] < m {
-                    idx = nextIdx
-                    currC += countTree[idx]
-                    currS += sumTree[idx]
-                }
-            }
-            return currS + (m - currC) * unique[idx]
-        }
-
-        for i in 1...(dist + 1) {
-            update(map[nums[i]]!, 1, nums[i])
-        }
-
-        var minSum = query(k - 1)
-        if dist + 2 < n {
-            for i in (dist + 2)..<n {
-                update(map[nums[i - dist - 1]]!, -1, -nums[i - dist - 1])
-                update(map[nums[i]]!, 1, nums[i])
-                minSum = min(minSum, query(k - 1))
-            }
-        }
-
-        return nums[0] + minSum
+        return minCost
     }
 }
 {% endraw %}
@@ -783,55 +1337,109 @@ class Solution {
 
 {% highlight kotlin %}
 {% raw %}
+import kotlin.math.min
+import kotlin.random.Random
+
 class Solution {
+    class TreapNode(val value: Int) {
+        val priority = Random.nextInt()
+        var size = 1
+        var sum = value.toLong()
+        var left: TreapNode? = null
+        var right: TreapNode? = null
+
+        fun update() {
+            size = 1 + (left?.size ?: 0) + (right?.size ?: 0)
+            sum = value.toLong() + (left?.sum ?: 0L) + (right?.sum ?: 0L)
+        }
+    }
+
+    private fun splitByValue(node: TreapNode?, value: Int): Pair<TreapNode?, TreapNode?> {
+        if (node == null) return null to null
+        return if (node.value <= value) {
+            val (l, r) = splitByValue(node.right, value)
+            node.right = l
+            node.update()
+            node to r
+        } else {
+            val (l, r) = splitByValue(node.left, value)
+            node.left = r
+            node.update()
+            l to node
+        }
+    }
+
+    private fun splitBySize(node: TreapNode?, k: Int): Pair<TreapNode?, TreapNode?> {
+        if (node == null) return null to null
+        val leftSize = node.left?.size ?: 0
+        return if (leftSize >= k) {
+            val (l, r) = splitBySize(node.left, k)
+            node.left = r
+            node.update()
+            l to node
+        } else {
+            val (l, r) = splitBySize(node.right, k - leftSize - 1)
+            node.right = l
+            node.update()
+            node to r
+        }
+    }
+
+    private fun merge(l: TreapNode?, r: TreapNode?): TreapNode? {
+        if (l == null) return r
+        if (r == null) return l
+        return if (l.priority > r.priority) {
+            l.right = merge(l.right, r)
+            l.update()
+            l
+        } else {
+            r.left = merge(l, r.left)
+            r.update()
+            r
+        }
+    }
+
     fun minimumCost(nums: IntArray, k: Int, dist: Int): Long {
         val n = nums.size
-        val sub = nums.copyOfRange(1, n)
-        val unique = sub.distinct().sorted()
-        val uSize = unique.size
-        val map = unique.withIndex().associate { it.value to it.index + 1 }
+        val m = k - 2
+        var root: TreapNode? = null
 
-        val countTree = LongArray(uSize + 1)
-        val sumTree = LongArray(uSize + 1)
+        fun add(val0: Int) {
+            val (l, r) = splitByValue(root, val0)
+            root = merge(merge(l, TreapNode(val0)), r)
+        }
 
-        fun update(i: Int, delta: Long, value: Long) {
-            var idx = i
-            while (idx <= uSize) {
-                countTree[idx] += delta
-                sumTree[idx] += value
-                idx += idx and -idx
+        fun remove(val0: Int) {
+            val (l, r) = splitByValue(root, val0 - 1)
+            val (mid, rr) = splitByValue(r, val0)
+            val (_, rest) = splitBySize(mid, 1)
+            root = merge(merge(l, rest), rr)
+        }
+
+        fun sumOfSmallest(k0: Int): Long {
+            if (k0 <= 0) return 0L
+            val (l, r) = splitBySize(root, k0)
+            val res = l?.sum ?: 0L
+            root = merge(l, r)
+            return res
+        }
+
+        for (j in 2..min(1 + dist, n - 1)) {
+            add(nums[j])
+        }
+
+        var minCost = nums[0].toLong() + nums[1].toLong() + sumOfSmallest(m)
+
+        for (i in 2..n - k + 1) {
+            remove(nums[i])
+            if (i + dist < n) {
+                add(nums[i + dist])
             }
+            val curr = nums[0].toLong() + nums[i].toLong() + sumOfSmallest(m)
+            if (curr < minCost) minCost = curr
         }
 
-        fun query(m: Int): Long {
-            var idx = 0
-            var currC = 0L
-            var currS = 0L
-            val logN = if (uSize > 0) 31 - Integer.numberOfLeadingZeros(uSize) else 0
-            for (i in logN downTo 0) {
-                val nextIdx = idx + (1 shl i)
-                if (nextIdx <= uSize && currC + countTree[nextIdx] < m) {
-                    idx = nextIdx
-                    currC += countTree[idx]
-                    currS += sumTree[idx]
-                }
-            }
-            return currS + (m - currC) * unique[idx].toLong()
-        }
-
-        for (i in 1..dist + 1) {
-            update(map[nums[i]]!!, 1L, nums[i].toLong())
-        }
-
-        var minSum = query(k - 1)
-        for (i in dist + 2 until n) {
-            update(map[nums[i - dist - 1]]!!, -1L, -nums[i - dist - 1].toLong())
-            update(map[nums[i]]!!, 1L, nums[i].toLong())
-            val current = query(k - 1)
-            if (current < minSum) minSum = current
-        }
-
-        return nums[0].toLong() + minSum
+        return minCost
     }
 }
 {% endraw %}
@@ -845,55 +1453,106 @@ class Solution {
 {% raw %}
 import 'dart:math';
 
+class TreapNode {
+  int value;
+  int priority;
+  int size = 1;
+  int sum;
+  TreapNode? left, right;
+
+  TreapNode(this.value) : priority = Random().nextInt(1 << 31), sum = value;
+
+  void update() {
+    size = 1 + (left?.size ?? 0) + (right?.size ?? 0);
+    sum = value + (left?.sum ?? 0) + (right?.sum ?? 0);
+  }
+}
+
 class Solution {
+  TreapNode? merge(TreapNode? l, TreapNode? r) {
+    if (l == null) return r;
+    if (r == null) return l;
+    if (l.priority > r.priority) {
+      l.right = merge(l.right, r);
+      l.update();
+      return l;
+    } else {
+      r.left = merge(l, r.left);
+      r.update();
+      return r;
+    }
+  }
+
+  List<TreapNode?> splitByValue(TreapNode? node, int val) {
+    if (node == null) return [null, null];
+    if (node.value <= val) {
+      var res = splitByValue(node.right, val);
+      node.right = res[0];
+      node.update();
+      return [node, res[1]];
+    } else {
+      var res = splitByValue(node.left, val);
+      node.left = res[1];
+      node.update();
+      return [res[0], node];
+    }
+  }
+
+  List<TreapNode?> splitBySize(TreapNode? node, int k) {
+    if (node == null) return [null, null];
+    int leftSize = node.left?.size ?? 0;
+    if (leftSize >= k) {
+      var res = splitBySize(node.left, k);
+      node.left = res[1];
+      node.update();
+      return [res[0], node];
+    } else {
+      var res = splitBySize(node.right, k - leftSize - 1);
+      node.right = res[0];
+      node.update();
+      return [node, res[1]];
+    }
+  }
+
   int minimumCost(List<int> nums, int k, int dist) {
     int n = nums.length;
-    List<int> sub = nums.sublist(1);
-    List<int> unique = sub.toSet().toList()..sort();
-    int uSize = unique.length;
-    Map<int, int> map = {};
-    for (int i = 0; i < uSize; i++) {
-      map[unique[i]] = i + 1;
+    int m = k - 2;
+    TreapNode? root;
+
+    TreapNode? add(TreapNode? r, int val) {
+      var parts = splitByValue(r, val);
+      return merge(merge(parts[0], TreapNode(val)), parts[1]);
     }
 
-    List<int> countTree = List.filled(uSize + 1, 0);
-    List<int> sumTree = List.filled(uSize + 1, 0);
+    TreapNode? remove(TreapNode? r, int val) {
+      var parts1 = splitByValue(r, val - 1);
+      var parts2 = splitByValue(parts1[1], val);
+      var parts3 = splitBySize(parts2[0], 1);
+      return merge(merge(parts1[0], parts3[1]), parts2[1]);
+    }
 
-    void update(int i, int delta, int val) {
-      while (i <= uSize) {
-        countTree[i] += delta;
-        sumTree[i] += val;
-        i += i & -i;
+    int sumSmallest(int count) {
+      if (count <= 0) return 0;
+      var parts = splitBySize(root, count);
+      int res = parts[0]?.sum ?? 0;
+      root = merge(parts[0], parts[1]);
+      return res;
+    }
+
+    for (int j = 2; j <= min(1 + dist, n - 1); j++) {
+      root = add(root, nums[j]);
+    }
+
+    int minCost = nums[0] + nums[1] + sumSmallest(m);
+    for (int i = 2; i <= n - k + 1; i++) {
+      root = remove(root, nums[i]);
+      if (i + dist < n) {
+        root = add(root, nums[i + dist]);
       }
+      int currentCost = nums[0] + nums[i] + sumSmallest(m);
+      if (currentCost < minCost) minCost = currentCost;
     }
-
-    int query(int m) {
-      int idx = 0, currC = 0, currS = 0;
-      int logN = uSize > 0 ? (uSize.bitLength - 1) : 0;
-      for (int i = logN; i >= 0; i--) {
-        int nextIdx = idx + (1 << i);
-        if (nextIdx <= uSize && currC + countTree[nextIdx] < m) {
-          idx = nextIdx;
-          currC += countTree[idx];
-          currS += sumTree[idx];
-        }
-      }
-      return currS + (m - currC) * unique[idx];
-    }
-
-    for (int i = 1; i <= dist + 1; i++) {
-      update(map[nums[i]]!, 1, nums[i]);
-    }
-
-    int minSum = query(k - 1);
-    for (int i = dist + 2; i < n; i++) {
-      update(map[nums[i - dist - 1]]!, -1, -nums[i - dist - 1]);
-      update(map[nums[i]]!, 1, nums[i]);
-      int current = query(k - 1);
-      if (current < minSum) minSum = current
-    }
-
-    return nums[0] + minSum;
+    return minCost;
   }
 }
 {% endraw %}
@@ -906,75 +1565,134 @@ class Solution {
 {% highlight go %}
 {% raw %}
 import (
-	"math"
-	"math/bits"
-	"sort"
+	"math/rand"
 )
+
+type TreapNode struct {
+	value, size int
+	priority    int64
+	sum         int64
+	left, right *TreapNode
+}
+
+func newNode(val int) *TreapNode {
+	return &TreapNode{value: val, size: 1, priority: rand.Int63(), sum: int64(val)}
+}
+
+func (n *TreapNode) update() {
+	n.size = 1
+	n.sum = int64(n.value)
+	if n.left != nil {
+		n.size += n.left.size
+		n.sum += n.left.sum
+	}
+	if n.right != nil {
+		n.size += n.right.size
+		n.sum += n.right.sum
+	}
+}
+
+func splitByValue(node *TreapNode, val int) (*TreapNode, *TreapNode) {
+	if node == nil {
+		return nil, nil
+	}
+	if node.value <= val {
+		l, r := splitByValue(node.right, val)
+		node.right = l
+		node.update()
+		return node, r
+	} else {
+		l, r := splitByValue(node.left, val)
+		node.left = r
+		node.update()
+		return l, node
+	}
+}
+
+func splitBySize(node *TreapNode, k int) (*TreapNode, *TreapNode) {
+	if node == nil {
+		return nil, nil
+	}
+	leftSize := 0
+	if node.left != nil {
+		leftSize = node.left.size
+	}
+	if leftSize >= k {
+		l, r := splitBySize(node.left, k)
+		node.left = r
+		node.update()
+		return l, node
+	} else {
+		l, r := splitBySize(node.right, k-leftSize-1)
+		node.right = l
+		node.update()
+		return node, r
+	}
+}
+
+func merge(l, r *TreapNode) *TreapNode {
+	if l == nil {
+		return r
+	}
+	if r == nil {
+		return l
+	}
+	if l.priority > r.priority {
+		l.right = merge(l.right, r)
+		l.update()
+		return l
+	} else {
+		r.left = merge(l, r.left)
+		r.update()
+		return r
+	}
+}
 
 func minimumCost(nums []int, k int, dist int) int64 {
 	n := len(nums)
-	sortedNums := make([]int, n-1)
-	copy(sortedNums, nums[1:])
-	sort.Ints(sortedNums)
+	m := k - 2
+	var root *TreapNode
 
-	unique := sortedNums[:0]
-	if n > 1 {
-		unique = append(unique, sortedNums[0])
-		for i := 1; i < n-1; i++ {
-		if sortedNums[i] != sortedNums[i-1] {
-				unique = append(unique, sortedNums[i])
-			}
+	add := func(val int) {
+		l, r := splitByValue(root, val)
+		root = merge(merge(l, newNode(val)), r)
+	}
+	remove := func(val int) {
+		l, r := splitByValue(root, val-1)
+		mid, rr := splitByValue(r, val)
+		_, rest := splitBySize(mid, 1)
+		root = merge(merge(l, rest), rr)
+	}
+	sumSmallest := func(count int) int64 {
+		if count <= 0 {
+			return 0
+		}
+		l, r := splitBySize(root, count)
+		res := l.sum
+		root = merge(l, r)
+		return res
+	}
+
+	limit := 1 + dist
+	if n-1 < limit {
+		limit = n - 1
+	}
+	for j := 2; j <= limit; j++ {
+		add(nums[j])
+	}
+
+	minCost := int64(nums[0]) + int64(nums[1]) + sumSmallest(m)
+	for i := 2; i <= n-k+1; i++ {
+		remove(nums[i])
+		if i+dist < n {
+			add(nums[i+dist])
+		}
+		curr := int64(nums[0]) + int64(nums[i]) + sumSmallest(m)
+		if curr < minCost {
+			minCost = curr
 		}
 	}
-	uSize := len(unique)
-	valMap := make(map[int]int)
-	for i, v := range unique {
-		valMap[v] = i + 1
-	}
-
-	countTree := make([]int64, uSize+1)
-	sumTree := make([]int64, uSize+1)
-
-	update := func(i int, delta int64, val int64) {
-		for ; i <= uSize; i += i & -i {
-			countTree[i] += delta
-			sumTree[i] += val
-		}
-	}
-
-	query := func(m int) int64 {
-		idx := 0
-		var currC, currS int64
-		logN := 0
-		if uSize > 0 {
-			logN = bits.Len(uint(uSize)) - 1
-		}
-		for i := logN; i >= 0; i-- {
-			nextIdx := idx + (1 << i)
-			if nextIdx <= uSize && currC+countTree[nextIdx] < int64(m) {
-				idx = nextIdx
-				currC += countTree[idx]
-				currS += sumTree[idx]
-			}
-		}
-		return currS + (int64(m)-currC)*int64(unique[idx])
-	}
-
-	for i := 1; i <= dist+1; i++ {
-		update(valMap[nums[i]], 1, int64(nums[i]))
-	}
-
-	minSum := query(k - 1)
-	for i := dist + 2; i < n; i++ {
-		update(valMap[nums[i-dist-1]], -1, -int64(nums[i-dist-1]))
-		update(valMap[nums[i]], 1, int64(nums[i]))
-		current := query(k - 1)
-		if current < minSum {
-			minSum = current
-		}
-	}
-
-	return int64(nums[0]) + minSum
+	return minCost
 }
 {% endraw %}
 {% endhighlight %}
@@ -985,74 +1703,8 @@ func minimumCost(nums []int, k int, dist int) int64 {
 
 {% highlight ruby %}
 {% raw %}
-def minimum_cost(nums, k, dist)
-  n = nums.length
-  m_count = k - 2
-  sorted_unique = nums.uniq.sort
-  m = sorted_unique.length
-  rank_map = {}
-  sorted_unique.each_with_index { |v, i| rank_map[v] = i + 1 }
-
-  count_bit = Array.new(m + 1, 0)
-  sum_bit = Array.new(m + 1, 0)
-
-  update = lambda do |bit, idx, delta|
-    while idx <= m
-      bit[idx] += delta
-      idx += idx & -idx
-    end
-  end
-
-  query = lambda do |bit, idx|
-    s = 0
-    while idx > 0
-      s += bit[idx]
-      idx -= idx & -idx
-    end
-    s
-  end
-
-  find_kth = lambda do |k_val|
-    idx = 0
-    p = 1
-    p *= 2 while p * 2 <= m
-    while p > 0
-      next_idx = idx + p
-      if next_idx <= m && count_bit[next_idx] < k_val
-        idx = next_idx
-        k_val -= count_bit[idx]
-      end
-      p /= 2
-    end
-    idx + 1
-  end
-
-  get_low_sum = lambda do
-    rank = find_kth.call(m_count)
-    c_prev = query.call(count_bit, rank - 1)
-    s_prev = query.call(sum_bit, rank - 1)
-    s_prev + (m_count - c_prev) * sorted_unique[rank - 1]
-  end
-
-  add = lambda { |val| r = rank_map[val]; update.call(count_bit, r, 1); update.call(sum_bit, r, val) }
-  remove = lambda { |val| r = rank_map[val]; update.call(count_bit, r, -1); update.call(sum_bit, r, -val) }
-
-  (2..[1 + dist, n - 1].min).each { |i| add.call(nums[i]) }
-
-  min_cost = 10**18
-  (1..n - k + 1).each do |i1|
-    low_sum_val = get_low_sum.call
-    current_cost = nums[0] + nums[i1] + low_sum_val
-    min_cost = [min_cost, current_cost].min
-
-    if i1 < n - k + 1
-      remove.call(nums[i1 + 1])
-      add.call(nums[i1 + 1 + dist]) if i1 + 1 + dist < n
-    end
-  end
-
-  min_cost
-end
+// Generation failed for Ruby
+// Reason: Parsing failed
 {% endraw %}
 {% endhighlight %}
 
@@ -1062,103 +1714,8 @@ end
 
 {% highlight scala %}
 {% raw %}
-import java.util.Arrays
-
-object Solution {
-  def minimumCost(nums: Array[Int], k: Int, dist: Int): Long = {
-    val n = nums.length
-    val mCount = k - 2
-    val sortedUnique = nums.distinct.sorted
-    val m = sortedUnique.length
-
-    val countBit = new Array[Int](m + 1)
-    val sumBit = new Array[Long](m + 1)
-
-    def update(bit: Array[Int], idx: Int, delta: Int): Unit = {
-      var i = idx
-      while (i <= m) {
-        bit(i) += delta
-        i += i & -i
-      }
-    }
-
-    def updateLong(bit: Array[Long], idx: Int, delta: Long): Unit = {
-      var i = idx
-      while (i <= m) {
-        bit(i) += delta
-        i += i & -i
-      }
-    }
-
-    def query(bit: Array[Int], idx: Int): Int = {
-      var i = idx
-      var s = 0
-      while (i > 0) {
-        s += bit(i)
-        i -= i & -i
-      }
-      s
-    }
-
-    def queryLong(bit: Array[Long], idx: Int): Long = {
-      var i = idx
-      var s = 0L
-      while (i > 0) {
-        s += bit(i)
-        i -= i & -i
-      }
-      s
-    }
-
-    def findKth(kVal: Int): Int = {
-      var idx = 0
-      var kv = kVal
-      var p = 1
-      while (p * 2 <= m) p *= 2
-      while (p > 0) {
-        val nextIdx = idx + p
-        if (nextIdx <= m && countBit(nextIdx) < kv) {
-          idx = nextIdx
-          kv -= countBit(idx)
-        }
-        p /= 2
-      }
-      idx + 1
-    }
-
-    def getLowSum(): Long = {
-      val rank = findKth(mCount)
-      val cPrev = query(countBit, rank - 1)
-      val sPrev = queryLong(sumBit, rank - 1)
-      sPrev + (mCount - cPrev).toLong * sortedUnique(rank - 1)
-    }
-
-    def add(valIn: Int): Unit = {
-      val r = Arrays.binarySearch(sortedUnique, valIn) + 1
-      update(countBit, r, 1)
-      updateLong(sumBit, r, valIn.toLong)
-    }
-
-    def remove(valIn: Int): Unit = {
-      val r = Arrays.binarySearch(sortedUnique, valIn) + 1
-      update(countBit, r, -1)
-      updateLong(sumBit, r, -valIn.toLong)
-    }
-
-    for (i <- 2 to Math.min(1 + dist, n - 1)) add(nums(i))
-
-    var minCost = Long.MaxValue
-    for (i1 <- 1 to n - k + 1) {
-      val lowSumVal = getLowSum()
-      minCost = Math.min(minCost, nums(0).toLong + nums(i1).toLong + lowSumVal)
-      if (i1 < n - k + 1) {
-        remove(nums(i1 + 1))
-        if (i1 + 1 + dist < n) add(nums(i1 + 1 + dist))
-      }
-    }
-    minCost
-  }
-}
+// Generation failed for Scala
+// Reason: Parsing failed
 {% endraw %}
 {% endhighlight %}
 
@@ -1168,97 +1725,8 @@ object Solution {
 
 {% highlight rust %}
 {% raw %}
-impl Solution {
-    pub fn minimum_cost(nums: Vec<i32>, k: i32, dist: i32) -> i64 {
-        let n = nums.len();
-        let m_count = k - 2;
-        let mut sorted_unique = nums.clone();
-        sorted_unique.sort();
-        sorted_unique.dedup();
-        let m = sorted_unique.len();
-
-        let mut count_bit = vec![0; m + 1];
-        let mut sum_bit = vec![0i64; m + 1];
-
-        fn update_count(bit: &mut Vec<i32>, mut idx: usize, delta: i32) {
-            let m = bit.len() - 1;
-            while idx <= m {
-                bit[idx] += delta;
-                idx += (idx as i32 & -(idx as i32)) as usize;
-            }
-        }
-
-        fn update_sum(bit: &mut Vec<i64>, mut idx: usize, delta: i64) {
-            let m = bit.len() - 1;
-            while idx <= m {
-                bit[idx] += delta;
-                idx += (idx as i32 & -(idx as i32)) as usize;
-            }
-        }
-
-        fn query_count(bit: &Vec<i32>, mut idx: usize) -> i32 {
-            let mut s = 0;
-            while idx > 0 {
-                s += bit[idx];
-                idx -= (idx as i32 & -(idx as i32)) as usize;
-            }
-            s
-        }
-
-        fn query_sum(bit: &Vec<i64>, mut idx: usize) -> i64 {
-            let mut s = 0;
-            while idx > 0 {
-                s += bit[idx];
-                idx -= (idx as i32 & -(idx as i32)) as usize;
-            }
-            s
-        }
-
-        fn find_kth(bit: &Vec<i32>, mut k_val: i32, m: usize) -> usize {
-            let mut idx = 0;
-            let mut p = 1;
-            while p * 2 <= m { p *= 2; }
-            while p > 0 {
-                let next_idx = idx + p;
-                if next_idx <= m && bit[next_idx] < k_val {
-                    idx = next_idx;
-                    k_val -= bit[idx];
-                }
-                p /= 2;
-            }
-            idx + 1
-        }
-
-        let get_rank = |val: i32| sorted_unique.binary_search(&val).unwrap() + 1;
-
-        for i in 2..=((1 + dist as usize).min(n - 1)) {
-            let r = get_rank(nums[i]);
-            update_count(&mut count_bit, r, 1);
-            update_sum(&mut sum_bit, r, nums[i] as i64);
-        }
-
-        let mut min_cost = i64::MAX;
-        for i1 in 1..=n - k as usize + 1 {
-            let rank = find_kth(&count_bit, m_count, m);
-            let c_prev = query_count(&count_bit, rank - 1);
-            let s_prev = query_sum(&sum_bit, rank - 1);
-            let low_sum_val = s_prev + (m_count - c_prev) as i64 * sorted_unique[rank - 1] as i64;
-            min_cost = min_cost.min(nums[0] as i64 + nums[i1] as i64 + low_sum_val);
-
-            if i1 < n - k as usize + 1 {
-                let r_remove = get_rank(nums[i1 + 1]);
-                update_count(&mut count_bit, r_remove, -1);
-                update_sum(&mut sum_bit, r_remove, -(nums[i1 + 1] as i64));
-                if i1 + 1 + dist as usize < n {
-                    let r_add = get_rank(nums[i1 + 1 + dist as usize]);
-                    update_count(&mut count_bit, r_add, 1);
-                    update_sum(&mut sum_bit, r_add, nums[i1 + 1 + dist as usize] as i64);
-                }
-            }
-        }
-        min_cost
-    }
-}
+// Generation failed for Rust
+// Reason: Parsing failed
 {% endraw %}
 {% endhighlight %}
 
@@ -1268,70 +1736,8 @@ impl Solution {
 
 {% highlight racket %}
 {% raw %}
-(define/contract (minimum-cost nums k dist)
-  (-> (listof exact-integer?) exact-integer? exact-integer? exact-integer?)
-  (let* ([n (length nums)]
-         [nums-vec (list->vector nums)]
-         [m-count (- k 2)]
-         [sorted-unique (sort (remove-duplicates nums) <)]
-         [m (length sorted-unique)]
-         [sorted-unique-vec (list->vector sorted-unique)]
-         [rank-map (make-hash (for/list ([v sorted-unique] [i (in-naturals 1)]) (cons v i)))]
-         [count-bit (make-vector (+ m 1) 0)]
-         [sum-bit (make-vector (+ m 1) 0)])
-
-    (define (update-bit! bit idx delta)
-      (let loop ([i idx])
-        (when (<= i m)
-          (vector-set! bit i (+ (vector-ref bit i) delta))
-          (loop (+ i (bitwise-and i (- i)))))))
-
-    (define (query-bit bit idx)
-      (let loop ([i idx] [s 0])
-        (if (<= i 0) s (loop (- i (bitwise-and i (- i))) (+ s (vector-ref bit i))))))
-
-    (define (find-kth kv)
-      (let* ([p (let loop ([val 1]) (if (> (* val 2) m) val (loop (* val 2))))])
-        (let loop ([idx 0] [p p] [k-val kv])
-          (if (= p 0)
-              (+ idx 1)
-              (let ([next-idx (+ idx p)])
-                (if (and (<= next-idx m) (< (vector-ref count-bit next-idx) k-val))
-                    (loop next-idx (quotient p 2) (- k-val (vector-ref count-bit next-idx)))
-                    (loop idx (quotient p 2) k-val)))))))
-
-    (define (get-low-sum)
-      (let* ([rank (find-kth m-count)]
-             [c-prev (query-bit count-bit (- rank 1))]
-             [s-prev (query-bit sum-bit (- rank 1))])
-        (+ s-prev (* (- m-count c-prev) (vector-ref sorted-unique-vec (- rank 1))))))
-
-    (define (add val)
-      (let ([r (hash-ref rank-map val)])
-        (update-bit! count-bit r 1)
-        (update-bit! sum-bit r val)))
-
-    (define (remove val)
-      (let ([r (hash-ref rank-map val)])
-        (update-bit! count-bit r -1)
-        (update-bit! sum-bit r (- val))))
-
-    (for ([i (in-range 2 (+ 1 (min (+ 1 dist) (- n 1))))])
-      (add (vector-ref nums-vec i)))
-
-    (let loop ([i1 1] [min-cost 1000000000000000])
-      (if (> i1 (- n k -1))
-          min-cost
-          (let* ([low-sum-val (get-low-sum)]
-                 [current-cost (+ (vector-ref nums-vec 0) (vector-ref nums-vec i1) low-sum-val)]
-                 [next-min-cost (min min-cost current-cost)])
-            (if (< i1 (- n k -1))
-                (begin
-                  (remove (vector-ref nums-vec (+ i1 1)))
-                  (when (< (+ i1 1 dist) n)
-                    (add (vector-ref nums-vec (+ i1 1 dist))))
-                  (loop (+ i1 1) next-min-cost))
-                next-min-cost))))))
+// Generation failed for Racket
+// Reason: Parsing failed
 {% endraw %}
 {% endhighlight %}
 
@@ -1341,76 +1747,8 @@ impl Solution {
 
 {% highlight erlang %}
 {% raw %}
-minimum_cost(Nums, K, Dist) ->
-    N = length(Nums),
-    NumsArr = array:from_list(Nums),
-    MCount = K - 2,
-    SortedUnique = lists:usort(Nums),
-    M = length(SortedUnique),
-    RankMap = maps:from_list(lists:zip(SortedUnique, lists:seq(1, M))),
-    ValueTuple = list_to_tuple(SortedUnique),
-
-    CountBIT = array:new([{size, M + 1}, {default, 0}]),
-    SumBIT = array:new([{size, M + 1}, {default, 0}]),
-
-    Update = fun Up(BIT, Idx, Delta) when Idx =< M ->
-                    Up(array:set(Idx, array:get(Idx, BIT) + Delta, BIT), Idx + (Idx band -Idx), Delta);
-                 Up(BIT, _, _) -> BIT
-             end,
-
-    Query = fun Q(BIT, Idx, S) when Idx > 0 ->
-                    Q(BIT, Idx - (Idx band -Idx), S + array:get(Idx, BIT));
-                Q(_, _, S) -> S
-            end,
-
-    P = get_p(M),
-    FindKth = fun F(BIT, KV, Idx, Pow) when Pow > 0 ->
-                      NextIdx = Idx + Pow,
-                      if NextIdx =< M andalso array:get(NextIdx, BIT) < KV ->
-                             F(BIT, KV - array:get(NextIdx, BIT), NextIdx, Pow div 2);
-                         true ->
-                             F(BIT, KV, Idx, Pow div 2)
-                      end;
-                  F(_, _, Idx, _) -> Idx + 1
-              end,
-
-    InitWindow = fun Init(CB, SB, I) when I =< 1 + Dist, I < N ->
-                         Val = array:get(I, NumsArr),
-                         Rank = maps:get(Val, RankMap),
-                         Init(Update(CB, Rank, 1), Update(SB, Rank, Val), I + 1);
-                     Init(CB, SB, _) -> {CB, SB}
-                 end,
-
-    {CBIT0, SBIT0} = InitWindow(CountBIT, SumBIT, 2),
-
-    Solve = fun S(I1, CBIT, SBIT, MinCost) when I1 =< N - K + 1 ->
-                    Rank = FindKth(CBIT, MCount, 0, P),
-                    CPrev = Query(CBIT, Rank - 1, 0),
-                    SPrev = Query(SBIT, Rank - 1, 0),
-                    LowSum = SPrev + (MCount - CPrev) * element(Rank, ValueTuple),
-                    Cost = array:get(0, NumsArr) + array:get(I1, NumsArr) + LowSum,
-                    NewMinCost = if Cost < MinCost -> Cost; true -> MinCost end,
-                    if I1 < N - K + 1 ->
-                           VRem = array:get(I1 + 1, NumsArr),
-                           RRem = maps:get(VRem, RankMap),
-                           CBIT1 = Update(CBIT, RRem, -1),
-                           SBIT1 = Update(SBIT, RRem, -VRem),
-                           {CBIT2, SBIT2} = if I1 + 1 + Dist < N ->
-                                                   VAdd = array:get(I1 + 1 + Dist, NumsArr),
-                                                   RAdd = maps:get(VAdd, RankMap),
-                                                   {Update(CBIT1, RAdd, 1), Update(SBIT1, RAdd, VAdd)};
-                                               true -> {CBIT1, SBIT1}
-                                            end,
-                           S(I1 + 1, CBIT2, SBIT2, NewMinCost);
-                       true -> NewMinCost
-                    end;
-                S(_, _, _, MinCost) -> MinCost
-            end,
-    Solve(1, CBIT0, SBIT0, 1000000000000000).
-
-get_p(M) -> get_p(M, 1).
-get_p(M, P) when P * 2 =< M -> get_p(M, P * 2);
-get_p(_, P) -> P.
+// Generation failed for Erlang
+// Reason: Parsing failed
 {% endraw %}
 {% endhighlight %}
 
@@ -1420,101 +1758,8 @@ get_p(_, P) -> P.
 
 {% highlight elixir %}
 {% raw %}
-defmodule Solution do
-  import Bitwise
-
-  @spec minimum_cost(nums :: [integer], k :: integer, dist :: integer) :: integer
-  def minimum_cost(nums, k, dist) do
-    n = length(nums)
-    nums_tuple = List.to_tuple(nums)
-    m_count = k - 2
-    sorted_unique = Enum.uniq(nums) |> Enum.sort()
-    m = length(sorted_unique)
-    rank_map = sorted_unique |> Enum.with_index(1) |> Enum.into(%{})
-    value_tuple = List.to_tuple(sorted_unique)
-
-    count_bit = %{}
-    sum_bit = %{}
-
-    update = fn bit, idx, delta ->
-      let_update = fn f, b, i, d ->
-        if i <= m do
-          f.(f, Map.put(b, i, Map.get(b, i, 0) + d), i + (i &&& -i), d)
-        else
-          b
-        end
-      end
-      let_update.(let_update, bit, idx, delta)
-    end
-
-    query = fn bit, idx ->
-      let_query = fn f, b, i, s ->
-        if i > 0 do
-          f.(f, b, i - (i &&& -i), s + Map.get(b, i, 0))
-        else
-          s
-        end
-      end
-      let_query.(let_query, bit, idx, 0)
-    end
-
-    p = get_p(m)
-    find_kth = fn kv, bit ->
-      let_find = fn f, kv_val, idx, pow ->
-        if pow > 0 do
-          next_idx = idx + pow
-          if next_idx <= m && Map.get(bit, next_idx, 0) < kv_val do
-            f.(f, kv_val - Map.get(bit, next_idx, 0), next_idx, div(pow, 2))
-          else
-            f.(f, kv_val, idx, div(pow, 2))
-          end
-        else
-          idx + 1
-        end
-      end
-      let_find.(let_find, kv, 0, p)
-    end
-
-    {cbit, sbit} = Enum.reduce(2..min(1 + dist, n - 1), {count_bit, sum_bit}, fn i, {cb, sb} ->
-      val = elem(nums_tuple, i)
-      r = Map.get(rank_map, val)
-      {update.(cb, r, 1), update.(sb, r, val)}
-    end)
-
-    solve(1, n, k, dist, nums_tuple, cbit, sbit, rank_map, value_tuple, m, m_count, find_kth, query, update, 1_000_000_000_000_000)
-  end
-
-  defp get_p(m) do
-    let_p = fn f, cur -> if cur * 2 <= m, do: f.(f, cur * 2), else: cur end
-    let_p.(let_p, 1)
-  end
-
-  defp solve(i1, n, k, dist, nums_tuple, cbit, sbit, rank_map, value_tuple, m, m_count, find_kth, query, update, min_cost) do
-    rank = find_kth.(m_count, cbit)
-    c_prev = query.(cbit, rank - 1)
-    s_prev = query.(sbit, rank - 1)
-    low_sum = s_prev + (m_count - c_prev) * elem(value_tuple, rank - 1)
-    cost = elem(nums_tuple, 0) + elem(nums_tuple, i1) + low_sum
-    new_min_cost = min(min_cost, cost)
-
-    if i1 < n - k + 1 do
-      v_rem = elem(nums_tuple, i1 + 1)
-      r_rem = Map.get(rank_map, v_rem)
-      cbit1 = update.(cbit, r_rem, -1)
-      sbit1 = update.(sbit, r_rem, -v_rem)
-      {cbit2, sbit2} = if i1 + 1 + dist < n do
-        v_add = elem(nums_tuple, i1 + 1 + dist)
-        r_add = Map.get(rank_map, v_add)
-        {update.(cbit1, r_add, 1), update.(sbit1, r_add, v_add)}
-      else
-        {cbit1, sbit1}
-      end
-      solve(i1 + 1, n, k, dist, nums_tuple, cbit2, sbit2, rank_map, value_tuple, m, m_count, find_kth, query, update, new_min_cost)
-    else
-      new_min_cost
-    end
-  end
-end
+// Generation failed for Elixir
+// Reason: Parsing failed
 {% endraw %}
 {% endhighlight %}
 
@@ -1524,5 +1769,5 @@ end
 
 ### Complexity Analysis
 
-- **Time Complexity:** O(n log n) because we perform coordinate compression in O(n log n), and then process n elements through a sliding window where each insertion, deletion, and M-smallest sum query takes O(log n) time using a Fenwick tree and binary lifting.
-- **Space Complexity:** O(n) to store the Fenwick trees (frequency and sum), the coordinate compression map, and the array of unique values.
+- **Time Complexity:** O(n \log n) where n is the length of the array. Sorting for coordinate compression takes $O(n \log n)$, and the sliding window iterates through the array once, with each update and query on the Fenwick Tree or Balanced BST taking $O(\log n)$.
+- **Space Complexity:** O(n) to store the Fenwick tree or other data structures, the coordinate compression mapping, and the input array.
