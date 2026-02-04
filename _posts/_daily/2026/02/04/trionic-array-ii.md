@@ -9,252 +9,233 @@ leetcode_url: https://leetcode.com/problems/trionic-array-ii/
 ai_solutions:
   - solutions:
       cpp: "class Solution {\npublic:\n    long long maxSumTrionic(vector<int>& nums)\
-        \ {\n        int n = nums.size();\n        const long long NEG_INF = -2e17;\n\
-        \        long long dp1 = NEG_INF, dp2 = NEG_INF, dp3 = NEG_INF;\n        long\
-        \ long dp0 = nums[0];\n        long long ans = NEG_INF;\n\n        for (int\
-        \ i = 1; i < n; ++i) {\n            long long n_dp1 = NEG_INF, n_dp2 = NEG_INF,\
-        \ n_dp3 = NEG_INF;\n            if (nums[i] > nums[i - 1]) {\n             \
-        \   if (dp1 > -1e17 || dp0 > -1e17) n_dp1 = max(dp1, dp0) + nums[i];\n     \
-        \           if (dp3 > -1e17 || dp2 > -1e17) n_dp3 = max(dp3, dp2) + nums[i];\n\
-        \            } else if (nums[i] < nums[i - 1]) {\n                if (dp2 >\
-        \ -1e17 || dp1 > -1e17) n_dp2 = max(dp2, dp1) + nums[i];\n            }\n  \
-        \          dp0 = nums[i];\n            dp1 = n_dp1;\n            dp2 = n_dp2;\n\
-        \            dp3 = n_dp3;\n            if (dp3 > ans) ans = dp3;\n        }\n\
-        \        return ans;\n    }\n};"
+        \ {\n        int n = nums.size();\n        long long INF = 4e15;\n        vector<long\
+        \ long> dp1(n, -INF), dp2(n, -INF), dp3(n, -INF);\n        long long maxSum\
+        \ = -INF;\n        for (int i = 1; i < n; ++i) {\n            if (nums[i] >\
+        \ nums[i - 1]) {\n                dp1[i] = max((long long)nums[i - 1] + nums[i],\
+        \ dp1[i - 1] + nums[i]);\n                dp3[i] = max(dp2[i - 1] + nums[i],\
+        \ dp3[i - 1] + nums[i]);\n            } else if (nums[i] < nums[i - 1]) {\n\
+        \                dp2[i] = max(dp1[i - 1] + nums[i], dp2[i - 1] + nums[i]);\n\
+        \            }\n            if (dp3[i] > maxSum) maxSum = dp3[i];\n        }\n\
+        \        return maxSum;\n    }\n};"
       java: "class Solution {\n    public long maxSumTrionic(int[] nums) {\n       \
-        \ int n = nums.length;\n        long NEG_INF = -2_000_000_000_000_000_000L;\n\
-        \        long dp1 = NEG_INF, dp2 = NEG_INF, dp3 = NEG_INF;\n        long dp0\
-        \ = nums[0];\n        long ans = NEG_INF;\n\n        for (int i = 1; i < n;\
-        \ i++) {\n            long n_dp1 = NEG_INF, n_dp2 = NEG_INF, n_dp3 = NEG_INF;\n\
-        \            if (nums[i] > nums[i - 1]) {\n                if (dp1 > -1_000_000_000_000_000_000L\
-        \ || dp0 > -1_000_000_000_000_000_000L)\n                    n_dp1 = Math.max(dp1,\
-        \ dp0) + nums[i];\n                if (dp3 > -1_000_000_000_000_000_000L ||\
-        \ dp2 > -1_000_000_000_000_000_000L)\n                    n_dp3 = Math.max(dp3,\
-        \ dp2) + nums[i];\n            } else if (nums[i] < nums[i - 1]) {\n       \
-        \         if (dp2 > -1_000_000_000_000_000_000L || dp1 > -1_000_000_000_000_000_000L)\n\
-        \                    n_dp2 = Math.max(dp2, dp1) + nums[i];\n            }\n\
-        \            dp0 = nums[i];\n            dp1 = n_dp1;\n            dp2 = n_dp2;\n\
-        \            dp3 = n_dp3;\n            if (dp3 > ans) ans = dp3;\n        }\n\
-        \        return ans;\n    }\n}"
+        \ int n = nums.length;\n        long INF = 4000000000000000L;\n        long[]\
+        \ dp1 = new long[n];\n        long[] dp2 = new long[n];\n        long[] dp3\
+        \ = new long[n];\n        java.util.Arrays.fill(dp1, -INF);\n        java.util.Arrays.fill(dp2,\
+        \ -INF);\n        java.util.Arrays.fill(dp3, -INF);\n        long maxSum = -INF;\n\
+        \        for (int i = 1; i < n; i++) {\n            if (nums[i] > nums[i - 1])\
+        \ {\n                dp1[i] = Math.max((long) nums[i - 1] + nums[i], dp1[i -\
+        \ 1] + nums[i]);\n                dp3[i] = Math.max(dp2[i - 1] + nums[i], dp3[i\
+        \ - 1] + nums[i]);\n            } else if (nums[i] < nums[i - 1]) {\n      \
+        \          dp2[i] = Math.max(dp1[i - 1] + nums[i], dp2[i - 1] + nums[i]);\n\
+        \            }\n            if (dp3[i] > maxSum) maxSum = dp3[i];\n        }\n\
+        \        return maxSum;\n    }\n}"
       python: "class Solution(object):\n    def maxSumTrionic(self, nums):\n       \
         \ \"\"\"\n        :type nums: List[int]\n        :rtype: int\n        \"\"\"\
-        \n        n = len(nums)\n        neg_inf = -float('inf')\n        dp1, dp2,\
-        \ dp3 = neg_inf, neg_inf, neg_inf\n        dp0 = nums[0]\n        ans = neg_inf\n\
-        \        for i in range(1, n):\n            n_dp1, n_dp2, n_dp3 = neg_inf, neg_inf,\
-        \ neg_inf\n            if nums[i] > nums[i - 1]:\n                n_dp1 = max(dp1,\
-        \ dp0) + nums[i]\n                n_dp3 = max(dp3, dp2) + nums[i]\n        \
-        \    elif nums[i] < nums[i - 1]:\n                n_dp2 = max(dp2, dp1) + nums[i]\n\
-        \            dp0, dp1, dp2, dp3 = nums[i], n_dp1, n_dp2, n_dp3\n           \
-        \ if dp3 > ans: ans = dp3\n        return int(ans)"
+        \n        n = len(nums)\n        inf = float('inf')\n        dp1 = [-inf] *\
+        \ n\n        dp2 = [-inf] * n\n        dp3 = [-inf] * n\n        for i in range(1,\
+        \ n):\n            if nums[i] > nums[i - 1]:\n                dp1[i] = max(nums[i\
+        \ - 1] + nums[i], dp1[i - 1] + nums[i])\n                dp3[i] = max(dp2[i\
+        \ - 1] + nums[i], dp3[i - 1] + nums[i])\n            elif nums[i] < nums[i -\
+        \ 1]:\n                dp2[i] = max(dp1[i - 1] + nums[i], dp2[i - 1] + nums[i])\n\
+        \        return int(max(dp3))"
       python3: "class Solution:\n    def maxSumTrionic(self, nums: List[int]) -> int:\n\
-        \        n = len(nums)\n        neg_inf = -float('inf')\n        dp1, dp2, dp3\
-        \ = neg_inf, neg_inf, neg_inf\n        dp0 = nums[0]\n        ans = neg_inf\n\
-        \        for i in range(1, n):\n            n_dp1, n_dp2, n_dp3 = neg_inf, neg_inf,\
-        \ neg_inf\n            if nums[i] > nums[i - 1]:\n                n_dp1 = max(dp1,\
-        \ dp0) + nums[i]\n                n_dp3 = max(dp3, dp2) + nums[i]\n        \
-        \    elif nums[i] < nums[i - 1]:\n                n_dp2 = max(dp2, dp1) + nums[i]\n\
-        \            dp0, dp1, dp2, dp3 = nums[i], n_dp1, n_dp2, n_dp3\n           \
-        \ if dp3 > ans: ans = dp3\n        return int(ans)"
-      c: "long long maxSumTrionic(int* nums, int numsSize) {\n    long long neg_inf\
-        \ = -2000000000000000000LL;\n    long long threshold = -1000000000000000000LL;\n\
-        \    long long dp1 = neg_inf, dp2 = neg_inf, dp3 = neg_inf;\n    long long dp0\
-        \ = nums[0];\n    long long ans = neg_inf;\n\n    for (int i = 1; i < numsSize;\
-        \ i++) {\n        long long n_dp1 = neg_inf, n_dp2 = neg_inf, n_dp3 = neg_inf;\n\
-        \        if (nums[i] > nums[i - 1]) {\n            if (dp1 > threshold || dp0\
-        \ > threshold) n_dp1 = (dp1 > dp0 ? dp1 : dp0) + nums[i];\n            if (dp3\
-        \ > threshold || dp2 > threshold) n_dp3 = (dp3 > dp2 ? dp3 : dp2) + nums[i];\n\
-        \        } else if (nums[i] < nums[i - 1]) {\n            if (dp2 > threshold\
-        \ || dp1 > threshold) n_dp2 = (dp2 > dp1 ? dp2 : dp1) + nums[i];\n        }\n\
-        \        dp0 = nums[i];\n        dp1 = n_dp1;\n        dp2 = n_dp2;\n      \
-        \  dp3 = n_dp3;\n        if (dp3 > ans) ans = dp3;\n    }\n    return ans;\n\
-        }"
+        \        n = len(nums)\n        inf = float('inf')\n        dp1 = [-inf] * n\n\
+        \        dp2 = [-inf] * n\n        dp3 = [-inf] * n\n        for i in range(1,\
+        \ n):\n            if nums[i] > nums[i - 1]:\n                dp1[i] = max(nums[i\
+        \ - 1] + nums[i], dp1[i - 1] + nums[i])\n                dp3[i] = max(dp2[i\
+        \ - 1] + nums[i], dp3[i - 1] + nums[i])\n            elif nums[i] < nums[i -\
+        \ 1]:\n                dp2[i] = max(dp1[i - 1] + nums[i], dp2[i - 1] + nums[i])\n\
+        \        return int(max(dp3))"
+      c: "#include <stdlib.h>\n#include <limits.h>\n\nlong long max_val(long long a,\
+        \ long long b) {\n    return a > b ? a : b;\n}\n\nlong long maxSumTrionic(int*\
+        \ nums, int numsSize) {\n    if (numsSize < 4) return 0;\n    long long INF\
+        \ = 4000000000000000LL;\n    long long* dp1 = (long long*)malloc(numsSize *\
+        \ sizeof(long long));\n    long long* dp2 = (long long*)malloc(numsSize * sizeof(long\
+        \ long));\n    long long* dp3 = (long long*)malloc(numsSize * sizeof(long long));\n\
+        \    for (int i = 0; i < numsSize; i++) {\n        dp1[i] = dp2[i] = dp3[i]\
+        \ = -INF;\n    }\n    long long res = -INF;\n    for (int i = 1; i < numsSize;\
+        \ i++) {\n        if (nums[i] > nums[i - 1]) {\n            dp1[i] = max_val((long\
+        \ long)nums[i - 1] + nums[i], dp1[i - 1] + nums[i]);\n            dp3[i] = max_val(dp2[i\
+        \ - 1] + nums[i], dp3[i - 1] + nums[i]);\n        } else if (nums[i] < nums[i\
+        \ - 1]) {\n            dp2[i] = max_val(dp1[i - 1] + nums[i], dp2[i - 1] + nums[i]);\n\
+        \        }\n        if (dp3[i] > res) res = dp3[i];\n    }\n    free(dp1); free(dp2);\
+        \ free(dp3);\n    return res;\n}"
       csharp: "public class Solution {\n    public long MaxSumTrionic(int[] nums) {\n\
-        \        int n = nums.Length;\n        long neg_inf = -2_000_000_000_000_000_000L;\n\
-        \        long threshold = -1_000_000_000_000_000_000L;\n        long dp1 = neg_inf,\
-        \ dp2 = neg_inf, dp3 = neg_inf;\n        long dp0 = nums[0];\n        long ans\
-        \ = neg_inf;\n\n        for (int i = 1; i < n; i++) {\n            long n_dp1\
-        \ = neg_inf, n_dp2 = neg_inf, n_dp3 = neg_inf;\n            if (nums[i] > nums[i\
-        \ - 1]) {\n                if (dp1 > threshold || dp0 > threshold) n_dp1 = Math.Max(dp1,\
-        \ dp0) + nums[i];\n                if (dp3 > threshold || dp2 > threshold) n_dp3\
-        \ = Math.Max(dp3, dp2) + nums[i];\n            } else if (nums[i] < nums[i -\
-        \ 1]) {\n                if (dp2 > threshold || dp1 > threshold) n_dp2 = Math.Max(dp2,\
-        \ dp1) + nums[i];\n            }\n            dp0 = nums[i];\n            dp1\
-        \ = n_dp1;\n            dp2 = n_dp2;\n            dp3 = n_dp3;\n           \
-        \ if (dp3 > ans) ans = dp3;\n        }\n        return ans;\n    }\n}"
+        \        int n = nums.Length;\n        long INF = 4000000000000000L;\n     \
+        \   long[] dp1 = new long[n];\n        long[] dp2 = new long[n];\n        long[]\
+        \ dp3 = new long[n];\n        for (int i = 0; i < n; i++) {\n            dp1[i]\
+        \ = dp2[i] = dp3[i] = -INF;\n        }\n        long maxSum = -INF;\n      \
+        \  for (int i = 1; i < n; i++) {\n            if (nums[i] > nums[i - 1]) {\n\
+        \                dp1[i] = System.Math.Max((long)nums[i - 1] + nums[i], dp1[i\
+        \ - 1] + nums[i]);\n                dp3[i] = System.Math.Max(dp2[i - 1] + nums[i],\
+        \ dp3[i - 1] + nums[i]);\n            } else if (nums[i] < nums[i - 1]) {\n\
+        \                dp2[i] = System.Math.Max(dp1[i - 1] + nums[i], dp2[i - 1] +\
+        \ nums[i]);\n            }\n            if (dp3[i] > maxSum) maxSum = dp3[i];\n\
+        \        }\n        return maxSum;\n    }\n}"
       javascript: "/**\n * @param {number[]} nums\n * @return {number}\n */\nvar maxSumTrionic\
-        \ = function(nums) {\n    let n = nums.length;\n    let neg_inf = -Infinity;\n\
-        \    let dp1 = neg_inf, dp2 = neg_inf, dp3 = neg_inf;\n    let dp0 = nums[0];\n\
-        \    let ans = neg_inf;\n    for (let i = 1; i < n; i++) {\n        let n_dp1\
-        \ = neg_inf, n_dp2 = neg_inf, n_dp3 = neg_inf;\n        if (nums[i] > nums[i\
-        \ - 1]) {\n            n_dp1 = Math.max(dp1, dp0) + nums[i];\n            n_dp3\
-        \ = Math.max(dp3, dp2) + nums[i];\n        } else if (nums[i] < nums[i - 1])\
-        \ {\n            n_dp2 = Math.max(dp2, dp1) + nums[i];\n        }\n        dp0\
-        \ = nums[i];\n        dp1 = n_dp1;\n        dp2 = n_dp2;\n        dp3 = n_dp3;\n\
-        \        if (dp3 > ans) ans = dp3;\n    }\n    return ans;\n};"
-      typescript: "function maxSumTrionic(nums: number[]): number {\n    const INF =\
-        \ 1000000000000000;\n    let dp1 = -INF, dp2 = -INF, dp3 = -INF;\n    let maxTotal\
-        \ = -INF;\n    const n = nums.length;\n    for (let i = 1; i < n; i++) {\n \
-        \       const n_i = nums[i];\n        const n_prev = nums[i - 1];\n        if\
-        \ (n_i > n_prev) {\n            dp3 = Math.max(dp3 + n_i, dp2 + n_i);\n    \
-        \        dp1 = Math.max(dp1 + n_i, n_prev + n_i);\n            dp2 = -INF;\n\
-        \        } else if (n_i < n_prev) {\n            dp2 = Math.max(dp2 + n_i, dp1\
-        \ + n_i);\n            dp1 = -INF;\n            dp3 = -INF;\n        } else\
-        \ {\n            dp1 = -INF;\n            dp2 = -INF;\n            dp3 = -INF;\n\
-        \        }\n        if (dp3 > maxTotal) maxTotal = dp3;\n    }\n    return maxTotal;\n\
+        \ = function(nums) {\n    const n = nums.length;\n    const dp1 = new Array(n).fill(-Infinity);\n\
+        \    const dp2 = new Array(n).fill(-Infinity);\n    const dp3 = new Array(n).fill(-Infinity);\n\
+        \    let maxSum = -Infinity;\n    for (let i = 1; i < n; i++) {\n        if\
+        \ (nums[i] > nums[i - 1]) {\n            dp1[i] = Math.max(nums[i - 1] + nums[i],\
+        \ dp1[i - 1] + nums[i]);\n            dp3[i] = Math.max(dp2[i - 1] + nums[i],\
+        \ dp3[i - 1] + nums[i]);\n        } else if (nums[i] < nums[i - 1]) {\n    \
+        \        dp2[i] = Math.max(dp1[i - 1] + nums[i], dp2[i - 1] + nums[i]);\n  \
+        \      }\n        if (dp3[i] > maxSum) maxSum = dp3[i];\n    }\n    return maxSum;\n\
         };"
+      typescript: "function maxSumTrionic(nums: number[]): number {\n  const n = nums.length;\n\
+        \  const INF = 1000000000000000;\n  let dp1 = -INF, dp2 = -INF, dp3 = -INF;\n\
+        \  let ans = -INF;\n\n  for (let i = 1; i < n; i++) {\n    const v = nums[i];\n\
+        \    const pv = nums[i - 1];\n    let n1 = -INF, n2 = -INF, n3 = -INF;\n\n \
+        \   if (v > pv) {\n      n1 = Math.max(pv + v, dp1 + v);\n      n3 = Math.max(dp2\
+        \ + v, dp3 + v);\n    } else if (v < pv) {\n      n2 = Math.max(dp1 + v, dp2\
+        \ + v);\n    }\n\n    dp1 = n1;\n    dp2 = n2;\n    dp3 = n3;\n    if (dp3 >\
+        \ ans) ans = dp3;\n  }\n  return ans;\n};"
       php: "class Solution {\n\n    /**\n     * @param Integer[] $nums\n     * @return\
-        \ Integer\n     */\n    function maxSumTrionic($nums) {\n        $INF = 1000000000000000;\n\
-        \        $dp1 = -$INF; $dp2 = -$INF; $dp3 = -$INF;\n        $maxTotal = -$INF;\n\
-        \        $n = count($nums);\n        for ($i = 1; $i < $n; $i++) {\n       \
-        \     $n_i = $nums[$i];\n            $n_prev = $nums[$i - 1];\n            if\
-        \ ($n_i > $n_prev) {\n                $dp3 = max($dp3 + $n_i, $dp2 + $n_i);\n\
-        \                $dp1 = max($dp1 + $n_i, $n_prev + $n_i);\n                $dp2\
-        \ = -$INF;\n            } else if ($n_i < $n_prev) {\n                $dp2 =\
-        \ max($dp2 + $n_i, $dp1 + $n_i);\n                $dp1 = -$INF;\n          \
-        \      $dp3 = -$INF;\n            } else {\n                $dp1 = -$INF; $dp2\
-        \ = -$INF; $dp3 = -$INF;\n            }\n            if ($dp3 > $maxTotal) $maxTotal\
-        \ = $dp3;\n        }\n        return $maxTotal;\n    }\n}"
+        \ Integer\n     */\n    function maxSumTrionic($nums) {\n        $n = count($nums);\n\
+        \        $inf = 1000000000000000;\n        $dp1 = -$inf;\n        $dp2 = -$inf;\n\
+        \        $dp3 = -$inf;\n        $ans = -$inf;\n\n        for ($i = 1; $i < $n;\
+        \ $i++) {\n            $v = $nums[$i];\n            $pv = $nums[$i - 1];\n \
+        \           $n1 = -$inf;\n            $n2 = -$inf;\n            $n3 = -$inf;\n\
+        \n            if ($v > $pv) {\n                $n1 = max($pv + $v, $dp1 + $v);\n\
+        \                $n3 = max($dp2 + $v, $dp3 + $v);\n            } else if ($v\
+        \ < $pv) {\n                $n2 = max($dp1 + $v, $dp2 + $v);\n            }\n\
+        \n            $dp1 = $n1;\n            $dp2 = $n2;\n            $dp3 = $n3;\n\
+        \            if ($dp3 > $ans) {\n                $ans = $dp3;\n            }\n\
+        \        }\n        return $ans;\n    }\n}"
       swift: "class Solution {\n    func maxSumTrionic(_ nums: [Int]) -> Int {\n   \
-        \     let INF = 1_000_000_000_000_000\n        var dp1 = -INF, dp2 = -INF, dp3\
-        \ = -INF\n        var maxTotal = -INF\n        let n = nums.count\n        for\
-        \ i in 1..<n {\n            let n_i = nums[i]\n            let n_prev = nums[i\
-        \ - 1]\n            if n_i > n_prev {\n                dp3 = max(dp3 + n_i,\
-        \ dp2 + n_i)\n                dp1 = max(dp1 + n_i, n_prev + n_i)\n         \
-        \       dp2 = -INF\n            } else if n_i < n_prev {\n                dp2\
-        \ = max(dp2 + n_i, dp1 + n_i)\n                dp1 = -INF\n                dp3\
-        \ = -INF\n            } else {\n                dp1 = -INF\n               \
-        \ dp2 = -INF\n                dp3 = -INF\n            }\n            if dp3\
-        \ > maxTotal { maxTotal = dp3 }\n        }\n        return maxTotal\n    }\n\
-        }"
-      kotlin: "class Solution {\n    fun maxSumTrionic(nums: IntArray): Long {\n   \
-        \     val INF = 1_000_000_000_000_000L\n        var dp1 = -INF\n        var\
-        \ dp2 = -INF\n        var dp3 = -INF\n        var maxTotal = -INF\n        val\
-        \ n = nums.size\n        for (i in 1 until n) {\n            val n_i = nums[i].toLong()\n\
-        \            val n_prev = nums[i - 1].toLong()\n            if (n_i > n_prev)\
-        \ {\n                dp3 = maxOf(dp3 + n_i, dp2 + n_i)\n                dp1\
-        \ = maxOf(dp1 + n_i, n_prev + n_i)\n                dp2 = -INF\n           \
-        \ } else if (n_i < n_prev) {\n                dp2 = maxOf(dp2 + n_i, dp1 + n_i)\n\
-        \                dp1 = -INF\n                dp3 = -INF\n            } else\
-        \ {\n                dp1 = -INF\n                dp2 = -INF\n              \
-        \  dp3 = -INF\n            }\n            if (dp3 > maxTotal) maxTotal = dp3\n\
-        \        }\n        return maxTotal\n    }\n}"
+        \     let n = nums.count\n        let inf = 1_000_000_000_000_000\n        var\
+        \ dp1 = -inf, dp2 = -inf, dp3 = -inf\n        var ans = -inf\n\n        for\
+        \ i in 1..<n {\n            let v = nums[i]\n            let pv = nums[i - 1]\n\
+        \            var n1 = -inf, n2 = -inf, n3 = -inf\n\n            if v > pv {\n\
+        \                n1 = max(pv + v, dp1 + v)\n                n3 = max(dp2 + v,\
+        \ dp3 + v)\n            } else if v < pv {\n                n2 = max(dp1 + v,\
+        \ dp2 + v)\n            }\n\n            dp1 = n1\n            dp2 = n2\n  \
+        \          dp3 = n3\n            if dp3 > ans { ans = dp3 }\n        }\n   \
+        \     return ans\n    }\n}"
+      kotlin: "import kotlin.math.max\n\nclass Solution {\n    fun maxSumTrionic(nums:\
+        \ IntArray): Long {\n        val n = nums.size\n        val inf = 1_000_000_000_000_000L\n\
+        \        var dp1 = -inf\n        var dp2 = -inf\n        var dp3 = -inf\n  \
+        \      var ans = -inf\n\n        for (i in 1 until n) {\n            val v =\
+        \ nums[i].toLong()\n            val pv = nums[i - 1].toLong()\n            var\
+        \ n1 = -inf\n            var n2 = -inf\n            var n3 = -inf\n\n      \
+        \      if (v > pv) {\n                n1 = max(pv + v, dp1 + v)\n          \
+        \      n3 = max(dp2 + v, dp3 + v)\n            } else if (v < pv) {\n      \
+        \          n2 = max(dp1 + v, dp2 + v)\n            }\n\n            dp1 = n1\n\
+        \            dp2 = n2\n            dp3 = n3\n            if (dp3 > ans) {\n\
+        \                ans = dp3\n            }\n        }\n        return ans\n \
+        \   }\n}"
       dart: "import 'dart:math';\n\nclass Solution {\n  int maxSumTrionic(List<int>\
-        \ nums) {\n    int INF = 1000000000000000;\n    int dp1 = -INF, dp2 = -INF,\
-        \ dp3 = -INF;\n    int maxTotal = -INF;\n    int n = nums.length;\n    for (int\
-        \ i = 1; i < n; i++) {\n      int n_i = nums[i];\n      int n_prev = nums[i\
-        \ - 1];\n      if (n_i > n_prev) {\n        dp3 = max(dp3 + n_i, dp2 + n_i);\n\
-        \        dp1 = max(dp1 + n_i, n_prev + n_i);\n        dp2 = -INF;\n      } else\
-        \ if (n_i < n_prev) {\n        dp2 = max(dp2 + n_i, dp1 + n_i);\n        dp1\
-        \ = -INF;\n        dp3 = -INF;\n      } else {\n        dp1 = -INF;\n      \
-        \  dp2 = -INF;\n        dp3 = -INF;\n      }\n      if (dp3 > maxTotal) maxTotal\
-        \ = dp3;\n    }\n    return maxTotal;\n  }\n}"
-      go: "func maxSumTrionic(nums []int) int64 {\n    const INF int64 = 1000000000000000\n\
-        \    dp1, dp2, dp3 := -INF, -INF, -INF\n    maxTotal := -INF\n    n := len(nums)\n\
-        \    for i := 1; i < n; i++ {\n        n_i := int64(nums[i])\n        n_prev\
-        \ := int64(nums[i-1])\n        if n_i > n_prev {\n            v3_1 := dp3 +\
-        \ n_i\n            v3_2 := dp2 + n_i\n            if v3_1 > v3_2 { dp3 = v3_1\
-        \ } else { dp3 = v3_2 }\n            v1_1 := dp1 + n_i\n            v1_2 :=\
-        \ n_prev + n_i\n            if v1_1 > v1_2 { dp1 = v1_1 } else { dp1 = v1_2\
-        \ }\n            dp2 = -INF\n        } else if n_i < n_prev {\n            v2_1\
-        \ := dp2 + n_i\n            v2_2 := dp1 + n_i\n            if v2_1 > v2_2 {\
-        \ dp2 = v2_1 } else { dp2 = v2_2 }\n            dp1 = -INF\n            dp3\
-        \ = -INF\n        } else {\n            dp1, dp2, dp3 = -INF, -INF, -INF\n \
-        \       }\n        if dp3 > maxTotal {\n            maxTotal = dp3\n       \
-        \ }\n    }\n    return maxTotal\n}"
-      ruby: "def max_sum_trionic(nums)\n  n = nums.length\n  inf = 1_000_000_000_000_000_000\n\
-        \  limit = 500_000_000_000_000_000\n  dp1 = -inf\n  dp2 = -inf\n  dp3 = -inf\n\
-        \  max_total = -inf\n  (1...n).each do |i|\n    num = nums[i]\n    prev_num\
-        \ = nums[i - 1]\n    if num > prev_num\n      next_dp1 = [dp1, prev_num].max\
-        \ + num\n      next_dp3 = (dp3 > -limit || dp2 > -limit) ? [dp3, dp2].max +\
-        \ num : -inf\n      dp1, dp2, dp3 = next_dp1, -inf, next_dp3\n    elsif num\
-        \ < prev_num\n      next_dp2 = (dp2 > -limit || dp1 > -limit) ? [dp2, dp1].max\
-        \ + num : -inf\n      dp1, dp2, dp3 = -inf, next_dp2, -inf\n    else\n     \
-        \ dp1, dp2, dp3 = -inf, -inf, -inf\n    end\n    max_total = dp3 if dp3 > max_total\n\
-        \  end\n  max_total\nend"
+        \ nums) {\n    int n = nums.length;\n    int inf = 1000000000000000;\n    int\
+        \ dp1 = -inf, dp2 = -inf, dp3 = -inf;\n    int ans = -inf;\n\n    for (int i\
+        \ = 1; i < n; i++) {\n      int v = nums[i];\n      int pv = nums[i - 1];\n\
+        \      int n1 = -inf, n2 = -inf, n3 = -inf;\n\n      if (v > pv) {\n       \
+        \ n1 = max(pv + v, dp1 + v);\n        n3 = max(dp2 + v, dp3 + v);\n      } else\
+        \ if (v < pv) {\n        n2 = max(dp1 + v, dp2 + v);\n      }\n\n      dp1 =\
+        \ n1;\n      dp2 = n2;\n      dp3 = n3;\n      if (dp3 > ans) ans = dp3;\n \
+        \   }\n    return ans;\n  }\n}"
+      go: "func maxSumTrionic(nums []int) int64 {\n\tn := len(nums)\n\tconst INF int64\
+        \ = 1000000000000000\n\tdp1, dp2, dp3 := -INF, -INF, -INF\n\tans := -INF\n\t\
+        for i := 1; i < n; i++ {\n\t\tvar n1, n2, n3 int64 = -INF, -INF, -INF\n\t\t\
+        v := int64(nums[i])\n\t\tpv := int64(nums[i-1])\n\t\tif v > pv {\n\t\t\tn1 =\
+        \ pv + v\n\t\t\tif dp1 != -INF && dp1+v > n1 {\n\t\t\t\tn1 = dp1 + v\n\t\t\t\
+        }\n\t\t\tif dp2 != -INF {\n\t\t\t\tn3 = dp2 + v\n\t\t\t}\n\t\t\tif dp3 != -INF\
+        \ && dp3+v > n3 {\n\t\t\t\tn3 = dp3 + v\n\t\t\t}\n\t\t} else if v < pv {\n\t\
+        \t\tif dp1 != -INF {\n\t\t\t\tn2 = dp1 + v\n\t\t\t}\n\t\t\tif dp2 != -INF &&\
+        \ dp2+v > n2 {\n\t\t\t\tn2 = dp2 + v\n\t\t\t}\n\t\t}\n\t\tdp1, dp2, dp3 = n1,\
+        \ n2, n3\n\t\tif dp3 > ans {\n\t\t\tans = dp3\n\t\t}\n\t}\n\treturn ans\n}"
+      ruby: "def max_sum_trionic(nums)\n  inf = 10**17\n  dp0 = nums[0]\n  dp1 = -inf\n\
+        \  dp2 = -inf\n  dp3 = -inf\n  max_val = -inf\n  (1...nums.length).each do |i|\n\
+        \    cur = nums[i]\n    prev = nums[i-1]\n    if cur > prev\n      n1 = [dp1,\
+        \ dp0].max + cur\n      n3 = [dp3, dp2].max + cur\n      dp0 = [dp0 + cur, cur].max\n\
+        \      dp1 = n1\n      dp2 = -inf\n      dp3 = n3\n    elsif cur < prev\n  \
+        \    dp2 = [dp2, dp1].max + cur\n      dp0 = cur\n      dp1 = -inf\n      dp3\
+        \ = -inf\n    else\n      dp0 = cur\n      dp1 = -inf\n      dp2 = -inf\n  \
+        \    dp3 = -inf\n    end\n    max_val = dp3 if dp3 > max_val\n  end\n  max_val\n\
+        end"
       scala: "object Solution {\n    def maxSumTrionic(nums: Array[Int]): Long = {\n\
-        \        val n = nums.length\n        val INF = 1000000000000000000L\n     \
-        \   val LIMIT = 500000000000000000L\n        var dp1 = -INF\n        var dp2\
-        \ = -INF\n        var dp3 = -INF\n        var maxTotal = -INF\n        var i\
-        \ = 1\n        while (i < n) {\n            val num = nums(i).toLong\n     \
-        \       val prevNum = nums(i - 1).toLong\n            if (num > prevNum) {\n\
-        \                val nextDp1 = Math.max(dp1, prevNum) + num\n              \
-        \  val nextDp3 = if (dp3 > -LIMIT || dp2 > -LIMIT) Math.max(dp3, dp2) + num\
-        \ else -INF\n                dp1 = nextDp1\n                dp2 = -INF\n   \
-        \             dp3 = nextDp3\n            } else if (num < prevNum) {\n     \
-        \           val nextDp2 = if (dp2 > -LIMIT || dp1 > -LIMIT) Math.max(dp2, dp1)\
-        \ + num else -INF\n                dp1 = -INF\n                dp2 = nextDp2\n\
-        \                dp3 = -INF\n            } else {\n                dp1 = -INF\n\
-        \                dp2 = -INF\n                dp3 = -INF\n            }\n   \
-        \         if (dp3 > maxTotal) maxTotal = dp3\n            i += 1\n        }\n\
-        \        maxTotal\n    }\n}"
+        \        val inf = 100000000000000000L\n        var dp0 = nums(0).toLong\n \
+        \       var dp1 = -inf\n        var dp2 = -inf\n        var dp3 = -inf\n   \
+        \     var maxVal = -inf\n        for (i <- 1 until nums.length) {\n        \
+        \    val cur = nums(i).toLong\n            val prev = nums(i - 1).toLong\n \
+        \           if (cur > prev) {\n                val n1 = Math.max(dp1, dp0) +\
+        \ cur\n                val n3 = Math.max(dp3, dp2) + cur\n                dp0\
+        \ = Math.max(dp0 + cur, cur)\n                dp1 = n1\n                dp2\
+        \ = -inf\n                dp3 = n3\n            } else if (cur < prev) {\n \
+        \               dp2 = Math.max(dp2, dp1) + cur\n                dp0 = cur\n\
+        \                dp1 = -inf\n                dp3 = -inf\n            } else\
+        \ {\n                dp0 = cur\n                dp1 = -inf\n               \
+        \ dp2 = -inf\n                dp3 = -inf\n            }\n            maxVal\
+        \ = Math.max(maxVal, dp3)\n        }\n        maxVal\n    }\n}"
       rust: "impl Solution {\n    pub fn max_sum_trionic(nums: Vec<i32>) -> i64 {\n\
-        \        let n = nums.len();\n        let inf: i64 = 1_000_000_000_000_000_000;\n\
-        \        let limit: i64 = 500_000_000_000_000_000;\n        let mut dp1 = -inf;\n\
-        \        let mut dp2 = -inf;\n        let mut dp3 = -inf;\n        let mut max_total\
-        \ = -inf;\n        for i in 1..n {\n            let num = nums[i] as i64;\n\
-        \            let prev_num = nums[i - 1] as i64;\n            let (next_dp1,\
-        \ next_dp2, next_dp3) = if num > prev_num {\n                let d1 = dp1.max(prev_num)\
-        \ + num;\n                let d3 = if dp3 > -limit || dp2 > -limit { dp3.max(dp2)\
-        \ + num } else { -inf };\n                (d1, -inf, d3)\n            } else\
-        \ if num < prev_num {\n                let d2 = if dp2 > -limit || dp1 > -limit\
-        \ { dp2.max(dp1) + num } else { -inf };\n                (-inf, d2, -inf)\n\
-        \            } else {\n                (-inf, -inf, -inf)\n            };\n\
-        \            dp1 = next_dp1;\n            dp2 = next_dp2;\n            dp3 =\
-        \ next_dp3;\n            if dp3 > max_total { max_total = dp3; }\n        }\n\
-        \        max_total\n    }\n}"
+        \        let inf: i64 = 100_000_000_000_000_000;\n        let mut dp0: i64 =\
+        \ nums[0] as i64;\n        let mut dp1: i64 = -inf;\n        let mut dp2: i64\
+        \ = -inf;\n        let mut dp3: i64 = -inf;\n        let mut max_val: i64 =\
+        \ -inf;\n        for i in 1..nums.len() {\n            let cur = nums[i] as\
+        \ i64;\n            let prev = nums[i-1] as i64;\n            if cur > prev\
+        \ {\n                let n1 = dp1.max(dp0) + cur;\n                let n3 =\
+        \ dp3.max(dp2) + cur;\n                dp0 = (dp0 + cur).max(cur);\n       \
+        \         dp1 = n1;\n                dp2 = -inf;\n                dp3 = n3;\n\
+        \            } else if cur < prev {\n                dp2 = dp2.max(dp1) + cur;\n\
+        \                dp0 = cur;\n                dp1 = -inf;\n                dp3\
+        \ = -inf;\n            } else {\n                dp0 = cur;\n              \
+        \  dp1 = -inf;\n                dp2 = -inf;\n                dp3 = -inf;\n \
+        \           }\n            max_val = max_val.max(dp3);\n        }\n        max_val\n\
+        \    }\n}"
       racket: "(define/contract (max-sum-trionic nums)\n  (-> (listof exact-integer?)\
-        \ exact-integer?)\n  (let* ([inf 1000000000000000000]\n         [limit 500000000000000000])\n\
-        \    (let loop ([rem-nums (cdr nums)]\n               [prev (car nums)]\n  \
-        \             [dp1 (- inf)]\n               [dp2 (- inf)]\n               [dp3\
-        \ (- inf)]\n               [max-total (- inf)])\n      (if (null? rem-nums)\n\
-        \          max-total\n          (let* ([num (car rem-nums)]\n              \
-        \   [new-dp1 (if (> num prev) (+ (max dp1 prev) num) (- inf))]\n           \
-        \      [new-dp2 (if (< num prev) (if (or (> dp2 (- limit)) (> dp1 (- limit)))\
-        \ (+ (max dp2 dp1) num) (- inf)) (- inf))]\n                 [new-dp3 (if (>\
-        \ num prev) (if (or (> dp3 (- limit)) (> dp2 (- limit))) (+ (max dp3 dp2) num)\
-        \ (- inf)) (- inf))]\n                 [new-max (max max-total new-dp3)])\n\
-        \            (loop (cdr rem-nums) num new-dp1 new-dp2 new-dp3 new-max))))))"
-      erlang: "-spec max_sum_trionic(Nums :: [integer()]) -> integer().\nmax_sum_trionic(Nums)\
-        \ ->\n  [First | Rest] = Nums,\n  INF = 1000000000000000000,\n  LIMIT = 500000000000000000,\n\
-        \  solve(Rest, First, -INF, -INF, -INF, -INF, INF, LIMIT).\n\nsolve([], _Prev,\
-        \ _DP1, _DP2, _DP3, MaxTotal, _INF, _LIMIT) ->\n  MaxTotal;\nsolve([Num | Rest],\
-        \ Prev, DP1, DP2, DP3, MaxTotal, INF, LIMIT) ->\n  {NextDP1, NextDP2, NextDP3}\
-        \ = if\n    Num > Prev ->\n      D1 = erlang:max(DP1, Prev) + Num,\n      D3\
-        \ = if (DP3 > -LIMIT) orelse (DP2 > -LIMIT) -> erlang:max(DP3, DP2) + Num; true\
-        \ -> -INF end,\n      {D1, -INF, D3};\n    Num < Prev ->\n      D2 = if (DP2\
-        \ > -LIMIT) orelse (DP1 > -LIMIT) -> erlang:max(DP2, DP1) + Num; true -> -INF\
-        \ end,\n      {-INF, D2, -INF};\n    true ->\n      {-INF, -INF, -INF}\n  end,\n\
-        \  solve(Rest, Num, NextDP1, NextDP2, NextDP3, erlang:max(MaxTotal, NextDP3),\
-        \ INF, LIMIT)."
+        \ exact-integer?)\n  (let* ([inf 100000000000000000]\n         [h (car nums)]\n\
+        \         [t (cdr nums)])\n    (let loop ([lst t] [prev h] [dp0 h] [dp1 (- inf)]\
+        \ [dp2 (- inf)] [dp3 (- inf)] [max-v (- inf)])\n      (if (null? lst)\n    \
+        \      max-v\n          (let* ([cur (car lst)]\n                 [n0 (if (>\
+        \ cur prev) (max (+ dp0 cur) cur) cur)]\n                 [n1 (if (> cur prev)\
+        \ (+ (max dp1 dp0) cur) (- inf))]\n                 [n2 (if (< cur prev) (+\
+        \ (max dp2 dp1) cur) (- inf))]\n                 [n3 (if (> cur prev) (+ (max\
+        \ dp3 dp2) cur) (- inf))])\n            (loop (cdr lst) cur n0 n1 n2 n3 (max\
+        \ max-v n3)))))))"
+      erlang: "-spec max_sum_trionic(Nums :: [integer()]) -> integer().\nmax_sum_trionic([H\
+        \ | T]) ->\n  Inf = 100000000000000000,\n  {_, _, _, _, _, MaxSum} = lists:foldl(fun(Cur,\
+        \ {Prev, Dp0, Dp1, Dp2, Dp3, Acc}) ->\n    {Next0, Next1, Next2, Next3} = if\n\
+        \      Cur > Prev ->\n        {max(Dp0 + Cur, Cur), max(Dp1, Dp0) + Cur, -Inf,\
+        \ max(Dp3, Dp2) + Cur};\n      Cur < Prev ->\n        {Cur, -Inf, max(Dp2, Dp1)\
+        \ + Cur, -Inf};\n      true ->\n        {Cur, -Inf, -Inf, -Inf}\n    end,\n\
+        \    {Cur, Next0, Next1, Next2, Next3, max(Acc, Next3)}\n  end, {H, H, -Inf,\
+        \ -Inf, -Inf, -Inf}, T),\n  MaxSum."
       elixir: "defmodule Solution do\n  @spec max_sum_trionic(nums :: [integer]) ::\
-        \ integer\n  def max_sum_trionic([first | rest]) do\n    inf = 1_000_000_000_000_000_000\n\
-        \    limit = 500_000_000_000_000_000\n    solve(rest, first, -inf, -inf, -inf,\
-        \ -inf, inf, limit)\n  end\n\n  defp solve([], _prev, _dp1, _dp2, _dp3, max_total,\
-        \ _inf, _limit), do: max_total\n  defp solve([num | rest], prev, dp1, dp2, dp3,\
-        \ max_total, inf, limit) do\n    {new_dp1, new_dp2, new_dp3} = cond do\n   \
-        \   num > prev ->\n        next_dp1 = max(dp1, prev) + num\n        next_dp3\
-        \ = if dp3 > -limit or dp2 > -limit, do: max(dp3, dp2) + num, else: -inf\n \
-        \       {next_dp1, -inf, next_dp3}\n      num < prev ->\n        next_dp2 =\
-        \ if dp2 > -limit or dp1 > -limit, do: max(dp2, dp1) + num, else: -inf\n   \
-        \     {-inf, next_dp2, -inf}\n      true ->\n        {-inf, -inf, -inf}\n  \
-        \  end\n    solve(rest, num, new_dp1, new_dp2, new_dp3, max(max_total, new_dp3),\
-        \ inf, limit)\n  end\nend"
-    approach: 'The problem asks for the maximum sum of a ''trionic subarray'', which
-      consists of three consecutive phases: strictly increasing, strictly decreasing,
-      and strictly increasing, where each phase contains at least two elements. We use
-      dynamic programming to maintain three states: ''dp1'' for the maximum sum of a
-      subarray ending at the current index that is in the first strictly increasing
-      phase, ''dp2'' for the maximum sum of a subarray that has completed the first
-      phase and is in the second strictly decreasing phase, and ''dp3'' for a subarray
-      that has completed the first two phases and is in the final strictly increasing
-      phase.'
-    time_complexity: O(n), where n is the length of the input array. We iterate through
-      the array once, and each state update takes constant time.
-    space_complexity: O(1) auxiliary space (not counting the input array), as we only
-      track the three DP states and a few variables for the current and previous states.
-    elapsed_time: 375.88656306266785
+        \ integer\n  def max_sum_trionic(nums) do\n    inf = 100_000_000_000_000_000\n\
+        \    [h | t] = nums\n    {_prev, _dp0, _dp1, _dp2, _dp3, max_val} = \n     \
+        \ Enum.reduce(t, {h, h, -inf, -inf, -inf, -inf}, fn cur, {prev, dp0, dp1, dp2,\
+        \ dp3, acc} ->\n        {next0, next1, next2, next3} = \n          cond do\n\
+        \            cur > prev ->\n              {max(dp0 + cur, cur), max(dp1, dp0)\
+        \ + cur, -inf, max(dp3, dp2) + cur}\n            cur < prev ->\n           \
+        \   {cur, -inf, max(dp2, dp1) + cur, -inf}\n            true ->\n          \
+        \    {cur, -inf, -inf, -inf}\n          end\n        {cur, next0, next1, next2,\
+        \ next3, max(acc, next3)}\n      end)\n    max_val\n  end\nend"
+    approach: 'We use dynamic programming to find the maximum trionic subarray sum by
+      tracking three distinct phases: strictly increasing (Phase 1), strictly decreasing
+      (Phase 2), and strictly increasing (Phase 3). For each index $i$ in the array,
+      we define $dp1[i]$ as the maximum sum of a strictly increasing subarray ending
+      at $i$, $dp2[i]$ as the maximum sum of a subarray consisting of Phase 1 followed
+      by Phase 2 ending at $i$, and $dp3[i]$ as the maximum sum of a complete trionic
+      subarray ending at $i$. These states transition based on the monotonic relationship
+      between $nums[i]$ and $nums[i-1]$.
+
+
+      Phase 1 ($dp1$) is initiated or extended whenever $nums[i] > nums[i-1]$. Phase
+      2 ($dp2$) is transitioned from Phase 1 or extended whenever $nums[i] < nums[i-1]$.
+      Phase 3 ($dp3$) is transitioned from Phase 2 or extended whenever $nums[i] > nums[i-1]$.
+      This approach ensures the index requirements $l < p < q < r$ because each transition
+      requires at least one additional element to be added to the previous valid phase.
+      The strictly monotonic conditions ensure that any equality $nums[i] == nums[i-1]$
+      or a break in the required direction for a phase resets the corresponding DP states,
+      and the final result is the maximum value found in $dp3$ across all indices.'
+    time_complexity: O(n) where n is the length of the input array. We iterate through
+      the array once, and each update for the three DP states takes constant time.
+    space_complexity: O(n) to store three DP arrays of size n. This could be optimized
+      to O(1) by only keeping track of the previous state, but $O(n)$ is efficient and
+      fits within memory constraints.
+    elapsed_time: 356.9959602355957
     model: gemini-3-flash-preview
-    generated_at: '2026-02-04 01:27:12 '
+    generated_at: '2026-02-04 05:24:02 '
 ---
 
 ## Problem #3640: Trionic Array II
@@ -346,7 +327,9 @@ ai_solutions:
 
 ### Approach
 
-The problem asks for the maximum sum of a 'trionic subarray', which consists of three consecutive phases: strictly increasing, strictly decreasing, and strictly increasing, where each phase contains at least two elements. We use dynamic programming to maintain three states: 'dp1' for the maximum sum of a subarray ending at the current index that is in the first strictly increasing phase, 'dp2' for the maximum sum of a subarray that has completed the first phase and is in the second strictly decreasing phase, and 'dp3' for a subarray that has completed the first two phases and is in the final strictly increasing phase.
+We use dynamic programming to find the maximum trionic subarray sum by tracking three distinct phases: strictly increasing (Phase 1), strictly decreasing (Phase 2), and strictly increasing (Phase 3). For each index $i$ in the array, we define $dp1[i]$ as the maximum sum of a strictly increasing subarray ending at $i$, $dp2[i]$ as the maximum sum of a subarray consisting of Phase 1 followed by Phase 2 ending at $i$, and $dp3[i]$ as the maximum sum of a complete trionic subarray ending at $i$. These states transition based on the monotonic relationship between $nums[i]$ and $nums[i-1]$.
+
+Phase 1 ($dp1$) is initiated or extended whenever $nums[i] > nums[i-1]$. Phase 2 ($dp2$) is transitioned from Phase 1 or extended whenever $nums[i] < nums[i-1]$. Phase 3 ($dp3$) is transitioned from Phase 2 or extended whenever $nums[i] > nums[i-1]$. This approach ensures the index requirements $l < p < q < r$ because each transition requires at least one additional element to be added to the previous valid phase. The strictly monotonic conditions ensure that any equality $nums[i] == nums[i-1]$ or a break in the required direction for a phase resets the corresponding DP states, and the final result is the maximum value found in $dp3$ across all indices.
 
 ### Code
 
@@ -400,26 +383,19 @@ class Solution {
 public:
     long long maxSumTrionic(vector<int>& nums) {
         int n = nums.size();
-        const long long NEG_INF = -2e17;
-        long long dp1 = NEG_INF, dp2 = NEG_INF, dp3 = NEG_INF;
-        long long dp0 = nums[0];
-        long long ans = NEG_INF;
-
+        long long INF = 4e15;
+        vector<long long> dp1(n, -INF), dp2(n, -INF), dp3(n, -INF);
+        long long maxSum = -INF;
         for (int i = 1; i < n; ++i) {
-            long long n_dp1 = NEG_INF, n_dp2 = NEG_INF, n_dp3 = NEG_INF;
             if (nums[i] > nums[i - 1]) {
-                if (dp1 > -1e17 || dp0 > -1e17) n_dp1 = max(dp1, dp0) + nums[i];
-                if (dp3 > -1e17 || dp2 > -1e17) n_dp3 = max(dp3, dp2) + nums[i];
+                dp1[i] = max((long long)nums[i - 1] + nums[i], dp1[i - 1] + nums[i]);
+                dp3[i] = max(dp2[i - 1] + nums[i], dp3[i - 1] + nums[i]);
             } else if (nums[i] < nums[i - 1]) {
-                if (dp2 > -1e17 || dp1 > -1e17) n_dp2 = max(dp2, dp1) + nums[i];
+                dp2[i] = max(dp1[i - 1] + nums[i], dp2[i - 1] + nums[i]);
             }
-            dp0 = nums[i];
-            dp1 = n_dp1;
-            dp2 = n_dp2;
-            dp3 = n_dp3;
-            if (dp3 > ans) ans = dp3;
+            if (dp3[i] > maxSum) maxSum = dp3[i];
         }
-        return ans;
+        return maxSum;
     }
 };
 {% endraw %}
@@ -434,29 +410,24 @@ public:
 class Solution {
     public long maxSumTrionic(int[] nums) {
         int n = nums.length;
-        long NEG_INF = -2_000_000_000_000_000_000L;
-        long dp1 = NEG_INF, dp2 = NEG_INF, dp3 = NEG_INF;
-        long dp0 = nums[0];
-        long ans = NEG_INF;
-
+        long INF = 4000000000000000L;
+        long[] dp1 = new long[n];
+        long[] dp2 = new long[n];
+        long[] dp3 = new long[n];
+        java.util.Arrays.fill(dp1, -INF);
+        java.util.Arrays.fill(dp2, -INF);
+        java.util.Arrays.fill(dp3, -INF);
+        long maxSum = -INF;
         for (int i = 1; i < n; i++) {
-            long n_dp1 = NEG_INF, n_dp2 = NEG_INF, n_dp3 = NEG_INF;
             if (nums[i] > nums[i - 1]) {
-                if (dp1 > -1_000_000_000_000_000_000L || dp0 > -1_000_000_000_000_000_000L)
-                    n_dp1 = Math.max(dp1, dp0) + nums[i];
-                if (dp3 > -1_000_000_000_000_000_000L || dp2 > -1_000_000_000_000_000_000L)
-                    n_dp3 = Math.max(dp3, dp2) + nums[i];
+                dp1[i] = Math.max((long) nums[i - 1] + nums[i], dp1[i - 1] + nums[i]);
+                dp3[i] = Math.max(dp2[i - 1] + nums[i], dp3[i - 1] + nums[i]);
             } else if (nums[i] < nums[i - 1]) {
-                if (dp2 > -1_000_000_000_000_000_000L || dp1 > -1_000_000_000_000_000_000L)
-                    n_dp2 = Math.max(dp2, dp1) + nums[i];
+                dp2[i] = Math.max(dp1[i - 1] + nums[i], dp2[i - 1] + nums[i]);
             }
-            dp0 = nums[i];
-            dp1 = n_dp1;
-            dp2 = n_dp2;
-            dp3 = n_dp3;
-            if (dp3 > ans) ans = dp3;
+            if (dp3[i] > maxSum) maxSum = dp3[i];
         }
-        return ans;
+        return maxSum;
     }
 }
 {% endraw %}
@@ -475,20 +446,17 @@ class Solution(object):
         :rtype: int
         """
         n = len(nums)
-        neg_inf = -float('inf')
-        dp1, dp2, dp3 = neg_inf, neg_inf, neg_inf
-        dp0 = nums[0]
-        ans = neg_inf
+        inf = float('inf')
+        dp1 = [-inf] * n
+        dp2 = [-inf] * n
+        dp3 = [-inf] * n
         for i in range(1, n):
-            n_dp1, n_dp2, n_dp3 = neg_inf, neg_inf, neg_inf
             if nums[i] > nums[i - 1]:
-                n_dp1 = max(dp1, dp0) + nums[i]
-                n_dp3 = max(dp3, dp2) + nums[i]
+                dp1[i] = max(nums[i - 1] + nums[i], dp1[i - 1] + nums[i])
+                dp3[i] = max(dp2[i - 1] + nums[i], dp3[i - 1] + nums[i])
             elif nums[i] < nums[i - 1]:
-                n_dp2 = max(dp2, dp1) + nums[i]
-            dp0, dp1, dp2, dp3 = nums[i], n_dp1, n_dp2, n_dp3
-            if dp3 > ans: ans = dp3
-        return int(ans)
+                dp2[i] = max(dp1[i - 1] + nums[i], dp2[i - 1] + nums[i])
+        return int(max(dp3))
 {% endraw %}
 {% endhighlight %}
 
@@ -501,20 +469,17 @@ class Solution(object):
 class Solution:
     def maxSumTrionic(self, nums: List[int]) -> int:
         n = len(nums)
-        neg_inf = -float('inf')
-        dp1, dp2, dp3 = neg_inf, neg_inf, neg_inf
-        dp0 = nums[0]
-        ans = neg_inf
+        inf = float('inf')
+        dp1 = [-inf] * n
+        dp2 = [-inf] * n
+        dp3 = [-inf] * n
         for i in range(1, n):
-            n_dp1, n_dp2, n_dp3 = neg_inf, neg_inf, neg_inf
             if nums[i] > nums[i - 1]:
-                n_dp1 = max(dp1, dp0) + nums[i]
-                n_dp3 = max(dp3, dp2) + nums[i]
+                dp1[i] = max(nums[i - 1] + nums[i], dp1[i - 1] + nums[i])
+                dp3[i] = max(dp2[i - 1] + nums[i], dp3[i - 1] + nums[i])
             elif nums[i] < nums[i - 1]:
-                n_dp2 = max(dp2, dp1) + nums[i]
-            dp0, dp1, dp2, dp3 = nums[i], n_dp1, n_dp2, n_dp3
-            if dp3 > ans: ans = dp3
-        return int(ans)
+                dp2[i] = max(dp1[i - 1] + nums[i], dp2[i - 1] + nums[i])
+        return int(max(dp3))
 {% endraw %}
 {% endhighlight %}
 
@@ -524,28 +489,34 @@ class Solution:
 
 {% highlight c %}
 {% raw %}
-long long maxSumTrionic(int* nums, int numsSize) {
-    long long neg_inf = -2000000000000000000LL;
-    long long threshold = -1000000000000000000LL;
-    long long dp1 = neg_inf, dp2 = neg_inf, dp3 = neg_inf;
-    long long dp0 = nums[0];
-    long long ans = neg_inf;
+#include <stdlib.h>
+#include <limits.h>
 
-    for (int i = 1; i < numsSize; i++) {
-        long long n_dp1 = neg_inf, n_dp2 = neg_inf, n_dp3 = neg_inf;
-        if (nums[i] > nums[i - 1]) {
-            if (dp1 > threshold || dp0 > threshold) n_dp1 = (dp1 > dp0 ? dp1 : dp0) + nums[i];
-            if (dp3 > threshold || dp2 > threshold) n_dp3 = (dp3 > dp2 ? dp3 : dp2) + nums[i];
-        } else if (nums[i] < nums[i - 1]) {
-            if (dp2 > threshold || dp1 > threshold) n_dp2 = (dp2 > dp1 ? dp2 : dp1) + nums[i];
-        }
-        dp0 = nums[i];
-        dp1 = n_dp1;
-        dp2 = n_dp2;
-        dp3 = n_dp3;
-        if (dp3 > ans) ans = dp3;
+long long max_val(long long a, long long b) {
+    return a > b ? a : b;
+}
+
+long long maxSumTrionic(int* nums, int numsSize) {
+    if (numsSize < 4) return 0;
+    long long INF = 4000000000000000LL;
+    long long* dp1 = (long long*)malloc(numsSize * sizeof(long long));
+    long long* dp2 = (long long*)malloc(numsSize * sizeof(long long));
+    long long* dp3 = (long long*)malloc(numsSize * sizeof(long long));
+    for (int i = 0; i < numsSize; i++) {
+        dp1[i] = dp2[i] = dp3[i] = -INF;
     }
-    return ans;
+    long long res = -INF;
+    for (int i = 1; i < numsSize; i++) {
+        if (nums[i] > nums[i - 1]) {
+            dp1[i] = max_val((long long)nums[i - 1] + nums[i], dp1[i - 1] + nums[i]);
+            dp3[i] = max_val(dp2[i - 1] + nums[i], dp3[i - 1] + nums[i]);
+        } else if (nums[i] < nums[i - 1]) {
+            dp2[i] = max_val(dp1[i - 1] + nums[i], dp2[i - 1] + nums[i]);
+        }
+        if (dp3[i] > res) res = dp3[i];
+    }
+    free(dp1); free(dp2); free(dp3);
+    return res;
 }
 {% endraw %}
 {% endhighlight %}
@@ -559,27 +530,24 @@ long long maxSumTrionic(int* nums, int numsSize) {
 public class Solution {
     public long MaxSumTrionic(int[] nums) {
         int n = nums.Length;
-        long neg_inf = -2_000_000_000_000_000_000L;
-        long threshold = -1_000_000_000_000_000_000L;
-        long dp1 = neg_inf, dp2 = neg_inf, dp3 = neg_inf;
-        long dp0 = nums[0];
-        long ans = neg_inf;
-
-        for (int i = 1; i < n; i++) {
-            long n_dp1 = neg_inf, n_dp2 = neg_inf, n_dp3 = neg_inf;
-            if (nums[i] > nums[i - 1]) {
-                if (dp1 > threshold || dp0 > threshold) n_dp1 = Math.Max(dp1, dp0) + nums[i];
-                if (dp3 > threshold || dp2 > threshold) n_dp3 = Math.Max(dp3, dp2) + nums[i];
-            } else if (nums[i] < nums[i - 1]) {
-                if (dp2 > threshold || dp1 > threshold) n_dp2 = Math.Max(dp2, dp1) + nums[i];
-            }
-            dp0 = nums[i];
-            dp1 = n_dp1;
-            dp2 = n_dp2;
-            dp3 = n_dp3;
-            if (dp3 > ans) ans = dp3;
+        long INF = 4000000000000000L;
+        long[] dp1 = new long[n];
+        long[] dp2 = new long[n];
+        long[] dp3 = new long[n];
+        for (int i = 0; i < n; i++) {
+            dp1[i] = dp2[i] = dp3[i] = -INF;
         }
-        return ans;
+        long maxSum = -INF;
+        for (int i = 1; i < n; i++) {
+            if (nums[i] > nums[i - 1]) {
+                dp1[i] = System.Math.Max((long)nums[i - 1] + nums[i], dp1[i - 1] + nums[i]);
+                dp3[i] = System.Math.Max(dp2[i - 1] + nums[i], dp3[i - 1] + nums[i]);
+            } else if (nums[i] < nums[i - 1]) {
+                dp2[i] = System.Math.Max(dp1[i - 1] + nums[i], dp2[i - 1] + nums[i]);
+            }
+            if (dp3[i] > maxSum) maxSum = dp3[i];
+        }
+        return maxSum;
     }
 }
 {% endraw %}
@@ -596,26 +564,21 @@ public class Solution {
  * @return {number}
  */
 var maxSumTrionic = function(nums) {
-    let n = nums.length;
-    let neg_inf = -Infinity;
-    let dp1 = neg_inf, dp2 = neg_inf, dp3 = neg_inf;
-    let dp0 = nums[0];
-    let ans = neg_inf;
+    const n = nums.length;
+    const dp1 = new Array(n).fill(-Infinity);
+    const dp2 = new Array(n).fill(-Infinity);
+    const dp3 = new Array(n).fill(-Infinity);
+    let maxSum = -Infinity;
     for (let i = 1; i < n; i++) {
-        let n_dp1 = neg_inf, n_dp2 = neg_inf, n_dp3 = neg_inf;
         if (nums[i] > nums[i - 1]) {
-            n_dp1 = Math.max(dp1, dp0) + nums[i];
-            n_dp3 = Math.max(dp3, dp2) + nums[i];
+            dp1[i] = Math.max(nums[i - 1] + nums[i], dp1[i - 1] + nums[i]);
+            dp3[i] = Math.max(dp2[i - 1] + nums[i], dp3[i - 1] + nums[i]);
         } else if (nums[i] < nums[i - 1]) {
-            n_dp2 = Math.max(dp2, dp1) + nums[i];
+            dp2[i] = Math.max(dp1[i - 1] + nums[i], dp2[i - 1] + nums[i]);
         }
-        dp0 = nums[i];
-        dp1 = n_dp1;
-        dp2 = n_dp2;
-        dp3 = n_dp3;
-        if (dp3 > ans) ans = dp3;
+        if (dp3[i] > maxSum) maxSum = dp3[i];
     }
-    return ans;
+    return maxSum;
 };
 {% endraw %}
 {% endhighlight %}
@@ -627,29 +590,29 @@ var maxSumTrionic = function(nums) {
 {% highlight typescript %}
 {% raw %}
 function maxSumTrionic(nums: number[]): number {
-    const INF = 1000000000000000;
-    let dp1 = -INF, dp2 = -INF, dp3 = -INF;
-    let maxTotal = -INF;
-    const n = nums.length;
-    for (let i = 1; i < n; i++) {
-        const n_i = nums[i];
-        const n_prev = nums[i - 1];
-        if (n_i > n_prev) {
-            dp3 = Math.max(dp3 + n_i, dp2 + n_i);
-            dp1 = Math.max(dp1 + n_i, n_prev + n_i);
-            dp2 = -INF;
-        } else if (n_i < n_prev) {
-            dp2 = Math.max(dp2 + n_i, dp1 + n_i);
-            dp1 = -INF;
-            dp3 = -INF;
-        } else {
-            dp1 = -INF;
-            dp2 = -INF;
-            dp3 = -INF;
-        }
-        if (dp3 > maxTotal) maxTotal = dp3;
+  const n = nums.length;
+  const INF = 1000000000000000;
+  let dp1 = -INF, dp2 = -INF, dp3 = -INF;
+  let ans = -INF;
+
+  for (let i = 1; i < n; i++) {
+    const v = nums[i];
+    const pv = nums[i - 1];
+    let n1 = -INF, n2 = -INF, n3 = -INF;
+
+    if (v > pv) {
+      n1 = Math.max(pv + v, dp1 + v);
+      n3 = Math.max(dp2 + v, dp3 + v);
+    } else if (v < pv) {
+      n2 = Math.max(dp1 + v, dp2 + v);
     }
-    return maxTotal;
+
+    dp1 = n1;
+    dp2 = n2;
+    dp3 = n3;
+    if (dp3 > ans) ans = dp3;
+  }
+  return ans;
 };
 {% endraw %}
 {% endhighlight %}
@@ -667,27 +630,35 @@ class Solution {
      * @return Integer
      */
     function maxSumTrionic($nums) {
-        $INF = 1000000000000000;
-        $dp1 = -$INF; $dp2 = -$INF; $dp3 = -$INF;
-        $maxTotal = -$INF;
         $n = count($nums);
+        $inf = 1000000000000000;
+        $dp1 = -$inf;
+        $dp2 = -$inf;
+        $dp3 = -$inf;
+        $ans = -$inf;
+
         for ($i = 1; $i < $n; $i++) {
-            $n_i = $nums[$i];
-            $n_prev = $nums[$i - 1];
-            if ($n_i > $n_prev) {
-                $dp3 = max($dp3 + $n_i, $dp2 + $n_i);
-                $dp1 = max($dp1 + $n_i, $n_prev + $n_i);
-                $dp2 = -$INF;
-            } else if ($n_i < $n_prev) {
-                $dp2 = max($dp2 + $n_i, $dp1 + $n_i);
-                $dp1 = -$INF;
-                $dp3 = -$INF;
-            } else {
-                $dp1 = -$INF; $dp2 = -$INF; $dp3 = -$INF;
+            $v = $nums[$i];
+            $pv = $nums[$i - 1];
+            $n1 = -$inf;
+            $n2 = -$inf;
+            $n3 = -$inf;
+
+            if ($v > $pv) {
+                $n1 = max($pv + $v, $dp1 + $v);
+                $n3 = max($dp2 + $v, $dp3 + $v);
+            } else if ($v < $pv) {
+                $n2 = max($dp1 + $v, $dp2 + $v);
             }
-            if ($dp3 > $maxTotal) $maxTotal = $dp3;
+
+            $dp1 = $n1;
+            $dp2 = $n2;
+            $dp3 = $n3;
+            if ($dp3 > $ans) {
+                $ans = $dp3;
+            }
         }
-        return $maxTotal;
+        return $ans;
     }
 }
 {% endraw %}
@@ -701,29 +672,29 @@ class Solution {
 {% raw %}
 class Solution {
     func maxSumTrionic(_ nums: [Int]) -> Int {
-        let INF = 1_000_000_000_000_000
-        var dp1 = -INF, dp2 = -INF, dp3 = -INF
-        var maxTotal = -INF
         let n = nums.count
+        let inf = 1_000_000_000_000_000
+        var dp1 = -inf, dp2 = -inf, dp3 = -inf
+        var ans = -inf
+
         for i in 1..<n {
-            let n_i = nums[i]
-            let n_prev = nums[i - 1]
-            if n_i > n_prev {
-                dp3 = max(dp3 + n_i, dp2 + n_i)
-                dp1 = max(dp1 + n_i, n_prev + n_i)
-                dp2 = -INF
-            } else if n_i < n_prev {
-                dp2 = max(dp2 + n_i, dp1 + n_i)
-                dp1 = -INF
-                dp3 = -INF
-            } else {
-                dp1 = -INF
-                dp2 = -INF
-                dp3 = -INF
+            let v = nums[i]
+            let pv = nums[i - 1]
+            var n1 = -inf, n2 = -inf, n3 = -inf
+
+            if v > pv {
+                n1 = max(pv + v, dp1 + v)
+                n3 = max(dp2 + v, dp3 + v)
+            } else if v < pv {
+                n2 = max(dp1 + v, dp2 + v)
             }
-            if dp3 > maxTotal { maxTotal = dp3 }
+
+            dp1 = n1
+            dp2 = n2
+            dp3 = n3
+            if dp3 > ans { ans = dp3 }
         }
-        return maxTotal
+        return ans
     }
 }
 {% endraw %}
@@ -735,33 +706,39 @@ class Solution {
 
 {% highlight kotlin %}
 {% raw %}
+import kotlin.math.max
+
 class Solution {
     fun maxSumTrionic(nums: IntArray): Long {
-        val INF = 1_000_000_000_000_000L
-        var dp1 = -INF
-        var dp2 = -INF
-        var dp3 = -INF
-        var maxTotal = -INF
         val n = nums.size
+        val inf = 1_000_000_000_000_000L
+        var dp1 = -inf
+        var dp2 = -inf
+        var dp3 = -inf
+        var ans = -inf
+
         for (i in 1 until n) {
-            val n_i = nums[i].toLong()
-            val n_prev = nums[i - 1].toLong()
-            if (n_i > n_prev) {
-                dp3 = maxOf(dp3 + n_i, dp2 + n_i)
-                dp1 = maxOf(dp1 + n_i, n_prev + n_i)
-                dp2 = -INF
-            } else if (n_i < n_prev) {
-                dp2 = maxOf(dp2 + n_i, dp1 + n_i)
-                dp1 = -INF
-                dp3 = -INF
-            } else {
-                dp1 = -INF
-                dp2 = -INF
-                dp3 = -INF
+            val v = nums[i].toLong()
+            val pv = nums[i - 1].toLong()
+            var n1 = -inf
+            var n2 = -inf
+            var n3 = -inf
+
+            if (v > pv) {
+                n1 = max(pv + v, dp1 + v)
+                n3 = max(dp2 + v, dp3 + v)
+            } else if (v < pv) {
+                n2 = max(dp1 + v, dp2 + v)
             }
-            if (dp3 > maxTotal) maxTotal = dp3
+
+            dp1 = n1
+            dp2 = n2
+            dp3 = n3
+            if (dp3 > ans) {
+                ans = dp3
+            }
         }
-        return maxTotal
+        return ans
     }
 }
 {% endraw %}
@@ -777,29 +754,29 @@ import 'dart:math';
 
 class Solution {
   int maxSumTrionic(List<int> nums) {
-    int INF = 1000000000000000;
-    int dp1 = -INF, dp2 = -INF, dp3 = -INF;
-    int maxTotal = -INF;
     int n = nums.length;
+    int inf = 1000000000000000;
+    int dp1 = -inf, dp2 = -inf, dp3 = -inf;
+    int ans = -inf;
+
     for (int i = 1; i < n; i++) {
-      int n_i = nums[i];
-      int n_prev = nums[i - 1];
-      if (n_i > n_prev) {
-        dp3 = max(dp3 + n_i, dp2 + n_i);
-        dp1 = max(dp1 + n_i, n_prev + n_i);
-        dp2 = -INF;
-      } else if (n_i < n_prev) {
-        dp2 = max(dp2 + n_i, dp1 + n_i);
-        dp1 = -INF;
-        dp3 = -INF;
-      } else {
-        dp1 = -INF;
-        dp2 = -INF;
-        dp3 = -INF;
+      int v = nums[i];
+      int pv = nums[i - 1];
+      int n1 = -inf, n2 = -inf, n3 = -inf;
+
+      if (v > pv) {
+        n1 = max(pv + v, dp1 + v);
+        n3 = max(dp2 + v, dp3 + v);
+      } else if (v < pv) {
+        n2 = max(dp1 + v, dp2 + v);
       }
-      if (dp3 > maxTotal) maxTotal = dp3;
+
+      dp1 = n1;
+      dp2 = n2;
+      dp3 = n3;
+      if (dp3 > ans) ans = dp3;
     }
-    return maxTotal;
+    return ans;
   }
 }
 {% endraw %}
@@ -812,35 +789,39 @@ class Solution {
 {% highlight go %}
 {% raw %}
 func maxSumTrionic(nums []int) int64 {
-    const INF int64 = 1000000000000000
-    dp1, dp2, dp3 := -INF, -INF, -INF
-    maxTotal := -INF
-    n := len(nums)
-    for i := 1; i < n; i++ {
-        n_i := int64(nums[i])
-        n_prev := int64(nums[i-1])
-        if n_i > n_prev {
-            v3_1 := dp3 + n_i
-            v3_2 := dp2 + n_i
-            if v3_1 > v3_2 { dp3 = v3_1 } else { dp3 = v3_2 }
-            v1_1 := dp1 + n_i
-            v1_2 := n_prev + n_i
-            if v1_1 > v1_2 { dp1 = v1_1 } else { dp1 = v1_2 }
-            dp2 = -INF
-        } else if n_i < n_prev {
-            v2_1 := dp2 + n_i
-            v2_2 := dp1 + n_i
-            if v2_1 > v2_2 { dp2 = v2_1 } else { dp2 = v2_2 }
-            dp1 = -INF
-            dp3 = -INF
-        } else {
-            dp1, dp2, dp3 = -INF, -INF, -INF
-        }
-        if dp3 > maxTotal {
-            maxTotal = dp3
-        }
-    }
-    return maxTotal
+	n := len(nums)
+	const INF int64 = 1000000000000000
+	dp1, dp2, dp3 := -INF, -INF, -INF
+	ans := -INF
+	for i := 1; i < n; i++ {
+		var n1, n2, n3 int64 = -INF, -INF, -INF
+		v := int64(nums[i])
+		pv := int64(nums[i-1])
+		if v > pv {
+			n1 = pv + v
+			if dp1 != -INF && dp1+v > n1 {
+				n1 = dp1 + v
+			}
+			if dp2 != -INF {
+				n3 = dp2 + v
+			}
+			if dp3 != -INF && dp3+v > n3 {
+				n3 = dp3 + v
+			}
+		} else if v < pv {
+			if dp1 != -INF {
+				n2 = dp1 + v
+			}
+			if dp2 != -INF && dp2+v > n2 {
+				n2 = dp2 + v
+			}
+		}
+		dp1, dp2, dp3 = n1, n2, n3
+		if dp3 > ans {
+			ans = dp3
+		}
+	}
+	return ans
 }
 {% endraw %}
 {% endhighlight %}
@@ -852,29 +833,36 @@ func maxSumTrionic(nums []int) int64 {
 {% highlight ruby %}
 {% raw %}
 def max_sum_trionic(nums)
-  n = nums.length
-  inf = 1_000_000_000_000_000_000
-  limit = 500_000_000_000_000_000
+  inf = 10**17
+  dp0 = nums[0]
   dp1 = -inf
   dp2 = -inf
   dp3 = -inf
-  max_total = -inf
-  (1...n).each do |i|
-    num = nums[i]
-    prev_num = nums[i - 1]
-    if num > prev_num
-      next_dp1 = [dp1, prev_num].max + num
-      next_dp3 = (dp3 > -limit || dp2 > -limit) ? [dp3, dp2].max + num : -inf
-      dp1, dp2, dp3 = next_dp1, -inf, next_dp3
-    elsif num < prev_num
-      next_dp2 = (dp2 > -limit || dp1 > -limit) ? [dp2, dp1].max + num : -inf
-      dp1, dp2, dp3 = -inf, next_dp2, -inf
+  max_val = -inf
+  (1...nums.length).each do |i|
+    cur = nums[i]
+    prev = nums[i-1]
+    if cur > prev
+      n1 = [dp1, dp0].max + cur
+      n3 = [dp3, dp2].max + cur
+      dp0 = [dp0 + cur, cur].max
+      dp1 = n1
+      dp2 = -inf
+      dp3 = n3
+    elsif cur < prev
+      dp2 = [dp2, dp1].max + cur
+      dp0 = cur
+      dp1 = -inf
+      dp3 = -inf
     else
-      dp1, dp2, dp3 = -inf, -inf, -inf
+      dp0 = cur
+      dp1 = -inf
+      dp2 = -inf
+      dp3 = -inf
     end
-    max_total = dp3 if dp3 > max_total
+    max_val = dp3 if dp3 > max_val
   end
-  max_total
+  max_val
 end
 {% endraw %}
 {% endhighlight %}
@@ -887,37 +875,36 @@ end
 {% raw %}
 object Solution {
     def maxSumTrionic(nums: Array[Int]): Long = {
-        val n = nums.length
-        val INF = 1000000000000000000L
-        val LIMIT = 500000000000000000L
-        var dp1 = -INF
-        var dp2 = -INF
-        var dp3 = -INF
-        var maxTotal = -INF
-        var i = 1
-        while (i < n) {
-            val num = nums(i).toLong
-            val prevNum = nums(i - 1).toLong
-            if (num > prevNum) {
-                val nextDp1 = Math.max(dp1, prevNum) + num
-                val nextDp3 = if (dp3 > -LIMIT || dp2 > -LIMIT) Math.max(dp3, dp2) + num else -INF
-                dp1 = nextDp1
-                dp2 = -INF
-                dp3 = nextDp3
-            } else if (num < prevNum) {
-                val nextDp2 = if (dp2 > -LIMIT || dp1 > -LIMIT) Math.max(dp2, dp1) + num else -INF
-                dp1 = -INF
-                dp2 = nextDp2
-                dp3 = -INF
+        val inf = 100000000000000000L
+        var dp0 = nums(0).toLong
+        var dp1 = -inf
+        var dp2 = -inf
+        var dp3 = -inf
+        var maxVal = -inf
+        for (i <- 1 until nums.length) {
+            val cur = nums(i).toLong
+            val prev = nums(i - 1).toLong
+            if (cur > prev) {
+                val n1 = Math.max(dp1, dp0) + cur
+                val n3 = Math.max(dp3, dp2) + cur
+                dp0 = Math.max(dp0 + cur, cur)
+                dp1 = n1
+                dp2 = -inf
+                dp3 = n3
+            } else if (cur < prev) {
+                dp2 = Math.max(dp2, dp1) + cur
+                dp0 = cur
+                dp1 = -inf
+                dp3 = -inf
             } else {
-                dp1 = -INF
-                dp2 = -INF
-                dp3 = -INF
+                dp0 = cur
+                dp1 = -inf
+                dp2 = -inf
+                dp3 = -inf
             }
-            if (dp3 > maxTotal) maxTotal = dp3
-            i += 1
+            maxVal = Math.max(maxVal, dp3)
         }
-        maxTotal
+        maxVal
     }
 }
 {% endraw %}
@@ -931,32 +918,36 @@ object Solution {
 {% raw %}
 impl Solution {
     pub fn max_sum_trionic(nums: Vec<i32>) -> i64 {
-        let n = nums.len();
-        let inf: i64 = 1_000_000_000_000_000_000;
-        let limit: i64 = 500_000_000_000_000_000;
-        let mut dp1 = -inf;
-        let mut dp2 = -inf;
-        let mut dp3 = -inf;
-        let mut max_total = -inf;
-        for i in 1..n {
-            let num = nums[i] as i64;
-            let prev_num = nums[i - 1] as i64;
-            let (next_dp1, next_dp2, next_dp3) = if num > prev_num {
-                let d1 = dp1.max(prev_num) + num;
-                let d3 = if dp3 > -limit || dp2 > -limit { dp3.max(dp2) + num } else { -inf };
-                (d1, -inf, d3)
-            } else if num < prev_num {
-                let d2 = if dp2 > -limit || dp1 > -limit { dp2.max(dp1) + num } else { -inf };
-                (-inf, d2, -inf)
+        let inf: i64 = 100_000_000_000_000_000;
+        let mut dp0: i64 = nums[0] as i64;
+        let mut dp1: i64 = -inf;
+        let mut dp2: i64 = -inf;
+        let mut dp3: i64 = -inf;
+        let mut max_val: i64 = -inf;
+        for i in 1..nums.len() {
+            let cur = nums[i] as i64;
+            let prev = nums[i-1] as i64;
+            if cur > prev {
+                let n1 = dp1.max(dp0) + cur;
+                let n3 = dp3.max(dp2) + cur;
+                dp0 = (dp0 + cur).max(cur);
+                dp1 = n1;
+                dp2 = -inf;
+                dp3 = n3;
+            } else if cur < prev {
+                dp2 = dp2.max(dp1) + cur;
+                dp0 = cur;
+                dp1 = -inf;
+                dp3 = -inf;
             } else {
-                (-inf, -inf, -inf)
-            };
-            dp1 = next_dp1;
-            dp2 = next_dp2;
-            dp3 = next_dp3;
-            if dp3 > max_total { max_total = dp3; }
+                dp0 = cur;
+                dp1 = -inf;
+                dp2 = -inf;
+                dp3 = -inf;
+            }
+            max_val = max_val.max(dp3);
         }
-        max_total
+        max_val
     }
 }
 {% endraw %}
@@ -970,22 +961,18 @@ impl Solution {
 {% raw %}
 (define/contract (max-sum-trionic nums)
   (-> (listof exact-integer?) exact-integer?)
-  (let* ([inf 1000000000000000000]
-         [limit 500000000000000000])
-    (let loop ([rem-nums (cdr nums)]
-               [prev (car nums)]
-               [dp1 (- inf)]
-               [dp2 (- inf)]
-               [dp3 (- inf)]
-               [max-total (- inf)])
-      (if (null? rem-nums)
-          max-total
-          (let* ([num (car rem-nums)]
-                 [new-dp1 (if (> num prev) (+ (max dp1 prev) num) (- inf))]
-                 [new-dp2 (if (< num prev) (if (or (> dp2 (- limit)) (> dp1 (- limit))) (+ (max dp2 dp1) num) (- inf)) (- inf))]
-                 [new-dp3 (if (> num prev) (if (or (> dp3 (- limit)) (> dp2 (- limit))) (+ (max dp3 dp2) num) (- inf)) (- inf))]
-                 [new-max (max max-total new-dp3)])
-            (loop (cdr rem-nums) num new-dp1 new-dp2 new-dp3 new-max))))))
+  (let* ([inf 100000000000000000]
+         [h (car nums)]
+         [t (cdr nums)])
+    (let loop ([lst t] [prev h] [dp0 h] [dp1 (- inf)] [dp2 (- inf)] [dp3 (- inf)] [max-v (- inf)])
+      (if (null? lst)
+          max-v
+          (let* ([cur (car lst)]
+                 [n0 (if (> cur prev) (max (+ dp0 cur) cur) cur)]
+                 [n1 (if (> cur prev) (+ (max dp1 dp0) cur) (- inf))]
+                 [n2 (if (< cur prev) (+ (max dp2 dp1) cur) (- inf))]
+                 [n3 (if (> cur prev) (+ (max dp3 dp2) cur) (- inf))])
+            (loop (cdr lst) cur n0 n1 n2 n3 (max max-v n3)))))))
 {% endraw %}
 {% endhighlight %}
 
@@ -996,27 +983,20 @@ impl Solution {
 {% highlight erlang %}
 {% raw %}
 -spec max_sum_trionic(Nums :: [integer()]) -> integer().
-max_sum_trionic(Nums) ->
-  [First | Rest] = Nums,
-  INF = 1000000000000000000,
-  LIMIT = 500000000000000000,
-  solve(Rest, First, -INF, -INF, -INF, -INF, INF, LIMIT).
-
-solve([], _Prev, _DP1, _DP2, _DP3, MaxTotal, _INF, _LIMIT) ->
-  MaxTotal;
-solve([Num | Rest], Prev, DP1, DP2, DP3, MaxTotal, INF, LIMIT) ->
-  {NextDP1, NextDP2, NextDP3} = if
-    Num > Prev ->
-      D1 = erlang:max(DP1, Prev) + Num,
-      D3 = if (DP3 > -LIMIT) orelse (DP2 > -LIMIT) -> erlang:max(DP3, DP2) + Num; true -> -INF end,
-      {D1, -INF, D3};
-    Num < Prev ->
-      D2 = if (DP2 > -LIMIT) orelse (DP1 > -LIMIT) -> erlang:max(DP2, DP1) + Num; true -> -INF end,
-      {-INF, D2, -INF};
-    true ->
-      {-INF, -INF, -INF}
-  end,
-  solve(Rest, Num, NextDP1, NextDP2, NextDP3, erlang:max(MaxTotal, NextDP3), INF, LIMIT).
+max_sum_trionic([H | T]) ->
+  Inf = 100000000000000000,
+  {_, _, _, _, _, MaxSum} = lists:foldl(fun(Cur, {Prev, Dp0, Dp1, Dp2, Dp3, Acc}) ->
+    {Next0, Next1, Next2, Next3} = if
+      Cur > Prev ->
+        {max(Dp0 + Cur, Cur), max(Dp1, Dp0) + Cur, -Inf, max(Dp3, Dp2) + Cur};
+      Cur < Prev ->
+        {Cur, -Inf, max(Dp2, Dp1) + Cur, -Inf};
+      true ->
+        {Cur, -Inf, -Inf, -Inf}
+    end,
+    {Cur, Next0, Next1, Next2, Next3, max(Acc, Next3)}
+  end, {H, H, -Inf, -Inf, -Inf, -Inf}, T),
+  MaxSum.
 {% endraw %}
 {% endhighlight %}
 
@@ -1028,26 +1008,23 @@ solve([Num | Rest], Prev, DP1, DP2, DP3, MaxTotal, INF, LIMIT) ->
 {% raw %}
 defmodule Solution do
   @spec max_sum_trionic(nums :: [integer]) :: integer
-  def max_sum_trionic([first | rest]) do
-    inf = 1_000_000_000_000_000_000
-    limit = 500_000_000_000_000_000
-    solve(rest, first, -inf, -inf, -inf, -inf, inf, limit)
-  end
-
-  defp solve([], _prev, _dp1, _dp2, _dp3, max_total, _inf, _limit), do: max_total
-  defp solve([num | rest], prev, dp1, dp2, dp3, max_total, inf, limit) do
-    {new_dp1, new_dp2, new_dp3} = cond do
-      num > prev ->
-        next_dp1 = max(dp1, prev) + num
-        next_dp3 = if dp3 > -limit or dp2 > -limit, do: max(dp3, dp2) + num, else: -inf
-        {next_dp1, -inf, next_dp3}
-      num < prev ->
-        next_dp2 = if dp2 > -limit or dp1 > -limit, do: max(dp2, dp1) + num, else: -inf
-        {-inf, next_dp2, -inf}
-      true ->
-        {-inf, -inf, -inf}
-    end
-    solve(rest, num, new_dp1, new_dp2, new_dp3, max(max_total, new_dp3), inf, limit)
+  def max_sum_trionic(nums) do
+    inf = 100_000_000_000_000_000
+    [h | t] = nums
+    {_prev, _dp0, _dp1, _dp2, _dp3, max_val} = 
+      Enum.reduce(t, {h, h, -inf, -inf, -inf, -inf}, fn cur, {prev, dp0, dp1, dp2, dp3, acc} ->
+        {next0, next1, next2, next3} = 
+          cond do
+            cur > prev ->
+              {max(dp0 + cur, cur), max(dp1, dp0) + cur, -inf, max(dp3, dp2) + cur}
+            cur < prev ->
+              {cur, -inf, max(dp2, dp1) + cur, -inf}
+            true ->
+              {cur, -inf, -inf, -inf}
+          end
+        {cur, next0, next1, next2, next3, max(acc, next3)}
+      end)
+    max_val
   end
 end
 {% endraw %}
@@ -1059,5 +1036,5 @@ end
 
 ### Complexity Analysis
 
-- **Time Complexity:** O(n), where n is the length of the input array. We iterate through the array once, and each state update takes constant time.
-- **Space Complexity:** O(1) auxiliary space (not counting the input array), as we only track the three DP states and a few variables for the current and previous states.
+- **Time Complexity:** O(n) where n is the length of the input array. We iterate through the array once, and each update for the three DP states takes constant time.
+- **Space Complexity:** O(n) to store three DP arrays of size n. This could be optimized to O(1) by only keeping track of the previous state, but $O(n)$ is efficient and fits within memory constraints.
