@@ -394,5 +394,9 @@
   "2026-02-07": {
     "link": "/problems/minimum-deletions-to-make-string-balanced/",
     "titleSlug": "minimum-deletions-to-make-string-balanced"
+  },
+  "2026-02-08": {
+    "link": "/problems/balanced-binary-tree/",
+    "titleSlug": "balanced-binary-tree"
   }
 }
