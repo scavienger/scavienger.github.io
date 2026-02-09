@@ -398,5 +398,9 @@
   "2026-02-08": {
     "link": "/problems/balanced-binary-tree/",
     "titleSlug": "balanced-binary-tree"
+  },
+  "2026-02-09": {
+    "link": "/problems/balance-a-binary-search-tree/",
+    "titleSlug": "balance-a-binary-search-tree"
   }
 }
