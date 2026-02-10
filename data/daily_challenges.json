@@ -402,5 +402,9 @@
   "2026-02-09": {
     "link": "/problems/balance-a-binary-search-tree/",
     "titleSlug": "balance-a-binary-search-tree"
+  },
+  "2026-02-10": {
+    "link": "/problems/longest-balanced-subarray-i/",
+    "titleSlug": "longest-balanced-subarray-i"
   }
 }
