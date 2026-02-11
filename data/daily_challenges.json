@@ -406,5 +406,9 @@
   "2026-02-10": {
     "link": "/problems/longest-balanced-subarray-i/",
     "titleSlug": "longest-balanced-subarray-i"
+  },
+  "2026-02-11": {
+    "link": "/problems/longest-balanced-subarray-ii/",
+    "titleSlug": "longest-balanced-subarray-ii"
   }
 }
