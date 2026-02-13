@@ -414,5 +414,9 @@
   "2026-02-12": {
     "link": "/problems/longest-balanced-substring-i/",
     "titleSlug": "longest-balanced-substring-i"
+  },
+  "2026-02-13": {
+    "link": "/problems/longest-balanced-substring-ii/",
+    "titleSlug": "longest-balanced-substring-ii"
   }
 }
