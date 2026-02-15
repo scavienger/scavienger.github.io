@@ -422,5 +422,9 @@
   "2026-02-14": {
     "link": "/problems/champagne-tower/",
     "titleSlug": "champagne-tower"
+  },
+  "2026-02-15": {
+    "link": "/problems/add-binary/",
+    "titleSlug": "add-binary"
   }
 }
