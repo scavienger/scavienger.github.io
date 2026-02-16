@@ -426,5 +426,9 @@
   "2026-02-15": {
     "link": "/problems/add-binary/",
     "titleSlug": "add-binary"
+  },
+  "2026-02-16": {
+    "link": "/problems/reverse-bits/",
+    "titleSlug": "reverse-bits"
   }
 }
