@@ -430,5 +430,9 @@
   "2026-02-16": {
     "link": "/problems/reverse-bits/",
     "titleSlug": "reverse-bits"
+  },
+  "2026-02-17": {
+    "link": "/problems/binary-watch/",
+    "titleSlug": "binary-watch"
   }
 }
