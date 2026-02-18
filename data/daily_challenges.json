@@ -434,5 +434,9 @@
   "2026-02-17": {
     "link": "/problems/binary-watch/",
     "titleSlug": "binary-watch"
+  },
+  "2026-02-18": {
+    "link": "/problems/binary-number-with-alternating-bits/",
+    "titleSlug": "binary-number-with-alternating-bits"
   }
 }
