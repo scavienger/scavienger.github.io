@@ -438,5 +438,9 @@
   "2026-02-18": {
     "link": "/problems/binary-number-with-alternating-bits/",
     "titleSlug": "binary-number-with-alternating-bits"
+  },
+  "2026-02-19": {
+    "link": "/problems/count-binary-substrings/",
+    "titleSlug": "count-binary-substrings"
   }
 }
