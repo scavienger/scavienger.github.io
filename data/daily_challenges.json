@@ -442,5 +442,9 @@
   "2026-02-19": {
     "link": "/problems/count-binary-substrings/",
     "titleSlug": "count-binary-substrings"
+  },
+  "2026-02-20": {
+    "link": "/problems/special-binary-string/",
+    "titleSlug": "special-binary-string"
   }
 }
