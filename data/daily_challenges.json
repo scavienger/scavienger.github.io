@@ -450,5 +450,9 @@
   "2026-02-21": {
     "link": "/problems/prime-number-of-set-bits-in-binary-representation/",
     "titleSlug": "prime-number-of-set-bits-in-binary-representation"
+  },
+  "2026-02-22": {
+    "link": "/problems/binary-gap/",
+    "titleSlug": "binary-gap"
   }
 }
