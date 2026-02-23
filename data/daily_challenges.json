@@ -454,5 +454,9 @@
   "2026-02-22": {
     "link": "/problems/binary-gap/",
     "titleSlug": "binary-gap"
+  },
+  "2026-02-23": {
+    "link": "/problems/check-if-a-string-contains-all-binary-codes-of-size-k/",
+    "titleSlug": "check-if-a-string-contains-all-binary-codes-of-size-k"
   }
 }
