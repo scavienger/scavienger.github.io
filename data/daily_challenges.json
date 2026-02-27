@@ -470,5 +470,9 @@
   "2026-02-26": {
     "link": "/problems/number-of-steps-to-reduce-a-number-in-binary-representation-to-one/",
     "titleSlug": "number-of-steps-to-reduce-a-number-in-binary-representation-to-one"
+  },
+  "2026-02-27": {
+    "link": "/problems/minimum-operations-to-equalize-binary-string/",
+    "titleSlug": "minimum-operations-to-equalize-binary-string"
   }
 }
