@@ -474,5 +474,9 @@
   "2026-02-27": {
     "link": "/problems/minimum-operations-to-equalize-binary-string/",
     "titleSlug": "minimum-operations-to-equalize-binary-string"
+  },
+  "2026-02-28": {
+    "link": "/problems/concatenation-of-consecutive-binary-numbers/",
+    "titleSlug": "concatenation-of-consecutive-binary-numbers"
   }
 }
