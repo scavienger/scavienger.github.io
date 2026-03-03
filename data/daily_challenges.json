@@ -486,5 +486,9 @@
   "2026-03-02": {
     "link": "/problems/minimum-swaps-to-arrange-a-binary-grid/",
     "titleSlug": "minimum-swaps-to-arrange-a-binary-grid"
+  },
+  "2026-03-03": {
+    "link": "/problems/find-kth-bit-in-nth-binary-string/",
+    "titleSlug": "find-kth-bit-in-nth-binary-string"
   }
 }
