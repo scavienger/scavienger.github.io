@@ -498,5 +498,9 @@
   "2026-03-05": {
     "link": "/problems/minimum-changes-to-make-alternating-binary-string/",
     "titleSlug": "minimum-changes-to-make-alternating-binary-string"
+  },
+  "2026-03-06": {
+    "link": "/problems/check-if-binary-string-has-at-most-one-segment-of-ones/",
+    "titleSlug": "check-if-binary-string-has-at-most-one-segment-of-ones"
   }
 }
