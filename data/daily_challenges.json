@@ -506,5 +506,9 @@
   "2026-03-07": {
     "link": "/problems/minimum-number-of-flips-to-make-the-binary-string-alternating/",
     "titleSlug": "minimum-number-of-flips-to-make-the-binary-string-alternating"
+  },
+  "2026-03-08": {
+    "link": "/problems/find-unique-binary-string/",
+    "titleSlug": "find-unique-binary-string"
   }
 }
