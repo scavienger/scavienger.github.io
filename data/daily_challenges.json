@@ -514,5 +514,9 @@
   "2026-03-09": {
     "link": "/problems/find-all-possible-stable-binary-arrays-i/",
     "titleSlug": "find-all-possible-stable-binary-arrays-i"
+  },
+  "2026-03-10": {
+    "link": "/problems/find-all-possible-stable-binary-arrays-ii/",
+    "titleSlug": "find-all-possible-stable-binary-arrays-ii"
   }
 }
