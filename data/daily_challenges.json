@@ -522,5 +522,9 @@
   "2026-03-11": {
     "link": "/problems/complement-of-base-10-integer/",
     "titleSlug": "complement-of-base-10-integer"
+  },
+  "2026-03-12": {
+    "link": "/problems/maximize-spanning-tree-stability-with-upgrades/",
+    "titleSlug": "maximize-spanning-tree-stability-with-upgrades"
   }
 }
