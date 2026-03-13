@@ -526,5 +526,9 @@
   "2026-03-12": {
     "link": "/problems/maximize-spanning-tree-stability-with-upgrades/",
     "titleSlug": "maximize-spanning-tree-stability-with-upgrades"
+  },
+  "2026-03-13": {
+    "link": "/problems/minimum-number-of-seconds-to-make-mountain-height-zero/",
+    "titleSlug": "minimum-number-of-seconds-to-make-mountain-height-zero"
   }
 }
