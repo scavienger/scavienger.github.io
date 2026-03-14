@@ -530,5 +530,9 @@
   "2026-03-13": {
     "link": "/problems/minimum-number-of-seconds-to-make-mountain-height-zero/",
     "titleSlug": "minimum-number-of-seconds-to-make-mountain-height-zero"
+  },
+  "2026-03-14": {
+    "link": "/problems/the-k-th-lexicographical-string-of-all-happy-strings-of-length-n/",
+    "titleSlug": "the-k-th-lexicographical-string-of-all-happy-strings-of-length-n"
   }
 }
