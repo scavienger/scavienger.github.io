@@ -534,5 +534,9 @@
   "2026-03-14": {
     "link": "/problems/the-k-th-lexicographical-string-of-all-happy-strings-of-length-n/",
     "titleSlug": "the-k-th-lexicographical-string-of-all-happy-strings-of-length-n"
+  },
+  "2026-03-15": {
+    "link": "/problems/fancy-sequence/",
+    "titleSlug": "fancy-sequence"
   }
 }
