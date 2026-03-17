@@ -542,5 +542,9 @@
   "2026-03-16": {
     "link": "/problems/get-biggest-three-rhombus-sums-in-a-grid/",
     "titleSlug": "get-biggest-three-rhombus-sums-in-a-grid"
+  },
+  "2026-03-17": {
+    "link": "/problems/largest-submatrix-with-rearrangements/",
+    "titleSlug": "largest-submatrix-with-rearrangements"
   }
 }
