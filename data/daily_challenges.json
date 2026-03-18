@@ -546,5 +546,9 @@
   "2026-03-17": {
     "link": "/problems/largest-submatrix-with-rearrangements/",
     "titleSlug": "largest-submatrix-with-rearrangements"
+  },
+  "2026-03-18": {
+    "link": "/problems/count-submatrices-with-top-left-element-and-sum-less-than-k/",
+    "titleSlug": "count-submatrices-with-top-left-element-and-sum-less-than-k"
   }
 }
