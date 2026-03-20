@@ -554,5 +554,9 @@
   "2026-03-19": {
     "link": "/problems/count-submatrices-with-equal-frequency-of-x-and-y/",
     "titleSlug": "count-submatrices-with-equal-frequency-of-x-and-y"
+  },
+  "2026-03-20": {
+    "link": "/problems/minimum-absolute-difference-in-sliding-submatrix/",
+    "titleSlug": "minimum-absolute-difference-in-sliding-submatrix"
   }
 }
