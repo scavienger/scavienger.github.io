@@ -558,5 +558,9 @@
   "2026-03-20": {
     "link": "/problems/minimum-absolute-difference-in-sliding-submatrix/",
     "titleSlug": "minimum-absolute-difference-in-sliding-submatrix"
+  },
+  "2026-03-21": {
+    "link": "/problems/flip-square-submatrix-vertically/",
+    "titleSlug": "flip-square-submatrix-vertically"
   }
 }
