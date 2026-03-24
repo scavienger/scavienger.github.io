@@ -570,5 +570,9 @@
   "2026-03-23": {
     "link": "/problems/maximum-non-negative-product-in-a-matrix/",
     "titleSlug": "maximum-non-negative-product-in-a-matrix"
+  },
+  "2026-03-24": {
+    "link": "/problems/construct-product-matrix/",
+    "titleSlug": "construct-product-matrix"
   }
 }
