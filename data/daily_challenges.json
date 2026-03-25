@@ -574,5 +574,9 @@
   "2026-03-24": {
     "link": "/problems/construct-product-matrix/",
     "titleSlug": "construct-product-matrix"
+  },
+  "2026-03-25": {
+    "link": "/problems/equal-sum-grid-partition-i/",
+    "titleSlug": "equal-sum-grid-partition-i"
   }
 }
