@@ -578,5 +578,9 @@
   "2026-03-25": {
     "link": "/problems/equal-sum-grid-partition-i/",
     "titleSlug": "equal-sum-grid-partition-i"
+  },
+  "2026-03-26": {
+    "link": "/problems/equal-sum-grid-partition-ii/",
+    "titleSlug": "equal-sum-grid-partition-ii"
   }
 }
