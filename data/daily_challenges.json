@@ -586,5 +586,9 @@
   "2026-03-27": {
     "link": "/problems/matrix-similarity-after-cyclic-shifts/",
     "titleSlug": "matrix-similarity-after-cyclic-shifts"
+  },
+  "2026-03-28": {
+    "link": "/problems/find-the-string-with-lcp/",
+    "titleSlug": "find-the-string-with-lcp"
   }
 }
