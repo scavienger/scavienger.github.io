@@ -598,5 +598,9 @@
   "2026-03-30": {
     "link": "/problems/check-if-strings-can-be-made-equal-with-operations-ii/",
     "titleSlug": "check-if-strings-can-be-made-equal-with-operations-ii"
+  },
+  "2026-03-31": {
+    "link": "/problems/lexicographically-smallest-generated-string/",
+    "titleSlug": "lexicographically-smallest-generated-string"
   }
 }
