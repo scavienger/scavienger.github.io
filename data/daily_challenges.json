@@ -602,5 +602,9 @@
   "2026-03-31": {
     "link": "/problems/lexicographically-smallest-generated-string/",
     "titleSlug": "lexicographically-smallest-generated-string"
+  },
+  "2026-04-01": {
+    "link": "/problems/robot-collisions/",
+    "titleSlug": "robot-collisions"
   }
 }
