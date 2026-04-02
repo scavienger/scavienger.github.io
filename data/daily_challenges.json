@@ -606,5 +606,9 @@
   "2026-04-01": {
     "link": "/problems/robot-collisions/",
     "titleSlug": "robot-collisions"
+  },
+  "2026-04-02": {
+    "link": "/problems/maximum-amount-of-money-robot-can-earn/",
+    "titleSlug": "maximum-amount-of-money-robot-can-earn"
   }
 }
