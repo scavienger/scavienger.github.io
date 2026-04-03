@@ -610,5 +610,9 @@
   "2026-04-02": {
     "link": "/problems/maximum-amount-of-money-robot-can-earn/",
     "titleSlug": "maximum-amount-of-money-robot-can-earn"
+  },
+  "2026-04-03": {
+    "link": "/problems/maximum-walls-destroyed-by-robots/",
+    "titleSlug": "maximum-walls-destroyed-by-robots"
   }
 }
