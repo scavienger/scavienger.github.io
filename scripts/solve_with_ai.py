@@ -239,6 +239,9 @@ Problem Description:
         if snippets_prompt:
             prompt += f"IMPORTANT CODE TEMPLATES:\n{snippets_prompt}\n"
 
+        if difficulty and str(difficulty).upper() == "HARD":
+            prompt += "SPECIAL RULES FOR HARD PROBLEMS:\n- The algorithm must be completely optimal strictly focusing on time/space efficiency.\n- Code should be as compact as practically possible to save tokens without sacrificing correctness.\n\n"
+
         langs_str = ", ".join(target_languages)
         if include_metadata:
             prompt += f"""Please provide solutions ONLY for these languages (match this list exactly): {langs_str}
@@ -611,11 +614,36 @@ Format as JSON:
 
         problem_slug = problem_data.get('title_slug', '')
         problem_date = problem_data.get('date', '')
+        difficulty = problem_data.get('difficulty', '')
         final_solution = {"solutions": {}}
         total_elapsed_time = 0.0
         
-        for i, batch in enumerate(self.LANGUAGE_BATCHES):
-            print(f"  - Batch {i+1}/{len(self.LANGUAGE_BATCHES)}: {', '.join(batch)}", file=sys.stderr)
+        # Determine batches dynamically
+        diff_upper = difficulty.upper() if difficulty else ""
+        if diff_upper == "HARD":
+            # 6 requests (chunks of ~3)
+            batches = [
+                ["C++", "Java", "Python", "Python3"],
+                ["C", "C#", "JavaScript"],
+                ["TypeScript", "PHP", "Swift"],
+                ["Kotlin", "Dart", "Go"],
+                ["Ruby", "Scala", "Rust"],
+                ["Racket", "Erlang", "Elixir"]
+            ]
+        elif diff_upper == "MEDIUM":
+            # 4 requests (chunks of ~5)
+            batches = [
+                ["C++", "Java", "Python", "Python3", "C"],
+                ["C#", "JavaScript", "TypeScript", "PHP", "Swift"],
+                ["Kotlin", "Dart", "Go", "Ruby", "Scala"],
+                ["Rust", "Racket", "Erlang", "Elixir"]
+            ]
+        else:
+            # 3 requests (EASY or unknown)
+            batches = self.LANGUAGE_BATCHES
+        
+        for i, batch in enumerate(batches):
+            print(f"  - Batch {i+1}/{len(batches)}: {', '.join(batch)}", file=sys.stderr)
             try:
                 include_metadata = (i == 0) or not final_solution.get("approach")
                 prompt = self.create_prompt(problem_data, batch, include_metadata=include_metadata)
@@ -676,7 +704,7 @@ Format as JSON:
                 print(f"Error with Gemini Batch {i+1}: {e}", file=sys.stderr)
                 self._fill_failed_batch(final_solution, batch, f"Error: {str(e)}")
 
-            if i < len(self.LANGUAGE_BATCHES) - 1:
+            if i < len(batches) - 1:
                 time.sleep(self.batch_delay)
 
         final_solution["elapsed_time"] = total_elapsed_time
