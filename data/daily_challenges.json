@@ -614,5 +614,9 @@
   "2026-04-03": {
     "link": "/problems/maximum-walls-destroyed-by-robots/",
     "titleSlug": "maximum-walls-destroyed-by-robots"
+  },
+  "2026-04-04": {
+    "link": "/problems/decode-the-slanted-ciphertext/",
+    "titleSlug": "decode-the-slanted-ciphertext"
   }
 }
