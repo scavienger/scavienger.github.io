@@ -288,7 +288,7 @@ Problem Description:
             prompt += f"IMPORTANT CODE TEMPLATES:\n{snippets_prompt}\n"
 
         if difficulty and str(difficulty).upper() == "HARD":
-            prompt += "SPECIAL RULES FOR HARD PROBLEMS:\n- The algorithm must be completely optimal strictly focusing on time/space efficiency.\n- Code should be as compact as practically possible to save tokens without sacrificing correctness.\n\n"
+            prompt += "SPECIAL RULES FOR HARD PROBLEMS:\n- The algorithm must be completely optimal strictly focusing on time/space efficiency.\n\n"
 
         langs_str = ", ".join(target_languages)
         if include_metadata:
@@ -301,15 +301,16 @@ OUTPUT RULES (CRITICAL):
 - Code strings must contain code only (no comments/narration). Escape every newline as \\n inside the JSON string, and use only valid JSON escapes: \\", \\\\, \\/, \\b, \\f, \\n, \\r, \\t, \\uXXXX. Never use backslash + space or other invalid forms.
 - Avoid HTML entities; use literal characters.
 - Do NOT use the pipe character '|' in text descriptions (Approach, Complexity) as it breaks Markdown table rendering. Use 'abs()' or escape it as '\\|' or use LaTeX-style $...$.
-- Do NOT pad output to the maximum token limit. Keep the JSON as short as possible while complete for the requested languages.
 - Output length must be driven by content only; never try to expand toward max_output_tokens.
 
 APPROACH:
 - Exactly 2 concise paragraphs describing the working algorithm and key intuition (no failed attempts).
 
 CODE FORMAT:
-- Multi-line, properly indented code for each language; standard conventions; no explanatory comments.
+- Multi-line, properly indented code for each language; standard conventions.
+- DO NOT add any comments to the generated code (except for preserving any comments already present in the initial code templates).
 - **MUST USE THE PROVIDED TEMPLATES** for method signatures if available.
+- CRITICAL: DO NOT truncate, abbreviate, or skip code logic. You MUST provide the fully working, complete implementation from start to finish for every language. Never use "..." to skip code.
 
 COMPLEXITY:
 - 1 short paragraph for time complexity and 1 for space complexity.
@@ -333,11 +334,13 @@ OUTPUT RULES (CRITICAL):
 - Prefer ASCII; use Unicode only when necessary in strings.
 - Code strings must contain code only (no comments/narration). Escape every newline as \\n inside the JSON string, and use only valid JSON escapes: \\", \\\\, \\/, \\b, \\f, \\n, \\r, \\t, \\uXXXX. Never use backslash + space or other invalid forms.
 - Avoid HTML entities; use literal characters.
-- Do NOT pad output to the maximum token limit. Keep the JSON as short as possible while complete for the requested languages.
+- Output length must be driven by content only; never try to expand toward max_output_tokens.
 
 CODE FORMAT:
-- Multi-line, properly indented code for each language; standard conventions; no explanatory comments.
+- Multi-line, properly indented code for each language; standard conventions.
+- DO NOT add any comments to the generated code (except for preserving any comments already present in the initial code templates).
 - **MUST USE THE PROVIDED TEMPLATES** for method signatures if available.
+- CRITICAL: DO NOT truncate, abbreviate, or skip code logic. You MUST provide the fully working, complete implementation from start to finish for every language. Never use "..." to skip code.
 
 Format as JSON:
 {{
@@ -592,7 +595,7 @@ Format as JSON:
 
             # B. Fix missing closing quotes before next JSON keys if text got truncated
             for key in ["time_complexity", "space_complexity", "solutions"]:
-                pattern = r'([^"\},\]\s])\s*\n\s*"' + key + r'"\s*:'
+                pattern = r'([^"\{\},\[\]\s])\s*\n\s*"' + key + r'"\s*:'
                 json_str = re.sub(pattern, r'\1",\n  "' + key + '":', json_str)
 
             # Trust the AI response and parse directly
