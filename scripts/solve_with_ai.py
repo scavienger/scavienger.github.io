@@ -565,6 +565,36 @@ Format as JSON:
                     except:
                         return self._create_error_response(response_text)
 
+            # 3. Fix common JSON corruption from Gemini
+            # A. Fix invalid JSON escapes (e.g. \max in LaTeX -> \\max)
+            def fix_escapes(s):
+                res = []
+                i = 0
+                while i < len(s):
+                    if s[i] == '\\':
+                        if i + 1 < len(s):
+                            if s[i+1] in ['\\', '"', '/', 'b', 'f', 'n', 'r', 't', 'u']:
+                                res.append(s[i:i+2])
+                                i += 2
+                            else:
+                                res.append('\\\\')
+                                res.append(s[i+1])
+                                i += 2
+                        else:
+                            res.append('\\\\')
+                            i += 1
+                    else:
+                        res.append(s[i])
+                        i += 1
+                return "".join(res)
+            
+            json_str = fix_escapes(json_str)
+
+            # B. Fix missing closing quotes before next JSON keys if text got truncated
+            for key in ["time_complexity", "space_complexity", "solutions"]:
+                pattern = r'([^"\},\]\s])\s*\n\s*"' + key + r'"\s*:'
+                json_str = re.sub(pattern, r'\1",\n  "' + key + '":', json_str)
+
             # Trust the AI response and parse directly
             parsed = None
             try:
