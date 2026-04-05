@@ -618,5 +618,9 @@
   "2026-04-04": {
     "link": "/problems/decode-the-slanted-ciphertext/",
     "titleSlug": "decode-the-slanted-ciphertext"
+  },
+  "2026-04-05": {
+    "link": "/problems/robot-return-to-origin/",
+    "titleSlug": "robot-return-to-origin"
   }
 }
