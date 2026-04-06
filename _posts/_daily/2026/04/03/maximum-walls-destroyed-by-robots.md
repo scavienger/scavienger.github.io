@@ -8,459 +8,601 @@ difficulty: Hard
 leetcode_url: https://leetcode.com/problems/maximum-walls-destroyed-by-robots/
 ai_solutions:
   - solutions:
-      cpp: '// Generation failed for C++
-
-        // Reason: Parsing failed'
-      java: '// Generation failed for Java
-
-        // Reason: Parsing failed'
-      python: '// Generation failed for Python
-
-        // Reason: Parsing failed'
-      python3: '// Generation failed for Python3
-
-        // Reason: Parsing failed'
-      c: "int compareRobots(const void* a, const void* b) {\n    int p1 = *(int*)a,\
-        \ p2 = *(int*)b;\n    return (p1 < p2) ? -1 : (p1 > p2 ? 1 : 0);\n}\ntypedef\
-        \ struct { int pos, dist; } Robot;\nint compareR(const void* a, const void*\
-        \ b) {\n    Robot *r1 = (Robot*)a, *r2 = (Robot*)b;\n    return (r1->pos < r2->pos)\
-        \ ? -1 : (r1->pos > r2->pos ? 1 : 0);\n}\nint compareW(const void* a, const\
-        \ void* b) {\n    int w1 = *(int*)a, w2 = *(int*)b;\n    return (w1 < w2) ?\
-        \ -1 : (w1 > w2 ? 1 : 0);\n}\nint lower_bound(int* arr, int size, int val) {\n\
-        \    int low = 0, high = size;\n    while (low < high) {\n        int mid =\
-        \ low + (high - low) / 2;\n        if (arr[mid] < val) low = mid + 1; else high\
-        \ = mid;\n    }\n    return low;\n}\nint upper_bound(int* arr, int size, int\
-        \ val) {\n    int low = 0, high = size;\n    while (low < high) {\n        int\
-        \ mid = low + (high - low) / 2;\n        if (arr[mid] <= val) low = mid + 1;\
-        \ else high = mid;\n    }\n    return low;\n}\nint getS(int* walls, int size,\
-        \ int a, int b) {\n    if (a > b) return 0;\n    int i1 = lower_bound(walls,\
-        \ size, a), i2 = upper_bound(walls, size, b);\n    return (i2 > i1) ? (i2 -\
-        \ i1) : 0;\n}\nint maxWalls(int* robots, int robotsSize, int* distance, int\
-        \ distanceSize, int* walls, int wallsSize) {\n    Robot* r = (Robot*)malloc(robotsSize\
-        \ * sizeof(Robot));\n    for (int i = 0; i < robotsSize; i++) { r[i].pos = robots[i];\
-        \ r[i].dist = distance[i]; }\n    qsort(r, robotsSize, sizeof(Robot), compareR);\n\
-        \    qsort(walls, wallsSize, sizeof(int), compareW);\n    int p0 = 0, p1 = 0,\
-        \ pr_lim = 0;\n    for (int i = 0; i < robotsSize; i++) {\n        int ll =\
-        \ r[i].pos - r[i].dist;\n        if (i > 0 && ll < r[i-1].pos + 1) ll = r[i-1].pos\
-        \ + 1;\n        int rl = r[i].pos + r[i].dist;\n        if (i < robotsSize -\
-        \ 1 && rl > r[i+1].pos - 1) rl = r[i+1].pos - 1;\n        int sl = getS(walls,\
-        \ wallsSize, ll, r[i].pos), sr = getS(walls, wallsSize, r[i].pos, rl);\n   \
-        \     int c0, c1;\n        if (i == 0) { c0 = sl; c1 = sr; } else {\n      \
-        \      c1 = (p0 > p1 ? p0 : p1) + sr;\n            int o1 = p0 + sl, start2\
-        \ = (ll > pr_lim + 1) ? ll : (pr_lim + 1);\n            int o2 = p1 + getS(walls,\
-        \ wallsSize, start2, r[i].pos);\n            c0 = (o1 > o2 ? o1 : o2);\n   \
-        \     }\n        p0 = c0; p1 = c1; pr_lim = rl;\n    }\n    free(r);\n    return\
-        \ p0 > p1 ? p0 : p1;\n}"
-      csharp: "public class Solution {\n    private int LowerBound(int[] arr, int val)\
-        \ {\n        int low = 0, high = arr.Length;\n        while (low < high) {\n\
-        \            int mid = low + (high - low) / 2;\n            if (arr[mid] < val)\
-        \ low = mid + 1; else high = mid;\n        }\n        return low;\n    }\n \
-        \   private int UpperBound(int[] arr, int val) {\n        int low = 0, high\
-        \ = arr.Length;\n        while (low < high) {\n            int mid = low + (high\
-        \ - low) / 2;\n            if (arr[mid] <= val) low = mid + 1; else high = mid;\n\
-        \        }\n        return low;\n    }\n    private int GetS(int[] walls, int\
-        \ a, int b) {\n        if (a > b) return 0;\n        int i1 = LowerBound(walls,\
-        \ a), i2 = UpperBound(walls, b);\n        return i2 > i1 ? i2 - i1 : 0;\n  \
-        \  }\n    public int MaxWalls(int[] robots, int[] distance, int[] walls) {\n\
-        \        int n = robots.Length;\n        var r = new (int p, int d)[n];\n  \
-        \      for (int i = 0; i < n; i++) r[i] = (robots[i], distance[i]);\n      \
-        \  System.Array.Sort(r, (a, b) => a.p.CompareTo(b.p));\n        System.Array.Sort(walls);\n\
-        \        int p0 = 0, p1 = 0, pr_lim = 0;\n        for (int i = 0; i < n; i++)\
-        \ {\n            int ll = Math.Max(r[i].p - r[i].d, i > 0 ? r[i-1].p + 1 : int.MinValue);\n\
-        \            int rl = Math.Min(r[i].p + r[i].d, i < n - 1 ? r[i+1].p - 1 : int.MaxValue);\n\
-        \            int sl = GetS(walls, ll, r[i].p), sr = GetS(walls, r[i].p, rl);\n\
-        \            int c0, c1;\n            if (i == 0) { c0 = sl; c1 = sr; } else\
-        \ {\n                c1 = Math.Max(p0, p1) + sr;\n                c0 = Math.Max(p0\
-        \ + sl, p1 + GetS(walls, Math.Max(ll, pr_lim + 1), r[i].p));\n            }\n\
-        \            p0 = c0; p1 = c1; pr_lim = rl;\n        }\n        return Math.Max(p0,\
-        \ p1);\n    }\n}"
+      cpp: "class Solution {\npublic:\n    int countWallsInRange(const std::vector<int>&\
+        \ walls, int a, int b) {\n        if (a > b) return 0;\n        auto it1 = std::lower_bound(walls.begin(),\
+        \ walls.end(), a);\n        auto it2 = std::upper_bound(walls.begin(), walls.end(),\
+        \ b);\n        return std::distance(it1, it2);\n    }\n\n    int maxWalls(std::vector<int>&\
+        \ robots, std::vector<int>& distance, std::vector<int>& walls) {\n        int\
+        \ n = robots.size();\n        std::vector<std::pair<int, int>> rd(n);\n    \
+        \    for (int i = 0; i < n; ++i) {\n            rd[i] = {robots[i], distance[i]};\n\
+        \        }\n        std::sort(rd.begin(), rd.end());\n        for (int i = 0;\
+        \ i < n; ++i) {\n            robots[i] = rd[i].first;\n            distance[i]\
+        \ = rd[i].second;\n        }\n        std::sort(walls.begin(), walls.end());\n\
+        \n        std::vector<long long> dp0(n, 0);\n        std::vector<long long>\
+        \ dp1(n, 0);\n\n        dp0[0] = countWallsInRange(walls, robots[0] - distance[0],\
+        \ robots[0] - 1);\n        int r0_end = robots[0] + distance[0];\n        if\
+        \ (n > 1) r0_end = std::min(r0_end, robots[1] - 1);\n        dp1[0] = countWallsInRange(walls,\
+        \ robots[0] + 1, r0_end);\n\n        for (int i = 1; i < n; ++i) {\n       \
+        \     int li_start = std::max(robots[i] - distance[i], robots[i - 1] + 1);\n\
+        \            int li_end = robots[i] - 1;\n            int c_li = countWallsInRange(walls,\
+        \ li_start, li_end);\n\n            int ri_prev_end = std::min(robots[i - 1]\
+        \ + distance[i - 1], robots[i] - 1);\n            int c_li_rem = countWallsInRange(walls,\
+        \ std::max(li_start, ri_prev_end + 1), li_end);\n\n            dp0[i] = std::max(dp0[i\
+        \ - 1] + c_li, dp1[i - 1] + c_li_rem);\n\n            int ri_end = robots[i]\
+        \ + distance[i];\n            if (i < n - 1) ri_end = std::min(ri_end, robots[i\
+        \ + 1] - 1);\n            dp1[i] = std::max(dp0[i - 1], dp1[i - 1]) + countWallsInRange(walls,\
+        \ robots[i] + 1, ri_end);\n        }\n\n        int walls_at_robots = 0;\n \
+        \       for (int r : robots) {\n            if (std::binary_search(walls.begin(),\
+        \ walls.end(), r)) {\n                walls_at_robots++;\n            }\n  \
+        \      }\n\n        return (int)(std::max(dp0[n - 1], dp1[n - 1]) + walls_at_robots);\n\
+        \    }\n};"
+      java: "import java.util.*;\n\nclass Solution {\n    public int maxWalls(int[]\
+        \ robots, int[] distance, int[] walls) {\n        int n = robots.length;\n \
+        \       long[] combined = new long[n];\n        for (int i = 0; i < n; i++)\
+        \ {\n            combined[i] = ((long) robots[i] << 32) | (distance[i] & 0xFFFFFFFFL);\n\
+        \        }\n        Arrays.sort(combined);\n        for (int i = 0; i < n; i++)\
+        \ {\n            robots[i] = (int) (combined[i] >> 32);\n            distance[i]\
+        \ = (int) (combined[i] & 0xFFFFFFFFL);\n        }\n        Arrays.sort(walls);\n\
+        \n        long[] dp0 = new long[n];\n        long[] dp1 = new long[n];\n\n \
+        \       dp0[0] = countWallsInRange(walls, robots[0] - distance[0], robots[0]\
+        \ - 1);\n        int r0End = robots[0] + distance[0];\n        if (n > 1) r0End\
+        \ = Math.min(r0End, robots[1] - 1);\n        dp1[0] = countWallsInRange(walls,\
+        \ robots[0] + 1, r0End);\n\n        for (int i = 1; i < n; i++) {\n        \
+        \    int liStart = Math.max(robots[i] - distance[i], robots[i - 1] + 1);\n \
+        \           int liEnd = robots[i] - 1;\n            int cLi = countWallsInRange(walls,\
+        \ liStart, liEnd);\n\n            int riPrevEnd = Math.min(robots[i - 1] + distance[i\
+        \ - 1], robots[i] - 1);\n            int cLiRem = countWallsInRange(walls, Math.max(liStart,\
+        \ riPrevEnd + 1), liEnd);\n\n            dp0[i] = Math.max(dp0[i - 1] + cLi,\
+        \ dp1[i - 1] + cLiRem);\n\n            int riEnd = robots[i] + distance[i];\n\
+        \            if (i < n - 1) riEnd = Math.min(riEnd, robots[i + 1] - 1);\n  \
+        \          dp1[i] = Math.max(dp0[i - 1], dp1[i - 1]) + countWallsInRange(walls,\
+        \ robots[i] + 1, riEnd);\n        }\n\n        int wallsAtRobots = 0;\n    \
+        \    for (int r : robots) {\n            if (Arrays.binarySearch(walls, r) >=\
+        \ 0) {\n                wallsAtRobots++;\n            }\n        }\n\n     \
+        \   return (int) (Math.max(dp0[n - 1], dp1[n - 1]) + wallsAtRobots);\n    }\n\
+        \n    private int countWallsInRange(int[] walls, int a, int b) {\n        if\
+        \ (a > b) return 0;\n        int idx1 = Arrays.binarySearch(walls, a);\n   \
+        \     int lower = (idx1 < 0) ? -(idx1 + 1) : idx1;\n        int idx2 = Arrays.binarySearch(walls,\
+        \ b);\n        int upper = (idx2 < 0) ? -(idx2 + 1) : idx2 + 1;\n        return\
+        \ upper - lower;\n    }\n}"
+      python: "import bisect\n\nclass Solution(object):\n    def maxWalls(self, robots,\
+        \ distance, walls):\n        \"\"\"\n        :type robots: List[int]\n     \
+        \   :type distance: List[int]\n        :type walls: List[int]\n        :rtype:\
+        \ int\n        \"\"\"\n        n = len(robots)\n        rd = sorted(zip(robots,\
+        \ distance))\n        robots = [x[0] for x in rd]\n        distance = [x[1]\
+        \ for x in rd]\n        walls.sort()\n\n        def count(a, b):\n         \
+        \   if a > b:\n                return 0\n            return bisect.bisect_right(walls,\
+        \ b) - bisect.bisect_left(walls, a)\n\n        dp0 = [0] * n\n        dp1 =\
+        \ [0] * n\n\n        dp0[0] = count(robots[0] - distance[0], robots[0] - 1)\n\
+        \        r0_end = robots[0] + distance[0]\n        if n > 1:\n            r0_end\
+        \ = min(r0_end, robots[1] - 1)\n        dp1[0] = count(robots[0] + 1, r0_end)\n\
+        \n        for i in range(1, n):\n            li_start = max(robots[i] - distance[i],\
+        \ robots[i-1] + 1)\n            li_end = robots[i] - 1\n            c_li = count(li_start,\
+        \ li_end)\n\n            ri_prev_end = min(robots[i-1] + distance[i-1], robots[i]\
+        \ - 1)\n            c_li_rem = count(max(li_start, ri_prev_end + 1), li_end)\n\
+        \n            dp0[i] = max(dp0[i-1] + c_li, dp1[i-1] + c_li_rem)\n\n       \
+        \     ri_end = robots[i] + distance[i]\n            if i < n - 1:\n        \
+        \        ri_end = min(ri_end, robots[i+1] - 1)\n            dp1[i] = max(dp0[i-1],\
+        \ dp1[i-1]) + count(robots[i] + 1, ri_end)\n\n        walls_at_robots = 0\n\
+        \        for r in robots:\n            idx = bisect.bisect_left(walls, r)\n\
+        \            if idx < len(walls) and walls[idx] == r:\n                walls_at_robots\
+        \ += 1\n\n        return int(max(dp0[n-1], dp1[n-1]) + walls_at_robots)"
+      python3: "import bisect\n\nclass Solution:\n    def maxWalls(self, robots: list[int],\
+        \ distance: list[int], walls: list[int]) -> int:\n        n = len(robots)\n\
+        \        rd = sorted(zip(robots, distance))\n        robots = [x[0] for x in\
+        \ rd]\n        distance = [x[1] for x in rd]\n        walls.sort()\n\n     \
+        \   def count(a, b):\n            if a > b:\n                return 0\n    \
+        \        return bisect.bisect_right(walls, b) - bisect.bisect_left(walls, a)\n\
+        \n        dp0 = [0] * n\n        dp1 = [0] * n\n\n        dp0[0] = count(robots[0]\
+        \ - distance[0], robots[0] - 1)\n        r0_end = robots[0] + distance[0]\n\
+        \        if n > 1:\n            r0_end = min(r0_end, robots[1] - 1)\n      \
+        \  dp1[0] = count(robots[0] + 1, r0_end)\n\n        for i in range(1, n):\n\
+        \            li_start = max(robots[i] - distance[i], robots[i-1] + 1)\n    \
+        \        li_end = robots[i] - 1\n            c_li = count(li_start, li_end)\n\
+        \n            ri_prev_end = min(robots[i-1] + distance[i-1], robots[i] - 1)\n\
+        \            c_li_rem = count(max(li_start, ri_prev_end + 1), li_end)\n\n  \
+        \          dp0[i] = max(dp0[i-1] + c_li, dp1[i-1] + c_li_rem)\n\n          \
+        \  ri_end = robots[i] + distance[i]\n            if i < n - 1:\n           \
+        \     ri_end = min(ri_end, robots[i+1] - 1)\n            dp1[i] = max(dp0[i-1],\
+        \ dp1[i-1]) + count(robots[i] + 1, ri_end)\n\n        walls_at_robots = 0\n\
+        \        for r in robots:\n            idx = bisect.bisect_left(walls, r)\n\
+        \            if idx < len(walls) and walls[idx] == r:\n                walls_at_robots\
+        \ += 1\n\n        return int(max(dp0[n-1], dp1[n-1]) + walls_at_robots)"
+      c: "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef struct\
+        \ {\n    int pos;\n    int dist;\n} Robot;\n\nint compareRobots(const void*\
+        \ a, const void* b) {\n    Robot* r1 = (Robot*)a;\n    Robot* r2 = (Robot*)b;\n\
+        \    if (r1->pos < r2->pos) return -1;\n    if (r1->pos > r2->pos) return 1;\n\
+        \    return 0;\n}\n\nint compareWalls(const void* a, const void* b) {\n    int\
+        \ w1 = *(int*)a;\n    int w2 = *(int*)b;\n    if (w1 < w2) return -1;\n    if\
+        \ (w1 > w2) return 1;\n    return 0;\n}\n\nint lower_bound(int* arr, int size,\
+        \ long long val) {\n    int low = 0, high = size;\n    while (low < high) {\n\
+        \        int mid = low + (high - low) / 2;\n        if (arr[mid] >= val) high\
+        \ = mid;\n        else low = mid + 1;\n    }\n    return low;\n}\n\nint upper_bound(int*\
+        \ arr, int size, long long val) {\n    int low = 0, high = size;\n    while\
+        \ (low < high) {\n        int mid = low + (high - low) / 2;\n        if (arr[mid]\
+        \ > val) high = mid;\n        else low = mid + 1;\n    }\n    return low;\n\
+        }\n\nint countInRange(int* walls, int wallsSize, long long a, long long b) {\n\
+        \    if (a > b) return 0;\n    return upper_bound(walls, wallsSize, b) - lower_bound(walls,\
+        \ wallsSize, a);\n}\n\nint maxWalls(int* robots, int robotsSize, int* distance,\
+        \ int distanceSize, int* walls, int wallsSize) {\n    Robot* sorted_robots =\
+        \ (Robot*)malloc(sizeof(Robot) * robotsSize);\n    for (int i = 0; i < robotsSize;\
+        \ i++) {\n        sorted_robots[i].pos = robots[i];\n        sorted_robots[i].dist\
+        \ = distance[i];\n    }\n    qsort(sorted_robots, robotsSize, sizeof(Robot),\
+        \ compareRobots);\n    qsort(walls, wallsSize, sizeof(int), compareWalls);\n\
+        \n    int (*dp)[2] = malloc(sizeof(int) * robotsSize * 2);\n\n    long long\
+        \ b0_r = (robotsSize == 1) ? ((long long)sorted_robots[0].pos + sorted_robots[0].dist)\
+        \ : ((long long)sorted_robots[0].pos + sorted_robots[0].dist);\n    if (robotsSize\
+        \ > 1 && b0_r > sorted_robots[1].pos) b0_r = sorted_robots[1].pos;\n\n    dp[0][0]\
+        \ = countInRange(walls, wallsSize, (long long)sorted_robots[0].pos - sorted_robots[0].dist,\
+        \ sorted_robots[0].pos);\n    dp[0][1] = countInRange(walls, wallsSize, sorted_robots[0].pos,\
+        \ b0_r);\n\n    for (int i = 1; i < robotsSize; i++) {\n        long long b_prev_r\
+        \ = (long long)sorted_robots[i-1].pos + sorted_robots[i-1].dist;\n        if\
+        \ (b_prev_r > sorted_robots[i].pos) b_prev_r = sorted_robots[i].pos;\n\n   \
+        \     long long b_i_l = (long long)sorted_robots[i].pos - sorted_robots[i].dist;\n\
+        \        if (b_i_l < sorted_robots[i-1].pos) b_i_l = sorted_robots[i-1].pos;\n\
+        \n        long long b_i_r;\n        if (i == robotsSize - 1) {\n           \
+        \ b_i_r = (long long)sorted_robots[i].pos + sorted_robots[i].dist;\n       \
+        \ } else {\n            b_i_r = (long long)sorted_robots[i].pos + sorted_robots[i].dist;\n\
+        \            if (b_i_r > sorted_robots[i+1].pos) b_i_r = sorted_robots[i+1].pos;\n\
+        \        }\n\n        long long prev_r_pos = sorted_robots[i-1].pos;\n     \
+        \   long long curr_r_pos = sorted_robots[i].pos;\n\n        int dp0_from_dp0\
+        \ = dp[i-1][0] + countInRange(walls, wallsSize, b_i_l > prev_r_pos + 1 ? b_i_l\
+        \ : prev_r_pos + 1, curr_r_pos);\n        int dp0_from_dp1 = dp[i-1][1] + countInRange(walls,\
+        \ wallsSize, b_i_l > b_prev_r + 1 ? b_i_l : b_prev_r + 1, curr_r_pos);\n   \
+        \     dp[i][0] = dp0_from_dp0 > dp0_from_dp1 ? dp0_from_dp0 : dp0_from_dp1;\n\
+        \n        int dp1_from_dp0 = dp[i-1][0] + countInRange(walls, wallsSize, curr_r_pos,\
+        \ b_i_r);\n        int dp1_from_dp1 = dp[i-1][1] + countInRange(walls, wallsSize,\
+        \ curr_r_pos > b_prev_r + 1 ? curr_r_pos : b_prev_r + 1, b_i_r);\n        dp[i][1]\
+        \ = dp1_from_dp0 > dp1_from_dp1 ? dp1_from_dp0 : dp1_from_dp1;\n    }\n\n  \
+        \  int result = dp[robotsSize - 1][0] > dp[robotsSize - 1][1] ? dp[robotsSize\
+        \ - 1][0] : dp[robotsSize - 1][1];\n\n    free(sorted_robots);\n    free(dp);\n\
+        \    return result;\n}"
+      csharp: "using System;\nusing System.Collections.Generic;\n\npublic class Solution\
+        \ {\n    public int MaxWalls(int[] robots, int[] distance, int[] walls) {\n\
+        \        int n = robots.Length;\n        var sortedRobots = new (long pos, long\
+        \ dist)[n];\n        for (int i = 0; i < n; i++) {\n            sortedRobots[i]\
+        \ = (robots[i], distance[i]);\n        }\n        Array.Sort(sortedRobots, (a,\
+        \ b) => a.pos.CompareTo(b.pos));\n        Array.Sort(walls);\n\n        int[,]\
+        \ dp = new int[n, 2];\n\n        long b0_r = (n == 1) ? (sortedRobots[0].pos\
+        \ + sortedRobots[0].dist) : Math.Min(sortedRobots[0].pos + sortedRobots[0].dist,\
+        \ sortedRobots[1].pos);\n        dp[0, 0] = CountInRange(walls, sortedRobots[0].pos\
+        \ - sortedRobots[0].dist, sortedRobots[0].pos);\n        dp[0, 1] = CountInRange(walls,\
+        \ sortedRobots[0].pos, b0_r);\n\n        for (int i = 1; i < n; i++) {\n   \
+        \         long b_prev_r = Math.Min(sortedRobots[i - 1].pos + sortedRobots[i\
+        \ - 1].dist, sortedRobots[i].pos);\n            long b_i_l = Math.Max(sortedRobots[i].pos\
+        \ - sortedRobots[i].dist, sortedRobots[i - 1].pos);\n            long b_i_r\
+        \ = (i == n - 1) ? (sortedRobots[i].pos + sortedRobots[i].dist) : Math.Min(sortedRobots[i].pos\
+        \ + sortedRobots[i].dist, sortedRobots[i + 1].pos);\n\n            long prev_r_pos\
+        \ = sortedRobots[i - 1].pos;\n            long curr_r_pos = sortedRobots[i].pos;\n\
+        \n            dp[i, 0] = Math.Max(\n                dp[i - 1, 0] + CountInRange(walls,\
+        \ Math.Max(b_i_l, prev_r_pos + 1), curr_r_pos),\n                dp[i - 1, 1]\
+        \ + CountInRange(walls, Math.Max(b_i_l, b_prev_r + 1), curr_r_pos)\n       \
+        \     );\n\n            dp[i, 1] = Math.Max(\n                dp[i - 1, 0] +\
+        \ CountInRange(walls, curr_r_pos, b_i_r),\n                dp[i - 1, 1] + CountInRange(walls,\
+        \ Math.Max(curr_r_pos, b_prev_r + 1), b_i_r)\n            );\n        }\n\n\
+        \        return Math.Max(dp[n - 1, 0], dp[n - 1, 1]);\n    }\n\n    private\
+        \ int CountInRange(int[] walls, long a, long b) {\n        if (a > b) return\
+        \ 0;\n        int start = Array.BinarySearch(walls, (int)a);\n        if (start\
+        \ < 0) start = ~start;\n        int end = Array.BinarySearch(walls, (int)b);\n\
+        \        if (end < 0) end = ~end - 1;\n        if (start <= end) return end\
+        \ - start + 1;\n        return 0;\n    }\n}"
       javascript: "/**\n * @param {number[]} robots\n * @param {number[]} distance\n\
         \ * @param {number[]} walls\n * @return {number}\n */\nvar maxWalls = function(robots,\
-        \ distance, walls) {\n    const n = robots.length;\n    let r = robots.map((p,\
-        \ i) => ({p, d: distance[i]})).sort((a, b) => a.p - b.p);\n    walls.sort((a,\
-        \ b) => a - b);\n    const lb = (val) => {\n        let low = 0, high = walls.length;\n\
+        \ distance, walls) {\n    const n = robots.length;\n    const indices = new\
+        \ Int32Array(n);\n    for (let i = 0; i < n; i++) indices[i] = i;\n    indices.sort((a,\
+        \ b) => robots[a] - robots[b]);\n\n    const sortedWalls = new Int32Array(walls);\n\
+        \    sortedWalls.sort();\n\n    function lowerBound(arr, val) {\n        let\
+        \ low = 0, high = arr.length;\n        while (low < high) {\n            let\
+        \ mid = (low + high) >>> 1;\n            if (arr[mid] >= val) high = mid;\n\
+        \            else low = mid + 1;\n        }\n        return low;\n    }\n\n\
+        \    function upperBound(arr, val) {\n        let low = 0, high = arr.length;\n\
         \        while (low < high) {\n            let mid = (low + high) >>> 1;\n \
-        \           if (walls[mid] < val) low = mid + 1; else high = mid;\n        }\n\
-        \        return low;\n    };\n    const ub = (val) => {\n        let low = 0,\
-        \ high = walls.length;\n        while (low < high) {\n            let mid =\
-        \ (low + high) >>> 1;\n            if (walls[mid] <= val) low = mid + 1; else\
-        \ high = mid;\n        }\n        return low;\n    };\n    const getS = (a,\
-        \ b) => {\n        if (a > b) return 0;\n        let i1 = lb(a), i2 = ub(b);\n\
-        \        return i2 > i1 ? i2 - i1 : 0;\n    };\n    let p0 = 0, p1 = 0, pr_lim\
-        \ = 0;\n    for (let i = 0; i < n; i++) {\n        let ll = Math.max(r[i].p\
-        \ - r[i].d, i > 0 ? r[i-1].p + 1 : -2e9);\n        let rl = Math.min(r[i].p\
-        \ + r[i].d, i < n - 1 ? r[i+1].p - 1 : 2e9);\n        let sl = getS(ll, r[i].p),\
-        \ sr = getS(r[i].p, rl);\n        let c0, c1;\n        if (i === 0) {\n    \
-        \        c0 = sl; c1 = sr;\n        } else {\n            c1 = Math.max(p0,\
-        \ p1) + sr;\n            c0 = Math.max(p0 + sl, p1 + getS(Math.max(ll, pr_lim\
-        \ + 1), r[i].p));\n        }\n        p0 = c0; p1 = c1; pr_lim = rl;\n    }\n\
-        \    return Math.max(p0, p1);\n};"
+        \           if (arr[mid] > val) high = mid;\n            else low = mid + 1;\n\
+        \        }\n        return low;\n    }\n\n    function countInRange(a, b) {\n\
+        \        if (a > b) return 0;\n        return upperBound(sortedWalls, b) - lowerBound(sortedWalls,\
+        \ a);\n    }\n\n    const dp0 = new Int32Array(n);\n    const dp1 = new Int32Array(n);\n\
+        \n    const r0_pos = robots[indices[0]];\n    const r0_dist = distance[indices[0]];\n\
+        \    const b0_r = (n === 1) ? (r0_pos + r0_dist) : Math.min(r0_pos + r0_dist,\
+        \ robots[indices[1]]);\n\n    dp0[0] = countInRange(r0_pos - r0_dist, r0_pos);\n\
+        \    dp1[0] = countInRange(r0_pos, b0_r);\n\n    for (let i = 1; i < n; i++)\
+        \ {\n        const idx = indices[i];\n        const prevIdx = indices[i - 1];\n\
+        \        const r_pos = robots[idx];\n        const r_dist = distance[idx];\n\
+        \        const prev_pos = robots[prevIdx];\n        const prev_dist = distance[prevIdx];\n\
+        \n        const b_prev_r = Math.min(prev_pos + prev_dist, r_pos);\n        const\
+        \ b_i_l = Math.max(r_pos - r_dist, prev_pos);\n        const b_i_r = (i ===\
+        \ n - 1) ? (r_pos + r_dist) : Math.min(r_pos + r_dist, robots[indices[i + 1]]);\n\
+        \n        dp0[i] = Math.max(\n            dp0[i - 1] + countInRange(Math.max(b_i_l,\
+        \ prev_pos + 1), r_pos),\n            dp1[i - 1] + countInRange(Math.max(b_i_l,\
+        \ b_prev_r + 1), r_pos)\n        );\n\n        dp1[i] = Math.max(\n        \
+        \    dp0[i - 1] + countInRange(r_pos, b_i_r),\n            dp1[i - 1] + countInRange(Math.max(r_pos,\
+        \ b_prev_r + 1), b_i_r)\n        );\n    }\n\n    return Math.max(dp0[n - 1],\
+        \ dp1[n - 1]);\n};"
       typescript: "function maxWalls(robots: number[], distance: number[], walls: number[]):\
-        \ number {\n    const n = robots.length;\n    const comb = robots.map((r, i)\
-        \ => [r, distance[i]]).sort((a, b) => a[0] - b[0]);\n    const rPos = comb.map(x\
-        \ => x[0]);\n    const rDist = comb.map(x => x[1]);\n    walls.sort((a, b) =>\
-        \ a - b);\n    const m = walls.length;\n\n    const lowerBound = (target: number)\
-        \ => {\n        let l = 0, r = m;\n        while (l < r) {\n            let\
-        \ mid = (l + r) >>> 1;\n            if (walls[mid] < target) l = mid + 1; else\
-        \ r = mid;\n        }\n        return l;\n    };\n    const upperBound = (target:\
-        \ number) => {\n        let l = 0, r = m;\n        while (l < r) {\n       \
-        \     let mid = (l + r) >>> 1;\n            if (walls[mid] <= target) l = mid\
-        \ + 1; else r = mid;\n        }\n        return l;\n    };\n    const countInRange\
-        \ = (min: number, max: number) => {\n        if (min > max) return 0;\n    \
-        \    return upperBound(max) - lowerBound(min);\n    };\n    const hasWall =\
-        \ (pos: number) => {\n        const idx = lowerBound(pos);\n        return (idx\
-        \ < m && walls[idx] === pos) ? 1 : 0;\n    };\n\n    let prevL = countInRange(rPos[0]\
-        \ - rDist[0], rPos[0]);\n    let prevR = countInRange(rPos[0], n > 1 ? Math.min(rPos[1],\
-        \ rPos[0] + rDist[0]) : rPos[0] + rDist[0]);\n\n    for (let i = 1; i < n; i++)\
-        \ {\n        const Li = countInRange(Math.max(rPos[i - 1], rPos[i] - rDist[i]),\
-        \ rPos[i]);\n        const Ri = countInRange(rPos[i], i < n - 1 ? Math.min(rPos[i\
-        \ + 1], rPos[i] + rDist[i]) : rPos[i] + rDist[i]);\n        const overlapLL\
-        \ = (rPos[i] - rDist[i] <= rPos[i - 1]) ? hasWall(rPos[i - 1]) : 0;\n      \
-        \  const overlapRR = (rPos[i - 1] + rDist[i - 1] >= rPos[i]) ? hasWall(rPos[i])\
-        \ : 0;\n        const overlapRL = countInRange(Math.max(rPos[i - 1], rPos[i]\
-        \ - rDist[i]), Math.min(rPos[i], rPos[i - 1] + rDist[i - 1]));\n\n        const\
-        \ currL = Math.max(prevL + Li - overlapLL, prevR + Li - overlapRL);\n      \
-        \  const currR = Math.max(prevL + Ri, prevR + Ri - overlapRR);\n        prevL\
-        \ = currL;\n        prevR = currR;\n    }\n    return Math.max(prevL, prevR);\n\
+        \ number {\n    const n = robots.length;\n    const combined = robots.map((p,\
+        \ i) => ({ p, d: distance[i] }));\n    combined.sort((a, b) => a.p - b.p);\n\
+        \    const P = combined.map(c => c.p);\n    const D = combined.map(c => c.d);\n\
+        \    walls.sort((a, b) => a - b);\n\n    const lowerBound = (target: number)\
+        \ => {\n        let l = 0, r = walls.length;\n        while (l < r) {\n    \
+        \        let m = (l + r) >> 1;\n            if (walls[m] < target) l = m + 1;\n\
+        \            else r = m;\n        }\n        return l;\n    };\n\n    const\
+        \ upperBound = (target: number) => {\n        let l = 0, r = walls.length;\n\
+        \        while (l < r) {\n            let m = (l + r) >> 1;\n            if\
+        \ (walls[m] <= target) l = m + 1;\n            else r = m;\n        }\n    \
+        \    return l;\n    };\n\n    const countWalls = (a: number, b: number) => {\n\
+        \        if (a > b) return 0;\n        return upperBound(b) - lowerBound(a);\n\
+        \    };\n\n    const hasWall = (pos: number) => {\n        const idx = lowerBound(pos);\n\
+        \        return (idx < walls.length && walls[idx] === pos) ? 1 : 0;\n    };\n\
+        \n    const lBoundaries = new Int32Array(n);\n    const rBoundaries = new Int32Array(n);\n\
+        \    for (let i = 0; i < n; i++) {\n        lBoundaries[i] = Math.max(P[i] -\
+        \ D[i], i > 0 ? P[i - 1] : -2000000000);\n        rBoundaries[i] = Math.min(P[i]\
+        \ + D[i], i < n - 1 ? P[i + 1] : 2000000000);\n    }\n\n    const dp = new Int32Array(n\
+        \ * 2);\n    dp[0] = countWalls(lBoundaries[0], P[0]);\n    dp[1] = countWalls(P[0],\
+        \ rBoundaries[0]);\n\n    for (let i = 1; i < n; i++) {\n        const val1\
+        \ = dp[(i - 1) * 2] + countWalls(lBoundaries[i], P[i]) - (lBoundaries[i] ===\
+        \ P[i - 1] ? hasWall(P[i - 1]) : 0);\n        const val2 = dp[(i - 1) * 2 +\
+        \ 1] + countWalls(lBoundaries[i], P[i]) - countWalls(lBoundaries[i], rBoundaries[i\
+        \ - 1]);\n        dp[i * 2] = Math.max(val1, val2);\n\n        const val3 =\
+        \ dp[(i - 1) * 2] + countWalls(P[i], rBoundaries[i]);\n        const val4 =\
+        \ dp[(i - 1) * 2 + 1] + countWalls(P[i], rBoundaries[i]) - (rBoundaries[i -\
+        \ 1] === P[i] ? hasWall(P[i]) : 0);\n        dp[i * 2 + 1] = Math.max(val3,\
+        \ val4);\n    }\n\n    return Math.max(dp[(n - 1) * 2], dp[(n - 1) * 2 + 1]);\n\
         }"
-      php: "class Solution {\n    /**\n     * @param Integer[] $robots\n     * @param\
+      php: "class Solution {\n\n    /**\n     * @param Integer[] $robots\n     * @param\
         \ Integer[] $distance\n     * @param Integer[] $walls\n     * @return Integer\n\
         \     */\n    function maxWalls($robots, $distance, $walls) {\n        $n =\
-        \ count($robots);\n        $r_pos = $robots;\n        $r_dist = $distance;\n\
-        \        array_multisort($r_pos, SORT_ASC, SORT_NUMERIC, $r_dist);\n       \
-        \ sort($walls, SORT_NUMERIC);\n        $m = count($walls);\n\n        $lowerBound\
-        \ = function($target) use ($walls, $m) {\n            $l = 0; $r = $m;\n   \
-        \         while ($l < $r) {\n                $mid = $l + (int)(($r - $l) / 2);\n\
-        \                if ($walls[$mid] < $target) $l = $mid + 1;\n              \
-        \  else $r = $mid;\n            }\n            return $l;\n        };\n    \
-        \    $upperBound = function($target) use ($walls, $m) {\n            $l = 0;\
-        \ $r = $m;\n            while ($l < $r) {\n                $mid = $l + (int)(($r\
-        \ - $l) / 2);\n                if ($walls[$mid] <= $target) $l = $mid + 1;\n\
-        \                else $r = $mid;\n            }\n            return $l;\n  \
-        \      };\n        $countInRange = function($minV, $maxV) use ($lowerBound,\
-        \ $upperBound) {\n            if ($minV > $maxV) return 0;\n            return\
-        \ $upperBound($maxV) - $lowerBound($minV);\n        };\n        $hasWall = function($pos)\
-        \ use ($walls, $m, $lowerBound) {\n            $idx = $lowerBound($pos);\n \
-        \           return ($idx < $m && $walls[$idx] == $pos) ? 1 : 0;\n        };\n\
-        \n        $prevL = $countInRange($r_pos[0] - $r_dist[0], $r_pos[0]);\n     \
-        \   $prevR = $countInRange($r_pos[0], $n > 1 ? min($r_pos[1], $r_pos[0] + $r_dist[0])\
-        \ : $r_pos[0] + $r_dist[0]);\n\n        for ($i = 1; $i < $n; $i++) {\n    \
-        \        $Li = $countInRange(max($r_pos[$i-1], $r_pos[$i] - $r_dist[$i]), $r_pos[$i]);\n\
-        \            $Ri = $countInRange($r_pos[$i], ($i < $n - 1 ? min($r_pos[$i+1],\
-        \ $r_pos[$i] + $r_dist[$i]) : $r_pos[$i] + $r_dist[$i]));\n            $overlapLL\
-        \ = ($r_pos[$i] - $r_dist[$i] <= $r_pos[$i-1]) ? $hasWall($r_pos[$i-1]) : 0;\n\
-        \            $overlapRR = ($r_pos[$i-1] + $r_dist[$i-1] >= $r_pos[$i]) ? $hasWall($r_pos[$i])\
-        \ : 0;\n            $overlapRL = $countInRange(max($r_pos[$i-1], $r_pos[$i]\
-        \ - $r_dist[$i]), min($r_pos[$i], $r_pos[$i-1] + $r_dist[$i-1]));\n        \
-        \    $currL = max($prevL + $Li - $overlapLL, $prevR + $Li - $overlapRL);\n \
-        \           $currR = max($prevL + $Ri, $prevR + $Ri - $overlapRR);\n       \
-        \     $prevL = $currL;\n            $prevR = $currR;\n        }\n        return\
-        \ max($prevL, $prevR);\n    }\n}"
+        \ count($robots);\n        array_multisort($robots, SORT_ASC, $distance);\n\
+        \        sort($walls);\n\n        $lBoundaries = array_fill(0, $n, 0);\n   \
+        \     $rBoundaries = array_fill(0, $n, 0);\n        for ($i = 0; $i < $n; $i++)\
+        \ {\n            $lBoundaries[$i] = max($robots[$i] - $distance[$i], $i > 0\
+        \ ? $robots[$i - 1] : -2000000000);\n            $rBoundaries[$i] = min($robots[$i]\
+        \ + $distance[$i], $i < $n - 1 ? $robots[$i + 1] : 2000000000);\n        }\n\
+        \n        $lowerBound = function($target) use (&$walls) {\n            $l =\
+        \ 0; $r = count($walls);\n            while ($l < $r) {\n                $m\
+        \ = (int)(($l + $r) / 2);\n                if ($walls[$m] < $target) $l = $m\
+        \ + 1;\n                else $r = $m;\n            }\n            return $l;\n\
+        \        };\n\n        $upperBound = function($target) use (&$walls) {\n   \
+        \         $l = 0; $r = count($walls);\n            while ($l < $r) {\n     \
+        \           $m = (int)(($l + $r) / 2);\n                if ($walls[$m] <= $target)\
+        \ $l = $m + 1;\n                else $r = $m;\n            }\n            return\
+        \ $l;\n        };\n\n        $countWalls = function($a, $b) use ($lowerBound,\
+        \ $upperBound) {\n            if ($a > $b) return 0;\n            return $upperBound($b)\
+        \ - $lowerBound($a);\n        };\n\n        $hasWall = function($pos) use ($lowerBound,\
+        \ &$walls) {\n            $idx = $lowerBound($pos);\n            return ($idx\
+        \ < count($walls) && $walls[$idx] == $pos) ? 1 : 0;\n        };\n\n        $dp\
+        \ = array_fill(0, $n * 2, 0);\n        $dp[0] = $countWalls($lBoundaries[0],\
+        \ $robots[0]);\n        $dp[1] = $countWalls($robots[0], $rBoundaries[0]);\n\
+        \n        for ($i = 1; $i < $n; $i++) {\n            $val1 = $dp[($i - 1) *\
+        \ 2] + $countWalls($lBoundaries[$i], $robots[$i]) - ($lBoundaries[$i] == $robots[$i\
+        \ - 1] ? $hasWall($robots[$i - 1]) : 0);\n            $val2 = $dp[($i - 1) *\
+        \ 2 + 1] + $countWalls($lBoundaries[$i], $robots[$i]) - $countWalls($lBoundaries[$i],\
+        \ $rBoundaries[$i - 1]);\n            $dp[$i * 2] = max($val1, $val2);\n\n \
+        \           $val3 = $dp[($i - 1) * 2] + $countWalls($robots[$i], $rBoundaries[$i]);\n\
+        \            $val4 = $dp[($i - 1) * 2 + 1] + $countWalls($robots[$i], $rBoundaries[$i])\
+        \ - ($rBoundaries[$i - 1] == $robots[$i] ? $hasWall($robots[$i]) : 0);\n   \
+        \         $dp[$i * 2 + 1] = max($val3, $val4);\n        }\n\n        return\
+        \ max($dp[($n - 1) * 2], $dp[($n - 1) * 2 + 1]);\n    }\n}"
       swift: "class Solution {\n    func maxWalls(_ robots: [Int], _ distance: [Int],\
-        \ _ walls: [Int]) -> Int {\n        let n = robots.count\n        var robotsWithDist\
-        \ = [(Int, Int)]()\n        for i in 0..<n {\n            robotsWithDist.append((robots[i],\
-        \ distance[i]))\n        }\n        robotsWithDist.sort { $0.0 < $1.0 }\n  \
-        \      let rPos = robotsWithDist.map { $0.0 }\n        let rDist = robotsWithDist.map\
-        \ { $0.1 }\n        let sortedWalls = walls.sorted()\n        let m = sortedWalls.count\n\
-        \n        func lowerBound(_ target: Int) -> Int {\n            var l = 0, r\
-        \ = m\n            while l < r {\n                let mid = l + (r - l) / 2\n\
-        \                if sortedWalls[mid] < target { l = mid + 1 } else { r = mid\
-        \ }\n            }\n            return l\n        }\n        func upperBound(_\
-        \ target: Int) -> Int {\n            var l = 0, r = m\n            while l <\
-        \ r {\n                let mid = l + (r - l) / 2\n                if sortedWalls[mid]\
-        \ <= target { l = mid + 1 } else { r = mid }\n            }\n            return\
-        \ l\n        }\n        func countInRange(_ minV: Int, _ maxV: Int) -> Int {\n\
-        \            if minV > maxV { return 0 }\n            return upperBound(maxV)\
-        \ - lowerBound(minV)\n        }\n        func hasWall(_ pos: Int) -> Int {\n\
-        \            let idx = lowerBound(pos)\n            return (idx < m && sortedWalls[idx]\
-        \ == pos) ? 1 : 0\n        }\n\n        var prevL = countInRange(rPos[0] - rDist[0],\
-        \ rPos[0])\n        var prevR = countInRange(rPos[0], n > 1 ? min(rPos[1], rPos[0]\
-        \ + rDist[0]) : rPos[0] + rDist[0])\n\n        if n > 1 {\n            for i\
-        \ in 1..<n {\n                let Li = countInRange(max(rPos[i-1], rPos[i] -\
-        \ rDist[i]), rPos[i])\n                let Ri = countInRange(rPos[i], i < n\
-        \ - 1 ? min(rPos[i+1], rPos[i] + rDist[i]) : rPos[i] + rDist[i])\n         \
-        \       let overlapLL = (rPos[i] - rDist[i] <= rPos[i-1]) ? hasWall(rPos[i-1])\
-        \ : 0\n                let overlapRR = (rPos[i-1] + rDist[i-1] >= rPos[i]) ?\
-        \ hasWall(rPos[i]) : 0\n                let overlapRL = countInRange(max(rPos[i-1],\
-        \ rPos[i] - rDist[i]), min(rPos[i], rPos[i-1] + rDist[i-1]))\n             \
-        \   let currL = max(prevL + Li - overlapLL, prevR + Li - overlapRL)\n      \
-        \          let currR = max(prevL + Ri, prevR + Ri - overlapRR)\n           \
-        \     prevL = currL\n                prevR = currR\n            }\n        }\n\
-        \        return max(prevL, prevR)\n    }\n}"
-      kotlin: "import java.util.*\n\nclass Solution {\n    fun maxWalls(robots: IntArray,\
-        \ distance: IntArray, walls: IntArray): Int {\n        val n = robots.size\n\
-        \        val idx = (0 until n).sortedBy { robots[it] }\n        val sortedR\
-        \ = IntArray(n) { robots[idx[it]] }\n        val sortedD = IntArray(n) { distance[idx[it]]\
-        \ }\n        walls.sort()\n\n        fun lowerBound(a: IntArray, target: Int):\
-        \ Int {\n            var low = 0\n            var high = a.size\n          \
-        \  while (low < high) {\n                val mid = low + (high - low) / 2\n\
-        \                if (a[mid] >= target) high = mid else low = mid + 1\n     \
-        \       }\n            return low\n        }\n\n        fun countInRange(a:\
-        \ Int, b: Int): Int {\n            if (a > b) return 0\n            return lowerBound(walls,\
-        \ b + 1) - lowerBound(walls, a)\n        }\n\n        fun hasWall(pos: Int):\
-        \ Boolean {\n            val i = lowerBound(walls, pos)\n            return\
-        \ i < walls.size && walls[i] == pos\n        }\n\n        var p0 = countInRange(sortedR[0]\
-        \ - sortedD[0], sortedR[0]).toLong()\n        val r1 = if (n > 1) sortedR[1]\
-        \ else 2100000000\n        var p1 = countInRange(sortedR[0], minOf(sortedR[0]\
-        \ + sortedD[0], r1)).toLong()\n\n        for (i in 1 until n) {\n          \
-        \  val rPrev = sortedR[i - 1]\n            val rNext = if (i < n - 1) sortedR[i\
-        \ + 1] else 2100000000\n            val cl = countInRange(maxOf(sortedR[i] -\
-        \ sortedD[i], rPrev), sortedR[i])\n            val cr = countInRange(sortedR[i],\
-        \ minOf(sortedR[i] + sortedD[i], rNext))\n            val overRL = countInRange(maxOf(rPrev,\
-        \ sortedR[i] - sortedD[i]), minOf(rPrev + sortedD[i - 1], sortedR[i]))\n   \
-        \         val wallAtRprev = if (hasWall(rPrev) && (sortedR[i] - sortedD[i] <=\
-        \ rPrev)) 1 else 0\n            val wallAtRi = if (hasWall(sortedR[i]) && (rPrev\
-        \ + sortedD[i - 1] >= sortedR[i])) 1 else 0\n\n            val next0 = maxOf(p0\
-        \ + cl - wallAtRprev, p1 + cl - overRL)\n            val next1 = maxOf(p0 +\
-        \ cr, p1 + cr - wallAtRi)\n            p0 = next0\n            p1 = next1\n\
-        \        }\n\n        return maxOf(p0, p1).toInt()\n    }\n}"
-      dart: "import 'dart:math';\n\nclass Solution {\n  int maxWalls(List<int> robots,\
-        \ List<int> distance, List<int> walls) {\n    int n = robots.length;\n    List<int>\
-        \ idx = List.generate(n, (i) => i);\n    idx.sort((a, b) => robots[a].compareTo(robots[b]));\n\
-        \    List<int> sortedR = idx.map((i) => robots[i]).toList();\n    List<int>\
-        \ sortedD = idx.map((i) => distance[i]).toList();\n    walls.sort();\n\n   \
-        \ int lowerBound(List<int> a, int target) {\n      int low = 0, high = a.length;\n\
-        \      while (low < high) {\n        int mid = (low + high) ~/ 2;\n        if\
-        \ (a[mid] >= target) high = mid; else low = mid + 1;\n      }\n      return\
-        \ low;\n    }\n\n    int countInRange(int a, int b) {\n      if (a > b) return\
-        \ 0;\n      return lowerBound(walls, b + 1) - lowerBound(walls, a);\n    }\n\
-        \n    bool hasWall(int pos) {\n      int i = lowerBound(walls, pos);\n     \
-        \ return i < walls.length && walls[i] == pos;\n    }\n\n    int r1 = n > 1 ?\
-        \ sortedR[1] : 2100000000;\n    int p0 = countInRange(sortedR[0] - sortedD[0],\
-        \ sortedR[0]);\n    int p1 = countInRange(sortedR[0], min(sortedR[0] + sortedD[0],\
-        \ r1));\n\n    for (int i = 1; i < n; i++) {\n      int rPrev = sortedR[i -\
-        \ 1];\n      int rNext = i < n - 1 ? sortedR[i + 1] : 2100000000;\n      int\
-        \ cl = countInRange(max(sortedR[i] - sortedD[i], rPrev), sortedR[i]);\n    \
-        \  int cr = countInRange(sortedR[i], min(sortedR[i] + sortedD[i], rNext));\n\
-        \      int overRL = countInRange(max(rPrev, sortedR[i] - sortedD[i]), min(rPrev\
-        \ + sortedD[i - 1], sortedR[i]));\n      int wallAtRprev = (hasWall(rPrev) &&\
-        \ (sortedR[i] - sortedD[i] <= rPrev)) ? 1 : 0;\n      int wallAtRi = (hasWall(sortedR[i])\
-        \ && (rPrev + sortedD[i - 1] >= sortedR[i])) ? 1 : 0;\n\n      int next0 = max(p0\
-        \ + cl - wallAtRprev, p1 + cl - overRL);\n      int next1 = max(p0 + cr, p1\
-        \ + cr - wallAtRi);\n      p0 = next0;\n      p1 = next1;\n    }\n\n    return\
-        \ max(p0, p1);\n  }\n}"
-      go: "import (\n\t\"sort\"\n)\n\nfunc maxWalls(robots []int, distance []int, walls\
-        \ []int) int {\n\tsort.Ints(walls)\n\tn := len(robots)\n\ttype robot struct{\
-        \ pos, dist int }\n\trList := make([]robot, n)\n\tfor i := range robots {\n\t\
-        \trList[i] = robot{robots[i], distance[i]}\n\t}\n\tsort.Slice(rList, func(i,\
-        \ j int) bool { return rList[i].pos < rList[j].pos })\n\tsortedR := make([]int,\
-        \ n)\n\tsortedD := make([]int, n)\n\tfor i := range rList {\n\t\tsortedR[i],\
-        \ sortedD[i] = rList[i].pos, rList[i].dist\n\t}\n\n\tcount := func(a, b int)\
-        \ int {\n\t\tif a > b { return 0 }\n\t\treturn sort.SearchInts(walls, b+1) -\
-        \ sort.SearchInts(walls, a)\n\t}\n\thasWall := func(pos int) bool {\n\t\ti :=\
-        \ sort.SearchInts(walls, pos)\n\t\treturn i < len(walls) && walls[i] == pos\n\
-        \t}\n\tmax64 := func(a, b int64) int64 {\n\t\tif a > b { return a }\n\t\treturn\
-        \ b\n\t}\n\tmin := func(a, b int) int {\n\t\tif a < b { return a }\n\t\treturn\
-        \ b\n\t}\n\tmax := func(a, b int) int {\n\t\tif a > b { return a }\n\t\treturn\
-        \ b\n\t}\n\n\tr1 := 2100000000\n\tif n > 1 { r1 = sortedR[1] }\n\tp0 := int64(count(sortedR[0]-sortedD[0],\
-        \ sortedR[0]))\n\tp1 := int64(count(sortedR[0], min(sortedR[0]+sortedD[0], r1)))\n\
-        \n\tfor i := 1; i < n; i++ {\n\t\trPrev, rNext := sortedR[i-1], 2100000000\n\
-        \t\tif i < n-1 { rNext = sortedR[i+1] }\n\t\tcl := int64(count(max(sortedR[i]-sortedD[i],\
-        \ rPrev), sortedR[i]))\n\t\tcr := int64(count(sortedR[i], min(sortedR[i]+sortedD[i],\
-        \ rNext)))\n\t\toverRL := int64(count(max(rPrev, sortedR[i]-sortedD[i]), min(rPrev+sortedD[i-1],\
-        \ sortedR[i])))\n\t\twallAtRprev := int64(0)\n\t\tif hasWall(rPrev) && sortedR[i]-sortedD[i]\
-        \ <= rPrev { wallAtRprev = 1 }\n\t\twallAtRi := int64(0)\n\t\tif hasWall(sortedR[i])\
-        \ && rPrev+sortedD[i-1] >= sortedR[i] { wallAtRi = 1 }\n\n\t\tnext0 := max64(p0+cl-wallAtRprev,\
-        \ p1+cl-overRL)\n\t\tnext1 := max64(p0+cr, p1+cr-wallAtRi)\n\t\tp0, p1 = next0,\
-        \ next1\n\t}\n\treturn int(max64(p0, p1))\n}"
-      ruby: "def max_walls(robots, distance, walls)\n  n = robots.size\n  m = walls.size\n\
-        \  walls.sort!\n  r_sorted = robots.zip(distance).sort_by(&:first)\n\n  def\
-        \ lower_bound(walls, val)\n    walls.bsearch_index { |w| w >= val } || walls.size\n\
-        \  end\n\n  def upper_bound(walls, val)\n    walls.bsearch_index { |w| w > val\
-        \ } || walls.size\n  end\n\n  def get_counts(walls, x_prev, d_prev, x_curr,\
-        \ d_curr)\n    a = lower_bound(walls, x_prev + 1)\n    b = lower_bound(walls,\
-        \ x_curr) - 1\n    return [0, 0, 0] if a > b\n\n    p_end = upper_bound(walls,\
-        \ x_prev + d_prev) - 1\n    q_start = lower_bound(walls, x_curr - d_curr)\n\n\
-        \    p_end_eff = [p_end, b].min\n    q_start_eff = [q_start, a].max\n\n    cp\
-        \ = [0, p_end_eff - a + 1].max\n    cq = [0, b - q_start_eff + 1].max\n\n  \
-        \  if p_end_eff < a\n      cpuq = cq\n    elsif q_start_eff > b\n      cpuq\
-        \ = cp\n    elsif p_end_eff >= q_start_eff - 1\n      cpuq = b - a + 1\n   \
-        \ else\n      cpuq = cp + cq\n    end\n    [cp, cq, cpuq]\n  end\n\n  dp = Array.new(n)\
-        \ { [0, 0] }\n  b0 = lower_bound(walls, r_sorted[0][0]) - 1\n  q_start0 = lower_bound(walls,\
-        \ r_sorted[0][0] - r_sorted[0][1])\n  dp[0][0] = [0, b0 - q_start0 + 1].max\n\
-        \  dp[0][1] = 0\n\n  (1...n).each do |i|\n    cp, cq, cpuq = get_counts(walls,\
-        \ r_sorted[i-1][0], r_sorted[i-1][1], r_sorted[i][0], r_sorted[i][1])\n    dp[i][0]\
-        \ = [dp[i-1][0] + cq, dp[i-1][1] + cpuq].max\n    dp[i][1] = [dp[i-1][0], dp[i-1][1]\
-        \ + cp].max\n  end\n\n  an = lower_bound(walls, r_sorted[n-1][0] + 1)\n  bn\
-        \ = m - 1\n  p_end_n = upper_bound(walls, r_sorted[n-1][0] + r_sorted[n-1][1])\
-        \ - 1\n  count_pn = [0, [p_end_n, bn].min - an + 1].max\n\n  total_walls_at_robots\
-        \ = 0\n  r_sorted.each do |x, _|\n    idx = lower_bound(walls, x)\n    total_walls_at_robots\
-        \ += 1 if idx < m && walls[idx] == x\n  end\n\n  [dp[n-1][0], dp[n-1][1] + count_pn].max\
-        \ + total_walls_at_robots\nend"
-      scala: "object Solution {\n    def maxWalls(robots: Array[Int], distance: Array[Int],\
-        \ walls: Array[Int]): Int = {\n        val n = robots.length\n        val sortedWalls\
-        \ = walls.sorted\n        val rSorted = robots.zip(distance).sortBy(_._1)\n\n\
-        \        def lowerBound(a: Array[Int], v: Int): Int = {\n            var low\
-        \ = 0; var high = a.length\n            while (low < high) {\n             \
-        \   val mid = low + (high - low) / 2\n                if (a(mid) < v) low =\
-        \ mid + 1 else high = mid\n            }\n            low\n        }\n\n   \
-        \     def upperBound(a: Array[Int], v: Int): Int = {\n            var low =\
-        \ 0; var high = a.length\n            while (low < high) {\n               \
-        \ val mid = low + (high - low) / 2\n                if (a(mid) <= v) low = mid\
-        \ + 1 else high = mid\n            }\n            low\n        }\n\n       \
-        \ val dp = Array.fill(n, 2)(0)\n        val b0 = lowerBound(sortedWalls, rSorted(0)._1)\
-        \ - 1\n        val qStart0 = lowerBound(sortedWalls, rSorted(0)._1 - rSorted(0)._2)\n\
-        \        dp(0)(0) = Math.max(0, b0 - qStart0 + 1)\n        dp(0)(1) = 0\n\n\
-        \        for (i <- 1 until n) {\n            val xPrev = rSorted(i-1)._1\n \
-        \           val dPrev = rSorted(i-1)._2\n            val xCurr = rSorted(i)._1\n\
-        \            val dCurr = rSorted(i)._2\n\n            val a = lowerBound(sortedWalls,\
-        \ xPrev + 1)\n            val b = lowerBound(sortedWalls, xCurr) - 1\n     \
-        \       var cp = 0; var cq = 0; var cpuq = 0\n\n            if (a <= b) {\n\
-        \                val pEnd = upperBound(sortedWalls, xPrev + dPrev) - 1\n   \
-        \             val qStart = lowerBound(sortedWalls, xCurr - dCurr)\n        \
-        \        val pEndEff = Math.min(pEnd, b)\n                val qStartEff = Math.max(qStart,\
-        \ a)\n                cp = Math.max(0, pEndEff - a + 1)\n                cq\
-        \ = Math.max(0, b - qStartEff + 1)\n                if (pEndEff < a) cpuq =\
-        \ cq\n                else if (qStartEff > b) cpuq = cp\n                else\
-        \ if (pEndEff >= qStartEff - 1) cpuq = b - a + 1\n                else cpuq\
-        \ = cp + cq\n            }\n            dp(i)(0) = Math.max(dp(i-1)(0) + cq,\
-        \ dp(i-1)(1) + cpuq)\n            dp(i)(1) = Math.max(dp(i-1)(0), dp(i-1)(1)\
-        \ + cp)\n        }\n\n        val an = lowerBound(sortedWalls, rSorted(n-1)._1\
-        \ + 1)\n        val bn = sortedWalls.length - 1\n        val pEndN = upperBound(sortedWalls,\
-        \ rSorted(n-1)._1 + rSorted(n-1)._2) - 1\n        val countPn = Math.max(0,\
-        \ Math.min(pEndN, bn) - an + 1)\n\n        var totalAtRobots = 0\n        for\
-        \ (r <- rSorted) {\n            val idx = lowerBound(sortedWalls, r._1)\n  \
-        \          if (idx < sortedWalls.length && sortedWalls(idx) == r._1) totalAtRobots\
-        \ += 1\n        }\n\n        Math.max(dp(n-1)(0), dp(n-1)(1) + countPn) + totalAtRobots\n\
-        \    }\n}"
+        \ _ walls: [Int]) -> Int {\n        let n = robots.count\n        let sortedIndices\
+        \ = (0..<n).sorted { robots[$0] < robots[$1] }\n        let sortedRobots = sortedIndices.map\
+        \ { robots[$0] }\n        let sortedDistances = sortedIndices.map { distance[$0]\
+        \ }\n        let sortedWalls = walls.sorted()\n\n        func lowerBound(_ arr:\
+        \ [Int], _ target: Int) -> Int {\n            var l = 0, r = arr.count\n   \
+        \         while l < r {\n                let m = l + (r - l) / 2\n         \
+        \       if arr[m] < target { l = m + 1 } else { r = m }\n            }\n   \
+        \         return l\n        }\n\n        func upperBound(_ arr: [Int], _ target:\
+        \ Int) -> Int {\n            var l = 0, r = arr.count\n            while l <\
+        \ r {\n                let m = l + (r - l) / 2\n                if arr[m] <=\
+        \ target { l = m + 1 } else { r = m }\n            }\n            return l\n\
+        \        }\n\n        func countWalls(_ a: Int, _ b: Int) -> Int {\n       \
+        \     if a > b { return 0 }\n            return upperBound(sortedWalls, b) -\
+        \ lowerBound(sortedWalls, a)\n        }\n\n        func hasWall(_ pos: Int)\
+        \ -> Int {\n            let idx = lowerBound(sortedWalls, pos)\n           \
+        \ return (idx < sortedWalls.count && sortedWalls[idx] == pos) ? 1 : 0\n    \
+        \    }\n\n        var lBoundaries = [Int](repeating: 0, count: n)\n        var\
+        \ rBoundaries = [Int](repeating: 0, count: n)\n        for i in 0..<n {\n  \
+        \          lBoundaries[i] = max(sortedRobots[i] - sortedDistances[i], i > 0\
+        \ ? sortedRobots[i - 1] : -2000000000)\n            rBoundaries[i] = min(sortedRobots[i]\
+        \ + sortedDistances[i], i < n - 1 ? sortedRobots[i + 1] : 2000000000)\n    \
+        \    }\n\n        var dp = [Int](repeating: 0, count: n * 2)\n        dp[0]\
+        \ = countWalls(lBoundaries[0], sortedRobots[0])\n        dp[1] = countWalls(sortedRobots[0],\
+        \ rBoundaries[0])\n\n        if n > 1 {\n            for i in 1..<n {\n    \
+        \            let val1 = dp[(i - 1) * 2] + countWalls(lBoundaries[i], sortedRobots[i])\
+        \ - (lBoundaries[i] == sortedRobots[i - 1] ? hasWall(sortedRobots[i - 1]) :\
+        \ 0)\n                let val2 = dp[(i - 1) * 2 + 1] + countWalls(lBoundaries[i],\
+        \ sortedRobots[i]) - countWalls(lBoundaries[i], rBoundaries[i - 1])\n      \
+        \          dp[i * 2] = max(val1, val2)\n\n                let val3 = dp[(i -\
+        \ 1) * 2] + countWalls(sortedRobots[i], rBoundaries[i])\n                let\
+        \ val4 = dp[(i - 1) * 2 + 1] + countWalls(sortedRobots[i], rBoundaries[i]) -\
+        \ (rBoundaries[i - 1] == sortedRobots[i] ? hasWall(sortedRobots[i]) : 0)\n \
+        \               dp[i * 2 + 1] = max(val3, val4)\n            }\n        }\n\n\
+        \        return max(dp[(n - 1) * 2], dp[(n - 1) * 2 + 1])\n    }\n}"
+      kotlin: "class Solution {\n    fun maxWalls(robots: IntArray, distance: IntArray,\
+        \ walls: IntArray): Int {\n        val n = robots.size\n        data class Robot(val\
+        \ pos: Int, val dist: Int)\n        val rbs = Array(n) { i -> Robot(robots[i],\
+        \ distance[i]) }.sortedBy { it.pos }\n        walls.sort()\n\n        fun count(a:\
+        \ Int, b: Int): Int {\n            if (a > b) return 0\n            var idxA\
+        \ = walls.binarySearch(a)\n            if (idxA < 0) idxA = -idxA - 1\n    \
+        \        var idxB = walls.binarySearch(b)\n            if (idxB < 0) idxB =\
+        \ -idxB - 1 else idxB += 1\n            return idxB - idxA\n        }\n\n  \
+        \      val dp = Array(n) { IntArray(2) }\n        var prevPos = -1000000000\n\
+        \        for (i in 0 until n) {\n            val nextPos = if (i < n - 1) rbs[i\
+        \ + 1].pos else 2000000000\n            val li = maxOf(rbs[i].pos - rbs[i].dist,\
+        \ prevPos)\n            val ri = minOf(rbs[i].pos + rbs[i].dist, nextPos)\n\n\
+        \            if (i == 0) {\n                dp[0][0] = count(li, rbs[0].pos)\n\
+        \                dp[0][1] = count(rbs[0].pos, ri)\n            } else {\n  \
+        \              val riPrev = minOf(rbs[i - 1].pos + rbs[i - 1].dist, rbs[i].pos)\n\
+        \n                dp[i][0] = maxOf(\n                    dp[i - 1][0] + count(li,\
+        \ rbs[i].pos) - count(li, rbs[i - 1].pos),\n                    dp[i - 1][1]\
+        \ + count(li, rbs[i].pos) - count(li, riPrev)\n                )\n         \
+        \       dp[i][1] = maxOf(\n                    dp[i - 1][0] + count(rbs[i].pos,\
+        \ ri),\n                    dp[i - 1][1] + count(rbs[i].pos, ri) - count(rbs[i].pos,\
+        \ riPrev)\n                )\n            }\n            prevPos = rbs[i].pos\n\
+        \        }\n\n        return maxOf(dp[n - 1][0], dp[n - 1][1])\n    }\n}"
+      dart: "class Solution {\n  int maxWalls(List<int> robots, List<int> distance,\
+        \ List<int> walls) {\n    int n = robots.length;\n    List<Robot> rbs = List.generate(n,\
+        \ (i) => Robot(robots[i], distance[i]));\n    rbs.sort((a, b) => a.pos.compareTo(b.pos));\n\
+        \    walls.sort();\n\n    int lowerBound(List<int> sortedList, int value) {\n\
+        \      int low = 0, high = sortedList.length;\n      while (low < high) {\n\
+        \        int mid = low + ((high - low) >> 1);\n        if (sortedList[mid] <\
+        \ value) low = mid + 1;\n        else high = mid;\n      }\n      return low;\n\
+        \    }\n\n    int upperBound(List<int> sortedList, int value) {\n      int low\
+        \ = 0, high = sortedList.length;\n      while (low < high) {\n        int mid\
+        \ = low + ((high - low) >> 1);\n        if (sortedList[mid] <= value) low =\
+        \ mid + 1;\n        else high = mid;\n      }\n      return low;\n    }\n\n\
+        \    int count(int a, int b) {\n      if (a > b) return 0;\n      return upperBound(walls,\
+        \ b) - lowerBound(walls, a);\n    }\n\n    List<List<int>> dp = List.generate(n,\
+        \ (_) => List.filled(2, 0));\n    int prevPos = -1000000000;\n\n    for (int\
+        \ i = 0; i < n; i++) {\n      int nextPos = (i < n - 1) ? rbs[i + 1].pos : 2000000000;\n\
+        \      int li = (rbs[i].pos - rbs[i].dist > prevPos) ? rbs[i].pos - rbs[i].dist\
+        \ : prevPos;\n      int ri = (rbs[i].pos + rbs[i].dist < nextPos) ? rbs[i].pos\
+        \ + rbs[i].dist : nextPos;\n\n      if (i == 0) {\n        dp[0][0] = count(li,\
+        \ rbs[0].pos);\n        dp[0][1] = count(rbs[0].pos, ri);\n      } else {\n\
+        \        int riPrev = (rbs[i - 1].pos + rbs[i - 1].dist < rbs[i].pos) ? rbs[i\
+        \ - 1].pos + rbs[i - 1].dist : rbs[i].pos;\n\n        int c1 = dp[i - 1][0]\
+        \ + count(li, rbs[i].pos) - count(li, rbs[i - 1].pos);\n        int c2 = dp[i\
+        \ - 1][1] + count(li, rbs[i].pos) - count(li, riPrev);\n        dp[i][0] = (c1\
+        \ > c2) ? c1 : c2;\n\n        int c3 = dp[i - 1][0] + count(rbs[i].pos, ri);\n\
+        \        int c4 = dp[i - 1][1] + count(rbs[i].pos, ri) - count(rbs[i].pos, riPrev);\n\
+        \        dp[i][1] = (c3 > c4) ? c3 : c4;\n      }\n      prevPos = rbs[i].pos;\n\
+        \    }\n\n    return (dp[n - 1][0] > dp[n - 1][1]) ? dp[n - 1][0] : dp[n - 1][1];\n\
+        \  }\n}\n\nclass Robot {\n  final int pos;\n  final int dist;\n  Robot(this.pos,\
+        \ this.dist);\n}"
+      go: "import (\n    \"sort\"\n)\n\ntype Robot struct {\n    pos  int\n    dist\
+        \ int\n}\n\nfunc maxWalls(robots []int, distance []int, walls []int) int {\n\
+        \    n := len(robots)\n    rbs := make([]Robot, n)\n    for i := range robots\
+        \ {\n        rbs[i] = Robot{robots[i], distance[i]}\n    }\n    sort.Slice(rbs,\
+        \ func(i, j int) bool { return rbs[i].pos < rbs[j].pos })\n    sort.Ints(walls)\n\
+        \n    count := func(a, b int) int {\n        if a > b {\n            return\
+        \ 0\n        }\n        idxA := sort.SearchInts(walls, a)\n        idxB := sort.SearchInts(walls,\
+        \ b+1)\n        return idxB - idxA\n    }\n\n    maxVal := func(a, b int) int\
+        \ {\n        if a > b { return a }\n        return b\n    }\n    minVal := func(a,\
+        \ b int) int {\n        if a < b { return a }\n        return b\n    }\n\n \
+        \   dp := make([][2]int, n)\n    prevPos := -1000000000\n\n    for i := 0; i\
+        \ < n; i++ {\n        nextPos := 2000000000\n        if i < n-1 {\n        \
+        \    nextPos = rbs[i+1].pos\n        }\n\n        li := maxVal(rbs[i].pos -\
+        \ rbs[i].dist, prevPos)\n        ri := minVal(rbs[i].pos + rbs[i].dist, nextPos)\n\
+        \n        if i == 0 {\n            dp[0][0] = count(li, rbs[0].pos)\n      \
+        \      dp[0][1] = count(rbs[0].pos, ri)\n        } else {\n            riPrev\
+        \ := minVal(rbs[i-1].pos + rbs[i-1].dist, rbs[i].pos)\n\n            dp[i][0]\
+        \ = maxVal(\n                dp[i-1][0] + count(li, rbs[i].pos) - count(li,\
+        \ rbs[i-1].pos),\n                dp[i-1][1] + count(li, rbs[i].pos) - count(li,\
+        \ riPrev),\n            )\n            dp[i][1] = maxVal(\n                dp[i-1][0]\
+        \ + count(rbs[i].pos, ri),\n                dp[i-1][1] + count(rbs[i].pos, ri)\
+        \ - count(rbs[i].pos, riPrev),\n            )\n        }\n        prevPos =\
+        \ rbs[i].pos\n    }\n\n    return maxVal(dp[n-1][0], dp[n-1][1])\n}"
+      ruby: "def max_walls(robots, distance, walls)\n  n = robots.size\n  combined =\
+        \ robots.zip(distance).sort_by { |r, d| r }\n  r = combined.map { |x| x[0] }\n\
+        \  d = combined.map { |x| x[1] }\n  walls.sort!\n  n_walls = walls.size\n\n\
+        \  count = ->(a, b) {\n    return 0 if a > b\n    idx1 = walls.bsearch_index\
+        \ { |x| x >= a } || n_walls\n    idx2 = walls.bsearch_index { |x| x > b } ||\
+        \ n_walls\n    idx2 - idx1\n  }\n\n  dp = Array.new(n) { [0, 0] }\n  dp[0][0]\
+        \ = count.call([r[0] - d[0], -2000000000].max, r[0])\n  dp[0][1] = count.call(r[0],\
+        \ [r[0] + d[0], (n > 1 ? r[1] : 2000000000)].min)\n\n  (1...n).each do |i|\n\
+        \    ri = r[i]\n    di = d[i]\n    ri_prev = r[i - 1]\n    di_prev = d[i - 1]\n\
+        \    ri_next = (i + 1 < n) ? r[i + 1] : 2000000000\n\n    l_range_start = [ri\
+        \ - di, ri_prev].max\n    l_range_end = ri\n    r_range_start = ri\n    r_range_end\
+        \ = [ri + di, ri_next].min\n\n    c_li = count.call(l_range_start, l_range_end)\n\
+        \    c_ri = count.call(r_range_start, r_range_end)\n\n    wall_at_ri_prev =\
+        \ count.call(ri_prev, ri_prev)\n    wall_at_ri = count.call(ri, ri)\n\n    overlap_start\
+        \ = [ri_prev, ri - di].max\n    overlap_end = [ri_prev + di_prev, ri].min\n\
+        \    c_overlap = count.call(overlap_start, overlap_end)\n\n    dp[i][0] = [\n\
+        \      dp[i - 1][0] + c_li - (ri - di <= ri_prev ? wall_at_ri_prev : 0),\n \
+        \     dp[i - 1][1] + c_li - c_overlap\n    ].max\n\n    dp[i][1] = [\n     \
+        \ dp[i - 1][0] + c_ri,\n      dp[i - 1][1] + c_ri - (ri_prev + di_prev >= ri\
+        \ ? wall_at_ri : 0)\n    ].max\n  end\n\n  [dp[n - 1][0], dp[n - 1][1]].max\n\
+        end"
+      scala: "object Solution {\n  def maxWalls(robots: Array[Int], distance: Array[Int],\
+        \ walls: Array[Int]): Int = {\n    val n = robots.length\n    val combined =\
+        \ robots.zip(distance).sortBy(_._1)\n    val r = combined.map(_._1)\n    val\
+        \ d = combined.map(_._2)\n    val sortedWalls = walls.sorted\n\n    def partitionPoint(arr:\
+        \ Array[Int], p: Int => Boolean): Int = {\n      var low = 0\n      var high\
+        \ = arr.length\n      while (low < high) {\n        val mid = low + (high -\
+        \ low) / 2\n        if (p(arr(mid))) low = mid + 1\n        else high = mid\n\
+        \      }\n      low\n    }\n\n    def count(a: Int, b: Int): Int = {\n     \
+        \ if (a > b) 0\n      else {\n        val idx1 = partitionPoint(sortedWalls,\
+        \ (x: Int) => x < a)\n        val idx2 = partitionPoint(sortedWalls, (x: Int)\
+        \ => x <= b)\n        idx2 - idx1\n      }\n    }\n\n    val dp = Array.ofDim[Int](n,\
+        \ 2)\n    dp(0)(0) = count(math.max(r(0) - d(0), -2000000000), r(0))\n    dp(0)(1)\
+        \ = count(r(0), math.min(r(0) + d(0), if (n > 1) r(1) else 2000000000))\n\n\
+        \    for (i <- 1 until n) {\n      val ri = r(i)\n      val di = d(i)\n    \
+        \  val riPrev = r(i - 1)\n      val diPrev = d(i - 1)\n      val riNext = if\
+        \ (i + 1 < n) r(i + 1) else 2000000000\n\n      val lRangeStart = math.max(ri\
+        \ - di, riPrev)\n      val lRangeEnd = ri\n      val rRangeStart = ri\n    \
+        \  val rRangeEnd = math.min(ri + di, riNext)\n\n      val cLi = count(lRangeStart,\
+        \ lRangeEnd)\n      val cRi = count(rRangeStart, rRangeEnd)\n\n      val wallAtRiPrev\
+        \ = if (java.util.Arrays.binarySearch(sortedWalls, riPrev) >= 0) 1 else 0\n\
+        \      val wallAtRi = if (java.util.Arrays.binarySearch(sortedWalls, ri) >=\
+        \ 0) 1 else 0\n\n      val overlapStart = math.max(riPrev, ri - di)\n      val\
+        \ overlapEnd = math.min(riPrev + diPrev, ri)\n      val cOverlap = count(overlapStart,\
+        \ overlapEnd)\n\n      dp(i)(0) = math.max(\n        dp(i - 1)(0) + cLi - (if\
+        \ (ri - di <= riPrev) wallAtRiPrev else 0),\n        dp(i - 1)(1) + cLi - cOverlap\n\
+        \      )\n\n      dp(i)(1) = math.max(\n        dp(i - 1)(0) + cRi,\n      \
+        \  dp(i - 1)(1) + cRi - (if (riPrev + diPrev >= ri) wallAtRi else 0)\n     \
+        \ )\n    }\n\n    math.max(dp(n - 1)(0), dp(n - 1)(1))\n  }\n}"
       rust: "impl Solution {\n    pub fn max_walls(robots: Vec<i32>, distance: Vec<i32>,\
-        \ walls: Vec<i32>) -> i32 {\n        let n = robots.len();\n        let mut\
-        \ sorted_walls = walls;\n        sorted_walls.sort();\n        let mut r_sorted:\
-        \ Vec<(i32, i32)> = robots.into_iter().zip(distance.into_iter()).collect();\n\
-        \        r_sorted.sort_by_key(|r| r.0);\n\n        let mut dp = vec![[0i32;\
-        \ 2]; n];\n        let b0 = sorted_walls.partition_point(|&w| w < r_sorted[0].0)\
-        \ as i32 - 1;\n        let q_start0 = sorted_walls.partition_point(|&w| w <\
-        \ r_sorted[0].0 - r_sorted[0].1) as i32;\n        dp[0][0] = 0.max(b0 - q_start0\
-        \ + 1);\n        dp[0][1] = 0;\n\n        for i in 1..n {\n            let (x_prev,\
-        \ d_prev) = r_sorted[i-1];\n            let (x_curr, d_curr) = r_sorted[i];\n\
-        \            let a = sorted_walls.partition_point(|&w| w < x_prev + 1) as i32;\n\
-        \            let b = sorted_walls.partition_point(|&w| w < x_curr) as i32 -\
-        \ 1;\n            let (mut cp, mut cq, mut cpuq) = (0, 0, 0);\n\n          \
-        \  if a <= b {\n                let p_end = sorted_walls.partition_point(|&w|\
-        \ w <= x_prev + d_prev) as i32 - 1;\n                let q_start = sorted_walls.partition_point(|&w|\
-        \ w < x_curr - d_curr) as i32;\n                let p_end_eff = p_end.min(b);\n\
-        \                let q_start_eff = q_start.max(a);\n                cp = 0.max(p_end_eff\
-        \ - a + 1);\n                cq = 0.max(b - q_start_eff + 1);\n            \
-        \    if p_end_eff < a { cpuq = cq; }\n                else if q_start_eff >\
-        \ b { cpuq = cp; }\n                else if p_end_eff >= q_start_eff - 1 { cpuq\
-        \ = b - a + 1; }\n                else { cpuq = cp + cq; }\n            }\n\
-        \            dp[i][0] = (dp[i-1][0] + cq).max(dp[i-1][1] + cpuq);\n        \
-        \    dp[i][1] = dp[i-1][0].max(dp[i-1][1] + cp);\n        }\n\n        let an\
-        \ = sorted_walls.partition_point(|&w| w < r_sorted[n-1].0 + 1) as i32;\n   \
-        \     let bn = sorted_walls.len() as i32 - 1;\n        let p_end_n = sorted_walls.partition_point(|&w|\
-        \ w <= r_sorted[n-1].0 + r_sorted[n-1].1) as i32 - 1;\n        let count_pn\
-        \ = 0.max(p_end_n.min(bn) - an + 1);\n\n        let mut total_at_robots = 0;\n\
-        \        for r in &r_sorted {\n            let idx = sorted_walls.partition_point(|&w|\
-        \ w < r.0);\n            if idx < sorted_walls.len() && sorted_walls[idx] ==\
-        \ r.0 { total_at_robots += 1; }\n        }\n\n        dp[n-1][0].max(dp[n-1][1]\
-        \ + count_pn) + total_at_robots\n    }\n}"
+        \ walls: Vec<i32>) -> i32 {\n        let mut sorted_walls = walls;\n       \
+        \ sorted_walls.sort_unstable();\n        let mut combined: Vec<(i32, i32)> =\
+        \ robots.into_iter().zip(distance.into_iter()).collect();\n        combined.sort_unstable_by_key(|&(pos,\
+        \ _)| pos);\n        let r: Vec<i32> = combined.iter().map(|&(pos, _)| pos).collect();\n\
+        \        let d: Vec<i32> = combined.iter().map(|&(_, dist)| dist).collect();\n\
+        \        let n = r.len();\n\n        let count = |a: i32, b: i32| -> i32 {\n\
+        \            if a > b {\n                0\n            } else {\n         \
+        \       let idx1 = sorted_walls.partition_point(|&x| x < a);\n             \
+        \   let idx2 = sorted_walls.partition_point(|&x| x <= b);\n                (idx2\
+        \ - idx1) as i32\n            }\n        };\n\n        let mut dp = vec![[0,\
+        \ 0]; n];\n\n        dp[0][0] = count(r[0].saturating_sub(d[0]).max(-2_000_000_000),\
+        \ r[0]);\n        dp[0][1] = count(r[0], r[0].saturating_add(d[0]).min(if n\
+        \ > 1 { r[1] } else { 2_000_000_000 }));\n\n        for i in 1..n {\n      \
+        \      let ri = r[i];\n            let di = d[i];\n            let ri_prev =\
+        \ r[i - 1];\n            let di_prev = d[i - 1];\n            let ri_next =\
+        \ if i + 1 < n { r[i + 1] } else { 2_000_000_000 };\n\n            let l_range_start\
+        \ = (ri - di).max(ri_prev);\n            let l_range_end = ri;\n           \
+        \ let r_range_start = ri;\n            let r_range_end = (ri + di).min(ri_next);\n\
+        \n            let c_li = count(l_range_start, l_range_end);\n            let\
+        \ c_ri = count(r_range_start, r_range_end);\n\n            let wall_at_ri_prev\
+        \ = if sorted_walls.binary_search(&ri_prev).is_ok() { 1 } else { 0 };\n    \
+        \        let wall_at_ri = if sorted_walls.binary_search(&ri).is_ok() { 1 } else\
+        \ { 0 };\n\n            let overlap_start = ri_prev.max(ri - di);\n        \
+        \    let overlap_end = (ri_prev + di_prev).min(ri);\n            let c_overlap\
+        \ = count(overlap_start, overlap_end);\n\n            dp[i][0] = (\n       \
+        \         dp[i - 1][0] + c_li - if ri - di <= ri_prev { wall_at_ri_prev } else\
+        \ { 0 }\n            ).max(\n                dp[i - 1][1] + c_li - c_overlap\n\
+        \            );\n\n            dp[i][1] = (\n                dp[i - 1][0] +\
+        \ c_ri\n            ).max(\n                dp[i - 1][1] + c_ri - if ri_prev\
+        \ + di_prev >= ri { wall_at_ri } else { 0 }\n            );\n        }\n\n \
+        \       dp[n - 1][0].max(dp[n - 1][1])\n    }\n}"
       racket: "(define/contract (max-walls robots distance walls)\n  (-> (listof exact-integer?)\
         \ (listof exact-integer?) (listof exact-integer?) exact-integer?)\n  (let* ([n\
-        \ (length robots)]\n         [robots-dist (sort (map list robots distance) <\
-        \ #:key car)]\n         [sorted-walls (list->vector (sort walls <))]\n     \
-        \    [m (vector-length sorted-walls)])\n    (define (lb val)\n      (let loop\
-        \ ([low 0] [high m])\n        (if (< low high)\n            (let ([mid (quotient\
-        \ (+ low high) 2)])\n              (if (< (vector-ref sorted-walls mid) val)\n\
-        \                  (loop (+ mid 1) high)\n                  (loop low mid)))\n\
-        \            low)))\n    (define (ub val)\n      (let loop ([low 0] [high m])\n\
-        \        (if (< low high)\n            (let ([mid (quotient (+ low high) 2)])\n\
-        \              (if (<= (vector-ref sorted-walls mid) val)\n                \
-        \  (loop (+ mid 1) high)\n                  (loop low mid)))\n            low)))\n\
-        \    (define (W a b)\n      (if (> a b) 0 (- (ub b) (lb a))))\n    (let loop\
-        \ ([rs robots-dist] [px -1] [pd -1] [dp0 0] [dp1 0])\n      (if (null? rs)\n\
-        \          (max dp0 dp1)\n          (let* ([curr (car rs)]\n               \
-        \  [x (car curr)]\n                 [d (cadr curr)]\n                 [nx (if\
-        \ (null? (cdr rs)) 2000000001 (car (cadr rs)))])\n            (if (= px -1)\n\
-        \                (loop (cdr rs) x d (W (- x d) x) (W x (min (+ x d) nx)))\n\
-        \                (let* ([sr-prev (min (+ px pd) x)]\n                      \
-        \ [sl-curr (max (- x d) px)]\n                       [w-left-0 (W (max sl-curr\
-        \ (+ px 1)) x)]\n                       [w-left-1 (W (max sl-curr (+ sr-prev\
-        \ 1)) x)]\n                       [new-dp0 (max (+ dp0 w-left-0) (+ dp1 w-left-1))]\n\
-        \                       [w-right-0 (W x (min (+ x d) nx))]\n               \
-        \        [w-right-1 (W (max x (+ sr-prev 1)) (min (+ x d) nx))]\n          \
-        \             [new-dp1 (max (+ dp0 w-right-0) (+ dp1 w-right-1))])\n       \
-        \           (loop (cdr rs) x d new-dp0 new-dp1))))))))"
+        \ (length robots)]\n         [robots-with-dist (sort (map list robots distance)\
+        \ < #:key car)]\n         [robot-positions (list->vector (map car robots-with-dist))]\n\
+        \         [robot-distances (list->vector (map cadr robots-with-dist))]\n   \
+        \      [sorted-walls (list->vector (sort walls <))]\n         [m (vector-length\
+        \ sorted-walls)])\n    (define (lower-bound val)\n      (let loop ([low 0] [high\
+        \ m])\n        (if (< low high)\n            (let ([mid (quotient (+ low high)\
+        \ 2)])\n              (if (< (vector-ref sorted-walls mid) val)\n          \
+        \        (loop (+ mid 1) high)\n                  (loop low mid)))\n       \
+        \     low)))\n    (define (upper-bound val)\n      (let loop ([low 0] [high\
+        \ m])\n        (if (< low high)\n            (let ([mid (quotient (+ low high)\
+        \ 2)])\n              (if (<= (vector-ref sorted-walls mid) val)\n         \
+        \         (loop (+ mid 1) high)\n                  (loop low mid)))\n      \
+        \      low)))\n    (define (count a b)\n      (if (> a b) 0\n          (- (upper-bound\
+        \ b) (lower-bound a))))\n    (let* ([r0 (vector-ref robot-positions 0)]\n  \
+        \         [d0 (vector-ref robot-distances 0)]\n           [r1 (if (> n 1) (vector-ref\
+        \ robot-positions 1) 2000000000)]\n           [dp0L (count (- r0 d0) r0)]\n\
+        \           [dp0R (count r0 (min r1 (+ r0 d0)))])\n      (let loop ([i 1] [prevL\
+        \ dp0L] [prevR dp0R])\n        (if (< i n)\n            (let* ([r_prev (vector-ref\
+        \ robot-positions (- i 1))]\n                   [d_prev (vector-ref robot-distances\
+        \ (- i 1))]\n                   [r_curr (vector-ref robot-positions i)]\n  \
+        \                 [d_curr (vector-ref robot-distances i)]\n                \
+        \   [r_next (if (< i (- n 1)) (vector-ref robot-positions (+ i 1)) 2000000000)]\n\
+        \                   [new_L_prev_L (- (count (max r_prev (- r_curr d_curr)) r_curr)\
+        \ (count (max r_prev (- r_curr d_curr)) r_prev))]\n                   [new_L_prev_R\
+        \ (- (count (max r_prev (- r_curr d_curr)) r_curr) (count (max r_prev (- r_curr\
+        \ d_curr)) (min r_curr (+ r_prev d_prev))))]\n                   [dpL (max (+\
+        \ prevL new_L_prev_L) (+ prevR new_L_prev_R))]\n                   [new_R_prev_L\
+        \ (count r_curr (min r_next (+ r_curr d_curr)))]\n                   [new_R_prev_R\
+        \ (- (count r_curr (min r_next (+ r_curr d_curr))) (count r_curr (min r_curr\
+        \ (+ r_prev d_prev))))]\n                   [dpR (max (+ prevL new_R_prev_L)\
+        \ (+ prevR new_R_prev_R))])\n              (loop (+ i 1) dpL dpR))\n       \
+        \     (max prevL prevR))))))"
       erlang: "-spec max_walls(Robots :: [integer()], Distance :: [integer()], Walls\
-        \ :: [integer()]) -> integer().\nmax_walls(Robots, Distance, Walls) ->\n  SortedRobots\
-        \ = lists:sort(lists:zip(Robots, Distance)),\n  SortedWalls = list_to_tuple(lists:sort(Walls)),\n\
-        \  M = tuple_size(SortedWalls),\n  Xs = [X || {X, _} <- SortedRobots],\n  Ds\
-        \ = [D || {_, D} <- SortedRobots],\n  NextXs = tl(Xs) ++ [2000000001],\n  Combined\
-        \ = lists:zip3(Xs, Ds, NextXs),\n  [{X0, D0, NX0} | Rest] = Combined,\n  LB\
-        \ = fun(A) ->\n    (fun Loop(Low, High) ->\n      if Low < High ->\n       \
-        \ Mid = (Low + High) div 2,\n        if element(Mid + 1, SortedWalls) < A ->\
-        \ Loop(Mid + 1, High);\n           true -> Loop(Low, Mid) end;\n        true\
-        \ -> Low end\n     end)(0, M) end,\n  UB = fun(B) ->\n    (fun Loop(Low, High)\
-        \ ->\n      if Low < High ->\n        Mid = (Low + High) div 2,\n        if\
-        \ element(Mid + 1, SortedWalls) =< B -> Loop(Mid + 1, High);\n           true\
-        \ -> Loop(Low, Mid) end;\n        true -> Low end\n     end)(0, M) end,\n  W\
-        \ = fun(A, B) -> if A > B -> 0; true -> UB(B) - LB(A) end end,\n  DP0_0 = W(X0\
-        \ - D0, X0),\n  DP1_0 = W(X0, erlang:min(X0 + D0, NX0)),\n  {FinalDP0, FinalDP1,\
-        \ _, _} = lists:foldl(fun({X, D, NX}, {AccDP0, AccDP1, PX, PD}) ->\n    SR_Prev\
-        \ = erlang:min(PX + PD, X),\n    SL_Curr = erlang:max(X - D, PX),\n    W_Left_0\
-        \ = W(erlang:max(SL_Curr, PX + 1), X),\n    W_Left_1 = W(erlang:max(SL_Curr,\
-        \ SR_Prev + 1), X),\n    NewDP0 = erlang:max(AccDP0 + W_Left_0, AccDP1 + W_Left_1),\n\
-        \    W_Right_0 = W(X, erlang:min(X + D, NX)),\n    W_Right_1 = W(erlang:max(X,\
-        \ SR_Prev + 1), erlang:min(X + D, NX)),\n    NewDP1 = erlang:max(AccDP0 + W_Right_0,\
-        \ AccDP1 + W_Right_1),\n    {NewDP0, NewDP1, X, D}\n  end, {DP0_0, DP1_0, X0,\
-        \ D0}, Rest),\n  erlang:max(FinalDP0, FinalDP1)."
+        \ :: [integer()]) -> integer().\nmax_walls(Robots, Distance, Walls) ->\n   \
+        \ SortedWalls = lists:sort(Walls),\n    WallsTuple = list_to_tuple(SortedWalls),\n\
+        \    M = tuple_size(WallsTuple),\n    SortedRD = lists:sort(lists:zip(Robots,\
+        \ Distance)),\n    N = length(SortedRD),\n    {RPList, RDList} = lists:unzip(SortedRD),\n\
+        \    RPTuple = list_to_tuple(RPList),\n    RDTuple = list_to_tuple(RDList),\n\
+        \    R0 = element(1, RPTuple),\n    D0 = element(1, RDTuple),\n    R1 = if N\
+        \ > 1 -> element(2, RPTuple); true -> 2000000000 end,\n    DP0L = count(WallsTuple,\
+        \ M, R0 - D0, R0),\n    DP0R = count(WallsTuple, M, R0, erlang:min(R1, R0 +\
+        \ D0)),\n    solve(1, N, RPTuple, RDTuple, WallsTuple, M, DP0L, DP0R).\n\nsolve(I,\
+        \ N, RPTuple, RDTuple, WallsTuple, M, PrevL, PrevR) ->\n    if I < N ->\n  \
+        \      RPrev = element(I, RPTuple),\n        DPrev = element(I, RDTuple),\n\
+        \        RCurr = element(I + 1, RPTuple),\n        DCurr = element(I + 1, RDTuple),\n\
+        \        RNext = if I + 1 < N -> element(I + 2, RPTuple); true -> 2000000000\
+        \ end,\n\n        New_L_prev_L = count(WallsTuple, M, erlang:max(RPrev, RCurr\
+        \ - DCurr), RCurr) - count(WallsTuple, M, erlang:max(RPrev, RCurr - DCurr),\
+        \ RPrev),\n        New_L_prev_R = count(WallsTuple, M, erlang:max(RPrev, RCurr\
+        \ - DCurr), RCurr) - count(WallsTuple, M, erlang:max(RPrev, RCurr - DCurr),\
+        \ erlang:min(RCurr, RPrev + DPrev)),\n        DPCurrL = erlang:max(PrevL + New_L_prev_L,\
+        \ PrevR + New_L_prev_R),\n\n        New_R_prev_L = count(WallsTuple, M, RCurr,\
+        \ erlang:min(RNext, RCurr + DCurr)),\n        New_R_prev_R = count(WallsTuple,\
+        \ M, RCurr, erlang:min(RNext, RCurr + DCurr)) - count(WallsTuple, M, RCurr,\
+        \ erlang:min(RCurr, RPrev + DPrev)),\n        DPCurrR = erlang:max(PrevL + New_R_prev_L,\
+        \ PrevR + New_R_prev_R),\n\n        solve(I + 1, N, RPTuple, RDTuple, WallsTuple,\
+        \ M, DPCurrL, DPCurrR);\n    true ->\n        erlang:max(PrevL, PrevR)\n   \
+        \ end.\n\ncount(Walls, M, A, B) ->\n    if A > B -> 0;\n    true ->\n      \
+        \  upper_bound(Walls, M, B, 0, M) - lower_bound(Walls, M, A, 0, M)\n    end.\n\
+        \nlower_bound(Tuple, M, Val, Low, High) when Low < High ->\n    Mid = (Low +\
+        \ High) div 2,\n    case element(Mid + 1, Tuple) < Val of\n        true -> lower_bound(Tuple,\
+        \ M, Val, Mid + 1, High);\n        false -> lower_bound(Tuple, M, Val, Low,\
+        \ Mid)\n    end;\nlower_bound(_, _, _, Low, _) -> Low.\n\nupper_bound(Tuple,\
+        \ M, Val, Low, High) when Low < High ->\n    Mid = (Low + High) div 2,\n   \
+        \ case element(Mid + 1, Tuple) =< Val of\n        true -> upper_bound(Tuple,\
+        \ M, Val, Mid + 1, High);\n        false -> upper_bound(Tuple, M, Val, Low,\
+        \ Mid)\n    end;\nupper_bound(_, _, _, Low, _) -> Low."
       elixir: "defmodule Solution do\n  @spec max_walls(robots :: [integer], distance\
         \ :: [integer], walls :: [integer]) :: integer\n  def max_walls(robots, distance,\
-        \ walls) do\n    robots_sorted = Enum.zip(robots, distance) |> Enum.sort()\n\
-        \    xs = Enum.map(robots_sorted, &elem(&1, 0))\n    ds = Enum.map(robots_sorted,\
-        \ &elem(&1, 1))\n    next_xs = tl(xs) ++ [2_000_000_001]\n    combined = Enum.zip([xs,\
-        \ ds, next_xs])\n    walls_tuple = List.to_tuple(Enum.sort(walls))\n    m =\
-        \ tuple_size(walls_tuple)\n    lb = fn val ->\n      (fn f, low, high ->\n \
-        \       if low < high do\n          mid = div(low + high, 2)\n          if elem(walls_tuple,\
-        \ mid) < val, do: f.(f, mid + 1, high), else: f.(f, low, mid)\n        else\
-        \ low end\n      end).(fn f, low, high ->\n        if low < high do\n      \
-        \    mid = div(low + high, 2)\n          if elem(walls_tuple, mid) < val, do:\
-        \ f.(f, mid + 1, high), else: f.(f, low, mid)\n        else low end\n      end,\
-        \ 0, m)\n    end\n    ub = fn val ->\n      (fn f, low, high ->\n        if\
-        \ low < high do\n          mid = div(low + high, 2)\n          if elem(walls_tuple,\
-        \ mid) <= val, do: f.(f, mid + 1, high), else: f.(f, low, mid)\n        else\
-        \ low end\n      end).(fn f, low, high ->\n        if low < high do\n      \
-        \    mid = div(low + high, 2)\n          if elem(walls_tuple, mid) <= val, do:\
-        \ f.(f, mid + 1, high), else: f.(f, low, mid)\n        else low end\n      end,\
-        \ 0, m)\n    end\n    w = fn a, b -> if a > b, do: 0, else: ub.(b) - lb.(a)\
-        \ end\n    [{x0, d0, nx0} | rest] = combined\n    dp0 = w.(x0 - d0, x0)\n  \
-        \  dp1 = w.(x0, min(x0 + d0, nx0))\n    {fdp0, fdp1, _, _} = Enum.reduce(rest,\
-        \ {dp0, dp1, x0, d0}, fn {x, d, nx}, {adp0, adp1, px, pd} ->\n      sr_prev\
-        \ = min(px + pd, x)\n      sl_curr = max(x - d, px)\n      w_l_0 = w.(max(sl_curr,\
-        \ px + 1), x)\n      w_l_1 = w.(max(sl_curr, sr_prev + 1), x)\n      ndp0 =\
-        \ max(adp0 + w_l_0, adp1 + w_l_1)\n      w_r_0 = w.(x, min(x + d, nx))\n   \
-        \   w_r_1 = w.(max(x, sr_prev + 1), min(x + d, nx))\n      ndp1 = max(adp0 +\
-        \ w_r_0, adp1 + w_r_1)\n      {ndp0, ndp1, x, d}\n    end)\n    max(fdp0, fdp1)\n\
-        \  end\nend"
-    approach: 'To maximize the number of unique walls destroyed, we first sort both
-      the robots (along with their shooting distances) and the walls by their positions.
-      A crucial observation is that a robot''s bullet stops immediately upon hitting
-      another robot, meaning robot $i$ can only destroy walls in the range $(robots[i-1],
-      robots[i+1])$. Specifically, if robot $i$ fires left, it covers a range limited
-      by either its distance or $robots[i-1]+1$; if it fires right, the range is limited
-      by its distance or $robots[i+1]-1$. The only possible overlap in destroyed walls
-      between adjacent robots occurs when robot $i-1$ fires right and robot $i$ fires
-      left, as both may target the same walls in the interval $(robots[i-1], robots[i])$.
+        \ walls) do\n    sorted_walls = walls |> Enum.sort() |> List.to_tuple()\n  \
+        \  m = tuple_size(sorted_walls)\n    sorted_rd = Enum.zip(robots, distance)\
+        \ |> Enum.sort_by(fn {r, _d} -> r end)\n    n = length(sorted_rd)\n    rp_tuple\
+        \ = sorted_rd |> Enum.map(fn {r, _d} -> r end) |> List.to_tuple()\n    rd_tuple\
+        \ = sorted_rd |> Enum.map(fn {_r, d} -> d end) |> List.to_tuple()\n\n    r0\
+        \ = elem(rp_tuple, 0)\n    d0 = elem(rd_tuple, 0)\n    r1 = if n > 1, do: elem(rp_tuple,\
+        \ 1), else: 2000000000\n\n    dp0l = count(sorted_walls, m, r0 - d0, r0)\n \
+        \   dp0r = count(sorted_walls, m, r0, min(r1, r0 + d0))\n\n    solve(1, n, rp_tuple,\
+        \ rd_tuple, sorted_walls, m, dp0l, dp0r)\n  end\n\n  defp solve(i, n, rp_tuple,\
+        \ rd_tuple, walls, m, prev_l, prev_r) do\n    if i < n do\n      r_prev = elem(rp_tuple,\
+        \ i - 1)\n      d_prev = elem(rd_tuple, i - 1)\n      r_curr = elem(rp_tuple,\
+        \ i)\n      d_curr = elem(rd_tuple, i)\n      r_next = if i + 1 < n, do: elem(rp_tuple,\
+        \ i + 1), else: 2000000000\n\n      new_l_prev_l = count(walls, m, max(r_prev,\
+        \ r_curr - d_curr), r_curr) - count(walls, m, max(r_prev, r_curr - d_curr),\
+        \ r_prev)\n      new_l_prev_r = count(walls, m, max(r_prev, r_curr - d_curr),\
+        \ r_curr) - count(walls, m, max(r_prev, r_curr - d_curr), min(r_curr, r_prev\
+        \ + d_prev))\n      dp_curr_l = max(prev_l + new_l_prev_l, prev_r + new_l_prev_r)\n\
+        \n      new_r_prev_l = count(walls, m, r_curr, min(r_next, r_curr + d_curr))\n\
+        \      new_r_prev_r = count(walls, m, r_curr, min(r_next, r_curr + d_curr))\
+        \ - count(walls, m, r_curr, min(r_curr, r_prev + d_prev))\n      dp_curr_r =\
+        \ max(prev_l + new_r_prev_l, prev_r + new_r_prev_r)\n\n      solve(i + 1, n,\
+        \ rp_tuple, rd_tuple, walls, m, dp_curr_l, dp_curr_r)\n    else\n      max(prev_l,\
+        \ prev_r)\n    end\n  end\n\n  defp count(walls, m, a, b) do\n    if a > b do\n\
+        \      0\n    else\n      upper_bound(walls, m, b, 0, m) - lower_bound(walls,\
+        \ m, a, 0, m)\n    end\n  end\n\n  defp lower_bound(tuple, m, val, low, high)\
+        \ do\n    if low < high do\n      mid = div(low + high, 2)\n      if elem(tuple,\
+        \ mid) < val do\n        lower_bound(tuple, m, val, mid + 1, high)\n      else\n\
+        \        lower_bound(tuple, m, val, low, mid)\n      end\n    else\n      low\n\
+        \    end\n  end\n\n  defp upper_bound(tuple, m, val, low, high) do\n    if low\
+        \ < high do\n      mid = div(low + high, 2)\n      if elem(tuple, mid) <= val\
+        \ do\n        upper_bound(tuple, m, val, mid + 1, high)\n      else\n      \
+        \  upper_bound(tuple, m, val, low, mid)\n      end\n    else\n      low\n  \
+        \  end\n  end\nend"
+    approach: 'Sort the robots and walls by position to process them efficiently. Each
+      robot $i$ at position $R_i$ can destroy walls at its own position $R_i$ and hit
+      ranges within the constraints of its distance $d_i$ and the positions of neighboring
+      robots $R_{i-1}$ and $R_{i+1}$. The robots act as fixed obstacles, meaning a bullet
+      from robot $i$ can cover a left-range of $[\max(R_{i-1}, R_i - d_i), R_i]$ and
+      a right-range of $[R_i, \min(R_{i+1}, R_i + d_i)]$. By partitioning all walls
+      into those at robot positions, those between robots, and those outside the robot
+      range, the problem can be modeled using dynamic programming.
 
 
-      We utilize dynamic programming to find the optimal configuration. Let $dp[i][0]$
-      be the maximum walls destroyed by robots $0 \dots i$ if robot $i$ fires left,
-      and $dp[i][1]$ if it fires right. For $dp[i][1]$, robot $i$ is guaranteed to be
-      disjoint from any walls destroyed by $i-1$ (regardless of $i-1$''s direction),
-      so we simply add the wall count for robot $i$''s right range to $\max(dp[i-1][0],
-      dp[i-1][1])$. For $dp[i][0]$, if $i-1$ fired left, the ranges are disjoint; if
-      $i-1$ fired right, we must only count walls in robot $i$''s left range that were
-      not already covered by robot $i-1$''s right range. Wall counts for any given range
-      are efficiently computed using binary search (lower and upper bounds) on the sorted
-      walls array.'
-    time_complexity: O(N log N + M log M + N log M), where N is the number of robots
-      and M is the number of walls. Sorting robots takes O(N log N), sorting walls takes
-      O(M log M), and the DP process takes O(N) iterations, each performing a constant
-      number of binary searches on the walls array in O(log M) time.
-    space_complexity: O(N + M) to store the sorted walls array, an array of robot-distance
-      pairs, and the DP transition variables.
-    elapsed_time: 1474.7243876457214
+      Define $DP[i][0]$ and $DP[i][1]$ as the maximum unique walls destroyed by the
+      first $i$ robots where robot $i$ shoots left or right, respectively. The transition
+      for $DP[i][0]$ considers whether robot $i-1$ shot left or right, accounting for
+      the union of wall coverage in the interval $(R_{i-1}, R_i)$ to avoid double-counting.
+      $DP[i][1]$ simply adds the walls in the interval $(R_i, R_{i+1})$ hit by robot
+      $i$ to the maximum of $DP[i-1][0]$ or $DP[i-1][1]$. The wall at each robot''s
+      position $R_i$ is always counted exactly once because every robot must fire and
+      every fire range includes the robot''s own position. Binary search (lower and
+      upper bounds) is used to count walls in specific intervals in $O(\log M)$ time.'
+    time_complexity: O((N + M) \log M + N \log N), where N is the number of robots and
+      M is the number of walls. This accounts for sorting both robots and walls and
+      performing a constant number of binary search range queries for each of the N
+      robots during the dynamic programming phase.
+    space_complexity: O(N + M), required to store the sorted robots, walls, and the
+      dynamic programming table of size $N \times 2$.
+    elapsed_time: 1035.5841674804688
     model: gemini-3-flash-preview
-    generated_at: '2026-04-04 08:52:56 '
+    generated_at: '2026-04-06 05:35:19 '
 ---
 
 ## Problem #3661: Maximum Walls Destroyed by Robots
@@ -564,9 +706,9 @@ ai_solutions:
 
 ### Approach
 
-To maximize the number of unique walls destroyed, we first sort both the robots (along with their shooting distances) and the walls by their positions. A crucial observation is that a robot's bullet stops immediately upon hitting another robot, meaning robot $i$ can only destroy walls in the range $(robots[i-1], robots[i+1])$. Specifically, if robot $i$ fires left, it covers a range limited by either its distance or $robots[i-1]+1$; if it fires right, the range is limited by its distance or $robots[i+1]-1$. The only possible overlap in destroyed walls between adjacent robots occurs when robot $i-1$ fires right and robot $i$ fires left, as both may target the same walls in the interval $(robots[i-1], robots[i])$.
+Sort the robots and walls by position to process them efficiently. Each robot $i$ at position $R_i$ can destroy walls at its own position $R_i$ and hit ranges within the constraints of its distance $d_i$ and the positions of neighboring robots $R_{i-1}$ and $R_{i+1}$. The robots act as fixed obstacles, meaning a bullet from robot $i$ can cover a left-range of $[\max(R_{i-1}, R_i - d_i), R_i]$ and a right-range of $[R_i, \min(R_{i+1}, R_i + d_i)]$. By partitioning all walls into those at robot positions, those between robots, and those outside the robot range, the problem can be modeled using dynamic programming.
 
-We utilize dynamic programming to find the optimal configuration. Let $dp[i][0]$ be the maximum walls destroyed by robots $0 \dots i$ if robot $i$ fires left, and $dp[i][1]$ if it fires right. For $dp[i][1]$, robot $i$ is guaranteed to be disjoint from any walls destroyed by $i-1$ (regardless of $i-1$'s direction), so we simply add the wall count for robot $i$'s right range to $\max(dp[i-1][0], dp[i-1][1])$. For $dp[i][0]$, if $i-1$ fired left, the ranges are disjoint; if $i-1$ fired right, we must only count walls in robot $i$'s left range that were not already covered by robot $i-1$'s right range. Wall counts for any given range are efficiently computed using binary search (lower and upper bounds) on the sorted walls array.
+Define $DP[i][0]$ and $DP[i][1]$ as the maximum unique walls destroyed by the first $i$ robots where robot $i$ shoots left or right, respectively. The transition for $DP[i][0]$ considers whether robot $i-1$ shot left or right, accounting for the union of wall coverage in the interval $(R_{i-1}, R_i)$ to avoid double-counting. $DP[i][1]$ simply adds the walls in the interval $(R_i, R_{i+1})$ hit by robot $i$ to the maximum of $DP[i-1][0]$ or $DP[i-1][1]$. The wall at each robot's position $R_i$ is always counted exactly once because every robot must fire and every fire range includes the robot's own position. Binary search (lower and upper bounds) is used to count walls in specific intervals in $O(\log M)$ time.
 
 ### Code
 
@@ -616,8 +758,61 @@ We utilize dynamic programming to find the optimal configuration. Let $dp[i][0]$
 
 {% highlight cpp %}
 {% raw %}
-// Generation failed for C++
-// Reason: Parsing failed
+class Solution {
+public:
+    int countWallsInRange(const std::vector<int>& walls, int a, int b) {
+        if (a > b) return 0;
+        auto it1 = std::lower_bound(walls.begin(), walls.end(), a);
+        auto it2 = std::upper_bound(walls.begin(), walls.end(), b);
+        return std::distance(it1, it2);
+    }
+
+    int maxWalls(std::vector<int>& robots, std::vector<int>& distance, std::vector<int>& walls) {
+        int n = robots.size();
+        std::vector<std::pair<int, int>> rd(n);
+        for (int i = 0; i < n; ++i) {
+            rd[i] = {robots[i], distance[i]};
+        }
+        std::sort(rd.begin(), rd.end());
+        for (int i = 0; i < n; ++i) {
+            robots[i] = rd[i].first;
+            distance[i] = rd[i].second;
+        }
+        std::sort(walls.begin(), walls.end());
+
+        std::vector<long long> dp0(n, 0);
+        std::vector<long long> dp1(n, 0);
+
+        dp0[0] = countWallsInRange(walls, robots[0] - distance[0], robots[0] - 1);
+        int r0_end = robots[0] + distance[0];
+        if (n > 1) r0_end = std::min(r0_end, robots[1] - 1);
+        dp1[0] = countWallsInRange(walls, robots[0] + 1, r0_end);
+
+        for (int i = 1; i < n; ++i) {
+            int li_start = std::max(robots[i] - distance[i], robots[i - 1] + 1);
+            int li_end = robots[i] - 1;
+            int c_li = countWallsInRange(walls, li_start, li_end);
+
+            int ri_prev_end = std::min(robots[i - 1] + distance[i - 1], robots[i] - 1);
+            int c_li_rem = countWallsInRange(walls, std::max(li_start, ri_prev_end + 1), li_end);
+
+            dp0[i] = std::max(dp0[i - 1] + c_li, dp1[i - 1] + c_li_rem);
+
+            int ri_end = robots[i] + distance[i];
+            if (i < n - 1) ri_end = std::min(ri_end, robots[i + 1] - 1);
+            dp1[i] = std::max(dp0[i - 1], dp1[i - 1]) + countWallsInRange(walls, robots[i] + 1, ri_end);
+        }
+
+        int walls_at_robots = 0;
+        for (int r : robots) {
+            if (std::binary_search(walls.begin(), walls.end(), r)) {
+                walls_at_robots++;
+            }
+        }
+
+        return (int)(std::max(dp0[n - 1], dp1[n - 1]) + walls_at_robots);
+    }
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -627,8 +822,64 @@ We utilize dynamic programming to find the optimal configuration. Let $dp[i][0]$
 
 {% highlight java %}
 {% raw %}
-// Generation failed for Java
-// Reason: Parsing failed
+import java.util.*;
+
+class Solution {
+    public int maxWalls(int[] robots, int[] distance, int[] walls) {
+        int n = robots.length;
+        long[] combined = new long[n];
+        for (int i = 0; i < n; i++) {
+            combined[i] = ((long) robots[i] << 32) | (distance[i] & 0xFFFFFFFFL);
+        }
+        Arrays.sort(combined);
+        for (int i = 0; i < n; i++) {
+            robots[i] = (int) (combined[i] >> 32);
+            distance[i] = (int) (combined[i] & 0xFFFFFFFFL);
+        }
+        Arrays.sort(walls);
+
+        long[] dp0 = new long[n];
+        long[] dp1 = new long[n];
+
+        dp0[0] = countWallsInRange(walls, robots[0] - distance[0], robots[0] - 1);
+        int r0End = robots[0] + distance[0];
+        if (n > 1) r0End = Math.min(r0End, robots[1] - 1);
+        dp1[0] = countWallsInRange(walls, robots[0] + 1, r0End);
+
+        for (int i = 1; i < n; i++) {
+            int liStart = Math.max(robots[i] - distance[i], robots[i - 1] + 1);
+            int liEnd = robots[i] - 1;
+            int cLi = countWallsInRange(walls, liStart, liEnd);
+
+            int riPrevEnd = Math.min(robots[i - 1] + distance[i - 1], robots[i] - 1);
+            int cLiRem = countWallsInRange(walls, Math.max(liStart, riPrevEnd + 1), liEnd);
+
+            dp0[i] = Math.max(dp0[i - 1] + cLi, dp1[i - 1] + cLiRem);
+
+            int riEnd = robots[i] + distance[i];
+            if (i < n - 1) riEnd = Math.min(riEnd, robots[i + 1] - 1);
+            dp1[i] = Math.max(dp0[i - 1], dp1[i - 1]) + countWallsInRange(walls, robots[i] + 1, riEnd);
+        }
+
+        int wallsAtRobots = 0;
+        for (int r : robots) {
+            if (Arrays.binarySearch(walls, r) >= 0) {
+                wallsAtRobots++;
+            }
+        }
+
+        return (int) (Math.max(dp0[n - 1], dp1[n - 1]) + wallsAtRobots);
+    }
+
+    private int countWallsInRange(int[] walls, int a, int b) {
+        if (a > b) return 0;
+        int idx1 = Arrays.binarySearch(walls, a);
+        int lower = (idx1 < 0) ? -(idx1 + 1) : idx1;
+        int idx2 = Arrays.binarySearch(walls, b);
+        int upper = (idx2 < 0) ? -(idx2 + 1) : idx2 + 1;
+        return upper - lower;
+    }
+}
 {% endraw %}
 {% endhighlight %}
 
@@ -638,8 +889,58 @@ We utilize dynamic programming to find the optimal configuration. Let $dp[i][0]$
 
 {% highlight python %}
 {% raw %}
-// Generation failed for Python
-// Reason: Parsing failed
+import bisect
+
+class Solution(object):
+    def maxWalls(self, robots, distance, walls):
+        """
+        :type robots: List[int]
+        :type distance: List[int]
+        :type walls: List[int]
+        :rtype: int
+        """
+        n = len(robots)
+        rd = sorted(zip(robots, distance))
+        robots = [x[0] for x in rd]
+        distance = [x[1] for x in rd]
+        walls.sort()
+
+        def count(a, b):
+            if a > b:
+                return 0
+            return bisect.bisect_right(walls, b) - bisect.bisect_left(walls, a)
+
+        dp0 = [0] * n
+        dp1 = [0] * n
+
+        dp0[0] = count(robots[0] - distance[0], robots[0] - 1)
+        r0_end = robots[0] + distance[0]
+        if n > 1:
+            r0_end = min(r0_end, robots[1] - 1)
+        dp1[0] = count(robots[0] + 1, r0_end)
+
+        for i in range(1, n):
+            li_start = max(robots[i] - distance[i], robots[i-1] + 1)
+            li_end = robots[i] - 1
+            c_li = count(li_start, li_end)
+
+            ri_prev_end = min(robots[i-1] + distance[i-1], robots[i] - 1)
+            c_li_rem = count(max(li_start, ri_prev_end + 1), li_end)
+
+            dp0[i] = max(dp0[i-1] + c_li, dp1[i-1] + c_li_rem)
+
+            ri_end = robots[i] + distance[i]
+            if i < n - 1:
+                ri_end = min(ri_end, robots[i+1] - 1)
+            dp1[i] = max(dp0[i-1], dp1[i-1]) + count(robots[i] + 1, ri_end)
+
+        walls_at_robots = 0
+        for r in robots:
+            idx = bisect.bisect_left(walls, r)
+            if idx < len(walls) and walls[idx] == r:
+                walls_at_robots += 1
+
+        return int(max(dp0[n-1], dp1[n-1]) + walls_at_robots)
 {% endraw %}
 {% endhighlight %}
 
@@ -649,8 +950,52 @@ We utilize dynamic programming to find the optimal configuration. Let $dp[i][0]$
 
 {% highlight python %}
 {% raw %}
-// Generation failed for Python3
-// Reason: Parsing failed
+import bisect
+
+class Solution:
+    def maxWalls(self, robots: list[int], distance: list[int], walls: list[int]) -> int:
+        n = len(robots)
+        rd = sorted(zip(robots, distance))
+        robots = [x[0] for x in rd]
+        distance = [x[1] for x in rd]
+        walls.sort()
+
+        def count(a, b):
+            if a > b:
+                return 0
+            return bisect.bisect_right(walls, b) - bisect.bisect_left(walls, a)
+
+        dp0 = [0] * n
+        dp1 = [0] * n
+
+        dp0[0] = count(robots[0] - distance[0], robots[0] - 1)
+        r0_end = robots[0] + distance[0]
+        if n > 1:
+            r0_end = min(r0_end, robots[1] - 1)
+        dp1[0] = count(robots[0] + 1, r0_end)
+
+        for i in range(1, n):
+            li_start = max(robots[i] - distance[i], robots[i-1] + 1)
+            li_end = robots[i] - 1
+            c_li = count(li_start, li_end)
+
+            ri_prev_end = min(robots[i-1] + distance[i-1], robots[i] - 1)
+            c_li_rem = count(max(li_start, ri_prev_end + 1), li_end)
+
+            dp0[i] = max(dp0[i-1] + c_li, dp1[i-1] + c_li_rem)
+
+            ri_end = robots[i] + distance[i]
+            if i < n - 1:
+                ri_end = min(ri_end, robots[i+1] - 1)
+            dp1[i] = max(dp0[i-1], dp1[i-1]) + count(robots[i] + 1, ri_end)
+
+        walls_at_robots = 0
+        for r in robots:
+            idx = bisect.bisect_left(walls, r)
+            if idx < len(walls) and walls[idx] == r:
+                walls_at_robots += 1
+
+        return int(max(dp0[n-1], dp1[n-1]) + walls_at_robots)
 {% endraw %}
 {% endhighlight %}
 
@@ -660,63 +1005,105 @@ We utilize dynamic programming to find the optimal configuration. Let $dp[i][0]$
 
 {% highlight c %}
 {% raw %}
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int pos;
+    int dist;
+} Robot;
+
 int compareRobots(const void* a, const void* b) {
-    int p1 = *(int*)a, p2 = *(int*)b;
-    return (p1 < p2) ? -1 : (p1 > p2 ? 1 : 0);
+    Robot* r1 = (Robot*)a;
+    Robot* r2 = (Robot*)b;
+    if (r1->pos < r2->pos) return -1;
+    if (r1->pos > r2->pos) return 1;
+    return 0;
 }
-typedef struct { int pos, dist; } Robot;
-int compareR(const void* a, const void* b) {
-    Robot *r1 = (Robot*)a, *r2 = (Robot*)b;
-    return (r1->pos < r2->pos) ? -1 : (r1->pos > r2->pos ? 1 : 0);
+
+int compareWalls(const void* a, const void* b) {
+    int w1 = *(int*)a;
+    int w2 = *(int*)b;
+    if (w1 < w2) return -1;
+    if (w1 > w2) return 1;
+    return 0;
 }
-int compareW(const void* a, const void* b) {
-    int w1 = *(int*)a, w2 = *(int*)b;
-    return (w1 < w2) ? -1 : (w1 > w2 ? 1 : 0);
-}
-int lower_bound(int* arr, int size, int val) {
+
+int lower_bound(int* arr, int size, long long val) {
     int low = 0, high = size;
     while (low < high) {
         int mid = low + (high - low) / 2;
-        if (arr[mid] < val) low = mid + 1; else high = mid;
+        if (arr[mid] >= val) high = mid;
+        else low = mid + 1;
     }
     return low;
 }
-int upper_bound(int* arr, int size, int val) {
+
+int upper_bound(int* arr, int size, long long val) {
     int low = 0, high = size;
     while (low < high) {
         int mid = low + (high - low) / 2;
-        if (arr[mid] <= val) low = mid + 1; else high = mid;
+        if (arr[mid] > val) high = mid;
+        else low = mid + 1;
     }
     return low;
 }
-int getS(int* walls, int size, int a, int b) {
+
+int countInRange(int* walls, int wallsSize, long long a, long long b) {
     if (a > b) return 0;
-    int i1 = lower_bound(walls, size, a), i2 = upper_bound(walls, size, b);
-    return (i2 > i1) ? (i2 - i1) : 0;
+    return upper_bound(walls, wallsSize, b) - lower_bound(walls, wallsSize, a);
 }
+
 int maxWalls(int* robots, int robotsSize, int* distance, int distanceSize, int* walls, int wallsSize) {
-    Robot* r = (Robot*)malloc(robotsSize * sizeof(Robot));
-    for (int i = 0; i < robotsSize; i++) { r[i].pos = robots[i]; r[i].dist = distance[i]; }
-    qsort(r, robotsSize, sizeof(Robot), compareR);
-    qsort(walls, wallsSize, sizeof(int), compareW);
-    int p0 = 0, p1 = 0, pr_lim = 0;
+    Robot* sorted_robots = (Robot*)malloc(sizeof(Robot) * robotsSize);
     for (int i = 0; i < robotsSize; i++) {
-        int ll = r[i].pos - r[i].dist;
-        if (i > 0 && ll < r[i-1].pos + 1) ll = r[i-1].pos + 1;
-        int rl = r[i].pos + r[i].dist;
-        if (i < robotsSize - 1 && rl > r[i+1].pos - 1) rl = r[i+1].pos - 1;
-        int sl = getS(walls, wallsSize, ll, r[i].pos), sr = getS(walls, wallsSize, r[i].pos, rl);
-        int c0, c1;
-        if (i == 0) { c0 = sl; c1 = sr; } else {
-            c1 = (p0 > p1 ? p0 : p1) + sr;
-            int o1 = p0 + sl, start2 = (ll > pr_lim + 1) ? ll : (pr_lim + 1);
-            int o2 = p1 + getS(walls, wallsSize, start2, r[i].pos);
-            c0 = (o1 > o2 ? o1 : o2);
-        }
-        p0 = c0; p1 = c1; pr_lim = rl;
+        sorted_robots[i].pos = robots[i];
+        sorted_robots[i].dist = distance[i];
     }
-    free(r);
-    return p0 > p1 ? p0 : p1;
+    qsort(sorted_robots, robotsSize, sizeof(Robot), compareRobots);
+    qsort(walls, wallsSize, sizeof(int), compareWalls);
+
+    int (*dp)[2] = malloc(sizeof(int) * robotsSize * 2);
+
+    long long b0_r = (robotsSize == 1) ? ((long long)sorted_robots[0].pos + sorted_robots[0].dist) : ((long long)sorted_robots[0].pos + sorted_robots[0].dist);
+    if (robotsSize > 1 && b0_r > sorted_robots[1].pos) b0_r = sorted_robots[1].pos;
+
+    dp[0][0] = countInRange(walls, wallsSize, (long long)sorted_robots[0].pos - sorted_robots[0].dist, sorted_robots[0].pos);
+    dp[0][1] = countInRange(walls, wallsSize, sorted_robots[0].pos, b0_r);
+
+    for (int i = 1; i < robotsSize; i++) {
+        long long b_prev_r = (long long)sorted_robots[i-1].pos + sorted_robots[i-1].dist;
+        if (b_prev_r > sorted_robots[i].pos) b_prev_r = sorted_robots[i].pos;
+
+        long long b_i_l = (long long)sorted_robots[i].pos - sorted_robots[i].dist;
+        if (b_i_l < sorted_robots[i-1].pos) b_i_l = sorted_robots[i-1].pos;
+
+        long long b_i_r;
+        if (i == robotsSize - 1) {
+            b_i_r = (long long)sorted_robots[i].pos + sorted_robots[i].dist;
+        } else {
+            b_i_r = (long long)sorted_robots[i].pos + sorted_robots[i].dist;
+            if (b_i_r > sorted_robots[i+1].pos) b_i_r = sorted_robots[i+1].pos;
+        }
+
+        long long prev_r_pos = sorted_robots[i-1].pos;
+        long long curr_r_pos = sorted_robots[i].pos;
+
+        int dp0_from_dp0 = dp[i-1][0] + countInRange(walls, wallsSize, b_i_l > prev_r_pos + 1 ? b_i_l : prev_r_pos + 1, curr_r_pos);
+        int dp0_from_dp1 = dp[i-1][1] + countInRange(walls, wallsSize, b_i_l > b_prev_r + 1 ? b_i_l : b_prev_r + 1, curr_r_pos);
+        dp[i][0] = dp0_from_dp0 > dp0_from_dp1 ? dp0_from_dp0 : dp0_from_dp1;
+
+        int dp1_from_dp0 = dp[i-1][0] + countInRange(walls, wallsSize, curr_r_pos, b_i_r);
+        int dp1_from_dp1 = dp[i-1][1] + countInRange(walls, wallsSize, curr_r_pos > b_prev_r + 1 ? curr_r_pos : b_prev_r + 1, b_i_r);
+        dp[i][1] = dp1_from_dp0 > dp1_from_dp1 ? dp1_from_dp0 : dp1_from_dp1;
+    }
+
+    int result = dp[robotsSize - 1][0] > dp[robotsSize - 1][1] ? dp[robotsSize - 1][0] : dp[robotsSize - 1][1];
+
+    free(sorted_robots);
+    free(dp);
+    return result;
 }
 {% endraw %}
 {% endhighlight %}
@@ -727,47 +1114,55 @@ int maxWalls(int* robots, int robotsSize, int* distance, int distanceSize, int* 
 
 {% highlight csharp %}
 {% raw %}
+using System;
+using System.Collections.Generic;
+
 public class Solution {
-    private int LowerBound(int[] arr, int val) {
-        int low = 0, high = arr.Length;
-        while (low < high) {
-            int mid = low + (high - low) / 2;
-            if (arr[mid] < val) low = mid + 1; else high = mid;
-        }
-        return low;
-    }
-    private int UpperBound(int[] arr, int val) {
-        int low = 0, high = arr.Length;
-        while (low < high) {
-            int mid = low + (high - low) / 2;
-            if (arr[mid] <= val) low = mid + 1; else high = mid;
-        }
-        return low;
-    }
-    private int GetS(int[] walls, int a, int b) {
-        if (a > b) return 0;
-        int i1 = LowerBound(walls, a), i2 = UpperBound(walls, b);
-        return i2 > i1 ? i2 - i1 : 0;
-    }
     public int MaxWalls(int[] robots, int[] distance, int[] walls) {
         int n = robots.Length;
-        var r = new (int p, int d)[n];
-        for (int i = 0; i < n; i++) r[i] = (robots[i], distance[i]);
-        System.Array.Sort(r, (a, b) => a.p.CompareTo(b.p));
-        System.Array.Sort(walls);
-        int p0 = 0, p1 = 0, pr_lim = 0;
+        var sortedRobots = new (long pos, long dist)[n];
         for (int i = 0; i < n; i++) {
-            int ll = Math.Max(r[i].p - r[i].d, i > 0 ? r[i-1].p + 1 : int.MinValue);
-            int rl = Math.Min(r[i].p + r[i].d, i < n - 1 ? r[i+1].p - 1 : int.MaxValue);
-            int sl = GetS(walls, ll, r[i].p), sr = GetS(walls, r[i].p, rl);
-            int c0, c1;
-            if (i == 0) { c0 = sl; c1 = sr; } else {
-                c1 = Math.Max(p0, p1) + sr;
-                c0 = Math.Max(p0 + sl, p1 + GetS(walls, Math.Max(ll, pr_lim + 1), r[i].p));
-            }
-            p0 = c0; p1 = c1; pr_lim = rl;
+            sortedRobots[i] = (robots[i], distance[i]);
         }
-        return Math.Max(p0, p1);
+        Array.Sort(sortedRobots, (a, b) => a.pos.CompareTo(b.pos));
+        Array.Sort(walls);
+
+        int[,] dp = new int[n, 2];
+
+        long b0_r = (n == 1) ? (sortedRobots[0].pos + sortedRobots[0].dist) : Math.Min(sortedRobots[0].pos + sortedRobots[0].dist, sortedRobots[1].pos);
+        dp[0, 0] = CountInRange(walls, sortedRobots[0].pos - sortedRobots[0].dist, sortedRobots[0].pos);
+        dp[0, 1] = CountInRange(walls, sortedRobots[0].pos, b0_r);
+
+        for (int i = 1; i < n; i++) {
+            long b_prev_r = Math.Min(sortedRobots[i - 1].pos + sortedRobots[i - 1].dist, sortedRobots[i].pos);
+            long b_i_l = Math.Max(sortedRobots[i].pos - sortedRobots[i].dist, sortedRobots[i - 1].pos);
+            long b_i_r = (i == n - 1) ? (sortedRobots[i].pos + sortedRobots[i].dist) : Math.Min(sortedRobots[i].pos + sortedRobots[i].dist, sortedRobots[i + 1].pos);
+
+            long prev_r_pos = sortedRobots[i - 1].pos;
+            long curr_r_pos = sortedRobots[i].pos;
+
+            dp[i, 0] = Math.Max(
+                dp[i - 1, 0] + CountInRange(walls, Math.Max(b_i_l, prev_r_pos + 1), curr_r_pos),
+                dp[i - 1, 1] + CountInRange(walls, Math.Max(b_i_l, b_prev_r + 1), curr_r_pos)
+            );
+
+            dp[i, 1] = Math.Max(
+                dp[i - 1, 0] + CountInRange(walls, curr_r_pos, b_i_r),
+                dp[i - 1, 1] + CountInRange(walls, Math.Max(curr_r_pos, b_prev_r + 1), b_i_r)
+            );
+        }
+
+        return Math.Max(dp[n - 1, 0], dp[n - 1, 1]);
+    }
+
+    private int CountInRange(int[] walls, long a, long b) {
+        if (a > b) return 0;
+        int start = Array.BinarySearch(walls, (int)a);
+        if (start < 0) start = ~start;
+        int end = Array.BinarySearch(walls, (int)b);
+        if (end < 0) end = ~end - 1;
+        if (start <= end) return end - start + 1;
+        return 0;
     }
 }
 {% endraw %}
@@ -787,44 +1182,72 @@ public class Solution {
  */
 var maxWalls = function(robots, distance, walls) {
     const n = robots.length;
-    let r = robots.map((p, i) => ({p, d: distance[i]})).sort((a, b) => a.p - b.p);
-    walls.sort((a, b) => a - b);
-    const lb = (val) => {
-        let low = 0, high = walls.length;
+    const indices = new Int32Array(n);
+    for (let i = 0; i < n; i++) indices[i] = i;
+    indices.sort((a, b) => robots[a] - robots[b]);
+
+    const sortedWalls = new Int32Array(walls);
+    sortedWalls.sort();
+
+    function lowerBound(arr, val) {
+        let low = 0, high = arr.length;
         while (low < high) {
             let mid = (low + high) >>> 1;
-            if (walls[mid] < val) low = mid + 1; else high = mid;
+            if (arr[mid] >= val) high = mid;
+            else low = mid + 1;
         }
         return low;
-    };
-    const ub = (val) => {
-        let low = 0, high = walls.length;
-        while (low < high) {
-            let mid = (low + high) >>> 1;
-            if (walls[mid] <= val) low = mid + 1; else high = mid;
-        }
-        return low;
-    };
-    const getS = (a, b) => {
-        if (a > b) return 0;
-        let i1 = lb(a), i2 = ub(b);
-        return i2 > i1 ? i2 - i1 : 0;
-    };
-    let p0 = 0, p1 = 0, pr_lim = 0;
-    for (let i = 0; i < n; i++) {
-        let ll = Math.max(r[i].p - r[i].d, i > 0 ? r[i-1].p + 1 : -2e9);
-        let rl = Math.min(r[i].p + r[i].d, i < n - 1 ? r[i+1].p - 1 : 2e9);
-        let sl = getS(ll, r[i].p), sr = getS(r[i].p, rl);
-        let c0, c1;
-        if (i === 0) {
-            c0 = sl; c1 = sr;
-        } else {
-            c1 = Math.max(p0, p1) + sr;
-            c0 = Math.max(p0 + sl, p1 + getS(Math.max(ll, pr_lim + 1), r[i].p));
-        }
-        p0 = c0; p1 = c1; pr_lim = rl;
     }
-    return Math.max(p0, p1);
+
+    function upperBound(arr, val) {
+        let low = 0, high = arr.length;
+        while (low < high) {
+            let mid = (low + high) >>> 1;
+            if (arr[mid] > val) high = mid;
+            else low = mid + 1;
+        }
+        return low;
+    }
+
+    function countInRange(a, b) {
+        if (a > b) return 0;
+        return upperBound(sortedWalls, b) - lowerBound(sortedWalls, a);
+    }
+
+    const dp0 = new Int32Array(n);
+    const dp1 = new Int32Array(n);
+
+    const r0_pos = robots[indices[0]];
+    const r0_dist = distance[indices[0]];
+    const b0_r = (n === 1) ? (r0_pos + r0_dist) : Math.min(r0_pos + r0_dist, robots[indices[1]]);
+
+    dp0[0] = countInRange(r0_pos - r0_dist, r0_pos);
+    dp1[0] = countInRange(r0_pos, b0_r);
+
+    for (let i = 1; i < n; i++) {
+        const idx = indices[i];
+        const prevIdx = indices[i - 1];
+        const r_pos = robots[idx];
+        const r_dist = distance[idx];
+        const prev_pos = robots[prevIdx];
+        const prev_dist = distance[prevIdx];
+
+        const b_prev_r = Math.min(prev_pos + prev_dist, r_pos);
+        const b_i_l = Math.max(r_pos - r_dist, prev_pos);
+        const b_i_r = (i === n - 1) ? (r_pos + r_dist) : Math.min(r_pos + r_dist, robots[indices[i + 1]]);
+
+        dp0[i] = Math.max(
+            dp0[i - 1] + countInRange(Math.max(b_i_l, prev_pos + 1), r_pos),
+            dp1[i - 1] + countInRange(Math.max(b_i_l, b_prev_r + 1), r_pos)
+        );
+
+        dp1[i] = Math.max(
+            dp0[i - 1] + countInRange(r_pos, b_i_r),
+            dp1[i - 1] + countInRange(Math.max(r_pos, b_prev_r + 1), b_i_r)
+        );
+    }
+
+    return Math.max(dp0[n - 1], dp1[n - 1]);
 };
 {% endraw %}
 {% endhighlight %}
@@ -837,53 +1260,64 @@ var maxWalls = function(robots, distance, walls) {
 {% raw %}
 function maxWalls(robots: number[], distance: number[], walls: number[]): number {
     const n = robots.length;
-    const comb = robots.map((r, i) => [r, distance[i]]).sort((a, b) => a[0] - b[0]);
-    const rPos = comb.map(x => x[0]);
-    const rDist = comb.map(x => x[1]);
+    const combined = robots.map((p, i) => ({ p, d: distance[i] }));
+    combined.sort((a, b) => a.p - b.p);
+    const P = combined.map(c => c.p);
+    const D = combined.map(c => c.d);
     walls.sort((a, b) => a - b);
-    const m = walls.length;
 
     const lowerBound = (target: number) => {
-        let l = 0, r = m;
+        let l = 0, r = walls.length;
         while (l < r) {
-            let mid = (l + r) >>> 1;
-            if (walls[mid] < target) l = mid + 1; else r = mid;
+            let m = (l + r) >> 1;
+            if (walls[m] < target) l = m + 1;
+            else r = m;
         }
         return l;
     };
+
     const upperBound = (target: number) => {
-        let l = 0, r = m;
+        let l = 0, r = walls.length;
         while (l < r) {
-            let mid = (l + r) >>> 1;
-            if (walls[mid] <= target) l = mid + 1; else r = mid;
+            let m = (l + r) >> 1;
+            if (walls[m] <= target) l = m + 1;
+            else r = m;
         }
         return l;
     };
-    const countInRange = (min: number, max: number) => {
-        if (min > max) return 0;
-        return upperBound(max) - lowerBound(min);
+
+    const countWalls = (a: number, b: number) => {
+        if (a > b) return 0;
+        return upperBound(b) - lowerBound(a);
     };
+
     const hasWall = (pos: number) => {
         const idx = lowerBound(pos);
-        return (idx < m && walls[idx] === pos) ? 1 : 0;
+        return (idx < walls.length && walls[idx] === pos) ? 1 : 0;
     };
 
-    let prevL = countInRange(rPos[0] - rDist[0], rPos[0]);
-    let prevR = countInRange(rPos[0], n > 1 ? Math.min(rPos[1], rPos[0] + rDist[0]) : rPos[0] + rDist[0]);
+    const lBoundaries = new Int32Array(n);
+    const rBoundaries = new Int32Array(n);
+    for (let i = 0; i < n; i++) {
+        lBoundaries[i] = Math.max(P[i] - D[i], i > 0 ? P[i - 1] : -2000000000);
+        rBoundaries[i] = Math.min(P[i] + D[i], i < n - 1 ? P[i + 1] : 2000000000);
+    }
+
+    const dp = new Int32Array(n * 2);
+    dp[0] = countWalls(lBoundaries[0], P[0]);
+    dp[1] = countWalls(P[0], rBoundaries[0]);
 
     for (let i = 1; i < n; i++) {
-        const Li = countInRange(Math.max(rPos[i - 1], rPos[i] - rDist[i]), rPos[i]);
-        const Ri = countInRange(rPos[i], i < n - 1 ? Math.min(rPos[i + 1], rPos[i] + rDist[i]) : rPos[i] + rDist[i]);
-        const overlapLL = (rPos[i] - rDist[i] <= rPos[i - 1]) ? hasWall(rPos[i - 1]) : 0;
-        const overlapRR = (rPos[i - 1] + rDist[i - 1] >= rPos[i]) ? hasWall(rPos[i]) : 0;
-        const overlapRL = countInRange(Math.max(rPos[i - 1], rPos[i] - rDist[i]), Math.min(rPos[i], rPos[i - 1] + rDist[i - 1]));
+        const val1 = dp[(i - 1) * 2] + countWalls(lBoundaries[i], P[i]) - (lBoundaries[i] === P[i - 1] ? hasWall(P[i - 1]) : 0);
+        const val2 = dp[(i - 1) * 2 + 1] + countWalls(lBoundaries[i], P[i]) - countWalls(lBoundaries[i], rBoundaries[i - 1]);
+        dp[i * 2] = Math.max(val1, val2);
 
-        const currL = Math.max(prevL + Li - overlapLL, prevR + Li - overlapRL);
-        const currR = Math.max(prevL + Ri, prevR + Ri - overlapRR);
-        prevL = currL;
-        prevR = currR;
+        const val3 = dp[(i - 1) * 2] + countWalls(P[i], rBoundaries[i]);
+        const val4 = dp[(i - 1) * 2 + 1] + countWalls(P[i], rBoundaries[i]) - (rBoundaries[i - 1] === P[i] ? hasWall(P[i]) : 0);
+        dp[i * 2 + 1] = Math.max(val3, val4);
     }
-    return Math.max(prevL, prevR);
+
+    return Math.max(dp[(n - 1) * 2], dp[(n - 1) * 2 + 1]);
 }
 {% endraw %}
 {% endhighlight %}
@@ -895,6 +1329,7 @@ function maxWalls(robots: number[], distance: number[], walls: number[]): number
 {% highlight php %}
 {% raw %}
 class Solution {
+
     /**
      * @param Integer[] $robots
      * @param Integer[] $distance
@@ -903,54 +1338,61 @@ class Solution {
      */
     function maxWalls($robots, $distance, $walls) {
         $n = count($robots);
-        $r_pos = $robots;
-        $r_dist = $distance;
-        array_multisort($r_pos, SORT_ASC, SORT_NUMERIC, $r_dist);
-        sort($walls, SORT_NUMERIC);
-        $m = count($walls);
+        array_multisort($robots, SORT_ASC, $distance);
+        sort($walls);
 
-        $lowerBound = function($target) use ($walls, $m) {
-            $l = 0; $r = $m;
+        $lBoundaries = array_fill(0, $n, 0);
+        $rBoundaries = array_fill(0, $n, 0);
+        for ($i = 0; $i < $n; $i++) {
+            $lBoundaries[$i] = max($robots[$i] - $distance[$i], $i > 0 ? $robots[$i - 1] : -2000000000);
+            $rBoundaries[$i] = min($robots[$i] + $distance[$i], $i < $n - 1 ? $robots[$i + 1] : 2000000000);
+        }
+
+        $lowerBound = function($target) use (&$walls) {
+            $l = 0; $r = count($walls);
             while ($l < $r) {
-                $mid = $l + (int)(($r - $l) / 2);
-                if ($walls[$mid] < $target) $l = $mid + 1;
-                else $r = $mid;
+                $m = (int)(($l + $r) / 2);
+                if ($walls[$m] < $target) $l = $m + 1;
+                else $r = $m;
             }
             return $l;
         };
-        $upperBound = function($target) use ($walls, $m) {
-            $l = 0; $r = $m;
+
+        $upperBound = function($target) use (&$walls) {
+            $l = 0; $r = count($walls);
             while ($l < $r) {
-                $mid = $l + (int)(($r - $l) / 2);
-                if ($walls[$mid] <= $target) $l = $mid + 1;
-                else $r = $mid;
+                $m = (int)(($l + $r) / 2);
+                if ($walls[$m] <= $target) $l = $m + 1;
+                else $r = $m;
             }
             return $l;
         };
-        $countInRange = function($minV, $maxV) use ($lowerBound, $upperBound) {
-            if ($minV > $maxV) return 0;
-            return $upperBound($maxV) - $lowerBound($minV);
+
+        $countWalls = function($a, $b) use ($lowerBound, $upperBound) {
+            if ($a > $b) return 0;
+            return $upperBound($b) - $lowerBound($a);
         };
-        $hasWall = function($pos) use ($walls, $m, $lowerBound) {
+
+        $hasWall = function($pos) use ($lowerBound, &$walls) {
             $idx = $lowerBound($pos);
-            return ($idx < $m && $walls[$idx] == $pos) ? 1 : 0;
+            return ($idx < count($walls) && $walls[$idx] == $pos) ? 1 : 0;
         };
 
-        $prevL = $countInRange($r_pos[0] - $r_dist[0], $r_pos[0]);
-        $prevR = $countInRange($r_pos[0], $n > 1 ? min($r_pos[1], $r_pos[0] + $r_dist[0]) : $r_pos[0] + $r_dist[0]);
+        $dp = array_fill(0, $n * 2, 0);
+        $dp[0] = $countWalls($lBoundaries[0], $robots[0]);
+        $dp[1] = $countWalls($robots[0], $rBoundaries[0]);
 
         for ($i = 1; $i < $n; $i++) {
-            $Li = $countInRange(max($r_pos[$i-1], $r_pos[$i] - $r_dist[$i]), $r_pos[$i]);
-            $Ri = $countInRange($r_pos[$i], ($i < $n - 1 ? min($r_pos[$i+1], $r_pos[$i] + $r_dist[$i]) : $r_pos[$i] + $r_dist[$i]));
-            $overlapLL = ($r_pos[$i] - $r_dist[$i] <= $r_pos[$i-1]) ? $hasWall($r_pos[$i-1]) : 0;
-            $overlapRR = ($r_pos[$i-1] + $r_dist[$i-1] >= $r_pos[$i]) ? $hasWall($r_pos[$i]) : 0;
-            $overlapRL = $countInRange(max($r_pos[$i-1], $r_pos[$i] - $r_dist[$i]), min($r_pos[$i], $r_pos[$i-1] + $r_dist[$i-1]));
-            $currL = max($prevL + $Li - $overlapLL, $prevR + $Li - $overlapRL);
-            $currR = max($prevL + $Ri, $prevR + $Ri - $overlapRR);
-            $prevL = $currL;
-            $prevR = $currR;
+            $val1 = $dp[($i - 1) * 2] + $countWalls($lBoundaries[$i], $robots[$i]) - ($lBoundaries[$i] == $robots[$i - 1] ? $hasWall($robots[$i - 1]) : 0);
+            $val2 = $dp[($i - 1) * 2 + 1] + $countWalls($lBoundaries[$i], $robots[$i]) - $countWalls($lBoundaries[$i], $rBoundaries[$i - 1]);
+            $dp[$i * 2] = max($val1, $val2);
+
+            $val3 = $dp[($i - 1) * 2] + $countWalls($robots[$i], $rBoundaries[$i]);
+            $val4 = $dp[($i - 1) * 2 + 1] + $countWalls($robots[$i], $rBoundaries[$i]) - ($rBoundaries[$i - 1] == $robots[$i] ? $hasWall($robots[$i]) : 0);
+            $dp[$i * 2 + 1] = max($val3, $val4);
         }
-        return max($prevL, $prevR);
+
+        return max($dp[($n - 1) * 2], $dp[($n - 1) * 2 + 1]);
     }
 }
 {% endraw %}
@@ -965,58 +1407,63 @@ class Solution {
 class Solution {
     func maxWalls(_ robots: [Int], _ distance: [Int], _ walls: [Int]) -> Int {
         let n = robots.count
-        var robotsWithDist = [(Int, Int)]()
-        for i in 0..<n {
-            robotsWithDist.append((robots[i], distance[i]))
-        }
-        robotsWithDist.sort { $0.0 < $1.0 }
-        let rPos = robotsWithDist.map { $0.0 }
-        let rDist = robotsWithDist.map { $0.1 }
+        let sortedIndices = (0..<n).sorted { robots[$0] < robots[$1] }
+        let sortedRobots = sortedIndices.map { robots[$0] }
+        let sortedDistances = sortedIndices.map { distance[$0] }
         let sortedWalls = walls.sorted()
-        let m = sortedWalls.count
 
-        func lowerBound(_ target: Int) -> Int {
-            var l = 0, r = m
+        func lowerBound(_ arr: [Int], _ target: Int) -> Int {
+            var l = 0, r = arr.count
             while l < r {
-                let mid = l + (r - l) / 2
-                if sortedWalls[mid] < target { l = mid + 1 } else { r = mid }
+                let m = l + (r - l) / 2
+                if arr[m] < target { l = m + 1 } else { r = m }
             }
             return l
         }
-        func upperBound(_ target: Int) -> Int {
-            var l = 0, r = m
+
+        func upperBound(_ arr: [Int], _ target: Int) -> Int {
+            var l = 0, r = arr.count
             while l < r {
-                let mid = l + (r - l) / 2
-                if sortedWalls[mid] <= target { l = mid + 1 } else { r = mid }
+                let m = l + (r - l) / 2
+                if arr[m] <= target { l = m + 1 } else { r = m }
             }
             return l
         }
-        func countInRange(_ minV: Int, _ maxV: Int) -> Int {
-            if minV > maxV { return 0 }
-            return upperBound(maxV) - lowerBound(minV)
+
+        func countWalls(_ a: Int, _ b: Int) -> Int {
+            if a > b { return 0 }
+            return upperBound(sortedWalls, b) - lowerBound(sortedWalls, a)
         }
+
         func hasWall(_ pos: Int) -> Int {
-            let idx = lowerBound(pos)
-            return (idx < m && sortedWalls[idx] == pos) ? 1 : 0
+            let idx = lowerBound(sortedWalls, pos)
+            return (idx < sortedWalls.count && sortedWalls[idx] == pos) ? 1 : 0
         }
 
-        var prevL = countInRange(rPos[0] - rDist[0], rPos[0])
-        var prevR = countInRange(rPos[0], n > 1 ? min(rPos[1], rPos[0] + rDist[0]) : rPos[0] + rDist[0])
+        var lBoundaries = [Int](repeating: 0, count: n)
+        var rBoundaries = [Int](repeating: 0, count: n)
+        for i in 0..<n {
+            lBoundaries[i] = max(sortedRobots[i] - sortedDistances[i], i > 0 ? sortedRobots[i - 1] : -2000000000)
+            rBoundaries[i] = min(sortedRobots[i] + sortedDistances[i], i < n - 1 ? sortedRobots[i + 1] : 2000000000)
+        }
+
+        var dp = [Int](repeating: 0, count: n * 2)
+        dp[0] = countWalls(lBoundaries[0], sortedRobots[0])
+        dp[1] = countWalls(sortedRobots[0], rBoundaries[0])
 
         if n > 1 {
             for i in 1..<n {
-                let Li = countInRange(max(rPos[i-1], rPos[i] - rDist[i]), rPos[i])
-                let Ri = countInRange(rPos[i], i < n - 1 ? min(rPos[i+1], rPos[i] + rDist[i]) : rPos[i] + rDist[i])
-                let overlapLL = (rPos[i] - rDist[i] <= rPos[i-1]) ? hasWall(rPos[i-1]) : 0
-                let overlapRR = (rPos[i-1] + rDist[i-1] >= rPos[i]) ? hasWall(rPos[i]) : 0
-                let overlapRL = countInRange(max(rPos[i-1], rPos[i] - rDist[i]), min(rPos[i], rPos[i-1] + rDist[i-1]))
-                let currL = max(prevL + Li - overlapLL, prevR + Li - overlapRL)
-                let currR = max(prevL + Ri, prevR + Ri - overlapRR)
-                prevL = currL
-                prevR = currR
+                let val1 = dp[(i - 1) * 2] + countWalls(lBoundaries[i], sortedRobots[i]) - (lBoundaries[i] == sortedRobots[i - 1] ? hasWall(sortedRobots[i - 1]) : 0)
+                let val2 = dp[(i - 1) * 2 + 1] + countWalls(lBoundaries[i], sortedRobots[i]) - countWalls(lBoundaries[i], rBoundaries[i - 1])
+                dp[i * 2] = max(val1, val2)
+
+                let val3 = dp[(i - 1) * 2] + countWalls(sortedRobots[i], rBoundaries[i])
+                let val4 = dp[(i - 1) * 2 + 1] + countWalls(sortedRobots[i], rBoundaries[i]) - (rBoundaries[i - 1] == sortedRobots[i] ? hasWall(sortedRobots[i]) : 0)
+                dp[i * 2 + 1] = max(val3, val4)
             }
         }
-        return max(prevL, prevR)
+
+        return max(dp[(n - 1) * 2], dp[(n - 1) * 2 + 1])
     }
 }
 {% endraw %}
@@ -1028,56 +1475,48 @@ class Solution {
 
 {% highlight kotlin %}
 {% raw %}
-import java.util.*
-
 class Solution {
     fun maxWalls(robots: IntArray, distance: IntArray, walls: IntArray): Int {
         val n = robots.size
-        val idx = (0 until n).sortedBy { robots[it] }
-        val sortedR = IntArray(n) { robots[idx[it]] }
-        val sortedD = IntArray(n) { distance[idx[it]] }
+        data class Robot(val pos: Int, val dist: Int)
+        val rbs = Array(n) { i -> Robot(robots[i], distance[i]) }.sortedBy { it.pos }
         walls.sort()
 
-        fun lowerBound(a: IntArray, target: Int): Int {
-            var low = 0
-            var high = a.size
-            while (low < high) {
-                val mid = low + (high - low) / 2
-                if (a[mid] >= target) high = mid else low = mid + 1
-            }
-            return low
-        }
-
-        fun countInRange(a: Int, b: Int): Int {
+        fun count(a: Int, b: Int): Int {
             if (a > b) return 0
-            return lowerBound(walls, b + 1) - lowerBound(walls, a)
+            var idxA = walls.binarySearch(a)
+            if (idxA < 0) idxA = -idxA - 1
+            var idxB = walls.binarySearch(b)
+            if (idxB < 0) idxB = -idxB - 1 else idxB += 1
+            return idxB - idxA
         }
 
-        fun hasWall(pos: Int): Boolean {
-            val i = lowerBound(walls, pos)
-            return i < walls.size && walls[i] == pos
+        val dp = Array(n) { IntArray(2) }
+        var prevPos = -1000000000
+        for (i in 0 until n) {
+            val nextPos = if (i < n - 1) rbs[i + 1].pos else 2000000000
+            val li = maxOf(rbs[i].pos - rbs[i].dist, prevPos)
+            val ri = minOf(rbs[i].pos + rbs[i].dist, nextPos)
+
+            if (i == 0) {
+                dp[0][0] = count(li, rbs[0].pos)
+                dp[0][1] = count(rbs[0].pos, ri)
+            } else {
+                val riPrev = minOf(rbs[i - 1].pos + rbs[i - 1].dist, rbs[i].pos)
+
+                dp[i][0] = maxOf(
+                    dp[i - 1][0] + count(li, rbs[i].pos) - count(li, rbs[i - 1].pos),
+                    dp[i - 1][1] + count(li, rbs[i].pos) - count(li, riPrev)
+                )
+                dp[i][1] = maxOf(
+                    dp[i - 1][0] + count(rbs[i].pos, ri),
+                    dp[i - 1][1] + count(rbs[i].pos, ri) - count(rbs[i].pos, riPrev)
+                )
+            }
+            prevPos = rbs[i].pos
         }
 
-        var p0 = countInRange(sortedR[0] - sortedD[0], sortedR[0]).toLong()
-        val r1 = if (n > 1) sortedR[1] else 2100000000
-        var p1 = countInRange(sortedR[0], minOf(sortedR[0] + sortedD[0], r1)).toLong()
-
-        for (i in 1 until n) {
-            val rPrev = sortedR[i - 1]
-            val rNext = if (i < n - 1) sortedR[i + 1] else 2100000000
-            val cl = countInRange(maxOf(sortedR[i] - sortedD[i], rPrev), sortedR[i])
-            val cr = countInRange(sortedR[i], minOf(sortedR[i] + sortedD[i], rNext))
-            val overRL = countInRange(maxOf(rPrev, sortedR[i] - sortedD[i]), minOf(rPrev + sortedD[i - 1], sortedR[i]))
-            val wallAtRprev = if (hasWall(rPrev) && (sortedR[i] - sortedD[i] <= rPrev)) 1 else 0
-            val wallAtRi = if (hasWall(sortedR[i]) && (rPrev + sortedD[i - 1] >= sortedR[i])) 1 else 0
-
-            val next0 = maxOf(p0 + cl - wallAtRprev, p1 + cl - overRL)
-            val next1 = maxOf(p0 + cr, p1 + cr - wallAtRi)
-            p0 = next0
-            p1 = next1
-        }
-
-        return maxOf(p0, p1).toInt()
+        return maxOf(dp[n - 1][0], dp[n - 1][1])
     }
 }
 {% endraw %}
@@ -1089,57 +1528,71 @@ class Solution {
 
 {% highlight dart %}
 {% raw %}
-import 'dart:math';
-
 class Solution {
   int maxWalls(List<int> robots, List<int> distance, List<int> walls) {
     int n = robots.length;
-    List<int> idx = List.generate(n, (i) => i);
-    idx.sort((a, b) => robots[a].compareTo(robots[b]));
-    List<int> sortedR = idx.map((i) => robots[i]).toList();
-    List<int> sortedD = idx.map((i) => distance[i]).toList();
+    List<Robot> rbs = List.generate(n, (i) => Robot(robots[i], distance[i]));
+    rbs.sort((a, b) => a.pos.compareTo(b.pos));
     walls.sort();
 
-    int lowerBound(List<int> a, int target) {
-      int low = 0, high = a.length;
+    int lowerBound(List<int> sortedList, int value) {
+      int low = 0, high = sortedList.length;
       while (low < high) {
-        int mid = (low + high) ~/ 2;
-        if (a[mid] >= target) high = mid; else low = mid + 1;
+        int mid = low + ((high - low) >> 1);
+        if (sortedList[mid] < value) low = mid + 1;
+        else high = mid;
       }
       return low;
     }
 
-    int countInRange(int a, int b) {
+    int upperBound(List<int> sortedList, int value) {
+      int low = 0, high = sortedList.length;
+      while (low < high) {
+        int mid = low + ((high - low) >> 1);
+        if (sortedList[mid] <= value) low = mid + 1;
+        else high = mid;
+      }
+      return low;
+    }
+
+    int count(int a, int b) {
       if (a > b) return 0;
-      return lowerBound(walls, b + 1) - lowerBound(walls, a);
+      return upperBound(walls, b) - lowerBound(walls, a);
     }
 
-    bool hasWall(int pos) {
-      int i = lowerBound(walls, pos);
-      return i < walls.length && walls[i] == pos;
+    List<List<int>> dp = List.generate(n, (_) => List.filled(2, 0));
+    int prevPos = -1000000000;
+
+    for (int i = 0; i < n; i++) {
+      int nextPos = (i < n - 1) ? rbs[i + 1].pos : 2000000000;
+      int li = (rbs[i].pos - rbs[i].dist > prevPos) ? rbs[i].pos - rbs[i].dist : prevPos;
+      int ri = (rbs[i].pos + rbs[i].dist < nextPos) ? rbs[i].pos + rbs[i].dist : nextPos;
+
+      if (i == 0) {
+        dp[0][0] = count(li, rbs[0].pos);
+        dp[0][1] = count(rbs[0].pos, ri);
+      } else {
+        int riPrev = (rbs[i - 1].pos + rbs[i - 1].dist < rbs[i].pos) ? rbs[i - 1].pos + rbs[i - 1].dist : rbs[i].pos;
+
+        int c1 = dp[i - 1][0] + count(li, rbs[i].pos) - count(li, rbs[i - 1].pos);
+        int c2 = dp[i - 1][1] + count(li, rbs[i].pos) - count(li, riPrev);
+        dp[i][0] = (c1 > c2) ? c1 : c2;
+
+        int c3 = dp[i - 1][0] + count(rbs[i].pos, ri);
+        int c4 = dp[i - 1][1] + count(rbs[i].pos, ri) - count(rbs[i].pos, riPrev);
+        dp[i][1] = (c3 > c4) ? c3 : c4;
+      }
+      prevPos = rbs[i].pos;
     }
 
-    int r1 = n > 1 ? sortedR[1] : 2100000000;
-    int p0 = countInRange(sortedR[0] - sortedD[0], sortedR[0]);
-    int p1 = countInRange(sortedR[0], min(sortedR[0] + sortedD[0], r1));
-
-    for (int i = 1; i < n; i++) {
-      int rPrev = sortedR[i - 1];
-      int rNext = i < n - 1 ? sortedR[i + 1] : 2100000000;
-      int cl = countInRange(max(sortedR[i] - sortedD[i], rPrev), sortedR[i]);
-      int cr = countInRange(sortedR[i], min(sortedR[i] + sortedD[i], rNext));
-      int overRL = countInRange(max(rPrev, sortedR[i] - sortedD[i]), min(rPrev + sortedD[i - 1], sortedR[i]));
-      int wallAtRprev = (hasWall(rPrev) && (sortedR[i] - sortedD[i] <= rPrev)) ? 1 : 0;
-      int wallAtRi = (hasWall(sortedR[i]) && (rPrev + sortedD[i - 1] >= sortedR[i])) ? 1 : 0;
-
-      int next0 = max(p0 + cl - wallAtRprev, p1 + cl - overRL);
-      int next1 = max(p0 + cr, p1 + cr - wallAtRi);
-      p0 = next0;
-      p1 = next1;
-    }
-
-    return max(p0, p1);
+    return (dp[n - 1][0] > dp[n - 1][1]) ? dp[n - 1][0] : dp[n - 1][1];
   }
+}
+
+class Robot {
+  final int pos;
+  final int dist;
+  Robot(this.pos, this.dist);
 }
 {% endraw %}
 {% endhighlight %}
@@ -1151,66 +1604,72 @@ class Solution {
 {% highlight go %}
 {% raw %}
 import (
-	"sort"
+    "sort"
 )
 
+type Robot struct {
+    pos  int
+    dist int
+}
+
 func maxWalls(robots []int, distance []int, walls []int) int {
-	sort.Ints(walls)
-	n := len(robots)
-	type robot struct{ pos, dist int }
-	rList := make([]robot, n)
-	for i := range robots {
-		rList[i] = robot{robots[i], distance[i]}
-	}
-	sort.Slice(rList, func(i, j int) bool { return rList[i].pos < rList[j].pos })
-	sortedR := make([]int, n)
-	sortedD := make([]int, n)
-	for i := range rList {
-		sortedR[i], sortedD[i] = rList[i].pos, rList[i].dist
-	}
+    n := len(robots)
+    rbs := make([]Robot, n)
+    for i := range robots {
+        rbs[i] = Robot{robots[i], distance[i]}
+    }
+    sort.Slice(rbs, func(i, j int) bool { return rbs[i].pos < rbs[j].pos })
+    sort.Ints(walls)
 
-	count := func(a, b int) int {
-		if a > b { return 0 }
-		return sort.SearchInts(walls, b+1) - sort.SearchInts(walls, a)
-	}
-	hasWall := func(pos int) bool {
-		i := sort.SearchInts(walls, pos)
-		return i < len(walls) && walls[i] == pos
-	}
-	max64 := func(a, b int64) int64 {
-		if a > b { return a }
-		return b
-	}
-	min := func(a, b int) int {
-		if a < b { return a }
-		return b
-	}
-	max := func(a, b int) int {
-		if a > b { return a }
-		return b
-	}
+    count := func(a, b int) int {
+        if a > b {
+            return 0
+        }
+        idxA := sort.SearchInts(walls, a)
+        idxB := sort.SearchInts(walls, b+1)
+        return idxB - idxA
+    }
 
-	r1 := 2100000000
-	if n > 1 { r1 = sortedR[1] }
-	p0 := int64(count(sortedR[0]-sortedD[0], sortedR[0]))
-	p1 := int64(count(sortedR[0], min(sortedR[0]+sortedD[0], r1)))
+    maxVal := func(a, b int) int {
+        if a > b { return a }
+        return b
+    }
+    minVal := func(a, b int) int {
+        if a < b { return a }
+        return b
+    }
 
-	for i := 1; i < n; i++ {
-		rPrev, rNext := sortedR[i-1], 2100000000
-		if i < n-1 { rNext = sortedR[i+1] }
-		cl := int64(count(max(sortedR[i]-sortedD[i], rPrev), sortedR[i]))
-		cr := int64(count(sortedR[i], min(sortedR[i]+sortedD[i], rNext)))
-		overRL := int64(count(max(rPrev, sortedR[i]-sortedD[i]), min(rPrev+sortedD[i-1], sortedR[i])))
-		wallAtRprev := int64(0)
-		if hasWall(rPrev) && sortedR[i]-sortedD[i] <= rPrev { wallAtRprev = 1 }
-		wallAtRi := int64(0)
-		if hasWall(sortedR[i]) && rPrev+sortedD[i-1] >= sortedR[i] { wallAtRi = 1 }
+    dp := make([][2]int, n)
+    prevPos := -1000000000
 
-		next0 := max64(p0+cl-wallAtRprev, p1+cl-overRL)
-		next1 := max64(p0+cr, p1+cr-wallAtRi)
-		p0, p1 = next0, next1
-	}
-	return int(max64(p0, p1))
+    for i := 0; i < n; i++ {
+        nextPos := 2000000000
+        if i < n-1 {
+            nextPos = rbs[i+1].pos
+        }
+
+        li := maxVal(rbs[i].pos - rbs[i].dist, prevPos)
+        ri := minVal(rbs[i].pos + rbs[i].dist, nextPos)
+
+        if i == 0 {
+            dp[0][0] = count(li, rbs[0].pos)
+            dp[0][1] = count(rbs[0].pos, ri)
+        } else {
+            riPrev := minVal(rbs[i-1].pos + rbs[i-1].dist, rbs[i].pos)
+
+            dp[i][0] = maxVal(
+                dp[i-1][0] + count(li, rbs[i].pos) - count(li, rbs[i-1].pos),
+                dp[i-1][1] + count(li, rbs[i].pos) - count(li, riPrev),
+            )
+            dp[i][1] = maxVal(
+                dp[i-1][0] + count(rbs[i].pos, ri),
+                dp[i-1][1] + count(rbs[i].pos, ri) - count(rbs[i].pos, riPrev),
+            )
+        }
+        prevPos = rbs[i].pos
+    }
+
+    return maxVal(dp[n-1][0], dp[n-1][1])
 }
 {% endraw %}
 {% endhighlight %}
@@ -1223,68 +1682,57 @@ func maxWalls(robots []int, distance []int, walls []int) int {
 {% raw %}
 def max_walls(robots, distance, walls)
   n = robots.size
-  m = walls.size
+  combined = robots.zip(distance).sort_by { |r, d| r }
+  r = combined.map { |x| x[0] }
+  d = combined.map { |x| x[1] }
   walls.sort!
-  r_sorted = robots.zip(distance).sort_by(&:first)
+  n_walls = walls.size
 
-  def lower_bound(walls, val)
-    walls.bsearch_index { |w| w >= val } || walls.size
-  end
-
-  def upper_bound(walls, val)
-    walls.bsearch_index { |w| w > val } || walls.size
-  end
-
-  def get_counts(walls, x_prev, d_prev, x_curr, d_curr)
-    a = lower_bound(walls, x_prev + 1)
-    b = lower_bound(walls, x_curr) - 1
-    return [0, 0, 0] if a > b
-
-    p_end = upper_bound(walls, x_prev + d_prev) - 1
-    q_start = lower_bound(walls, x_curr - d_curr)
-
-    p_end_eff = [p_end, b].min
-    q_start_eff = [q_start, a].max
-
-    cp = [0, p_end_eff - a + 1].max
-    cq = [0, b - q_start_eff + 1].max
-
-    if p_end_eff < a
-      cpuq = cq
-    elsif q_start_eff > b
-      cpuq = cp
-    elsif p_end_eff >= q_start_eff - 1
-      cpuq = b - a + 1
-    else
-      cpuq = cp + cq
-    end
-    [cp, cq, cpuq]
-  end
+  count = ->(a, b) {
+    return 0 if a > b
+    idx1 = walls.bsearch_index { |x| x >= a } || n_walls
+    idx2 = walls.bsearch_index { |x| x > b } || n_walls
+    idx2 - idx1
+  }
 
   dp = Array.new(n) { [0, 0] }
-  b0 = lower_bound(walls, r_sorted[0][0]) - 1
-  q_start0 = lower_bound(walls, r_sorted[0][0] - r_sorted[0][1])
-  dp[0][0] = [0, b0 - q_start0 + 1].max
-  dp[0][1] = 0
+  dp[0][0] = count.call([r[0] - d[0], -2000000000].max, r[0])
+  dp[0][1] = count.call(r[0], [r[0] + d[0], (n > 1 ? r[1] : 2000000000)].min)
 
   (1...n).each do |i|
-    cp, cq, cpuq = get_counts(walls, r_sorted[i-1][0], r_sorted[i-1][1], r_sorted[i][0], r_sorted[i][1])
-    dp[i][0] = [dp[i-1][0] + cq, dp[i-1][1] + cpuq].max
-    dp[i][1] = [dp[i-1][0], dp[i-1][1] + cp].max
+    ri = r[i]
+    di = d[i]
+    ri_prev = r[i - 1]
+    di_prev = d[i - 1]
+    ri_next = (i + 1 < n) ? r[i + 1] : 2000000000
+
+    l_range_start = [ri - di, ri_prev].max
+    l_range_end = ri
+    r_range_start = ri
+    r_range_end = [ri + di, ri_next].min
+
+    c_li = count.call(l_range_start, l_range_end)
+    c_ri = count.call(r_range_start, r_range_end)
+
+    wall_at_ri_prev = count.call(ri_prev, ri_prev)
+    wall_at_ri = count.call(ri, ri)
+
+    overlap_start = [ri_prev, ri - di].max
+    overlap_end = [ri_prev + di_prev, ri].min
+    c_overlap = count.call(overlap_start, overlap_end)
+
+    dp[i][0] = [
+      dp[i - 1][0] + c_li - (ri - di <= ri_prev ? wall_at_ri_prev : 0),
+      dp[i - 1][1] + c_li - c_overlap
+    ].max
+
+    dp[i][1] = [
+      dp[i - 1][0] + c_ri,
+      dp[i - 1][1] + c_ri - (ri_prev + di_prev >= ri ? wall_at_ri : 0)
+    ].max
   end
 
-  an = lower_bound(walls, r_sorted[n-1][0] + 1)
-  bn = m - 1
-  p_end_n = upper_bound(walls, r_sorted[n-1][0] + r_sorted[n-1][1]) - 1
-  count_pn = [0, [p_end_n, bn].min - an + 1].max
-
-  total_walls_at_robots = 0
-  r_sorted.each do |x, _|
-    idx = lower_bound(walls, x)
-    total_walls_at_robots += 1 if idx < m && walls[idx] == x
-  end
-
-  [dp[n-1][0], dp[n-1][1] + count_pn].max + total_walls_at_robots
+  [dp[n - 1][0], dp[n - 1][1]].max
 end
 {% endraw %}
 {% endhighlight %}
@@ -1296,74 +1744,72 @@ end
 {% highlight scala %}
 {% raw %}
 object Solution {
-    def maxWalls(robots: Array[Int], distance: Array[Int], walls: Array[Int]): Int = {
-        val n = robots.length
-        val sortedWalls = walls.sorted
-        val rSorted = robots.zip(distance).sortBy(_._1)
+  def maxWalls(robots: Array[Int], distance: Array[Int], walls: Array[Int]): Int = {
+    val n = robots.length
+    val combined = robots.zip(distance).sortBy(_._1)
+    val r = combined.map(_._1)
+    val d = combined.map(_._2)
+    val sortedWalls = walls.sorted
 
-        def lowerBound(a: Array[Int], v: Int): Int = {
-            var low = 0; var high = a.length
-            while (low < high) {
-                val mid = low + (high - low) / 2
-                if (a(mid) < v) low = mid + 1 else high = mid
-            }
-            low
-        }
-
-        def upperBound(a: Array[Int], v: Int): Int = {
-            var low = 0; var high = a.length
-            while (low < high) {
-                val mid = low + (high - low) / 2
-                if (a(mid) <= v) low = mid + 1 else high = mid
-            }
-            low
-        }
-
-        val dp = Array.fill(n, 2)(0)
-        val b0 = lowerBound(sortedWalls, rSorted(0)._1) - 1
-        val qStart0 = lowerBound(sortedWalls, rSorted(0)._1 - rSorted(0)._2)
-        dp(0)(0) = Math.max(0, b0 - qStart0 + 1)
-        dp(0)(1) = 0
-
-        for (i <- 1 until n) {
-            val xPrev = rSorted(i-1)._1
-            val dPrev = rSorted(i-1)._2
-            val xCurr = rSorted(i)._1
-            val dCurr = rSorted(i)._2
-
-            val a = lowerBound(sortedWalls, xPrev + 1)
-            val b = lowerBound(sortedWalls, xCurr) - 1
-            var cp = 0; var cq = 0; var cpuq = 0
-
-            if (a <= b) {
-                val pEnd = upperBound(sortedWalls, xPrev + dPrev) - 1
-                val qStart = lowerBound(sortedWalls, xCurr - dCurr)
-                val pEndEff = Math.min(pEnd, b)
-                val qStartEff = Math.max(qStart, a)
-                cp = Math.max(0, pEndEff - a + 1)
-                cq = Math.max(0, b - qStartEff + 1)
-                if (pEndEff < a) cpuq = cq
-                else if (qStartEff > b) cpuq = cp
-                else if (pEndEff >= qStartEff - 1) cpuq = b - a + 1
-                else cpuq = cp + cq
-            }
-            dp(i)(0) = Math.max(dp(i-1)(0) + cq, dp(i-1)(1) + cpuq)
-            dp(i)(1) = Math.max(dp(i-1)(0), dp(i-1)(1) + cp)
-        }
-
-        val an = lowerBound(sortedWalls, rSorted(n-1)._1 + 1)
-        val bn = sortedWalls.length - 1
-        val pEndN = upperBound(sortedWalls, rSorted(n-1)._1 + rSorted(n-1)._2) - 1
-        val countPn = Math.max(0, Math.min(pEndN, bn) - an + 1)
-
-        var totalAtRobots = 0
-        for (r <- rSorted) {
-            val idx = lowerBound(sortedWalls, r._1)
-            if (idx < sortedWalls.length && sortedWalls(idx) == r._1) totalAtRobots += 1
-        }
-
-        Math.max(dp(n-1)(0), dp(n-1)(1) + countPn) + totalAtRobots
+    def partitionPoint(arr: Array[Int], p: Int => Boolean): Int = {
+      var low = 0
+      var high = arr.length
+      while (low < high) {
+        val mid = low + (high - low) / 2
+        if (p(arr(mid))) low = mid + 1
+        else high = mid
+      }
+      low
     }
+
+    def count(a: Int, b: Int): Int = {
+      if (a > b) 0
+      else {
+        val idx1 = partitionPoint(sortedWalls, (x: Int) => x < a)
+        val idx2 = partitionPoint(sortedWalls, (x: Int) => x <= b)
+        idx2 - idx1
+      }
+    }
+
+    val dp = Array.ofDim[Int](n, 2)
+    dp(0)(0) = count(math.max(r(0) - d(0), -2000000000), r(0))
+    dp(0)(1) = count(r(0), math.min(r(0) + d(0), if (n > 1) r(1) else 2000000000))
+
+    for (i <- 1 until n) {
+      val ri = r(i)
+      val di = d(i)
+      val riPrev = r(i - 1)
+      val diPrev = d(i - 1)
+      val riNext = if (i + 1 < n) r(i + 1) else 2000000000
+
+      val lRangeStart = math.max(ri - di, riPrev)
+      val lRangeEnd = ri
+      val rRangeStart = ri
+      val rRangeEnd = math.min(ri + di, riNext)
+
+      val cLi = count(lRangeStart, lRangeEnd)
+      val cRi = count(rRangeStart, rRangeEnd)
+
+      val wallAtRiPrev = if (java.util.Arrays.binarySearch(sortedWalls, riPrev) >= 0) 1 else 0
+      val wallAtRi = if (java.util.Arrays.binarySearch(sortedWalls, ri) >= 0) 1 else 0
+
+      val overlapStart = math.max(riPrev, ri - di)
+      val overlapEnd = math.min(riPrev + diPrev, ri)
+      val cOverlap = count(overlapStart, overlapEnd)
+
+      dp(i)(0) = math.max(
+        dp(i - 1)(0) + cLi - (if (ri - di <= riPrev) wallAtRiPrev else 0),
+        dp(i - 1)(1) + cLi - cOverlap
+      )
+
+      dp(i)(1) = math.max(
+        dp(i - 1)(0) + cRi,
+        dp(i - 1)(1) + cRi - (if (riPrev + diPrev >= ri) wallAtRi else 0)
+      )
+    }
+
+    math.max(dp(n - 1)(0), dp(n - 1)(1))
+  }
 }
 {% endraw %}
 {% endhighlight %}
@@ -1376,53 +1822,65 @@ object Solution {
 {% raw %}
 impl Solution {
     pub fn max_walls(robots: Vec<i32>, distance: Vec<i32>, walls: Vec<i32>) -> i32 {
-        let n = robots.len();
         let mut sorted_walls = walls;
-        sorted_walls.sort();
-        let mut r_sorted: Vec<(i32, i32)> = robots.into_iter().zip(distance.into_iter()).collect();
-        r_sorted.sort_by_key(|r| r.0);
+        sorted_walls.sort_unstable();
+        let mut combined: Vec<(i32, i32)> = robots.into_iter().zip(distance.into_iter()).collect();
+        combined.sort_unstable_by_key(|&(pos, _)| pos);
+        let r: Vec<i32> = combined.iter().map(|&(pos, _)| pos).collect();
+        let d: Vec<i32> = combined.iter().map(|&(_, dist)| dist).collect();
+        let n = r.len();
 
-        let mut dp = vec![[0i32; 2]; n];
-        let b0 = sorted_walls.partition_point(|&w| w < r_sorted[0].0) as i32 - 1;
-        let q_start0 = sorted_walls.partition_point(|&w| w < r_sorted[0].0 - r_sorted[0].1) as i32;
-        dp[0][0] = 0.max(b0 - q_start0 + 1);
-        dp[0][1] = 0;
+        let count = |a: i32, b: i32| -> i32 {
+            if a > b {
+                0
+            } else {
+                let idx1 = sorted_walls.partition_point(|&x| x < a);
+                let idx2 = sorted_walls.partition_point(|&x| x <= b);
+                (idx2 - idx1) as i32
+            }
+        };
+
+        let mut dp = vec![[0, 0]; n];
+
+        dp[0][0] = count(r[0].saturating_sub(d[0]).max(-2_000_000_000), r[0]);
+        dp[0][1] = count(r[0], r[0].saturating_add(d[0]).min(if n > 1 { r[1] } else { 2_000_000_000 }));
 
         for i in 1..n {
-            let (x_prev, d_prev) = r_sorted[i-1];
-            let (x_curr, d_curr) = r_sorted[i];
-            let a = sorted_walls.partition_point(|&w| w < x_prev + 1) as i32;
-            let b = sorted_walls.partition_point(|&w| w < x_curr) as i32 - 1;
-            let (mut cp, mut cq, mut cpuq) = (0, 0, 0);
+            let ri = r[i];
+            let di = d[i];
+            let ri_prev = r[i - 1];
+            let di_prev = d[i - 1];
+            let ri_next = if i + 1 < n { r[i + 1] } else { 2_000_000_000 };
 
-            if a <= b {
-                let p_end = sorted_walls.partition_point(|&w| w <= x_prev + d_prev) as i32 - 1;
-                let q_start = sorted_walls.partition_point(|&w| w < x_curr - d_curr) as i32;
-                let p_end_eff = p_end.min(b);
-                let q_start_eff = q_start.max(a);
-                cp = 0.max(p_end_eff - a + 1);
-                cq = 0.max(b - q_start_eff + 1);
-                if p_end_eff < a { cpuq = cq; }
-                else if q_start_eff > b { cpuq = cp; }
-                else if p_end_eff >= q_start_eff - 1 { cpuq = b - a + 1; }
-                else { cpuq = cp + cq; }
-            }
-            dp[i][0] = (dp[i-1][0] + cq).max(dp[i-1][1] + cpuq);
-            dp[i][1] = dp[i-1][0].max(dp[i-1][1] + cp);
+            let l_range_start = (ri - di).max(ri_prev);
+            let l_range_end = ri;
+            let r_range_start = ri;
+            let r_range_end = (ri + di).min(ri_next);
+
+            let c_li = count(l_range_start, l_range_end);
+            let c_ri = count(r_range_start, r_range_end);
+
+            let wall_at_ri_prev = if sorted_walls.binary_search(&ri_prev).is_ok() { 1 } else { 0 };
+            let wall_at_ri = if sorted_walls.binary_search(&ri).is_ok() { 1 } else { 0 };
+
+            let overlap_start = ri_prev.max(ri - di);
+            let overlap_end = (ri_prev + di_prev).min(ri);
+            let c_overlap = count(overlap_start, overlap_end);
+
+            dp[i][0] = (
+                dp[i - 1][0] + c_li - if ri - di <= ri_prev { wall_at_ri_prev } else { 0 }
+            ).max(
+                dp[i - 1][1] + c_li - c_overlap
+            );
+
+            dp[i][1] = (
+                dp[i - 1][0] + c_ri
+            ).max(
+                dp[i - 1][1] + c_ri - if ri_prev + di_prev >= ri { wall_at_ri } else { 0 }
+            );
         }
 
-        let an = sorted_walls.partition_point(|&w| w < r_sorted[n-1].0 + 1) as i32;
-        let bn = sorted_walls.len() as i32 - 1;
-        let p_end_n = sorted_walls.partition_point(|&w| w <= r_sorted[n-1].0 + r_sorted[n-1].1) as i32 - 1;
-        let count_pn = 0.max(p_end_n.min(bn) - an + 1);
-
-        let mut total_at_robots = 0;
-        for r in &r_sorted {
-            let idx = sorted_walls.partition_point(|&w| w < r.0);
-            if idx < sorted_walls.len() && sorted_walls[idx] == r.0 { total_at_robots += 1; }
-        }
-
-        dp[n-1][0].max(dp[n-1][1] + count_pn) + total_at_robots
+        dp[n - 1][0].max(dp[n - 1][1])
     }
 }
 {% endraw %}
@@ -1437,10 +1895,12 @@ impl Solution {
 (define/contract (max-walls robots distance walls)
   (-> (listof exact-integer?) (listof exact-integer?) (listof exact-integer?) exact-integer?)
   (let* ([n (length robots)]
-         [robots-dist (sort (map list robots distance) < #:key car)]
+         [robots-with-dist (sort (map list robots distance) < #:key car)]
+         [robot-positions (list->vector (map car robots-with-dist))]
+         [robot-distances (list->vector (map cadr robots-with-dist))]
          [sorted-walls (list->vector (sort walls <))]
          [m (vector-length sorted-walls)])
-    (define (lb val)
+    (define (lower-bound val)
       (let loop ([low 0] [high m])
         (if (< low high)
             (let ([mid (quotient (+ low high) 2)])
@@ -1448,7 +1908,7 @@ impl Solution {
                   (loop (+ mid 1) high)
                   (loop low mid)))
             low)))
-    (define (ub val)
+    (define (upper-bound val)
       (let loop ([low 0] [high m])
         (if (< low high)
             (let ([mid (quotient (+ low high) 2)])
@@ -1456,26 +1916,29 @@ impl Solution {
                   (loop (+ mid 1) high)
                   (loop low mid)))
             low)))
-    (define (W a b)
-      (if (> a b) 0 (- (ub b) (lb a))))
-    (let loop ([rs robots-dist] [px -1] [pd -1] [dp0 0] [dp1 0])
-      (if (null? rs)
-          (max dp0 dp1)
-          (let* ([curr (car rs)]
-                 [x (car curr)]
-                 [d (cadr curr)]
-                 [nx (if (null? (cdr rs)) 2000000001 (car (cadr rs)))])
-            (if (= px -1)
-                (loop (cdr rs) x d (W (- x d) x) (W x (min (+ x d) nx)))
-                (let* ([sr-prev (min (+ px pd) x)]
-                       [sl-curr (max (- x d) px)]
-                       [w-left-0 (W (max sl-curr (+ px 1)) x)]
-                       [w-left-1 (W (max sl-curr (+ sr-prev 1)) x)]
-                       [new-dp0 (max (+ dp0 w-left-0) (+ dp1 w-left-1))]
-                       [w-right-0 (W x (min (+ x d) nx))]
-                       [w-right-1 (W (max x (+ sr-prev 1)) (min (+ x d) nx))]
-                       [new-dp1 (max (+ dp0 w-right-0) (+ dp1 w-right-1))])
-                  (loop (cdr rs) x d new-dp0 new-dp1))))))))
+    (define (count a b)
+      (if (> a b) 0
+          (- (upper-bound b) (lower-bound a))))
+    (let* ([r0 (vector-ref robot-positions 0)]
+           [d0 (vector-ref robot-distances 0)]
+           [r1 (if (> n 1) (vector-ref robot-positions 1) 2000000000)]
+           [dp0L (count (- r0 d0) r0)]
+           [dp0R (count r0 (min r1 (+ r0 d0)))])
+      (let loop ([i 1] [prevL dp0L] [prevR dp0R])
+        (if (< i n)
+            (let* ([r_prev (vector-ref robot-positions (- i 1))]
+                   [d_prev (vector-ref robot-distances (- i 1))]
+                   [r_curr (vector-ref robot-positions i)]
+                   [d_curr (vector-ref robot-distances i)]
+                   [r_next (if (< i (- n 1)) (vector-ref robot-positions (+ i 1)) 2000000000)]
+                   [new_L_prev_L (- (count (max r_prev (- r_curr d_curr)) r_curr) (count (max r_prev (- r_curr d_curr)) r_prev))]
+                   [new_L_prev_R (- (count (max r_prev (- r_curr d_curr)) r_curr) (count (max r_prev (- r_curr d_curr)) (min r_curr (+ r_prev d_prev))))]
+                   [dpL (max (+ prevL new_L_prev_L) (+ prevR new_L_prev_R))]
+                   [new_R_prev_L (count r_curr (min r_next (+ r_curr d_curr)))]
+                   [new_R_prev_R (- (count r_curr (min r_next (+ r_curr d_curr))) (count r_curr (min r_curr (+ r_prev d_prev))))]
+                   [dpR (max (+ prevL new_R_prev_L) (+ prevR new_R_prev_R))])
+              (loop (+ i 1) dpL dpR))
+            (max prevL prevR))))))
 {% endraw %}
 {% endhighlight %}
 
@@ -1487,45 +1950,63 @@ impl Solution {
 {% raw %}
 -spec max_walls(Robots :: [integer()], Distance :: [integer()], Walls :: [integer()]) -> integer().
 max_walls(Robots, Distance, Walls) ->
-  SortedRobots = lists:sort(lists:zip(Robots, Distance)),
-  SortedWalls = list_to_tuple(lists:sort(Walls)),
-  M = tuple_size(SortedWalls),
-  Xs = [X || {X, _} <- SortedRobots],
-  Ds = [D || {_, D} <- SortedRobots],
-  NextXs = tl(Xs) ++ [2000000001],
-  Combined = lists:zip3(Xs, Ds, NextXs),
-  [{X0, D0, NX0} | Rest] = Combined,
-  LB = fun(A) ->
-    (fun Loop(Low, High) ->
-      if Low < High ->
-        Mid = (Low + High) div 2,
-        if element(Mid + 1, SortedWalls) < A -> Loop(Mid + 1, High);
-           true -> Loop(Low, Mid) end;
-        true -> Low end
-     end)(0, M) end,
-  UB = fun(B) ->
-    (fun Loop(Low, High) ->
-      if Low < High ->
-        Mid = (Low + High) div 2,
-        if element(Mid + 1, SortedWalls) =< B -> Loop(Mid + 1, High);
-           true -> Loop(Low, Mid) end;
-        true -> Low end
-     end)(0, M) end,
-  W = fun(A, B) -> if A > B -> 0; true -> UB(B) - LB(A) end end,
-  DP0_0 = W(X0 - D0, X0),
-  DP1_0 = W(X0, erlang:min(X0 + D0, NX0)),
-  {FinalDP0, FinalDP1, _, _} = lists:foldl(fun({X, D, NX}, {AccDP0, AccDP1, PX, PD}) ->
-    SR_Prev = erlang:min(PX + PD, X),
-    SL_Curr = erlang:max(X - D, PX),
-    W_Left_0 = W(erlang:max(SL_Curr, PX + 1), X),
-    W_Left_1 = W(erlang:max(SL_Curr, SR_Prev + 1), X),
-    NewDP0 = erlang:max(AccDP0 + W_Left_0, AccDP1 + W_Left_1),
-    W_Right_0 = W(X, erlang:min(X + D, NX)),
-    W_Right_1 = W(erlang:max(X, SR_Prev + 1), erlang:min(X + D, NX)),
-    NewDP1 = erlang:max(AccDP0 + W_Right_0, AccDP1 + W_Right_1),
-    {NewDP0, NewDP1, X, D}
-  end, {DP0_0, DP1_0, X0, D0}, Rest),
-  erlang:max(FinalDP0, FinalDP1).
+    SortedWalls = lists:sort(Walls),
+    WallsTuple = list_to_tuple(SortedWalls),
+    M = tuple_size(WallsTuple),
+    SortedRD = lists:sort(lists:zip(Robots, Distance)),
+    N = length(SortedRD),
+    {RPList, RDList} = lists:unzip(SortedRD),
+    RPTuple = list_to_tuple(RPList),
+    RDTuple = list_to_tuple(RDList),
+    R0 = element(1, RPTuple),
+    D0 = element(1, RDTuple),
+    R1 = if N > 1 -> element(2, RPTuple); true -> 2000000000 end,
+    DP0L = count(WallsTuple, M, R0 - D0, R0),
+    DP0R = count(WallsTuple, M, R0, erlang:min(R1, R0 + D0)),
+    solve(1, N, RPTuple, RDTuple, WallsTuple, M, DP0L, DP0R).
+
+solve(I, N, RPTuple, RDTuple, WallsTuple, M, PrevL, PrevR) ->
+    if I < N ->
+        RPrev = element(I, RPTuple),
+        DPrev = element(I, RDTuple),
+        RCurr = element(I + 1, RPTuple),
+        DCurr = element(I + 1, RDTuple),
+        RNext = if I + 1 < N -> element(I + 2, RPTuple); true -> 2000000000 end,
+
+        New_L_prev_L = count(WallsTuple, M, erlang:max(RPrev, RCurr - DCurr), RCurr) - count(WallsTuple, M, erlang:max(RPrev, RCurr - DCurr), RPrev),
+        New_L_prev_R = count(WallsTuple, M, erlang:max(RPrev, RCurr - DCurr), RCurr) - count(WallsTuple, M, erlang:max(RPrev, RCurr - DCurr), erlang:min(RCurr, RPrev + DPrev)),
+        DPCurrL = erlang:max(PrevL + New_L_prev_L, PrevR + New_L_prev_R),
+
+        New_R_prev_L = count(WallsTuple, M, RCurr, erlang:min(RNext, RCurr + DCurr)),
+        New_R_prev_R = count(WallsTuple, M, RCurr, erlang:min(RNext, RCurr + DCurr)) - count(WallsTuple, M, RCurr, erlang:min(RCurr, RPrev + DPrev)),
+        DPCurrR = erlang:max(PrevL + New_R_prev_L, PrevR + New_R_prev_R),
+
+        solve(I + 1, N, RPTuple, RDTuple, WallsTuple, M, DPCurrL, DPCurrR);
+    true ->
+        erlang:max(PrevL, PrevR)
+    end.
+
+count(Walls, M, A, B) ->
+    if A > B -> 0;
+    true ->
+        upper_bound(Walls, M, B, 0, M) - lower_bound(Walls, M, A, 0, M)
+    end.
+
+lower_bound(Tuple, M, Val, Low, High) when Low < High ->
+    Mid = (Low + High) div 2,
+    case element(Mid + 1, Tuple) < Val of
+        true -> lower_bound(Tuple, M, Val, Mid + 1, High);
+        false -> lower_bound(Tuple, M, Val, Low, Mid)
+    end;
+lower_bound(_, _, _, Low, _) -> Low.
+
+upper_bound(Tuple, M, Val, Low, High) when Low < High ->
+    Mid = (Low + High) div 2,
+    case element(Mid + 1, Tuple) =< Val of
+        true -> upper_bound(Tuple, M, Val, Mid + 1, High);
+        false -> upper_bound(Tuple, M, Val, Low, Mid)
+    end;
+upper_bound(_, _, _, Low, _) -> Low.
 {% endraw %}
 {% endhighlight %}
 
@@ -1538,55 +2019,77 @@ max_walls(Robots, Distance, Walls) ->
 defmodule Solution do
   @spec max_walls(robots :: [integer], distance :: [integer], walls :: [integer]) :: integer
   def max_walls(robots, distance, walls) do
-    robots_sorted = Enum.zip(robots, distance) |> Enum.sort()
-    xs = Enum.map(robots_sorted, &elem(&1, 0))
-    ds = Enum.map(robots_sorted, &elem(&1, 1))
-    next_xs = tl(xs) ++ [2_000_000_001]
-    combined = Enum.zip([xs, ds, next_xs])
-    walls_tuple = List.to_tuple(Enum.sort(walls))
-    m = tuple_size(walls_tuple)
-    lb = fn val ->
-      (fn f, low, high ->
-        if low < high do
-          mid = div(low + high, 2)
-          if elem(walls_tuple, mid) < val, do: f.(f, mid + 1, high), else: f.(f, low, mid)
-        else low end
-      end).(fn f, low, high ->
-        if low < high do
-          mid = div(low + high, 2)
-          if elem(walls_tuple, mid) < val, do: f.(f, mid + 1, high), else: f.(f, low, mid)
-        else low end
-      end, 0, m)
+    sorted_walls = walls |> Enum.sort() |> List.to_tuple()
+    m = tuple_size(sorted_walls)
+    sorted_rd = Enum.zip(robots, distance) |> Enum.sort_by(fn {r, _d} -> r end)
+    n = length(sorted_rd)
+    rp_tuple = sorted_rd |> Enum.map(fn {r, _d} -> r end) |> List.to_tuple()
+    rd_tuple = sorted_rd |> Enum.map(fn {_r, d} -> d end) |> List.to_tuple()
+
+    r0 = elem(rp_tuple, 0)
+    d0 = elem(rd_tuple, 0)
+    r1 = if n > 1, do: elem(rp_tuple, 1), else: 2000000000
+
+    dp0l = count(sorted_walls, m, r0 - d0, r0)
+    dp0r = count(sorted_walls, m, r0, min(r1, r0 + d0))
+
+    solve(1, n, rp_tuple, rd_tuple, sorted_walls, m, dp0l, dp0r)
+  end
+
+  defp solve(i, n, rp_tuple, rd_tuple, walls, m, prev_l, prev_r) do
+    if i < n do
+      r_prev = elem(rp_tuple, i - 1)
+      d_prev = elem(rd_tuple, i - 1)
+      r_curr = elem(rp_tuple, i)
+      d_curr = elem(rd_tuple, i)
+      r_next = if i + 1 < n, do: elem(rp_tuple, i + 1), else: 2000000000
+
+      new_l_prev_l = count(walls, m, max(r_prev, r_curr - d_curr), r_curr) - count(walls, m, max(r_prev, r_curr - d_curr), r_prev)
+      new_l_prev_r = count(walls, m, max(r_prev, r_curr - d_curr), r_curr) - count(walls, m, max(r_prev, r_curr - d_curr), min(r_curr, r_prev + d_prev))
+      dp_curr_l = max(prev_l + new_l_prev_l, prev_r + new_l_prev_r)
+
+      new_r_prev_l = count(walls, m, r_curr, min(r_next, r_curr + d_curr))
+      new_r_prev_r = count(walls, m, r_curr, min(r_next, r_curr + d_curr)) - count(walls, m, r_curr, min(r_curr, r_prev + d_prev))
+      dp_curr_r = max(prev_l + new_r_prev_l, prev_r + new_r_prev_r)
+
+      solve(i + 1, n, rp_tuple, rd_tuple, walls, m, dp_curr_l, dp_curr_r)
+    else
+      max(prev_l, prev_r)
     end
-    ub = fn val ->
-      (fn f, low, high ->
-        if low < high do
-          mid = div(low + high, 2)
-          if elem(walls_tuple, mid) <= val, do: f.(f, mid + 1, high), else: f.(f, low, mid)
-        else low end
-      end).(fn f, low, high ->
-        if low < high do
-          mid = div(low + high, 2)
-          if elem(walls_tuple, mid) <= val, do: f.(f, mid + 1, high), else: f.(f, low, mid)
-        else low end
-      end, 0, m)
+  end
+
+  defp count(walls, m, a, b) do
+    if a > b do
+      0
+    else
+      upper_bound(walls, m, b, 0, m) - lower_bound(walls, m, a, 0, m)
     end
-    w = fn a, b -> if a > b, do: 0, else: ub.(b) - lb.(a) end
-    [{x0, d0, nx0} | rest] = combined
-    dp0 = w.(x0 - d0, x0)
-    dp1 = w.(x0, min(x0 + d0, nx0))
-    {fdp0, fdp1, _, _} = Enum.reduce(rest, {dp0, dp1, x0, d0}, fn {x, d, nx}, {adp0, adp1, px, pd} ->
-      sr_prev = min(px + pd, x)
-      sl_curr = max(x - d, px)
-      w_l_0 = w.(max(sl_curr, px + 1), x)
-      w_l_1 = w.(max(sl_curr, sr_prev + 1), x)
-      ndp0 = max(adp0 + w_l_0, adp1 + w_l_1)
-      w_r_0 = w.(x, min(x + d, nx))
-      w_r_1 = w.(max(x, sr_prev + 1), min(x + d, nx))
-      ndp1 = max(adp0 + w_r_0, adp1 + w_r_1)
-      {ndp0, ndp1, x, d}
-    end)
-    max(fdp0, fdp1)
+  end
+
+  defp lower_bound(tuple, m, val, low, high) do
+    if low < high do
+      mid = div(low + high, 2)
+      if elem(tuple, mid) < val do
+        lower_bound(tuple, m, val, mid + 1, high)
+      else
+        lower_bound(tuple, m, val, low, mid)
+      end
+    else
+      low
+    end
+  end
+
+  defp upper_bound(tuple, m, val, low, high) do
+    if low < high do
+      mid = div(low + high, 2)
+      if elem(tuple, mid) <= val do
+        upper_bound(tuple, m, val, mid + 1, high)
+      else
+        upper_bound(tuple, m, val, low, mid)
+      end
+    else
+      low
+    end
   end
 end
 {% endraw %}
@@ -1598,5 +2101,5 @@ end
 
 ### Complexity Analysis
 
-- **Time Complexity:** O(N log N + M log M + N log M), where N is the number of robots and M is the number of walls. Sorting robots takes O(N log N), sorting walls takes O(M log M), and the DP process takes O(N) iterations, each performing a constant number of binary searches on the walls array in O(log M) time.
-- **Space Complexity:** O(N + M) to store the sorted walls array, an array of robot-distance pairs, and the DP transition variables.
+- **Time Complexity:** O((N + M) \log M + N \log N), where N is the number of robots and M is the number of walls. This accounts for sorting both robots and walls and performing a constant number of binary search range queries for each of the N robots during the dynamic programming phase.
+- **Space Complexity:** O(N + M), required to store the sorted robots, walls, and the dynamic programming table of size $N \times 2$.
