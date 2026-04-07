@@ -183,54 +183,6 @@ class AISolutionGenerator:
         """Get snippet filename key for a JSON output key."""
         return self.JSON_KEY_TO_FILENAME.get(json_key, json_key)
 
-    def create_metadata_prompt(self, problem_data: Dict) -> str:
-        """Create a prompt that ONLY asks for approach and complexities"""
-        title = problem_data.get('title', '')
-        content = problem_data.get('content_prompt') or problem_data.get('content', '')
-        difficulty = problem_data.get('difficulty', '')
-        hints = problem_data.get('hints', [])
-
-        prompt = f"""You are an expert programmer analyzing LeetCode problems.
-
-Problem: {title}
-Difficulty: {difficulty}
-
-Problem Description:
-{content}
-
-"""
-        if hints:
-            prompt += "Hints:\n"
-            for i, hint in enumerate(hints, 1):
-                prompt += f"{i}. {hint}\n"
-            prompt += "\n"
-
-        prompt += """OUTPUT RULES (CRITICAL):
-- Return a single JSON object matching the schema below.
-- No markdown, fences, or text outside the JSON.
-- Prefer ASCII; use Unicode only when necessary in strings.
-- Escape every newline as \\n inside the JSON string, and use only valid JSON escapes.
-- Avoid HTML entities; use literal characters.
-- Do NOT use the pipe character '|' in text descriptions (Approach, Complexity) as it breaks Markdown table rendering. Use 'abs()' or escape it as '\\|' or use LaTeX-style $...$.
-
-APPROACH:
-- Exactly 2 concise paragraphs describing the working algorithm and key intuition.
-
-COMPLEXITY:
-- 1 short paragraph for time complexity and 1 for space complexity.
-
-Format as JSON:
-{
-  "approach": "Two-paragraph explanation",
-  "time_complexity": "O(...) with one-paragraph explanation",
-  "space_complexity": "O(...) with one-paragraph explanation"
-}
-"""
-        if difficulty and str(difficulty).upper() == "HARD":
-            prompt += "\nSPECIAL RULES FOR HARD PROBLEMS:\n- Keep the approach very short (maximum 2-3 sentences). Focus only on the core logic (e.g. interval merge logic, DP state).\n"
-
-        return prompt
-
     def create_prompt(self, problem_data: Dict, target_languages: list, include_metadata: bool = True) -> str:
         """Create a prompt for the AI models for specific languages"""
         title = problem_data.get('title', '')
@@ -718,43 +670,16 @@ Format as JSON:
         final_solution = {"solutions": {}}
         total_elapsed_time = 0.0
         
-        # --- NEW BATCH 0 (Metadata only) ---
-        if not final_solution.get("approach"):
-            print("  - Batch 0 (Metadata): Generating approach and complexity...", file=sys.stderr)
-            try:
-                meta_prompt = self.create_metadata_prompt(problem_data)
-                start_time = time.time()
-                meta_response = self._generate_with_backoff(meta_prompt, 0)
-                total_elapsed_time += (time.time() - start_time)
-                
-                if hasattr(meta_response, 'usage_metadata'):
-                    u = meta_response.usage_metadata
-                    print(f"[Gemini] Batch 0 Usage: prompt={u.prompt_token_count}, candidates={u.candidates_token_count}, total={u.total_token_count}", file=sys.stderr)
-                
-                candidate = meta_response.candidates[0] if getattr(meta_response, "candidates", None) else None
-                if candidate and getattr(candidate, "content", None) and getattr(candidate.content, "parts", None):
-                    resp_text = getattr(meta_response, "text", "")
-                    if resp_text:
-                        meta_result = self.parse_json_response(resp_text, problem_slug, problem_date)
-                        if meta_result and not meta_result.get("_parse_error") and "approach" in meta_result:
-                            meta_result.pop("solutions", None)
-                            self._merge_solutions(final_solution, meta_result)
-            except Exception as e:
-                print(f"Error with Gemini Batch 0: {e}", file=sys.stderr)
-            
-            time.sleep(self.batch_delay)
-            
         # Determine batches dynamically
         diff_upper = difficulty.upper() if difficulty else ""
         if diff_upper == "HARD":
-            # 6 requests (chunks of ~3)
+            # 5 requests
             batches = [
-                ["C++", "Java", "Python", "Python3"],
-                ["C", "C#", "JavaScript"],
-                ["TypeScript", "PHP", "Swift"],
-                ["Kotlin", "Dart", "Go"],
-                ["Ruby", "Scala", "Rust"],
-                ["Racket", "Erlang", "Elixir"]
+                ["C++", "Java", "Python"],
+                ["Python3", "C", "C#", "JavaScript"],
+                ["TypeScript", "PHP", "Swift", "Kotlin"],
+                ["Dart", "Go", "Ruby", "Scala"],
+                ["Rust", "Racket", "Erlang", "Elixir"]
             ]
         elif diff_upper == "MEDIUM":
             # 4 requests (chunks of ~5)
@@ -771,8 +696,8 @@ Format as JSON:
         for i, batch in enumerate(batches):
             print(f"  - Batch {i+1}/{len(batches)}: {', '.join(batch)}", file=sys.stderr)
             try:
-                # Force include_metadata to False since we extracted it in Batch 0
-                prompt = self.create_prompt(problem_data, batch, include_metadata=False)
+                include_metadata = (i == 0) or not final_solution.get("approach")
+                prompt = self.create_prompt(problem_data, batch, include_metadata=include_metadata)
                 start_time = time.time()
                 response = self._generate_with_backoff(prompt, i + 1)
                 end_time = time.time()
