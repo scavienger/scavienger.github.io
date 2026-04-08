@@ -630,5 +630,9 @@
   "2026-04-07": {
     "link": "/problems/walking-robot-simulation-ii/",
     "titleSlug": "walking-robot-simulation-ii"
+  },
+  "2026-04-08": {
+    "link": "/problems/xor-after-range-multiplication-queries-i/",
+    "titleSlug": "xor-after-range-multiplication-queries-i"
   }
 }
