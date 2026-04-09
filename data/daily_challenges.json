@@ -634,5 +634,9 @@
   "2026-04-08": {
     "link": "/problems/xor-after-range-multiplication-queries-i/",
     "titleSlug": "xor-after-range-multiplication-queries-i"
+  },
+  "2026-04-09": {
+    "link": "/problems/xor-after-range-multiplication-queries-ii/",
+    "titleSlug": "xor-after-range-multiplication-queries-ii"
   }
 }
