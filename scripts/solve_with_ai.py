@@ -41,6 +41,7 @@ class AISolutionGenerator:
     TEMPERATURE = 1.0
     RATE_LIMIT_SLEEP_SECONDS = 60
     OVERLOADED_SLEEP_SECONDS = 120
+    MAX_RETRIES = 6
 
     # Language batches (Split into smaller groups to avoid token limits/safety issues & improve template adherence)
     LANGUAGE_BATCHES = [
@@ -132,7 +133,7 @@ class AISolutionGenerator:
     def _generate_with_backoff(self, prompt: str, batch_index: int):
         last_error = None
         attempts = 0
-        while attempts < 3:
+        while attempts < self.MAX_RETRIES:
             try:
                 return self._generate_content(self.model_name, prompt)
             except Exception as e:
