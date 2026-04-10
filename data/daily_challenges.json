@@ -638,5 +638,9 @@
   "2026-04-09": {
     "link": "/problems/xor-after-range-multiplication-queries-ii/",
     "titleSlug": "xor-after-range-multiplication-queries-ii"
+  },
+  "2026-04-10": {
+    "link": "/problems/minimum-distance-between-three-equal-elements-i/",
+    "titleSlug": "minimum-distance-between-three-equal-elements-i"
   }
 }
