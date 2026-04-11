@@ -642,5 +642,9 @@
   "2026-04-10": {
     "link": "/problems/minimum-distance-between-three-equal-elements-i/",
     "titleSlug": "minimum-distance-between-three-equal-elements-i"
+  },
+  "2026-04-11": {
+    "link": "/problems/minimum-distance-between-three-equal-elements-ii/",
+    "titleSlug": "minimum-distance-between-three-equal-elements-ii"
   }
 }
