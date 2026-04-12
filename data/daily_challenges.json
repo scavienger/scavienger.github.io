@@ -646,5 +646,9 @@
   "2026-04-11": {
     "link": "/problems/minimum-distance-between-three-equal-elements-ii/",
     "titleSlug": "minimum-distance-between-three-equal-elements-ii"
+  },
+  "2026-04-12": {
+    "link": "/problems/minimum-distance-to-type-a-word-using-two-fingers/",
+    "titleSlug": "minimum-distance-to-type-a-word-using-two-fingers"
   }
 }
