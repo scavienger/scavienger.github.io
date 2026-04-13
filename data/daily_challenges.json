@@ -650,5 +650,9 @@
   "2026-04-12": {
     "link": "/problems/minimum-distance-to-type-a-word-using-two-fingers/",
     "titleSlug": "minimum-distance-to-type-a-word-using-two-fingers"
+  },
+  "2026-04-13": {
+    "link": "/problems/minimum-distance-to-the-target-element/",
+    "titleSlug": "minimum-distance-to-the-target-element"
   }
 }
