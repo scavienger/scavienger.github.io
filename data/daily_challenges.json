@@ -654,5 +654,9 @@
   "2026-04-13": {
     "link": "/problems/minimum-distance-to-the-target-element/",
     "titleSlug": "minimum-distance-to-the-target-element"
+  },
+  "2026-04-14": {
+    "link": "/problems/minimum-total-distance-traveled/",
+    "titleSlug": "minimum-total-distance-traveled"
   }
 }
