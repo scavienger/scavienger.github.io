@@ -666,5 +666,9 @@
   "2026-04-16": {
     "link": "/problems/closest-equal-element-queries/",
     "titleSlug": "closest-equal-element-queries"
+  },
+  "2026-04-17": {
+    "link": "/problems/minimum-absolute-distance-between-mirror-pairs/",
+    "titleSlug": "minimum-absolute-distance-between-mirror-pairs"
   }
 }
