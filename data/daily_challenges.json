@@ -670,5 +670,9 @@
   "2026-04-17": {
     "link": "/problems/minimum-absolute-distance-between-mirror-pairs/",
     "titleSlug": "minimum-absolute-distance-between-mirror-pairs"
+  },
+  "2026-04-18": {
+    "link": "/problems/mirror-distance-of-an-integer/",
+    "titleSlug": "mirror-distance-of-an-integer"
   }
 }
