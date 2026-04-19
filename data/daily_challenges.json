@@ -674,5 +674,9 @@
   "2026-04-18": {
     "link": "/problems/mirror-distance-of-an-integer/",
     "titleSlug": "mirror-distance-of-an-integer"
+  },
+  "2026-04-19": {
+    "link": "/problems/maximum-distance-between-a-pair-of-values/",
+    "titleSlug": "maximum-distance-between-a-pair-of-values"
   }
 }
