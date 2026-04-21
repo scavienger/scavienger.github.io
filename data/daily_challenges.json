@@ -682,5 +682,9 @@
   "2026-04-20": {
     "link": "/problems/two-furthest-houses-with-different-colors/",
     "titleSlug": "two-furthest-houses-with-different-colors"
+  },
+  "2026-04-21": {
+    "link": "/problems/minimize-hamming-distance-after-swap-operations/",
+    "titleSlug": "minimize-hamming-distance-after-swap-operations"
   }
 }
