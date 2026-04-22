@@ -686,5 +686,9 @@
   "2026-04-21": {
     "link": "/problems/minimize-hamming-distance-after-swap-operations/",
     "titleSlug": "minimize-hamming-distance-after-swap-operations"
+  },
+  "2026-04-22": {
+    "link": "/problems/words-within-two-edits-of-dictionary/",
+    "titleSlug": "words-within-two-edits-of-dictionary"
   }
 }
