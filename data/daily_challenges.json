@@ -698,5 +698,9 @@
   "2026-04-24": {
     "link": "/problems/furthest-point-from-origin/",
     "titleSlug": "furthest-point-from-origin"
+  },
+  "2026-04-25": {
+    "link": "/problems/maximize-the-distance-between-points-on-a-square/",
+    "titleSlug": "maximize-the-distance-between-points-on-a-square"
   }
 }
