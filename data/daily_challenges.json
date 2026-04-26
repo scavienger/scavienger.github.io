@@ -702,5 +702,9 @@
   "2026-04-25": {
     "link": "/problems/maximize-the-distance-between-points-on-a-square/",
     "titleSlug": "maximize-the-distance-between-points-on-a-square"
+  },
+  "2026-04-26": {
+    "link": "/problems/detect-cycles-in-2d-grid/",
+    "titleSlug": "detect-cycles-in-2d-grid"
   }
 }
