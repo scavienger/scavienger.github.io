@@ -706,5 +706,9 @@
   "2026-04-26": {
     "link": "/problems/detect-cycles-in-2d-grid/",
     "titleSlug": "detect-cycles-in-2d-grid"
+  },
+  "2026-04-27": {
+    "link": "/problems/check-if-there-is-a-valid-path-in-a-grid/",
+    "titleSlug": "check-if-there-is-a-valid-path-in-a-grid"
   }
 }
