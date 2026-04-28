@@ -710,5 +710,9 @@
   "2026-04-27": {
     "link": "/problems/check-if-there-is-a-valid-path-in-a-grid/",
     "titleSlug": "check-if-there-is-a-valid-path-in-a-grid"
+  },
+  "2026-04-28": {
+    "link": "/problems/minimum-operations-to-make-a-uni-value-grid/",
+    "titleSlug": "minimum-operations-to-make-a-uni-value-grid"
   }
 }
