@@ -714,5 +714,9 @@
   "2026-04-28": {
     "link": "/problems/minimum-operations-to-make-a-uni-value-grid/",
     "titleSlug": "minimum-operations-to-make-a-uni-value-grid"
+  },
+  "2026-04-29": {
+    "link": "/problems/maximum-score-from-grid-operations/",
+    "titleSlug": "maximum-score-from-grid-operations"
   }
 }
