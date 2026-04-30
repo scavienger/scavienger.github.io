@@ -718,5 +718,9 @@
   "2026-04-29": {
     "link": "/problems/maximum-score-from-grid-operations/",
     "titleSlug": "maximum-score-from-grid-operations"
+  },
+  "2026-04-30": {
+    "link": "/problems/maximum-path-score-in-a-grid/",
+    "titleSlug": "maximum-path-score-in-a-grid"
   }
 }
