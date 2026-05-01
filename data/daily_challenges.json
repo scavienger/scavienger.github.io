@@ -722,5 +722,9 @@
   "2026-04-30": {
     "link": "/problems/maximum-path-score-in-a-grid/",
     "titleSlug": "maximum-path-score-in-a-grid"
+  },
+  "2026-05-01": {
+    "link": "/problems/rotate-function/",
+    "titleSlug": "rotate-function"
   }
 }
