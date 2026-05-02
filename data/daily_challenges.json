@@ -726,5 +726,9 @@
   "2026-05-01": {
     "link": "/problems/rotate-function/",
     "titleSlug": "rotate-function"
+  },
+  "2026-05-02": {
+    "link": "/problems/rotated-digits/",
+    "titleSlug": "rotated-digits"
   }
 }
