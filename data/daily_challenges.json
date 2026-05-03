@@ -730,5 +730,9 @@
   "2026-05-02": {
     "link": "/problems/rotated-digits/",
     "titleSlug": "rotated-digits"
+  },
+  "2026-05-03": {
+    "link": "/problems/rotate-string/",
+    "titleSlug": "rotate-string"
   }
 }
