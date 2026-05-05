@@ -738,5 +738,9 @@
   "2026-05-04": {
     "link": "/problems/rotate-image/",
     "titleSlug": "rotate-image"
+  },
+  "2026-05-05": {
+    "link": "/problems/rotate-list/",
+    "titleSlug": "rotate-list"
   }
 }
