@@ -742,5 +742,9 @@
   "2026-05-05": {
     "link": "/problems/rotate-list/",
     "titleSlug": "rotate-list"
+  },
+  "2026-05-06": {
+    "link": "/problems/rotating-the-box/",
+    "titleSlug": "rotating-the-box"
   }
 }
