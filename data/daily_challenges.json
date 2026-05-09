@@ -754,5 +754,9 @@
   "2026-05-08": {
     "link": "/problems/minimum-jumps-to-reach-end-via-prime-teleportation/",
     "titleSlug": "minimum-jumps-to-reach-end-via-prime-teleportation"
+  },
+  "2026-05-09": {
+    "link": "/problems/cyclically-rotating-a-grid/",
+    "titleSlug": "cyclically-rotating-a-grid"
   }
 }
