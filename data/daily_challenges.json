@@ -758,5 +758,9 @@
   "2026-05-09": {
     "link": "/problems/cyclically-rotating-a-grid/",
     "titleSlug": "cyclically-rotating-a-grid"
+  },
+  "2026-05-10": {
+    "link": "/problems/maximum-number-of-jumps-to-reach-the-last-index/",
+    "titleSlug": "maximum-number-of-jumps-to-reach-the-last-index"
   }
 }
