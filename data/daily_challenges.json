@@ -762,5 +762,9 @@
   "2026-05-10": {
     "link": "/problems/maximum-number-of-jumps-to-reach-the-last-index/",
     "titleSlug": "maximum-number-of-jumps-to-reach-the-last-index"
+  },
+  "2026-05-11": {
+    "link": "/problems/separate-the-digits-in-an-array/",
+    "titleSlug": "separate-the-digits-in-an-array"
   }
 }
