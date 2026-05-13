@@ -770,5 +770,9 @@
   "2026-05-12": {
     "link": "/problems/minimum-initial-energy-to-finish-tasks/",
     "titleSlug": "minimum-initial-energy-to-finish-tasks"
+  },
+  "2026-05-13": {
+    "link": "/problems/minimum-moves-to-make-array-complementary/",
+    "titleSlug": "minimum-moves-to-make-array-complementary"
   }
 }
