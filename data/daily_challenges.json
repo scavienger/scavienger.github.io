@@ -774,5 +774,9 @@
   "2026-05-13": {
     "link": "/problems/minimum-moves-to-make-array-complementary/",
     "titleSlug": "minimum-moves-to-make-array-complementary"
+  },
+  "2026-05-14": {
+    "link": "/problems/check-if-array-is-good/",
+    "titleSlug": "check-if-array-is-good"
   }
 }
