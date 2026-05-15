@@ -778,5 +778,9 @@
   "2026-05-14": {
     "link": "/problems/check-if-array-is-good/",
     "titleSlug": "check-if-array-is-good"
+  },
+  "2026-05-15": {
+    "link": "/problems/find-minimum-in-rotated-sorted-array/",
+    "titleSlug": "find-minimum-in-rotated-sorted-array"
   }
 }
