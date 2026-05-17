@@ -786,5 +786,9 @@
   "2026-05-16": {
     "link": "/problems/find-minimum-in-rotated-sorted-array-ii/",
     "titleSlug": "find-minimum-in-rotated-sorted-array-ii"
+  },
+  "2026-05-17": {
+    "link": "/problems/jump-game-iii/",
+    "titleSlug": "jump-game-iii"
   }
 }
