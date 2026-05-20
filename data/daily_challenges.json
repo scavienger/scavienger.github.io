@@ -798,5 +798,9 @@
   "2026-05-19": {
     "link": "/problems/minimum-common-value/",
     "titleSlug": "minimum-common-value"
+  },
+  "2026-05-20": {
+    "link": "/problems/find-the-prefix-common-array-of-two-arrays/",
+    "titleSlug": "find-the-prefix-common-array-of-two-arrays"
   }
 }
