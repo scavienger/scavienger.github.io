@@ -802,5 +802,9 @@
   "2026-05-20": {
     "link": "/problems/find-the-prefix-common-array-of-two-arrays/",
     "titleSlug": "find-the-prefix-common-array-of-two-arrays"
+  },
+  "2026-05-21": {
+    "link": "/problems/find-the-length-of-the-longest-common-prefix/",
+    "titleSlug": "find-the-length-of-the-longest-common-prefix"
   }
 }
