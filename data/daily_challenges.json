@@ -810,5 +810,9 @@
   "2026-05-22": {
     "link": "/problems/search-in-rotated-sorted-array/",
     "titleSlug": "search-in-rotated-sorted-array"
+  },
+  "2026-05-23": {
+    "link": "/problems/check-if-array-is-sorted-and-rotated/",
+    "titleSlug": "check-if-array-is-sorted-and-rotated"
   }
 }
