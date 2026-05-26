@@ -822,5 +822,9 @@
   "2026-05-25": {
     "link": "/problems/jump-game-vii/",
     "titleSlug": "jump-game-vii"
+  },
+  "2026-05-26": {
+    "link": "/problems/count-the-number-of-special-characters-i/",
+    "titleSlug": "count-the-number-of-special-characters-i"
   }
 }
