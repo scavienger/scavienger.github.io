@@ -826,5 +826,9 @@
   "2026-05-26": {
     "link": "/problems/count-the-number-of-special-characters-i/",
     "titleSlug": "count-the-number-of-special-characters-i"
+  },
+  "2026-05-27": {
+    "link": "/problems/count-the-number-of-special-characters-ii/",
+    "titleSlug": "count-the-number-of-special-characters-ii"
   }
 }
