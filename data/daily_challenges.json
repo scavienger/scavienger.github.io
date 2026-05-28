@@ -830,5 +830,9 @@
   "2026-05-27": {
     "link": "/problems/count-the-number-of-special-characters-ii/",
     "titleSlug": "count-the-number-of-special-characters-ii"
+  },
+  "2026-05-28": {
+    "link": "/problems/longest-common-suffix-queries/",
+    "titleSlug": "longest-common-suffix-queries"
   }
 }
