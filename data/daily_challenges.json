@@ -842,5 +842,9 @@
   "2026-05-30": {
     "link": "/problems/block-placement-queries/",
     "titleSlug": "block-placement-queries"
+  },
+  "2026-05-31": {
+    "link": "/problems/destroying-asteroids/",
+    "titleSlug": "destroying-asteroids"
   }
 }
