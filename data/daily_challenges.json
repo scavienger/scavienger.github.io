@@ -850,5 +850,13 @@
   "2026-06-01": {
     "link": "/problems/minimum-cost-of-buying-candies-with-discount/",
     "titleSlug": "minimum-cost-of-buying-candies-with-discount"
+  },
+  "2026-06-02": {
+    "link": "/problems/earliest-finish-time-for-land-and-water-rides-i/",
+    "titleSlug": "earliest-finish-time-for-land-and-water-rides-i"
+  },
+  "2026-06-03": {
+    "link": "/problems/earliest-finish-time-for-land-and-water-rides-ii/",
+    "titleSlug": "earliest-finish-time-for-land-and-water-rides-ii"
   }
 }
