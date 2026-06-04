@@ -858,5 +858,9 @@
   "2026-06-03": {
     "link": "/problems/earliest-finish-time-for-land-and-water-rides-ii/",
     "titleSlug": "earliest-finish-time-for-land-and-water-rides-ii"
+  },
+  "2026-06-04": {
+    "link": "/problems/total-waviness-of-numbers-in-range-i/",
+    "titleSlug": "total-waviness-of-numbers-in-range-i"
   }
 }
