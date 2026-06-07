@@ -870,5 +870,9 @@
   "2026-06-06": {
     "link": "/problems/left-and-right-sum-differences/",
     "titleSlug": "left-and-right-sum-differences"
+  },
+  "2026-06-07": {
+    "link": "/problems/create-binary-tree-from-descriptions/",
+    "titleSlug": "create-binary-tree-from-descriptions"
   }
 }
