@@ -874,5 +874,9 @@
   "2026-06-07": {
     "link": "/problems/create-binary-tree-from-descriptions/",
     "titleSlug": "create-binary-tree-from-descriptions"
+  },
+  "2026-06-08": {
+    "link": "/problems/partition-array-according-to-given-pivot/",
+    "titleSlug": "partition-array-according-to-given-pivot"
   }
 }
