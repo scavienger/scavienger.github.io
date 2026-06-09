@@ -878,5 +878,9 @@
   "2026-06-08": {
     "link": "/problems/partition-array-according-to-given-pivot/",
     "titleSlug": "partition-array-according-to-given-pivot"
+  },
+  "2026-06-09": {
+    "link": "/problems/maximum-total-subarray-value-i/",
+    "titleSlug": "maximum-total-subarray-value-i"
   }
 }
