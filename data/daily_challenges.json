@@ -882,5 +882,9 @@
   "2026-06-09": {
     "link": "/problems/maximum-total-subarray-value-i/",
     "titleSlug": "maximum-total-subarray-value-i"
+  },
+  "2026-06-10": {
+    "link": "/problems/maximum-total-subarray-value-ii/",
+    "titleSlug": "maximum-total-subarray-value-ii"
   }
 }
