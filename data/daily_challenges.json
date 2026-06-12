@@ -890,5 +890,9 @@
   "2026-06-11": {
     "link": "/problems/number-of-ways-to-assign-edge-weights-i/",
     "titleSlug": "number-of-ways-to-assign-edge-weights-i"
+  },
+  "2026-06-12": {
+    "link": "/problems/number-of-ways-to-assign-edge-weights-ii/",
+    "titleSlug": "number-of-ways-to-assign-edge-weights-ii"
   }
 }
