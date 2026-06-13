@@ -894,5 +894,9 @@
   "2026-06-12": {
     "link": "/problems/number-of-ways-to-assign-edge-weights-ii/",
     "titleSlug": "number-of-ways-to-assign-edge-weights-ii"
+  },
+  "2026-06-13": {
+    "link": "/problems/weighted-word-mapping/",
+    "titleSlug": "weighted-word-mapping"
   }
 }
