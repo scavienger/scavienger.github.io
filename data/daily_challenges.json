@@ -902,5 +902,9 @@
   "2026-06-14": {
     "link": "/problems/maximum-twin-sum-of-a-linked-list/",
     "titleSlug": "maximum-twin-sum-of-a-linked-list"
+  },
+  "2026-06-15": {
+    "link": "/problems/delete-the-middle-node-of-a-linked-list/",
+    "titleSlug": "delete-the-middle-node-of-a-linked-list"
   }
 }
