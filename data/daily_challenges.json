@@ -906,5 +906,9 @@
   "2026-06-15": {
     "link": "/problems/delete-the-middle-node-of-a-linked-list/",
     "titleSlug": "delete-the-middle-node-of-a-linked-list"
+  },
+  "2026-06-16": {
+    "link": "/problems/process-string-with-special-operations-i/",
+    "titleSlug": "process-string-with-special-operations-i"
   }
 }
