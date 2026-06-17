@@ -910,5 +910,9 @@
   "2026-06-16": {
     "link": "/problems/process-string-with-special-operations-i/",
     "titleSlug": "process-string-with-special-operations-i"
+  },
+  "2026-06-17": {
+    "link": "/problems/process-string-with-special-operations-ii/",
+    "titleSlug": "process-string-with-special-operations-ii"
   }
 }
