@@ -922,5 +922,9 @@
   "2026-06-19": {
     "link": "/problems/find-the-highest-altitude/",
     "titleSlug": "find-the-highest-altitude"
+  },
+  "2026-06-20": {
+    "link": "/problems/maximum-building-height/",
+    "titleSlug": "maximum-building-height"
   }
 }
