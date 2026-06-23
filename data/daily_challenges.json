@@ -934,5 +934,9 @@
   "2026-06-22": {
     "link": "/problems/maximum-number-of-balloons/",
     "titleSlug": "maximum-number-of-balloons"
+  },
+  "2026-06-23": {
+    "link": "/problems/number-of-zigzag-arrays-i/",
+    "titleSlug": "number-of-zigzag-arrays-i"
   }
 }
