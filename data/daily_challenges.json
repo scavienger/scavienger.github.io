@@ -942,5 +942,9 @@
   "2026-06-24": {
     "link": "/problems/number-of-zigzag-arrays-ii/",
     "titleSlug": "number-of-zigzag-arrays-ii"
+  },
+  "2026-06-25": {
+    "link": "/problems/count-subarrays-with-majority-element-i/",
+    "titleSlug": "count-subarrays-with-majority-element-i"
   }
 }
