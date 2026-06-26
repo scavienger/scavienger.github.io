@@ -946,5 +946,9 @@
   "2026-06-25": {
     "link": "/problems/count-subarrays-with-majority-element-i/",
     "titleSlug": "count-subarrays-with-majority-element-i"
+  },
+  "2026-06-26": {
+    "link": "/problems/count-subarrays-with-majority-element-ii/",
+    "titleSlug": "count-subarrays-with-majority-element-ii"
   }
 }
