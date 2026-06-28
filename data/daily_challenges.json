@@ -954,5 +954,9 @@
   "2026-06-27": {
     "link": "/problems/find-the-maximum-number-of-elements-in-subset/",
     "titleSlug": "find-the-maximum-number-of-elements-in-subset"
+  },
+  "2026-06-28": {
+    "link": "/problems/maximum-element-after-decreasing-and-rearranging/",
+    "titleSlug": "maximum-element-after-decreasing-and-rearranging"
   }
 }
