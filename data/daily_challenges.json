@@ -958,5 +958,9 @@
   "2026-06-28": {
     "link": "/problems/maximum-element-after-decreasing-and-rearranging/",
     "titleSlug": "maximum-element-after-decreasing-and-rearranging"
+  },
+  "2026-06-29": {
+    "link": "/problems/number-of-strings-that-appear-as-substrings-in-word/",
+    "titleSlug": "number-of-strings-that-appear-as-substrings-in-word"
   }
 }
