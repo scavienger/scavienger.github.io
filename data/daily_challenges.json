@@ -962,5 +962,9 @@
   "2026-06-29": {
     "link": "/problems/number-of-strings-that-appear-as-substrings-in-word/",
     "titleSlug": "number-of-strings-that-appear-as-substrings-in-word"
+  },
+  "2026-06-30": {
+    "link": "/problems/number-of-substrings-containing-all-three-characters/",
+    "titleSlug": "number-of-substrings-containing-all-three-characters"
   }
 }
