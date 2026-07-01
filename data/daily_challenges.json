@@ -966,5 +966,9 @@
   "2026-06-30": {
     "link": "/problems/number-of-substrings-containing-all-three-characters/",
     "titleSlug": "number-of-substrings-containing-all-three-characters"
+  },
+  "2026-07-01": {
+    "link": "/problems/find-the-safest-path-in-a-grid/",
+    "titleSlug": "find-the-safest-path-in-a-grid"
   }
 }
