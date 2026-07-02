@@ -970,5 +970,9 @@
   "2026-07-01": {
     "link": "/problems/find-the-safest-path-in-a-grid/",
     "titleSlug": "find-the-safest-path-in-a-grid"
+  },
+  "2026-07-02": {
+    "link": "/problems/find-a-safe-walk-through-a-grid/",
+    "titleSlug": "find-a-safe-walk-through-a-grid"
   }
 }
