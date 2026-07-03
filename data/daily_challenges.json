@@ -974,5 +974,9 @@
   "2026-07-02": {
     "link": "/problems/find-a-safe-walk-through-a-grid/",
     "titleSlug": "find-a-safe-walk-through-a-grid"
+  },
+  "2026-07-03": {
+    "link": "/problems/network-recovery-pathways/",
+    "titleSlug": "network-recovery-pathways"
   }
 }
