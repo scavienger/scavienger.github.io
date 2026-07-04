@@ -978,5 +978,9 @@
   "2026-07-03": {
     "link": "/problems/network-recovery-pathways/",
     "titleSlug": "network-recovery-pathways"
+  },
+  "2026-07-04": {
+    "link": "/problems/minimum-score-of-a-path-between-two-cities/",
+    "titleSlug": "minimum-score-of-a-path-between-two-cities"
   }
 }
