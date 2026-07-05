@@ -982,5 +982,9 @@
   "2026-07-04": {
     "link": "/problems/minimum-score-of-a-path-between-two-cities/",
     "titleSlug": "minimum-score-of-a-path-between-two-cities"
+  },
+  "2026-07-05": {
+    "link": "/problems/number-of-paths-with-max-score/",
+    "titleSlug": "number-of-paths-with-max-score"
   }
 }
