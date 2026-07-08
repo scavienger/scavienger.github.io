@@ -994,5 +994,9 @@
   "2026-07-07": {
     "link": "/problems/concatenate-non-zero-digits-and-multiply-by-sum-i/",
     "titleSlug": "concatenate-non-zero-digits-and-multiply-by-sum-i"
+  },
+  "2026-07-08": {
+    "link": "/problems/concatenate-non-zero-digits-and-multiply-by-sum-ii/",
+    "titleSlug": "concatenate-non-zero-digits-and-multiply-by-sum-ii"
   }
 }
