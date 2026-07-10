@@ -1002,5 +1002,9 @@
   "2026-07-09": {
     "link": "/problems/path-existence-queries-in-a-graph-i/",
     "titleSlug": "path-existence-queries-in-a-graph-i"
+  },
+  "2026-07-10": {
+    "link": "/problems/path-existence-queries-in-a-graph-ii/",
+    "titleSlug": "path-existence-queries-in-a-graph-ii"
   }
 }
