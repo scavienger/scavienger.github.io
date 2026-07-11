@@ -1006,5 +1006,9 @@
   "2026-07-10": {
     "link": "/problems/path-existence-queries-in-a-graph-ii/",
     "titleSlug": "path-existence-queries-in-a-graph-ii"
+  },
+  "2026-07-11": {
+    "link": "/problems/count-the-number-of-complete-components/",
+    "titleSlug": "count-the-number-of-complete-components"
   }
 }
