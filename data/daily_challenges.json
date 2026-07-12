@@ -1010,5 +1010,9 @@
   "2026-07-11": {
     "link": "/problems/count-the-number-of-complete-components/",
     "titleSlug": "count-the-number-of-complete-components"
+  },
+  "2026-07-12": {
+    "link": "/problems/rank-transform-of-an-array/",
+    "titleSlug": "rank-transform-of-an-array"
   }
 }
