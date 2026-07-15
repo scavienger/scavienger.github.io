@@ -1022,5 +1022,9 @@
   "2026-07-14": {
     "link": "/problems/find-the-number-of-subsequences-with-equal-gcd/",
     "titleSlug": "find-the-number-of-subsequences-with-equal-gcd"
+  },
+  "2026-07-15": {
+    "link": "/problems/gcd-of-odd-and-even-sums/",
+    "titleSlug": "gcd-of-odd-and-even-sums"
   }
 }
