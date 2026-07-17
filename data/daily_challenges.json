@@ -1030,5 +1030,9 @@
   "2026-07-16": {
     "link": "/problems/sum-of-gcd-of-formed-pairs/",
     "titleSlug": "sum-of-gcd-of-formed-pairs"
+  },
+  "2026-07-17": {
+    "link": "/problems/sorted-gcd-pair-queries/",
+    "titleSlug": "sorted-gcd-pair-queries"
   }
 }
