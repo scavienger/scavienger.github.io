@@ -1034,5 +1034,9 @@
   "2026-07-17": {
     "link": "/problems/sorted-gcd-pair-queries/",
     "titleSlug": "sorted-gcd-pair-queries"
+  },
+  "2026-07-18": {
+    "link": "/problems/find-greatest-common-divisor-of-array/",
+    "titleSlug": "find-greatest-common-divisor-of-array"
   }
 }
