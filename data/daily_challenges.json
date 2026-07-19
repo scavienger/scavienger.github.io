@@ -1038,5 +1038,9 @@
   "2026-07-18": {
     "link": "/problems/find-greatest-common-divisor-of-array/",
     "titleSlug": "find-greatest-common-divisor-of-array"
+  },
+  "2026-07-19": {
+    "link": "/problems/smallest-subsequence-of-distinct-characters/",
+    "titleSlug": "smallest-subsequence-of-distinct-characters"
   }
 }
