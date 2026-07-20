@@ -1042,5 +1042,9 @@
   "2026-07-19": {
     "link": "/problems/smallest-subsequence-of-distinct-characters/",
     "titleSlug": "smallest-subsequence-of-distinct-characters"
+  },
+  "2026-07-20": {
+    "link": "/problems/shift-2d-grid/",
+    "titleSlug": "shift-2d-grid"
   }
 }
