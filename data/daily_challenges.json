@@ -1046,5 +1046,9 @@
   "2026-07-20": {
     "link": "/problems/shift-2d-grid/",
     "titleSlug": "shift-2d-grid"
+  },
+  "2026-07-21": {
+    "link": "/problems/maximize-active-section-with-trade-i/",
+    "titleSlug": "maximize-active-section-with-trade-i"
   }
 }
