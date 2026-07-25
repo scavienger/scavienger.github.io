@@ -1062,5 +1062,9 @@
   "2026-07-24": {
     "link": "/problems/number-of-unique-xor-triplets-ii/",
     "titleSlug": "number-of-unique-xor-triplets-ii"
+  },
+  "2026-07-25": {
+    "link": "/problems/maximum-product-of-two-digits/",
+    "titleSlug": "maximum-product-of-two-digits"
   }
 }
