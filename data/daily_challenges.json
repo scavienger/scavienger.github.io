@@ -1070,5 +1070,9 @@
   "2026-07-26": {
     "link": "/problems/maximum-product-of-three-numbers/",
     "titleSlug": "maximum-product-of-three-numbers"
+  },
+  "2026-07-27": {
+    "link": "/problems/maximum-product-of-two-elements-in-an-array/",
+    "titleSlug": "maximum-product-of-two-elements-in-an-array"
   }
 }
