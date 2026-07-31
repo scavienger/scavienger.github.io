@@ -1086,5 +1086,9 @@
   "2026-07-30": {
     "link": "/problems/minimum-number-of-pushes-to-type-word-i/",
     "titleSlug": "minimum-number-of-pushes-to-type-word-i"
+  },
+  "2026-07-31": {
+    "link": "/problems/minimum-number-of-pushes-to-type-word-ii/",
+    "titleSlug": "minimum-number-of-pushes-to-type-word-ii"
   }
 }
