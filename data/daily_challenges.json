@@ -1094,5 +1094,9 @@
   "2026-08-01": {
     "link": "/problems/predict-the-winner/",
     "titleSlug": "predict-the-winner"
+  },
+  "2026-08-02": {
+    "link": "/problems/stone-game/",
+    "titleSlug": "stone-game"
   }
 }
