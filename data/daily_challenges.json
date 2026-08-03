@@ -1098,5 +1098,9 @@
   "2026-08-02": {
     "link": "/problems/stone-game/",
     "titleSlug": "stone-game"
+  },
+  "2026-08-03": {
+    "link": "/problems/stone-game-iii/",
+    "titleSlug": "stone-game-iii"
   }
 }
