@@ -1106,5 +1106,9 @@
   "2026-08-04": {
     "link": "/problems/find-missing-elements/",
     "titleSlug": "find-missing-elements"
+  },
+  "2026-08-05": {
+    "link": "/problems/remove-methods-from-project/",
+    "titleSlug": "remove-methods-from-project"
   }
 }
