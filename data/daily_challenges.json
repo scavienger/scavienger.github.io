@@ -1114,5 +1114,9 @@
   "2026-08-06": {
     "link": "/problems/smallest-divisible-digit-product-i/",
     "titleSlug": "smallest-divisible-digit-product-i"
+  },
+  "2026-08-07": {
+    "link": "/problems/smallest-divisible-digit-product-ii/",
+    "titleSlug": "smallest-divisible-digit-product-ii"
   }
 }
