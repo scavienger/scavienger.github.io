@@ -1138,5 +1138,9 @@
   "2026-08-12": {
     "link": "/problems/length-of-longest-subarray-with-at-most-k-frequency/",
     "titleSlug": "length-of-longest-subarray-with-at-most-k-frequency"
+  },
+  "2026-08-13": {
+    "link": "/problems/longest-substring-of-one-repeating-character/",
+    "titleSlug": "longest-substring-of-one-repeating-character"
   }
 }
