@@ -1146,5 +1146,9 @@
   "2026-08-14": {
     "link": "/problems/maximum-length-substring-with-two-occurrences/",
     "titleSlug": "maximum-length-substring-with-two-occurrences"
+  },
+  "2026-08-15": {
+    "link": "/problems/longest-subsequence-with-non-zero-bitwise-xor/",
+    "titleSlug": "longest-subsequence-with-non-zero-bitwise-xor"
   }
 }
