@@ -1150,5 +1150,9 @@
   "2026-08-15": {
     "link": "/problems/longest-subsequence-with-non-zero-bitwise-xor/",
     "titleSlug": "longest-subsequence-with-non-zero-bitwise-xor"
+  },
+  "2026-08-16": {
+    "link": "/problems/stone-game-ix/",
+    "titleSlug": "stone-game-ix"
   }
 }
