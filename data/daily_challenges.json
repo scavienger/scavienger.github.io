@@ -1158,5 +1158,9 @@
   "2026-08-17": {
     "link": "/problems/stone-game-v/",
     "titleSlug": "stone-game-v"
+  },
+  "2026-08-18": {
+    "link": "/problems/find-the-largest-almost-missing-integer/",
+    "titleSlug": "find-the-largest-almost-missing-integer"
   }
 }
