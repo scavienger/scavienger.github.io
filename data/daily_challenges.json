@@ -1162,5 +1162,9 @@
   "2026-08-18": {
     "link": "/problems/find-the-largest-almost-missing-integer/",
     "titleSlug": "find-the-largest-almost-missing-integer"
+  },
+  "2026-08-19": {
+    "link": "/problems/cinema-seat-allocation/",
+    "titleSlug": "cinema-seat-allocation"
   }
 }
