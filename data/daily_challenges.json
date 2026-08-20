@@ -1166,5 +1166,9 @@
   "2026-08-19": {
     "link": "/problems/cinema-seat-allocation/",
     "titleSlug": "cinema-seat-allocation"
+  },
+  "2026-08-20": {
+    "link": "/problems/distribute-elements-into-two-arrays-i/",
+    "titleSlug": "distribute-elements-into-two-arrays-i"
   }
 }
