@@ -1170,5 +1170,9 @@
   "2026-08-20": {
     "link": "/problems/distribute-elements-into-two-arrays-i/",
     "titleSlug": "distribute-elements-into-two-arrays-i"
+  },
+  "2026-08-21": {
+    "link": "/problems/kth-smallest-amount-with-single-denomination-combination/",
+    "titleSlug": "kth-smallest-amount-with-single-denomination-combination"
   }
 }
