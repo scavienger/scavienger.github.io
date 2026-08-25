@@ -1186,5 +1186,9 @@
   "2026-08-24": {
     "link": "/problems/stone-game-viii/",
     "titleSlug": "stone-game-viii"
+  },
+  "2026-08-25": {
+    "link": "/problems/smallest-missing-multiple-of-k/",
+    "titleSlug": "smallest-missing-multiple-of-k"
   }
 }
