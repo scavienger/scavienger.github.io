@@ -1190,5 +1190,9 @@
   "2026-08-25": {
     "link": "/problems/smallest-missing-multiple-of-k/",
     "titleSlug": "smallest-missing-multiple-of-k"
+  },
+  "2026-08-26": {
+    "link": "/problems/shortest-and-lexicographically-smallest-beautiful-string/",
+    "titleSlug": "shortest-and-lexicographically-smallest-beautiful-string"
   }
 }
