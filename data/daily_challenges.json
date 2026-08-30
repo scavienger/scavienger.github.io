@@ -1206,5 +1206,9 @@
   "2026-08-29": {
     "link": "/problems/make-lexicographically-smallest-array-by-swapping-elements/",
     "titleSlug": "make-lexicographically-smallest-array-by-swapping-elements"
+  },
+  "2026-08-30": {
+    "link": "/problems/removing-minimum-and-maximum-from-array/",
+    "titleSlug": "removing-minimum-and-maximum-from-array"
   }
 }
