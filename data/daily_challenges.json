@@ -1210,5 +1210,9 @@
   "2026-08-30": {
     "link": "/problems/removing-minimum-and-maximum-from-array/",
     "titleSlug": "removing-minimum-and-maximum-from-array"
+  },
+  "2026-08-31": {
+    "link": "/problems/find-the-minimum-and-maximum-number-of-nodes-between-critical-points/",
+    "titleSlug": "find-the-minimum-and-maximum-number-of-nodes-between-critical-points"
   }
 }
