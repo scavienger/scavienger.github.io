@@ -1214,5 +1214,9 @@
   "2026-08-31": {
     "link": "/problems/find-the-minimum-and-maximum-number-of-nodes-between-critical-points/",
     "titleSlug": "find-the-minimum-and-maximum-number-of-nodes-between-critical-points"
+  },
+  "2026-09-01": {
+    "link": "/problems/minimum-moves-to-clean-the-classroom/",
+    "titleSlug": "minimum-moves-to-clean-the-classroom"
   }
 }
