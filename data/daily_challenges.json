@@ -1222,5 +1222,9 @@
   "2026-09-02": {
     "link": "/problems/construct-uniform-parity-array-i/",
     "titleSlug": "construct-uniform-parity-array-i"
+  },
+  "2026-09-03": {
+    "link": "/problems/construct-uniform-parity-array-ii/",
+    "titleSlug": "construct-uniform-parity-array-ii"
   }
 }
