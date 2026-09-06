@@ -1234,5 +1234,9 @@
   "2026-09-05": {
     "link": "/problems/smallest-stable-index-ii/",
     "titleSlug": "smallest-stable-index-ii"
+  },
+  "2026-09-06": {
+    "link": "/problems/distinct-subsequences/",
+    "titleSlug": "distinct-subsequences"
   }
 }
