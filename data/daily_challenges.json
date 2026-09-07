@@ -1238,5 +1238,9 @@
   "2026-09-06": {
     "link": "/problems/distinct-subsequences/",
     "titleSlug": "distinct-subsequences"
+  },
+  "2026-09-07": {
+    "link": "/problems/distinct-subsequences-ii/",
+    "titleSlug": "distinct-subsequences-ii"
   }
 }
