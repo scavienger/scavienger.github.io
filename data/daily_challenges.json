@@ -1250,5 +1250,9 @@
   "2026-09-09": {
     "link": "/problems/count-commas-in-range-ii/",
     "titleSlug": "count-commas-in-range-ii"
+  },
+  "2026-09-10": {
+    "link": "/problems/count-nodes-equal-to-average-of-subtree/",
+    "titleSlug": "count-nodes-equal-to-average-of-subtree"
   }
 }
