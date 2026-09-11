@@ -1254,5 +1254,9 @@
   "2026-09-10": {
     "link": "/problems/count-nodes-equal-to-average-of-subtree/",
     "titleSlug": "count-nodes-equal-to-average-of-subtree"
+  },
+  "2026-09-11": {
+    "link": "/problems/unique-3-digit-even-numbers/",
+    "titleSlug": "unique-3-digit-even-numbers"
   }
 }
