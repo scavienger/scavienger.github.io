@@ -1258,5 +1258,9 @@
   "2026-09-11": {
     "link": "/problems/unique-3-digit-even-numbers/",
     "titleSlug": "unique-3-digit-even-numbers"
+  },
+  "2026-09-12": {
+    "link": "/problems/maximum-score-of-non-overlapping-intervals/",
+    "titleSlug": "maximum-score-of-non-overlapping-intervals"
   }
 }
