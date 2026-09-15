@@ -1270,5 +1270,9 @@
   "2026-09-14": {
     "link": "/problems/rectangle-overlap/",
     "titleSlug": "rectangle-overlap"
+  },
+  "2026-09-15": {
+    "link": "/problems/maximum-number-of-non-overlapping-palindrome-substrings/",
+    "titleSlug": "maximum-number-of-non-overlapping-palindrome-substrings"
   }
 }
