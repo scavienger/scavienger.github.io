@@ -1274,5 +1274,9 @@
   "2026-09-15": {
     "link": "/problems/maximum-number-of-non-overlapping-palindrome-substrings/",
     "titleSlug": "maximum-number-of-non-overlapping-palindrome-substrings"
+  },
+  "2026-09-16": {
+    "link": "/problems/number-of-sets-of-k-non-overlapping-line-segments/",
+    "titleSlug": "number-of-sets-of-k-non-overlapping-line-segments"
   }
 }
