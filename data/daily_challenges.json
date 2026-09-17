@@ -1278,5 +1278,9 @@
   "2026-09-16": {
     "link": "/problems/number-of-sets-of-k-non-overlapping-line-segments/",
     "titleSlug": "number-of-sets-of-k-non-overlapping-line-segments"
+  },
+  "2026-09-17": {
+    "link": "/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/",
+    "titleSlug": "find-two-non-overlapping-sub-arrays-each-with-target-sum"
   }
 }
