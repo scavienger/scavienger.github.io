@@ -1282,5 +1282,9 @@
   "2026-09-17": {
     "link": "/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/",
     "titleSlug": "find-two-non-overlapping-sub-arrays-each-with-target-sum"
+  },
+  "2026-09-18": {
+    "link": "/problems/maximum-number-of-non-overlapping-substrings/",
+    "titleSlug": "maximum-number-of-non-overlapping-substrings"
   }
 }
