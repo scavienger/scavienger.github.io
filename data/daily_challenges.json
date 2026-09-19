@@ -1286,5 +1286,9 @@
   "2026-09-18": {
     "link": "/problems/maximum-number-of-non-overlapping-substrings/",
     "titleSlug": "maximum-number-of-non-overlapping-substrings"
+  },
+  "2026-09-19": {
+    "link": "/problems/circle-and-rectangle-overlapping/",
+    "titleSlug": "circle-and-rectangle-overlapping"
   }
 }
