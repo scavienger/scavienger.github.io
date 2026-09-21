@@ -1294,5 +1294,9 @@
   "2026-09-20": {
     "link": "/problems/reverse-degree-of-a-string/",
     "titleSlug": "reverse-degree-of-a-string"
+  },
+  "2026-09-21": {
+    "link": "/problems/find-x-value-of-array-i/",
+    "titleSlug": "find-x-value-of-array-i"
   }
 }
