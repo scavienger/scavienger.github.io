@@ -1298,5 +1298,9 @@
   "2026-09-21": {
     "link": "/problems/find-x-value-of-array-i/",
     "titleSlug": "find-x-value-of-array-i"
+  },
+  "2026-09-22": {
+    "link": "/problems/find-x-value-of-array-ii/",
+    "titleSlug": "find-x-value-of-array-ii"
   }
 }
