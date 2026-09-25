@@ -1310,5 +1310,9 @@
   "2026-09-24": {
     "link": "/problems/smallest-index-with-digit-sum-equal-to-index/",
     "titleSlug": "smallest-index-with-digit-sum-equal-to-index"
+  },
+  "2026-09-25": {
+    "link": "/problems/brace-expansion-ii/",
+    "titleSlug": "brace-expansion-ii"
   }
 }
