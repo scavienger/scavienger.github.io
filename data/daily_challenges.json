@@ -1314,5 +1314,9 @@
   "2026-09-25": {
     "link": "/problems/brace-expansion-ii/",
     "titleSlug": "brace-expansion-ii"
+  },
+  "2026-09-26": {
+    "link": "/problems/evaluate-the-bracket-pairs-of-a-string/",
+    "titleSlug": "evaluate-the-bracket-pairs-of-a-string"
   }
 }
