@@ -1318,5 +1318,9 @@
   "2026-09-26": {
     "link": "/problems/evaluate-the-bracket-pairs-of-a-string/",
     "titleSlug": "evaluate-the-bracket-pairs-of-a-string"
+  },
+  "2026-09-27": {
+    "link": "/problems/reverse-substrings-between-each-pair-of-parentheses/",
+    "titleSlug": "reverse-substrings-between-each-pair-of-parentheses"
   }
 }
