@@ -1326,5 +1326,9 @@
   "2026-09-28": {
     "link": "/problems/maximum-nesting-depth-of-the-parentheses/",
     "titleSlug": "maximum-nesting-depth-of-the-parentheses"
+  },
+  "2026-09-29": {
+    "link": "/problems/check-if-there-is-a-valid-parentheses-string-path/",
+    "titleSlug": "check-if-there-is-a-valid-parentheses-string-path"
   }
 }
