@@ -1330,5 +1330,9 @@
   "2026-09-29": {
     "link": "/problems/check-if-there-is-a-valid-parentheses-string-path/",
     "titleSlug": "check-if-there-is-a-valid-parentheses-string-path"
+  },
+  "2026-09-30": {
+    "link": "/problems/maximum-nesting-depth-of-two-valid-parentheses-strings/",
+    "titleSlug": "maximum-nesting-depth-of-two-valid-parentheses-strings"
   }
 }
