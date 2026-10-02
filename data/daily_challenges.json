@@ -1338,5 +1338,9 @@
   "2026-10-01": {
     "link": "/problems/valid-parentheses/",
     "titleSlug": "valid-parentheses"
+  },
+  "2026-10-02": {
+    "link": "/problems/generate-parentheses/",
+    "titleSlug": "generate-parentheses"
   }
 }
