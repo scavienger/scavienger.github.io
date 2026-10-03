@@ -1342,5 +1342,9 @@
   "2026-10-02": {
     "link": "/problems/generate-parentheses/",
     "titleSlug": "generate-parentheses"
+  },
+  "2026-10-03": {
+    "link": "/problems/longest-valid-parentheses/",
+    "titleSlug": "longest-valid-parentheses"
   }
 }
