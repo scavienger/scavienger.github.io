@@ -1346,5 +1346,9 @@
   "2026-10-03": {
     "link": "/problems/longest-valid-parentheses/",
     "titleSlug": "longest-valid-parentheses"
+  },
+  "2026-10-04": {
+    "link": "/problems/valid-parenthesis-string/",
+    "titleSlug": "valid-parenthesis-string"
   }
 }
