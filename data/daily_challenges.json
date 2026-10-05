@@ -1350,5 +1350,9 @@
   "2026-10-04": {
     "link": "/problems/valid-parenthesis-string/",
     "titleSlug": "valid-parenthesis-string"
+  },
+  "2026-10-05": {
+    "link": "/problems/score-of-parentheses/",
+    "titleSlug": "score-of-parentheses"
   }
 }
