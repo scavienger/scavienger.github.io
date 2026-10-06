@@ -1354,5 +1354,9 @@
   "2026-10-05": {
     "link": "/problems/score-of-parentheses/",
     "titleSlug": "score-of-parentheses"
+  },
+  "2026-10-06": {
+    "link": "/problems/minimum-add-to-make-parentheses-valid/",
+    "titleSlug": "minimum-add-to-make-parentheses-valid"
   }
 }
