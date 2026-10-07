@@ -1358,5 +1358,9 @@
   "2026-10-06": {
     "link": "/problems/minimum-add-to-make-parentheses-valid/",
     "titleSlug": "minimum-add-to-make-parentheses-valid"
+  },
+  "2026-10-07": {
+    "link": "/problems/remove-invalid-parentheses/",
+    "titleSlug": "remove-invalid-parentheses"
   }
 }
