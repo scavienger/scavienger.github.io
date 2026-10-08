@@ -1362,5 +1362,9 @@
   "2026-10-07": {
     "link": "/problems/remove-invalid-parentheses/",
     "titleSlug": "remove-invalid-parentheses"
+  },
+  "2026-10-08": {
+    "link": "/problems/remove-outermost-parentheses/",
+    "titleSlug": "remove-outermost-parentheses"
   }
 }
