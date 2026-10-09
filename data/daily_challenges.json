@@ -1366,5 +1366,9 @@
   "2026-10-08": {
     "link": "/problems/remove-outermost-parentheses/",
     "titleSlug": "remove-outermost-parentheses"
+  },
+  "2026-10-09": {
+    "link": "/problems/minimum-insertions-to-balance-a-parentheses-string/",
+    "titleSlug": "minimum-insertions-to-balance-a-parentheses-string"
   }
 }
