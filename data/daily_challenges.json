@@ -1370,5 +1370,9 @@
   "2026-10-09": {
     "link": "/problems/minimum-insertions-to-balance-a-parentheses-string/",
     "titleSlug": "minimum-insertions-to-balance-a-parentheses-string"
+  },
+  "2026-10-10": {
+    "link": "/problems/minimum-sum-of-squared-difference/",
+    "titleSlug": "minimum-sum-of-squared-difference"
   }
 }
