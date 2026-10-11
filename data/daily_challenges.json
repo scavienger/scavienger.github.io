@@ -1374,5 +1374,9 @@
   "2026-10-10": {
     "link": "/problems/minimum-sum-of-squared-difference/",
     "titleSlug": "minimum-sum-of-squared-difference"
+  },
+  "2026-10-11": {
+    "link": "/problems/sum-of-squares-of-special-elements/",
+    "titleSlug": "sum-of-squares-of-special-elements"
   }
 }
