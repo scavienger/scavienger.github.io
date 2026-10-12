@@ -1378,5 +1378,9 @@
   "2026-10-11": {
     "link": "/problems/sum-of-squares-of-special-elements/",
     "titleSlug": "sum-of-squares-of-special-elements"
+  },
+  "2026-10-12": {
+    "link": "/problems/apply-operations-on-array-to-maximize-sum-of-squares/",
+    "titleSlug": "apply-operations-on-array-to-maximize-sum-of-squares"
   }
 }
