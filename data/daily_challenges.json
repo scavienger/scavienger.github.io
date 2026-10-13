@@ -1382,5 +1382,9 @@
   "2026-10-12": {
     "link": "/problems/apply-operations-on-array-to-maximize-sum-of-squares/",
     "titleSlug": "apply-operations-on-array-to-maximize-sum-of-squares"
+  },
+  "2026-10-13": {
+    "link": "/problems/maximum-alternating-sum-of-squares/",
+    "titleSlug": "maximum-alternating-sum-of-squares"
   }
 }
