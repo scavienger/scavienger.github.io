@@ -1386,5 +1386,9 @@
   "2026-10-13": {
     "link": "/problems/maximum-alternating-sum-of-squares/",
     "titleSlug": "maximum-alternating-sum-of-squares"
+  },
+  "2026-10-14": {
+    "link": "/problems/maximize-sum-of-squares-of-digits/",
+    "titleSlug": "maximize-sum-of-squares-of-digits"
   }
 }
