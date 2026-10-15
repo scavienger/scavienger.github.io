@@ -1390,5 +1390,9 @@
   "2026-10-14": {
     "link": "/problems/maximize-sum-of-squares-of-digits/",
     "titleSlug": "maximize-sum-of-squares-of-digits"
+  },
+  "2026-10-15": {
+    "link": "/problems/subarrays-distinct-element-sum-of-squares-i/",
+    "titleSlug": "subarrays-distinct-element-sum-of-squares-i"
   }
 }
