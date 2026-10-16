@@ -1394,5 +1394,9 @@
   "2026-10-15": {
     "link": "/problems/subarrays-distinct-element-sum-of-squares-i/",
     "titleSlug": "subarrays-distinct-element-sum-of-squares-i"
+  },
+  "2026-10-16": {
+    "link": "/problems/subarrays-distinct-element-sum-of-squares-ii/",
+    "titleSlug": "subarrays-distinct-element-sum-of-squares-ii"
   }
 }
