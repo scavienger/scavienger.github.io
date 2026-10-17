@@ -1398,5 +1398,9 @@
   "2026-10-16": {
     "link": "/problems/subarrays-distinct-element-sum-of-squares-ii/",
     "titleSlug": "subarrays-distinct-element-sum-of-squares-ii"
+  },
+  "2026-10-17": {
+    "link": "/problems/minimum-swaps-to-sort-by-digit-sum/",
+    "titleSlug": "minimum-swaps-to-sort-by-digit-sum"
   }
 }
