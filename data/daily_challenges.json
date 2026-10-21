@@ -1414,5 +1414,9 @@
   "2026-10-20": {
     "link": "/problems/sum-of-sortable-integers/",
     "titleSlug": "sum-of-sortable-integers"
+  },
+  "2026-10-21": {
+    "link": "/problems/minimum-operations-to-sort-a-string/",
+    "titleSlug": "minimum-operations-to-sort-a-string"
   }
 }
