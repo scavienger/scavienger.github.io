@@ -1418,5 +1418,9 @@
   "2026-10-21": {
     "link": "/problems/minimum-operations-to-sort-a-string/",
     "titleSlug": "minimum-operations-to-sort-a-string"
+  },
+  "2026-10-22": {
+    "link": "/problems/minimum-operations-to-sort-a-permutation/",
+    "titleSlug": "minimum-operations-to-sort-a-permutation"
   }
 }
