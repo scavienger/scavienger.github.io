@@ -1422,5 +1422,9 @@
   "2026-10-22": {
     "link": "/problems/minimum-operations-to-sort-a-permutation/",
     "titleSlug": "minimum-operations-to-sort-a-permutation"
+  },
+  "2026-10-23": {
+    "link": "/problems/maximum-k-to-sort-a-permutation/",
+    "titleSlug": "maximum-k-to-sort-a-permutation"
   }
 }
