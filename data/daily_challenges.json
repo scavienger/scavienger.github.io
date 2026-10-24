@@ -1426,5 +1426,9 @@
   "2026-10-23": {
     "link": "/problems/maximum-k-to-sort-a-permutation/",
     "titleSlug": "maximum-k-to-sort-a-permutation"
+  },
+  "2026-10-24": {
+    "link": "/problems/count-days-spent-together/",
+    "titleSlug": "count-days-spent-together"
   }
 }
