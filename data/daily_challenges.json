@@ -1430,5 +1430,9 @@
   "2026-10-24": {
     "link": "/problems/count-days-spent-together/",
     "titleSlug": "count-days-spent-together"
+  },
+  "2026-10-25": {
+    "link": "/problems/number-of-closed-islands/",
+    "titleSlug": "number-of-closed-islands"
   }
 }
