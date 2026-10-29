@@ -1446,5 +1446,9 @@
   "2026-10-28": {
     "link": "/problems/minimum-xor-path-in-a-grid/",
     "titleSlug": "minimum-xor-path-in-a-grid"
+  },
+  "2026-10-29": {
+    "link": "/problems/palindromic-path-queries-in-a-tree/",
+    "titleSlug": "palindromic-path-queries-in-a-tree"
   }
 }
