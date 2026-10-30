@@ -1450,5 +1450,9 @@
   "2026-10-29": {
     "link": "/problems/palindromic-path-queries-in-a-tree/",
     "titleSlug": "palindromic-path-queries-in-a-tree"
+  },
+  "2026-10-30": {
+    "link": "/problems/shortest-path-with-at-most-k-consecutive-identical-characters/",
+    "titleSlug": "shortest-path-with-at-most-k-consecutive-identical-characters"
   }
 }
