@@ -1458,5 +1458,9 @@
   "2026-10-31": {
     "link": "/problems/twisted-mirror-path-count/",
     "titleSlug": "twisted-mirror-path-count"
+  },
+  "2026-11-01": {
+    "link": "/problems/minimum-moves-to-equal-array-elements/",
+    "titleSlug": "minimum-moves-to-equal-array-elements"
   }
 }
