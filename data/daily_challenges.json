@@ -1466,5 +1466,9 @@
   "2026-11-02": {
     "link": "/problems/minimum-moves-to-equal-array-elements-ii/",
     "titleSlug": "minimum-moves-to-equal-array-elements-ii"
+  },
+  "2026-11-03": {
+    "link": "/problems/minimum-moves-to-equal-array-elements-iii/",
+    "titleSlug": "minimum-moves-to-equal-array-elements-iii"
   }
 }
