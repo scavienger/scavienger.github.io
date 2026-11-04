@@ -1470,5 +1470,9 @@
   "2026-11-03": {
     "link": "/problems/minimum-moves-to-equal-array-elements-iii/",
     "titleSlug": "minimum-moves-to-equal-array-elements-iii"
+  },
+  "2026-11-04": {
+    "link": "/problems/minimum-operations-to-make-elements-within-k-subarrays-equal/",
+    "titleSlug": "minimum-operations-to-make-elements-within-k-subarrays-equal"
   }
 }
