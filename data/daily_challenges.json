@@ -1474,5 +1474,9 @@
   "2026-11-04": {
     "link": "/problems/minimum-operations-to-make-elements-within-k-subarrays-equal/",
     "titleSlug": "minimum-operations-to-make-elements-within-k-subarrays-equal"
+  },
+  "2026-11-05": {
+    "link": "/problems/find-the-distance-value-between-two-arrays/",
+    "titleSlug": "find-the-distance-value-between-two-arrays"
   }
 }
