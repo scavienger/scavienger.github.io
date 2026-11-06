@@ -1478,5 +1478,9 @@
   "2026-11-05": {
     "link": "/problems/find-the-distance-value-between-two-arrays/",
     "titleSlug": "find-the-distance-value-between-two-arrays"
+  },
+  "2026-11-06": {
+    "link": "/problems/count-zero-request-servers/",
+    "titleSlug": "count-zero-request-servers"
   }
 }
