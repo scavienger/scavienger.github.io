@@ -1482,5 +1482,9 @@
   "2026-11-06": {
     "link": "/problems/count-zero-request-servers/",
     "titleSlug": "count-zero-request-servers"
+  },
+  "2026-11-07": {
+    "link": "/problems/process-tasks-using-servers/",
+    "titleSlug": "process-tasks-using-servers"
   }
 }
