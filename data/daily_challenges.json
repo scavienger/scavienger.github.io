@@ -1486,5 +1486,9 @@
   "2026-11-07": {
     "link": "/problems/process-tasks-using-servers/",
     "titleSlug": "process-tasks-using-servers"
+  },
+  "2026-11-08": {
+    "link": "/problems/count-servers-that-communicate/",
+    "titleSlug": "count-servers-that-communicate"
   }
 }
