@@ -1498,5 +1498,9 @@
   "2026-11-10": {
     "link": "/problems/climbing-stairs-ii/",
     "titleSlug": "climbing-stairs-ii"
+  },
+  "2026-11-11": {
+    "link": "/problems/minimum-cost-to-acquire-required-items/",
+    "titleSlug": "minimum-cost-to-acquire-required-items"
   }
 }
