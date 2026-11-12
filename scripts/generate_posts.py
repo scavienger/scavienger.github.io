@@ -4,9 +4,9 @@
 Unified post generator / regenerator.
 
 Features:
-  - Fetch LeetCode Daily Challenges via problemset __NEXT_DATA__ and cache date->(link,titleSlug)
+  - Fetch LeetCode Daily Challenges via GraphQL dailyCodingChallengeV2 and cache date->(link,titleSlug)
   - Generate or overwrite posts for a date or date range
-  - Gemini-only AI solutions (Gemini 3 Pro with Flash fallback)
+  - Gemini-only AI solutions (gemini-3.8-flash primary, fallback to gemini-3-flash-preview on 429 rate limit)
   - If post exists, overwrite AI solution sections; if missing, create new post
 """
 
@@ -26,7 +26,7 @@ from solve_with_ai import AISolutionGenerator
 from generate_post import PostGenerator
 
 # Constants
-DEFAULT_MODEL = "gemini-3-flash-preview"
+DEFAULT_MODEL = "gemini-3.8-flash"
 CACHE_PATH = os.path.join("data", "daily_challenges.json")
 DAILY_POSTS_DIR = os.path.join("_posts", "_daily")
 
@@ -232,8 +232,12 @@ def fetch_problem_by_slug(slug: str, snippet_dir: Optional[str] = None) -> Optio
     }
 
 
-def generate_ai_solutions(problem_data: Dict) -> List[Dict]:
-    generator = AISolutionGenerator()
+def generate_ai_solutions(
+    problem_data: Dict,
+    provider: Optional[str] = None,
+    model_name: Optional[str] = None,
+) -> List[Dict]:
+    generator = AISolutionGenerator(provider=provider, model_name=model_name)
     sol = generator.generate_solution(problem_data)
     # Consider it a failure if generator returned nothing, or if it returned an error placeholder.
     approach_text = (sol or {}).get("approach", "")
@@ -255,7 +259,7 @@ def generate_ai_solutions(problem_data: Dict) -> List[Dict]:
         return [sol]
 
     reason = "missing result" if not sol else "parse/validation error"
-    print(f"❌ Failed to generate with {DEFAULT_MODEL} ({reason})", file=sys.stderr)
+    print(f"❌ Failed to generate with {generator.model_name or DEFAULT_MODEL} ({reason})", file=sys.stderr)
     return []
 
 
@@ -276,20 +280,21 @@ def find_post_file(date_str: str, posts_dir: str, slug: str) -> Optional[str]:
 
 
 def load_existing_post(filepath: str) -> Dict:
-    """Return a dict with keys 'ai_solutions' (list) and other front‑matter if present."""
+    """Return a dict with keys 'ai_solutions' (list) and other front-matter if present."""
     if not os.path.exists(filepath):
         return {}
     with open(filepath, "r", encoding="utf-8") as f:
         content = f.read()
     if not content.startswith("---"):
         return {}
-    parts = content.split("---")
-    # parts[1] is the YAML front‑matter
+    parts = re.split(r"^---\s*$", content, maxsplit=2, flags=re.MULTILINE)
+    if len(parts) < 3:
+        return {}
     try:
         meta = yaml.safe_load(parts[1]) or {}
     except Exception:
         meta = {}
-    return meta
+    return meta if isinstance(meta, dict) else {}
 
 
 def build_question_data(problem: Dict, date_str: str, link: str, slug: str) -> Dict:
@@ -310,7 +315,15 @@ def build_question_data(problem: Dict, date_str: str, link: str, slug: str) -> D
         "ai_solutions": [],   # will be filled later
     }
 
-def process_date(date_str: str, link: str, slug: str, posts_dir: str) -> bool:
+def process_date(
+    date_str: str,
+    link: str,
+    slug: str,
+    posts_dir: str,
+    provider: Optional[str] = None,
+    model_name: Optional[str] = None,
+    only_missing: bool = False,
+) -> bool:
     print(f"\n=== Processing {date_str} ({slug}) [{os.path.basename(posts_dir)}] ===", file=sys.stderr)
     post_path = build_post_path(posts_dir, date_str, slug)
     snippet_dir = os.path.dirname(post_path)
@@ -322,14 +335,17 @@ def process_date(date_str: str, link: str, slug: str, posts_dir: str) -> bool:
 
     problem["date"] = date_str
     problem["slug"] = slug
+    problem["only_missing"] = only_missing
 
     # Load any existing post to preserve solutions
     existing_post_path = find_post_file(date_str, posts_dir, slug)
     existing_meta = load_existing_post(existing_post_path) if existing_post_path else {}
     existing_solutions = existing_meta.get("ai_solutions", [])
+    if existing_solutions and isinstance(existing_solutions[0], dict):
+        problem["existing_ai_solution"] = existing_solutions[0]
 
     qdata = build_question_data(problem, date_str, f"https://leetcode.com{link}", slug)
-    new_solutions = generate_ai_solutions(problem)
+    new_solutions = generate_ai_solutions(problem, provider=provider, model_name=model_name)
     qdata["ai_solutions"] = new_solutions if new_solutions else existing_solutions
 
     generator = PostGenerator(posts_dir)
@@ -342,12 +358,100 @@ def process_date(date_str: str, link: str, slug: str, posts_dir: str) -> bool:
     return False
 
 
+def scan_missing_posts(
+    posts_dir: str = DAILY_POSTS_DIR,
+    since_date: str = "2025-11-01",
+    until_date: Optional[str] = None,
+) -> List[Dict[str, str]]:
+    """Scan daily posts directory for dates missing a post file or missing AI solutions entirely."""
+    import glob
+
+    start_dt = parse_date(since_date)
+    end_dt = parse_date(until_date) if until_date else datetime.now()
+    cache = load_cache()
+
+    missing_items: List[Dict[str, str]] = []
+    cur = start_dt
+    while cur <= end_dt:
+        d_str = cur.strftime("%Y-%m-%d")
+        day_dir = os.path.join(posts_dir, cur.strftime("%Y"), cur.strftime("%m"), cur.strftime("%d"))
+        md_files = sorted(glob.glob(os.path.join(day_dir, "*.md")))
+        if not md_files:
+            slug = (cache.get(d_str) or {}).get("titleSlug", "unknown")
+            missing_items.append({
+                "date": d_str,
+                "status": "NO_POST_FILE",
+                "difficulty": "Unknown",
+                "slug": slug,
+            })
+        else:
+            for p in md_files:
+                with open(p, "r", encoding="utf-8") as f:
+                    text = f.read()
+                meta = load_existing_post(p)
+                diff = str(meta.get("difficulty", "Unknown"))
+                ai_sols = meta.get("ai_solutions", [])
+                slug = os.path.splitext(os.path.basename(p))[0]
+                if not ai_sols or "TODO: Add solution approach here." in text:
+                    missing_items.append({
+                        "date": d_str,
+                        "status": "NO_AI_SOLUTION",
+                        "difficulty": diff,
+                        "slug": slug,
+                    })
+                elif isinstance(ai_sols[0], dict):
+                    sols = ai_sols[0].get("solutions", {}) or {}
+                    if sols and all("generation failed" in str(v).lower() for v in sols.values()):
+                        missing_items.append({
+                            "date": d_str,
+                            "status": "ALL_LANGS_FAILED",
+                            "difficulty": diff,
+                            "slug": slug,
+                        })
+        cur += timedelta(days=1)
+
+    # Sort newest first
+    missing_items.sort(key=lambda x: x["date"], reverse=True)
+    return missing_items
+
+
 def main():
     import argparse
     parser = argparse.ArgumentParser(description="Generate LeetCode daily challenge posts.")
-    parser.add_argument("start_date", help="YYYY-MM-DD")
+    parser.add_argument("start_date", nargs="?", help="YYYY-MM-DD")
     parser.add_argument("end_date", nargs="?", help="YYYY-MM-DD (optional)")
+    parser.add_argument(
+        "--list-missing",
+        action="store_true",
+        help="List dates missing a post file or missing AI solutions entirely (newest first).",
+    )
+    parser.add_argument(
+        "--provider",
+        choices=["gemini", "codex"],
+        default=os.getenv("AI_PROVIDER", "gemini"),
+        help="AI provider to use: 'gemini' (default for GitHub Actions) or 'codex' (ChatGPT subscription CLI for local follow-up).",
+    )
+    parser.add_argument(
+        "--model",
+        default=None,
+        help="Override model name (e.g. 'gpt-6-luna' or 'gpt-6.1-sol' for codex; 'gemini-3.8-flash' for gemini).",
+    )
+    parser.add_argument(
+        "--only-missing",
+        action="store_true",
+        help="Skip batches whose languages already have valid solutions in the existing post.",
+    )
     args = parser.parse_args()
+
+    if args.list_missing:
+        items = scan_missing_posts(DAILY_POSTS_DIR)
+        print(f"Found {len(items)} completely missing/unsolved dates (newest first):")
+        for item in items:
+            print(f"  {item['date']}  [{item['difficulty']:<7}]  {item['status']:<16}  {item['slug']}")
+        return 0
+
+    if not args.start_date:
+        parser.error("start_date is required unless --list-missing is specified.")
 
     date_pattern = re.compile(r"^\d{4}-\d{2}-\d{2}$")
     end_date = args.end_date if args.end_date and date_pattern.match(args.end_date) else None
@@ -358,8 +462,11 @@ def main():
         print(f"Error: {e}", file=sys.stderr)
         return 1
 
+    active_model = args.model or (
+        AISolutionGenerator.CODEX_MODEL if args.provider == "codex" else DEFAULT_MODEL
+    )
     print(f"Dates: {', '.join(dates)}", file=sys.stderr)
-    print(f"Model: {DEFAULT_MODEL}", file=sys.stderr)
+    print(f"Provider: {args.provider} | Model: {active_model}", file=sys.stderr)
 
     cache = update_cache_if_needed(dates)
 
@@ -368,15 +475,29 @@ def main():
         info = cache.get(d)
 
         if info:
-            ok = process_date(d, info["link"], info["titleSlug"], DAILY_POSTS_DIR)
+            extra_kwargs = {}
+            if args.provider != "gemini":
+                extra_kwargs["provider"] = args.provider
+            if args.model is not None:
+                extra_kwargs["model_name"] = args.model
+            if args.only_missing:
+                extra_kwargs["only_missing"] = True
+            ok = process_date(
+                d,
+                info["link"],
+                info["titleSlug"],
+                DAILY_POSTS_DIR,
+                **extra_kwargs,
+            )
             overall_success = overall_success and ok
         else:
             print(f"ℹ️ No daily challenge for {d} in cache. Skipping.", file=sys.stderr)
 
         # Wait between dates (except after last)
         if i < len(dates) - 1:
-            print("Waiting 60 seconds before next date...", file=sys.stderr)
-            time.sleep(60)
+            inter_date_wait = 2 if args.provider == "codex" else 60
+            print(f"Waiting {inter_date_wait} seconds before next date...", file=sys.stderr)
+            time.sleep(inter_date_wait)
 
     return 0 if overall_success else 1
 

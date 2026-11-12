@@ -94,13 +94,16 @@ layout: default
   </div>
 
   <!-- Related Posts Section -->
-  {% assign related_posts = site.posts | where: "difficulty", page.difficulty | limit: 3 %}
+  {% assign all_posts = site.posts | concat: site.daily | sort: 'date' | reverse %}
+  {% assign related_posts = all_posts | where: "difficulty", page.difficulty | limit: 4 %}
   {% if related_posts.size > 1 %}
   <section class="related-posts-section">
     <h2 class="related-title">Related Problems</h2>
     <div class="related-posts-grid">
+      {% assign shown_count = 0 %}
       {% for post in related_posts %}
-        {% if post.url != page.url %}
+        {% if post.url != page.url and shown_count < 3 %}
+        {% assign shown_count = shown_count | plus: 1 %}
         <article class="related-post-card">
           <div class="related-post-header">
             <span class="difficulty difficulty-{{ post.difficulty | downcase }}">

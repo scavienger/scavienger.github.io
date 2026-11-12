@@ -18,6 +18,8 @@ __pycache__/
 venv/
 env/
 ENV/
+.env
+.env.*
 
 # Temporary files
 question_data.json

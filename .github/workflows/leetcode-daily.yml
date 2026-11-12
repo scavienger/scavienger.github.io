@@ -16,6 +16,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: leetcode-posts
+  cancel-in-progress: false
+
 jobs:
   fetch-and-post:
     runs-on: ubuntu-latest
@@ -28,10 +32,11 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
+          cache-dependency-path: 'scripts/requirements.txt'
 
       - name: Install Python dependencies
         run: |
@@ -61,6 +66,7 @@ jobs:
             exit 0
           fi
 
-          # Commit changes
+          # Commit and rebase before pushing to avoid race conditions
           git commit -m "Add LeetCode daily challenge for $DATE"
+          git pull --rebase origin master
           git push origin master

@@ -92,6 +92,12 @@ class PostGenerator:
 
         return content.strip()
 
+    def _escape_liquid(self, text):
+        """Escape Liquid template delimiters ({{ and {%) so Jekyll does not parse them."""
+        if not text or not isinstance(text, str):
+            return text
+        return re.sub(r'(\{\{|\{%)', r'{% raw %}\1{% endraw %}', text)
+
     def _generate_code_tabs(self, solutions, suffix=''):
         """Generate Pure CSS tabs for multi-language code
 
@@ -175,7 +181,7 @@ class PostGenerator:
         frontmatter_lines = [
             "---",
             f'layout: post',
-            f'title: "{title}"',
+            f'title: {json.dumps(title, ensure_ascii=False)}',
             f'date: {date_str} 09:00:00 +0900',
             f'categories: [LeetCode, {difficulty}]',
             f'tags: {json.dumps(topics, ensure_ascii=False)}',
@@ -199,7 +205,7 @@ class PostGenerator:
         body_parts = []
 
         # Problem header
-        body_parts.append(f"## Problem #{question_id}: {title}\n")
+        body_parts.append(f"## Problem #{question_id}: {self._escape_liquid(title)}\n")
         body_parts.append(f"**Difficulty:** {difficulty}\n")
 
         if topics:
@@ -207,7 +213,7 @@ class PostGenerator:
 
         # Problem description
         body_parts.append("## Problem Description\n")
-        body_parts.append(content + "\n")
+        body_parts.append(self._escape_liquid(content) + "\n")
 
         # Add images if any
         if images:
@@ -221,7 +227,7 @@ class PostGenerator:
         if hints:
             body_parts.append("## Hints\n")
             for i, hint in enumerate(hints, 1):
-                cleaned_hint = self._clean_html_content(hint)
+                cleaned_hint = self._escape_liquid(self._clean_html_content(hint))
                 body_parts.append(f"{i}. {cleaned_hint}\n")
 
         # AI Solution section - support both single and multiple solutions
@@ -246,6 +252,7 @@ class PostGenerator:
 
                 # Model emoji mapping
                 model_emojis = {
+                    'gemini-3.8-flash': '✨',
                     'gemini-3-pro-preview': '✨',
                     'gemini-3-flash-preview': '✨',
                     'gemini-2.5-flash': '✨',
@@ -264,7 +271,7 @@ class PostGenerator:
 
                 # Approach
                 body_parts.append("### Approach\n")
-                body_parts.append(f"{solution.get('approach', 'No approach provided')}\n")
+                body_parts.append(f"{self._escape_liquid(solution.get('approach', 'No approach provided'))}\n")
 
                 # Code with multi-language tabs
                 body_parts.append("### Code\n")
@@ -275,14 +282,16 @@ class PostGenerator:
                 else:
                     # Fallback
                     code = solution.get('code', '# No code provided')
+                    body_parts.append("{% raw %}")
                     body_parts.append("```python")
                     body_parts.append(code)
-                    body_parts.append("```\n")
+                    body_parts.append("```")
+                    body_parts.append("{% endraw %}\n")
 
                 # Complexity Analysis
                 body_parts.append("### Complexity Analysis\n")
-                body_parts.append(f"- **Time Complexity:** {solution.get('time_complexity', 'N/A')}\n")
-                body_parts.append(f"- **Space Complexity:** {solution.get('space_complexity', 'N/A')}\n")
+                body_parts.append(f"- **Time Complexity:** {self._escape_liquid(solution.get('time_complexity', 'N/A'))}\n")
+                body_parts.append(f"- **Space Complexity:** {self._escape_liquid(solution.get('space_complexity', 'N/A'))}\n")
 
                 body_parts.append('</div>')
                 body_parts.append('</details>\n')
@@ -299,11 +308,12 @@ class PostGenerator:
                 # Fallback for old format
                 provider = ai_solution.get('provider', 'AI').upper()
                 model_name = {
-                    'GEMINI': 'gemini-3-flash-preview'
+                    'GEMINI': 'gemini-3.8-flash'
                 }.get(provider, 'AI')
 
             # Model emoji mapping
             model_emojis = {
+                'gemini-3.8-flash': '✨',
                 'gemini-3-pro-preview': '✨',
                 'gemini-3-flash-preview': '✨',
                 'gemini-2.5-flash': '✨'
@@ -314,7 +324,7 @@ class PostGenerator:
 
             # Approach
             body_parts.append("### Approach\n")
-            body_parts.append(f"{ai_solution.get('approach', 'No approach provided')}\n")
+            body_parts.append(f"{self._escape_liquid(ai_solution.get('approach', 'No approach provided'))}\n")
 
             # Code with multi-language tabs
             body_parts.append("### Code\n")
@@ -325,14 +335,16 @@ class PostGenerator:
             else:
                 # Fallback for old format (single Python code)
                 code = ai_solution.get('code', '# No code provided')
+                body_parts.append("{% raw %}")
                 body_parts.append("```python")
                 body_parts.append(code)
-                body_parts.append("```\n")
+                body_parts.append("```")
+                body_parts.append("{% endraw %}\n")
 
             # Complexity Analysis
             body_parts.append("### Complexity Analysis\n")
-            body_parts.append(f"- **Time Complexity:** {ai_solution.get('time_complexity', 'N/A')}")
-            body_parts.append(f"- **Space Complexity:** {ai_solution.get('space_complexity', 'N/A')}\n")
+            body_parts.append(f"- **Time Complexity:** {self._escape_liquid(ai_solution.get('time_complexity', 'N/A'))}")
+            body_parts.append(f"- **Space Complexity:** {self._escape_liquid(ai_solution.get('space_complexity', 'N/A'))}\n")
         else:
             # Fallback: manual solution template
             body_parts.append("## Solution\n")
@@ -340,12 +352,14 @@ class PostGenerator:
             body_parts.append("TODO: Add solution approach here.\n")
 
             body_parts.append("### Code\n")
+            body_parts.append("{% raw %}")
             body_parts.append("```python")
             if code_template:
                 body_parts.append(code_template)
             else:
                 body_parts.append("# Solution code here")
-            body_parts.append("```\n")
+            body_parts.append("```")
+            body_parts.append("{% endraw %}\n")
 
             # Complexity analysis
             body_parts.append("### Complexity Analysis\n")

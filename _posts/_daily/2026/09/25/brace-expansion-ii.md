@@ -530,7 +530,7 @@ ai_solutions:
 	<li>When we take a comma-delimited list of two or more expressions, we take the union of possibilities.
 	<ul>
 		<li><code>R(&quot;{a,b,c}&quot;) = {&quot;a&quot;,&quot;b&quot;,&quot;c&quot;}</code></li>
-		<li><code>R(&quot;{{a,b},{b,c}}&quot;) = {&quot;a&quot;,&quot;b&quot;,&quot;c&quot;}</code> (notice the final set only contains each word at most once)</li>
+		<li><code>R(&quot;{% raw %}{{{% endraw %}a,b},{b,c}}&quot;) = {&quot;a&quot;,&quot;b&quot;,&quot;c&quot;}</code> (notice the final set only contains each word at most once)</li>
 	</ul>
 	</li>
 	<li>When we concatenate two expressions, we take the set of possible concatenations between two words where the first word comes from the first expression and the second word comes from the second expression.
@@ -562,7 +562,7 @@ ai_solutions:
 <p><strong class="example">Example 2:</strong></p>
 
 <pre>
-<strong>Input:</strong> expression = &quot;{{a,z},a{b,c},{ab,z}}&quot;
+<strong>Input:</strong> expression = &quot;{% raw %}{{{% endraw %}a,z},a{b,c},{ab,z}}&quot;
 <strong>Output:</strong> [&quot;a&quot;,&quot;ab&quot;,&quot;ac&quot;,&quot;z&quot;]
 <strong>Explanation:</strong> Each distinct word is written only once in the final answer.
 </pre>

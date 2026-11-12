@@ -6,7 +6,7 @@ Automated blog that fetches and posts LeetCode Daily Challenge problems every da
 
 - **Automated Daily Posts**: GitHub Actions fetches the daily LeetCode problem and creates a new blog post automatically
 - **AI-Generated Solutions**: Solutions in 19 programming languages with Pure CSS tabs
-- **Gemini-only AI**: Gemini 3 Pro with Flash fallback on 429s
+- **Gemini-only AI**: Powered by `gemini-3-flash-preview` (with automatic `gemini-2.5-flash` fallback) via `google-genai` (`v1beta`)
 - **Manual Regeneration**: Update existing posts with new AI solutions via workflow or command line
 - **Jekyll-powered**: Clean, fast static site hosted on GitHub Pages
 - **Modern UI**: Beautiful, responsive design with dark mode support and code copy buttons
@@ -36,7 +36,7 @@ To enable AI-generated solutions, add your API key:
 
 | Provider | Model | Secret Name | Get API Key |
 |----------|-------|-------------|-------------|
-| **Gemini** ✨ | gemini-3-flash-preview | `GEMINI_API_KEY` | [Get Key](https://aistudio.google.com/app/apikey) |
+| **Gemini** ✨ | `gemini-3.8-flash` (fallback: `gemini-3-flash-preview` on 429) | `GEMINI_API_KEY` | [Get Key](https://aistudio.google.com/app/apikey) |
 
 #### Setup Instructions
 
@@ -46,7 +46,7 @@ To enable AI-generated solutions, add your API key:
    - Add `GEMINI_API_KEY`
 
 2. **Model Behavior**
-   - **gemini-3-flash-preview**
+   - **gemini-3.8-flash** (switches to **gemini-3-flash-preview** on 429 rate limit)
 
 **Notes:**
 - Only API keys go in Secrets (sensitive data)
@@ -289,4 +289,4 @@ MIT License - Feel free to use this for your own LeetCode blog!
 
 ---
 
-For detailed developer documentation, see **CLAUDE.md**.
+For detailed developer and AI agent documentation, see **[AGENT.md](AGENT.md)** and **[CLAUDE.md](CLAUDE.md)**.

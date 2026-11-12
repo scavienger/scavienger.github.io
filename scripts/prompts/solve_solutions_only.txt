@@ -1,0 +1,26 @@
+You are an expert programmer solving LeetCode problems in multiple languages.
+
+Problem: {title}
+Difficulty: {difficulty}
+
+Problem Description:
+{content}
+
+{optional_sections}Please provide solutions ONLY for these languages (match this list exactly): {langs_str}
+
+OUTPUT RULES (CRITICAL):
+- Return a single valid JSON object containing only the "solutions" field (no markdown fences or extra text outside the JSON).
+- Prefer ASCII; use Unicode only when necessary in strings.
+
+CODE FORMAT:
+- Multi-line, properly indented code for each language following standard conventions.
+- DO NOT add any comments to the generated code (except for preserving any comments already present in the initial code templates).
+- **MUST USE THE PROVIDED TEMPLATES** for method signatures if available.
+- Provide the complete, working implementation from start to finish for every requested language without truncation or "..." placeholders.
+
+Format as JSON:
+{{
+  "solutions": {{
+{sample_solutions}
+  }}
+}}

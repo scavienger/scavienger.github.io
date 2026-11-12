@@ -13,10 +13,23 @@ plugins:
   - jekyll-feed
   - jekyll-seo-tag
 
-# Exclude non-post snippet files under daily posts (language templates)
+# Exclude non-post snippet files and repository tooling/docs from site build
 exclude:
   - "**/*.txt"
+  - AGENT.md
+  - AGENTS.md
   - CLAUDE.md
+  - README.md
+  - TODO.md
+  - BRANCHING_STRATEGY.md
+  - SETUP_CHECKLIST.md
+  - Gemfile
+  - Gemfile.lock
+  - pytest.ini
+  - scripts/
+  - tests/
+  - vendor/
+  - venv/
 
 sass:
   quiet_deps: true

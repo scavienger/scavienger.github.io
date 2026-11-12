@@ -12,6 +12,7 @@ from solve_with_ai import AISolutionGenerator
 class TestAISolutionGenerator(unittest.TestCase):
     def setUp(self):
         self.generator = AISolutionGenerator()
+        self.generator.batch_delay = 0.0
         self.sample_problem = {
             "title": "Two Sum",
             "content": "Find two numbers that add up to target.",
@@ -27,6 +28,22 @@ class TestAISolutionGenerator(unittest.TestCase):
         self.assertIn("Use a hash map", prompt)
         self.assertIn("class Solution", prompt)
         self.assertIn("Format as JSON", prompt)
+
+    def test_create_prompt_solutions_only_with_reference(self):
+        ref_sol = {
+            "approach": "Use a hash table to store seen complements in O(n).",
+            "solutions": {"python3": "class Solution:\n    def twoSum(self, nums, target):\n        return [0, 1]"},
+        }
+        prompt = self.generator.create_prompt(
+            self.sample_problem,
+            ["Rust", "Elixir"],
+            include_metadata=False,
+            reference_solution=ref_sol,
+        )
+        self.assertIn("VERIFIED ALGORITHM", prompt)
+        self.assertIn("Use a hash table to store seen complements in O(n).", prompt)
+        self.assertIn("REFERENCE IMPLEMENTATION (python3):", prompt)
+        self.assertNotIn("Code Template (Python):", prompt)
 
     def test_detect_indent_unit(self):
         code_4_spaces = "def foo():\n    print('bar')"
@@ -147,6 +164,7 @@ class TestAISolutionGenerator(unittest.TestCase):
 
         mock_generate.return_value = mock_response
 
+        self.generator.import_error = None
         self.generator.client = MagicMock()
 
         result = self.generator.solve_with_gemini(self.sample_problem)
@@ -156,6 +174,55 @@ class TestAISolutionGenerator(unittest.TestCase):
         self.assertIn("python", result["solutions"])
         self.assertIn("elapsed_time", result)
         self.assertGreaterEqual(result["elapsed_time"], 0.0)
+
+    @patch.object(AISolutionGenerator, "_generate_content")
+    def test_fallback_on_429_rate_limit(self, mock_generate):
+        mock_response = MagicMock()
+        mock_response.text = json.dumps({"solutions": {"python": "print('ok')"}})
+        mock_generate.side_effect = [
+            RuntimeError("429 RESOURCE_EXHAUSTED: Rate limit exceeded for gemini-3.8-flash"),
+            mock_response,
+        ]
+        self.generator.import_error = None
+        self.generator.client = MagicMock()
+        self.generator.model_name = "gemini-3.8-flash"
+
+        res = self.generator._generate_with_backoff("test prompt", 1)
+        self.assertEqual(res, mock_response)
+        self.assertEqual(self.generator.model_name, "gemini-3-flash-preview")
+
+    @patch.object(AISolutionGenerator, "_generate_content")
+    def test_fallback_on_503_overloaded(self, mock_generate):
+        mock_response = MagicMock()
+        mock_response.text = json.dumps({"solutions": {"python": "print('ok')"}})
+        mock_generate.side_effect = [
+            RuntimeError("503 UNAVAILABLE: This model is currently experiencing high demand"),
+            mock_response,
+        ]
+        self.generator.import_error = None
+        self.generator.client = MagicMock()
+        self.generator.model_name = "gemini-3.8-flash"
+
+        res = self.generator._generate_with_backoff("test prompt", 1)
+        self.assertEqual(res, mock_response)
+        self.assertEqual(self.generator.model_name, "gemini-3-flash-preview")
+
+    @patch.object(AISolutionGenerator, "_find_codex_binary", return_value="/usr/local/bin/codex")
+    @patch.object(AISolutionGenerator, "_generate_with_codex")
+    def test_solve_with_codex_mock(self, mock_codex, _mock_bin):
+        codex_gen = AISolutionGenerator(provider="codex")
+        codex_gen.batch_delay = 0.0
+        mock_codex.return_value = json.dumps({
+            "approach": "Codex Hash Map Approach",
+            "time_complexity": "O(n)",
+            "space_complexity": "O(n)",
+            "solutions": {"python": "print('codex')"},
+        })
+
+        result = codex_gen.generate_solution(self.sample_problem)
+        self.assertIsNotNone(result)
+        self.assertEqual(result["approach"], "Codex Hash Map Approach")
+        self.assertEqual(result["solutions"]["python"], "print('codex')")
 
 if __name__ == '__main__':
     unittest.main()

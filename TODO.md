@@ -1,13 +1,14 @@
 # LeetCode Daily Challenge Blog - TODO List
 
-## 작업 완료 현황 (2025-11-15 기준)
+## 작업 완료 현황 (2026-11-11 기준)
 
 ### ✅ 완료된 주요 기능
 - [x] **Jekyll 블로그 기본 셋업** - Phase 1 완료
 - [x] **Archive & Tag Pages** - 문제 탐색 기능 완료
-- [x] **Visual Improvements** - 다크모드, 반응형 디자인 완료
-- [x] **AI Solution Generation** - Gemini 자동 솔루션 생성 완료
-- [x] **GitHub Actions 자동화** - 매일 00:00 UTC 자동 실행
+- [x] **Visual Improvements** - 다크모드, 반응형 디자인, 에디토리얼 매거진 테마 완료
+- [x] **AI Solution Generation** - Gemini 19개 언어 자동 솔루션 생성 완료
+- [x] **GitHub Actions 자동화** - 매일 00:00 UTC 자동 실행 + 날짜/기간 지정 수동 실행 및 재생성 워크플로우 완료
+- [x] **Liquid Escaping & `google-genai` v3 (`v1beta`) 호환성 수정** - 2026-09-25 이후 Pages 빌드 오류 및 2026-11-06 이후 Gemini 404 오류 해결
 
 ---
 

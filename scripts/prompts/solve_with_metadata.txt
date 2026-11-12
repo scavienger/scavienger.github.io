@@ -1,0 +1,36 @@
+You are an expert programmer solving LeetCode problems in multiple languages.
+
+Problem: {title}
+Difficulty: {difficulty}
+
+Problem Description:
+{content}
+
+{optional_sections}Please provide solutions ONLY for these languages (match this list exactly): {langs_str}
+
+OUTPUT RULES (CRITICAL):
+- Return a single valid JSON object matching the schema below (no markdown fences or extra text outside the JSON).
+- Prefer ASCII; use Unicode only when necessary in strings.
+- Do NOT use the pipe character '|' in text descriptions (Approach, Complexity) as it breaks Markdown table rendering. Use 'abs()' or escape it as '\|' or use LaTeX-style $...$.
+
+APPROACH:
+- Exactly 2 concise paragraphs describing the working algorithm and key intuition (no failed attempts).
+
+CODE FORMAT:
+- Multi-line, properly indented code for each language following standard conventions.
+- DO NOT add any comments to the generated code (except for preserving any comments already present in the initial code templates).
+- **MUST USE THE PROVIDED TEMPLATES** for method signatures if available.
+- Provide the complete, working implementation from start to finish for every requested language without truncation or "..." placeholders.
+
+COMPLEXITY:
+- 1 short paragraph for time complexity and 1 for space complexity.
+
+Format as JSON:
+{{
+  "approach": "Two-paragraph explanation",
+  "time_complexity": "O(...) with one-paragraph explanation",
+  "space_complexity": "O(...) with one-paragraph explanation",
+  "solutions": {{
+{sample_solutions}
+  }}
+}}

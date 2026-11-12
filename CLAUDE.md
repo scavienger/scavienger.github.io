@@ -42,7 +42,8 @@ This is an automated LeetCode Daily Challenge blog powered by Jekyll and GitHub 
 19. Elixir
 
 ### AI Models
-- **Gemini 3 Flash (Preview)**: Default model (`gemini-3-flash-preview`)
+- **Gemini 3.8 Flash**: Default primary model (`gemini-3.8-flash`)
+- **Gemini 3 Flash**: Rate-limit (429) fallback model (`gemini-3-flash-preview`)
 
 ## Key Commands
 
@@ -152,9 +153,10 @@ The daily automation workflow (`.github/workflows/leetcode-daily.yml`) runs at 0
    - Outputs to `_posts/_daily/YYYY/MM/DD/{slug}.md` (nested structure, no date prefix)
 
 2. **solve_with_ai.py**: Generates AI solution
-   - Supports Gemini 3 Pro (primary) with Gemini 3 Flash fallback on 429
+   - Uses `gemini-3.8-flash` via `google-genai` (`api_version="v1beta"`) with fallback to `gemini-3-flash-preview` on `429` rate limit
+   - Calls the API in 3 to 5 batches depending on difficulty (Easy: 3, Medium: 4, Hard: 5)
    - Prompts AI with strict JSON format requirements:
-     - `approach`: 3 paragraph explanation (detailed)
+     - `approach`: Detailed step-by-step explanation
      - `solutions`: Code in all 19 languages
      - `time_complexity`: Big O with explanation
      - `space_complexity`: Big O with explanation
@@ -168,7 +170,7 @@ The daily automation workflow (`.github/workflows/leetcode-daily.yml`) runs at 0
    - Builds problem description with examples and constraints
    - Creates AI solution section with code tabs (with `markdown="1"` attribute)
    - Generates Pure CSS code tabs with unique IDs for each solution
-   - Wraps all code blocks with `{% raw %}` and `{% endraw %}` to prevent Liquid parsing errors
+   - Wraps all code blocks with `{% raw %}` and `{% endraw %}` and escapes `{{` / `{%` in text sections (`_escape_liquid`) to prevent Liquid parsing errors
    - Outputs to nested directory: `_posts/_daily/YYYY/MM/DD/{slug}.md`
 
 ### Post Structure
@@ -424,7 +426,7 @@ generate_posts.py 2025-11-23
   → Fetch from cache or GraphQL API
   → Fetch problem details (GraphQL)
   → Save code snippets
-  → Call solve_with_ai.py (Gemini 3 Pro with Flash fallback)
+  → Call solve_with_ai.py (gemini-3-flash-preview with gemini-2.5-flash fallback)
   → Call generate_post.py
   → _posts/_daily/2025/11/23/{slug}.md
 ```

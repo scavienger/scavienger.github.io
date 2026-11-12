@@ -115,8 +115,8 @@ class TestPostGenerator(unittest.TestCase):
         
 
     def test_raw_html_rendering(self):
-        """Test Case 4: Verify HTML is rendered as-is with LeetCode styling."""
-        html = "<p>We have two special characters:</p>\\n<ul>\\n<li>First character</li>\\n<li>Second character</li>\\n</ul>"
+        """Test Case 4: Verify HTML is rendered as-is in Problem Description."""
+        html = "<p>We have two special characters:</p>\n<ul>\n<li>First character</li>\n<li>Second character</li>\n</ul>"
         
         data = {
             "title": "HTML Test",
@@ -134,12 +134,46 @@ class TestPostGenerator(unittest.TestCase):
         with open(filepath, 'r', encoding='utf-8') as f:
             content = f.read()
             
-        # Check for LeetCode styling wrapper
-        self.assertIn('class="leetcode-problem-description"', content)
-        # Check that HTML is preserved
+        # Check for Problem Description section and preserved HTML
+        self.assertIn("## Problem Description", content)
         self.assertIn("<ul>", content)
         self.assertIn("<li>First character</li>", content)
         self.assertIn("<li>Second character</li>", content)
+
+    def test_liquid_escaping_in_description_and_hints(self):
+        """Test Case 5: Verify {{ and {% in problem description, hints, and approach are escaped."""
+        data = {
+            "title": "Brace Expansion II",
+            "date": "2026-09-25",
+            "difficulty": "Hard",
+            "content": '<p>Example: <code>R("{{a,b},{b,c}}") = {"a","b","c"}</code></p>',
+            "hints": ["Try parsing {{nested}} braces and {% tags %}."],
+            "link": "https://leetcode.com/problems/brace-expansion-ii/",
+            "question_id": "1096",
+            "ai_solutions": [
+                {
+                    "model": "gemini-3-flash-preview",
+                    "generated_at": "2026-09-25 00:00:00",
+                    "approach": "Handle {{a,b}} using recursive descent.",
+                    "solutions": {"python": "print('ok')"},
+                    "time_complexity": "O(N) for {{expr}}",
+                    "space_complexity": "O(N)"
+                }
+            ]
+        }
+
+        filepath = self.generator.generate_post(data)
+        self.assertTrue(filepath)
+
+        with open(filepath, 'r', encoding='utf-8') as f:
+            content = f.read()
+
+        # Verify raw tags escape {{ and {% outside code blocks
+        self.assertIn('{% raw %}{{{% endraw %}a,b},{b,c}}', content)
+        self.assertIn('{% raw %}{{{% endraw %}nested}}', content)
+        self.assertIn('{% raw %}{%{% endraw %} tags %}', content)
+        self.assertIn('{% raw %}{{{% endraw %}a,b}}', content)
+        self.assertIn('{% raw %}{{{% endraw %}expr}}', content)
 
 if __name__ == '__main__':
     unittest.main()

@@ -5,9 +5,13 @@ AI Solution Generator for LeetCode Problems
 Gemini-only (Gemini 3 Flash)
 """
 
+import glob
 import json
 import os
+import shutil
+import subprocess
 import sys
+import tempfile
 import textwrap
 import re
 import time
@@ -34,10 +38,14 @@ if sys.platform == 'win32':
 
 
 class AISolutionGenerator:
-    """Generates solutions using Gemini models"""
+    """Generates solutions using Gemini API (default for CI) or OpenAI Codex CLI (local follow-up)"""
 
-    MODEL_NAME = "gemini-3-flash-preview"
-    MAX_OUTPUT_TOKENS = 30000
+    MODEL_NAME = "gemini-3.8-flash"
+    FALLBACK_MODEL = "gemini-3-flash-preview"
+    CODEX_MODEL = "gpt-6-luna"
+    CODEX_REASONING_EFFORT = "low"
+    API_VERSION = "v1beta"
+    MAX_OUTPUT_TOKENS = 65536
     TEMPERATURE = 1.0
     RATE_LIMIT_SLEEP_SECONDS = 60
     OVERLOADED_SLEEP_SECONDS = 120
@@ -63,24 +71,161 @@ class AISolutionGenerator:
         "go": "golang",
     }
 
-    def __init__(self):
-        self.model_name = self.MODEL_NAME
-        self.active_model = self.MODEL_NAME
+    def _load_dotenv_if_present(self) -> None:
+        """Load key=value pairs from project root .env if GEMINI_API_KEY is not in environment."""
+        if os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY"):
+            return
+        root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        env_path = os.path.join(root_dir, ".env")
+        if not os.path.exists(env_path):
+            return
+        try:
+            with open(env_path, "r", encoding="utf-8") as f:
+                for raw_line in f:
+                    line = raw_line.strip()
+                    if not line or line.startswith("#") or "=" not in line:
+                        continue
+                    if line.startswith("export "):
+                        line = line[len("export "):].strip()
+                    key, val = line.split("=", 1)
+                    key = key.strip()
+                    val = val.strip().strip('"').strip("'")
+                    if key and val and key not in os.environ:
+                        os.environ[key] = val
+        except Exception:
+            pass
 
-        # Initialize Gemini client
+    def __init__(self, provider: Optional[str] = None, model_name: Optional[str] = None):
+        self._load_dotenv_if_present()
+        self.provider = (provider or os.getenv("AI_PROVIDER", "gemini")).strip().lower()
+        self.codex_reasoning_effort = os.getenv("CODEX_REASONING_EFFORT", self.CODEX_REASONING_EFFORT)
+
+        if self.provider == "codex":
+            self.model_name = model_name or os.getenv("CODEX_MODEL", self.CODEX_MODEL)
+        else:
+            self.model_name = model_name or os.getenv("GEMINI_MODEL", self.MODEL_NAME)
+        self.active_model = self.model_name
+
+        # Initialize Gemini client (explicitly use v1beta so preview models work in google-genai >= 3.0)
         self.client = None
         self.import_error = _GENAI_IMPORT_ERROR
         gemini_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
         if genai and gemini_key:
-            self.client = genai.Client(api_key=gemini_key)
+            try:
+                self.client = genai.Client(
+                    api_key=gemini_key,
+                    http_options={"api_version": self.API_VERSION},
+                )
+            except TypeError:
+                self.client = genai.Client(api_key=gemini_key)
 
-        # Batch delay configuration
+        # Batch delay configuration:
+        # - Gemini free tier (5 RPM): default 15s between batches
+        # - Codex CLI (ChatGPT subscription): default 1s between batches
+        default_delay = "1" if self.provider == "codex" else "15"
         try:
-            self.batch_delay = float(os.getenv('BATCH_DELAY_SECONDS', '5'))
+            self.batch_delay = float(os.getenv("BATCH_DELAY_SECONDS", default_delay))
         except ValueError:
-            self.batch_delay = 5.0
+            self.batch_delay = float(default_delay)
 
-    
+    def _find_codex_binary(self) -> Optional[str]:
+        """Locate the OpenAI Codex CLI executable on the system."""
+        env_bin = os.getenv("CODEX_BIN")
+        if env_bin and os.path.exists(env_bin):
+            return env_bin
+        which_bin = shutil.which("codex")
+        if which_bin and os.path.exists(which_bin):
+            return which_bin
+        chatgpt_app_bin = "/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex"
+        if os.path.exists(chatgpt_app_bin):
+            return chatgpt_app_bin
+        ext_candidates = sorted(
+            glob.glob(
+                os.path.expanduser(
+                    "~/.antigravity-ide/extensions/openai.chatgpt-*/bin/*/codex"
+                )
+            ),
+            reverse=True,
+        )
+        for cand in ext_candidates:
+            if os.path.exists(cand):
+                return cand
+        return None
+
+    def _generate_with_codex(self, prompt: str, batch_index: int) -> str:
+        """Execute a single batch prompt non-interactively via `codex exec` using ChatGPT subscription."""
+        codex_bin = self._find_codex_binary()
+        if not codex_bin:
+            raise RuntimeError(
+                "Codex CLI binary not found. Install @openai/codex or set CODEX_BIN."
+            )
+
+        codex_prompt = (
+            prompt
+            + "\n\nIMPORTANT: Do NOT run any shell commands or tools. "
+            "Respond immediately in a single turn with ONLY the raw JSON object."
+        )
+
+        with tempfile.NamedTemporaryFile(mode="w+", suffix=".json", delete=False, encoding="utf-8") as tmp_out:
+            out_path = tmp_out.name
+
+        try:
+            cmd = [
+                codex_bin,
+                "exec",
+                "--ephemeral",
+                "--ignore-user-config",
+                "--skip-git-repo-check",
+                "-C",
+                "/tmp",
+                "-s",
+                "read-only",
+                "-m",
+                self.model_name,
+                "-c",
+                f'model_reasoning_effort="{self.codex_reasoning_effort}"',
+                "-o",
+                out_path,
+                "-",
+            ]
+            proc = subprocess.run(
+                cmd,
+                input=codex_prompt,
+                text=True,
+                capture_output=True,
+                timeout=300,
+            )
+
+            # Extract token usage from codex stdout/stderr if present
+            combined_log = (proc.stdout or "") + "\n" + (proc.stderr or "")
+            tokens_match = re.search(r"tokens used\s*\n\s*([\d,]+)", combined_log, re.IGNORECASE)
+            if tokens_match:
+                print(
+                    f"[Codex] Batch {batch_index} ({self.model_name}, reasoning={self.codex_reasoning_effort}) "
+                    f"Usage: tokens_used: {tokens_match.group(1)}",
+                    file=sys.stderr,
+                )
+
+            if proc.returncode != 0:
+                err_snippet = self._compact_detail(proc.stderr or proc.stdout or f"exit code {proc.returncode}")
+                raise RuntimeError(f"codex exec failed (exit {proc.returncode}): {err_snippet}")
+
+            output_text = ""
+            if os.path.exists(out_path):
+                with open(out_path, "r", encoding="utf-8") as f:
+                    output_text = f.read().strip()
+
+            if not output_text:
+                output_text = (proc.stdout or "").strip()
+
+            return output_text
+        finally:
+            if os.path.exists(out_path):
+                try:
+                    os.remove(out_path)
+                except OSError:
+                    pass
+
     def _is_rate_limited(self, error: Exception) -> bool:
         """Best-effort detection of 429/rate-limit errors across SDK versions."""
         status = getattr(error, "status_code", None)
@@ -130,6 +275,49 @@ class AISolutionGenerator:
             return finish_reason
         return str(finish_reason)
 
+    def _extract_error_detail(self, error: Exception) -> Optional[str]:
+        """Best-effort extraction of a concise, human-readable error detail."""
+        if error is None:
+            return None
+
+        def _stringify(value) -> Optional[str]:
+            if isinstance(value, str):
+                return value.strip()
+            if isinstance(value, dict):
+                try:
+                    return json.dumps(value, ensure_ascii=False)
+                except Exception:
+                    return str(value)
+            if isinstance(value, (list, tuple)) and value:
+                return _stringify(value[0])
+            return None
+
+        for attr in ("message", "detail", "details"):
+            detail = _stringify(getattr(error, attr, None))
+            if detail:
+                return self._compact_detail(detail)
+
+        if getattr(error, "args", None):
+            for arg in error.args:
+                detail = _stringify(arg)
+                if detail:
+                    return self._compact_detail(detail)
+
+        response = getattr(error, "response", None)
+        if response is not None:
+            detail = _stringify(getattr(response, "text", None))
+            if detail:
+                return self._compact_detail(detail)
+
+        return None
+
+    def _compact_detail(self, detail: str, max_len: int = 300) -> str:
+        """Normalize whitespace and trim overly long details for logging."""
+        compacted = " ".join(detail.split())
+        if len(compacted) > max_len:
+            return f"{compacted[:max_len - 3]}..."
+        return compacted
+
     def _generate_with_backoff(self, prompt: str, batch_index: int):
         last_error = None
         attempts = 0
@@ -142,6 +330,22 @@ class AISolutionGenerator:
                     raise
                 overloaded = self._is_overloaded(e)
                 reason_label = "503" if overloaded else "429"
+                detail = self._extract_error_detail(e)
+                if detail:
+                    print(f"[Gemini] Batch {batch_index} {reason_label} detail: {detail}", file=sys.stderr)
+
+                # On 429 rate limit / quota exhaustion or 503 overload on primary (gemini-3.8-flash),
+                # switch to fallback (gemini-3-flash-preview, "Gemini 3 Flash") immediately.
+                if self.FALLBACK_MODEL and self.model_name != self.FALLBACK_MODEL:
+                    print(
+                        f"[Gemini] Batch {batch_index} {reason_label} on {self.model_name}. "
+                        f"Switching to fallback model {self.FALLBACK_MODEL}.",
+                        file=sys.stderr,
+                    )
+                    self.model_name = self.FALLBACK_MODEL
+                    self.active_model = self.FALLBACK_MODEL
+                    continue
+
                 sleep_seconds = self.OVERLOADED_SLEEP_SECONDS if overloaded else self.RATE_LIMIT_SLEEP_SECONDS
                 print(f"[Gemini] Batch {batch_index} {reason_label} on {self.model_name}. Sleeping {sleep_seconds}s then retrying.", file=sys.stderr)
                 time.sleep(sleep_seconds)
@@ -176,6 +380,8 @@ class AISolutionGenerator:
                 generation_config=config,
             )
 
+    PROMPTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts")
+
     def _get_json_key(self, lang_name: str) -> str:
         """Get JSON output key for a language name."""
         return self.LANG_TO_JSON_KEY.get(lang_name, lang_name.lower())
@@ -184,14 +390,26 @@ class AISolutionGenerator:
         """Get snippet filename key for a JSON output key."""
         return self.JSON_KEY_TO_FILENAME.get(json_key, json_key)
 
-    def create_prompt(self, problem_data: Dict, target_languages: list, include_metadata: bool = True) -> str:
-        """Create a prompt for the AI models for specific languages"""
+    def _load_prompt_template(self, template_name: str) -> str:
+        """Load prompt template file from scripts/prompts/ directory."""
+        template_path = os.path.join(self.PROMPTS_DIR, template_name)
+        with open(template_path, "r", encoding="utf-8") as f:
+            return f.read()
+
+    def create_prompt(
+        self,
+        problem_data: Dict,
+        target_languages: list,
+        include_metadata: bool = True,
+        reference_solution: Optional[Dict] = None,
+    ) -> str:
+        """Create a prompt for the AI models for specific languages using external prompt templates."""
         title = problem_data.get('title', '')
         content = problem_data.get('content_prompt') or problem_data.get('content', '')
         difficulty = problem_data.get('difficulty', '')
         hints = problem_data.get('hints', [])
         code_template = problem_data.get('code_template', '')
-        
+
         # Metadata for locating snippets
         problem_slug = problem_data.get('title_slug', '')
         problem_date = problem_data.get('date', '')
@@ -206,104 +424,74 @@ class AISolutionGenerator:
         ]
         sample_solutions = "\n".join(sample_solutions_lines)
 
-        prompt = f"""You are an expert programmer solving LeetCode problems in multiple languages.
-
-Problem: {title}
-Difficulty: {difficulty}
-
-Problem Description:
-{content}
-
-"""
-
+        optional_sections = ""
         if hints:
-            prompt += "Hints:\n"
+            optional_sections += "Hints:\n"
             for i, hint in enumerate(hints, 1):
-                prompt += f"{i}. {hint}\n"
-            prompt += "\n"
+                optional_sections += f"{i}. {hint}\n"
+            optional_sections += "\n"
 
-        if code_template:
-            prompt += f"Code Template (Python):\n```python\n{code_template}\n```\n\n"
+        # For Batch 2+, inject Batch 1's verified approach & reference code so the model
+        # translates the established algorithm instead of re-solving from scratch.
+        if not include_metadata and reference_solution:
+            ref_approach = reference_solution.get("approach", "")
+            if isinstance(ref_approach, str) and ref_approach.strip():
+                optional_sections += (
+                    "VERIFIED ALGORITHM (implement this exact algorithm in the target languages "
+                    "without re-solving from scratch):\n"
+                    f"{ref_approach.strip()}\n\n"
+                )
+            ref_sols = reference_solution.get("solutions", {})
+            if isinstance(ref_sols, dict):
+                for ref_lang in ("python3", "python", "cpp", "java"):
+                    ref_code = ref_sols.get(ref_lang, "")
+                    if (
+                        isinstance(ref_code, str)
+                        and ref_code.strip()
+                        and "generation failed" not in ref_code.lower()
+                        and "failed to parse" not in ref_code.lower()
+                    ):
+                        optional_sections += (
+                            f"REFERENCE IMPLEMENTATION ({ref_lang}):\n"
+                            f"```{ref_lang}\n{ref_code.strip()}\n```\n\n"
+                        )
+                        break
 
-        # Inject specific templates for requested languages
+        # Inject specific templates ONLY for requested languages (no duplicate top-level Python template)
         snippets_prompt = ""
         for lang in target_languages:
             out_key = self._get_json_key(lang)
             file_key = self._get_filename_key(out_key)
-            
+
             snippet = self._load_snippet(problem_slug, file_key, problem_date)
+            if not snippet and out_key in ("python", "python3") and code_template:
+                snippet = code_template
             if snippet:
                 # Add a hint about the template, forcing the Output Key for the code block
                 snippets_prompt += f"\nFor {lang}, use this EXACT code template (keep method signature):"
                 snippets_prompt += f"\n```{out_key}\n{snippet.strip()}\n```\n"
-        
+
         if snippets_prompt:
-            prompt += f"IMPORTANT CODE TEMPLATES:\n{snippets_prompt}\n"
+            optional_sections += f"IMPORTANT CODE TEMPLATES:\n{snippets_prompt}\n"
 
         if difficulty and str(difficulty).upper() == "HARD":
-            prompt += "SPECIAL RULES FOR HARD PROBLEMS:\n- The algorithm must be completely optimal strictly focusing on time/space efficiency.\n\n"
+            optional_sections += (
+                "SPECIAL RULES FOR HARD PROBLEMS:\n"
+                "- The algorithm must be completely optimal strictly focusing on time/space efficiency.\n\n"
+            )
 
         langs_str = ", ".join(target_languages)
-        if include_metadata:
-            prompt += f"""Please provide solutions ONLY for these languages (match this list exactly): {langs_str}
+        template_file = "solve_with_metadata.txt" if include_metadata else "solve_solutions_only.txt"
+        template = self._load_prompt_template(template_file)
 
-OUTPUT RULES (CRITICAL):
-- Return a single JSON object matching the schema below.
-- No markdown, fences, or text outside the JSON.
-- Prefer ASCII; use Unicode only when necessary in strings.
-- Code strings must contain code only (no comments/narration). Escape every newline as \\n inside the JSON string, and use only valid JSON escapes: \\", \\\\, \\/, \\b, \\f, \\n, \\r, \\t, \\uXXXX. Never use backslash + space or other invalid forms.
-- Avoid HTML entities; use literal characters.
-- Do NOT use the pipe character '|' in text descriptions (Approach, Complexity) as it breaks Markdown table rendering. Use 'abs()' or escape it as '\\|' or use LaTeX-style $...$.
-- Output length must be driven by content only; never try to expand toward max_output_tokens.
-
-APPROACH:
-- Exactly 2 concise paragraphs describing the working algorithm and key intuition (no failed attempts).
-
-CODE FORMAT:
-- Multi-line, properly indented code for each language; standard conventions.
-- DO NOT add any comments to the generated code (except for preserving any comments already present in the initial code templates).
-- **MUST USE THE PROVIDED TEMPLATES** for method signatures if available.
-- CRITICAL: DO NOT truncate, abbreviate, or skip code logic. You MUST provide the fully working, complete implementation from start to finish for every language. Never use "..." to skip code.
-
-COMPLEXITY:
-- 1 short paragraph for time complexity and 1 for space complexity.
-
-Format as JSON:
-{{
-  "approach": "Two-paragraph explanation",
-  "time_complexity": "O(...) with one-paragraph explanation",
-  "space_complexity": "O(...) with one-paragraph explanation",
-  "solutions": {{
-{sample_solutions}
-  }}
-}}
-"""
-        else:
-            prompt += f"""Please provide solutions ONLY for these languages (match this list exactly): {langs_str}
-
-OUTPUT RULES (CRITICAL):
-- Return a single JSON object containing only the "solutions" field.
-- No markdown, fences, or text outside the JSON.
-- Prefer ASCII; use Unicode only when necessary in strings.
-- Code strings must contain code only (no comments/narration). Escape every newline as \\n inside the JSON string, and use only valid JSON escapes: \\", \\\\, \\/, \\b, \\f, \\n, \\r, \\t, \\uXXXX. Never use backslash + space or other invalid forms.
-- Avoid HTML entities; use literal characters.
-- Output length must be driven by content only; never try to expand toward max_output_tokens.
-
-CODE FORMAT:
-- Multi-line, properly indented code for each language; standard conventions.
-- DO NOT add any comments to the generated code (except for preserving any comments already present in the initial code templates).
-- **MUST USE THE PROVIDED TEMPLATES** for method signatures if available.
-- CRITICAL: DO NOT truncate, abbreviate, or skip code logic. You MUST provide the fully working, complete implementation from start to finish for every language. Never use "..." to skip code.
-
-Format as JSON:
-{{
-  "solutions": {{
-{sample_solutions}
-  }}
-}}
-"""
-
-        return prompt
+        return template.format(
+            title=title,
+            difficulty=difficulty,
+            content=content,
+            optional_sections=optional_sections,
+            langs_str=langs_str,
+            sample_solutions=sample_solutions,
+        )
 
     def _snippet_candidates(self, problem_slug: str, lang_slug: str, problem_date: Optional[str]) -> list:
         """Build possible snippet locations, preferring the new per-date layout."""
@@ -655,6 +843,120 @@ Format as JSON:
                 all_solutions["solutions"] = {}
             all_solutions["solutions"].update(new_solution["solutions"])
 
+    def _get_batches_for_difficulty(self, difficulty: str) -> list:
+        """Determine language batches dynamically by problem difficulty."""
+        diff_upper = difficulty.upper() if difficulty else ""
+        if diff_upper == "HARD":
+            # 5 requests
+            return [
+                ["C++", "Java", "Python"],
+                ["Python3", "C", "C#", "JavaScript"],
+                ["TypeScript", "PHP", "Swift", "Kotlin"],
+                ["Dart", "Go", "Ruby", "Scala"],
+                ["Rust", "Racket", "Erlang", "Elixir"],
+            ]
+        if diff_upper == "MEDIUM":
+            # 4 requests (chunks of ~5)
+            return [
+                ["C++", "Java", "Python", "Python3", "C"],
+                ["C#", "JavaScript", "TypeScript", "PHP", "Swift"],
+                ["Kotlin", "Dart", "Go", "Ruby", "Scala"],
+                ["Rust", "Racket", "Erlang", "Elixir"],
+            ]
+        # 3 requests (EASY or unknown)
+        return self.LANGUAGE_BATCHES
+
+    def _is_valid_code(self, code: object) -> bool:
+        """Return True if a language solution string is non-empty and not an error placeholder."""
+        if not isinstance(code, str) or not code.strip():
+            return False
+        lowered = code.lower()
+        return "generation failed" not in lowered and "failed to parse response" not in lowered
+
+    def _seed_existing_solution(self, problem_data: Dict, final_solution: Dict) -> None:
+        """Seed final_solution with valid metadata and language solutions from an existing post if present."""
+        existing = problem_data.get("existing_ai_solution")
+        if not isinstance(existing, dict):
+            return
+        approach = existing.get("approach", "")
+        if isinstance(approach, str) and approach.strip() and not approach.lower().startswith("failed to parse"):
+            final_solution["approach"] = approach
+            if existing.get("time_complexity"):
+                final_solution["time_complexity"] = existing["time_complexity"]
+            if existing.get("space_complexity"):
+                final_solution["space_complexity"] = existing["space_complexity"]
+
+        existing_sols = existing.get("solutions", {})
+        if isinstance(existing_sols, dict):
+            for lang_key, code in existing_sols.items():
+                if self._is_valid_code(code):
+                    final_solution.setdefault("solutions", {})[lang_key] = code
+
+    def _is_batch_already_solved(self, final_solution: Dict, batch: list) -> bool:
+        """Check if every language in the batch already has a valid solution in final_solution."""
+        if not final_solution.get("approach"):
+            return False
+        sols = final_solution.get("solutions", {})
+        for lang in batch:
+            key = self._get_json_key(lang)
+            if not self._is_valid_code(sols.get(key)):
+                return False
+        return True
+
+    def solve_with_codex(self, problem_data: Dict) -> Optional[Dict]:
+        """Generate solution using OpenAI Codex CLI (`codex exec`) with ChatGPT subscription."""
+        codex_bin = self._find_codex_binary()
+        if not codex_bin:
+            print("Codex CLI binary not found. Install @openai/codex or set CODEX_BIN.", file=sys.stderr)
+            return None
+
+        problem_slug = problem_data.get("title_slug", "")
+        problem_date = problem_data.get("date", "")
+        difficulty = problem_data.get("difficulty", "")
+        final_solution: Dict = {"solutions": {}}
+        self._seed_existing_solution(problem_data, final_solution)
+        total_elapsed_time = 0.0
+
+        batches = self._get_batches_for_difficulty(difficulty)
+        only_missing = bool(problem_data.get("only_missing"))
+
+        for i, batch in enumerate(batches):
+            if only_missing and self._is_batch_already_solved(final_solution, batch):
+                print(f"  - Batch {i+1}/{len(batches)}: {', '.join(batch)} [already solved, skipping]", file=sys.stderr)
+                continue
+
+            print(f"  - Batch {i+1}/{len(batches)}: {', '.join(batch)}", file=sys.stderr)
+            try:
+                include_metadata = (i == 0 and not final_solution.get("approach")) or not final_solution.get("approach")
+                prompt = self.create_prompt(
+                    problem_data,
+                    batch,
+                    include_metadata=include_metadata,
+                    reference_solution=final_solution if not include_metadata else None,
+                )
+                start_time = time.time()
+                response_text = self._generate_with_codex(prompt, i + 1)
+                end_time = time.time()
+                total_elapsed_time += (end_time - start_time)
+
+                batch_result = self.parse_json_response(response_text, problem_slug, problem_date)
+                if batch_result and batch_result.get("_parse_error"):
+                    self._fill_failed_batch(final_solution, batch, "Parsing failed")
+                elif batch_result and "solutions" in batch_result:
+                    batch_result.pop("_parse_error", None)
+                    self._merge_solutions(final_solution, batch_result)
+                else:
+                    self._fill_failed_batch(final_solution, batch, "Parsing failed")
+            except Exception as e:
+                print(f"Error with Codex Batch {i+1}: {e}", file=sys.stderr)
+                self._fill_failed_batch(final_solution, batch, f"Error: {str(e)}")
+
+            if i < len(batches) - 1:
+                time.sleep(self.batch_delay)
+
+        final_solution["elapsed_time"] = total_elapsed_time
+        return final_solution
+
     def solve_with_gemini(self, problem_data: Dict) -> Optional[Dict]:
         """Generate solution using Gemini (Batched)"""
         if self.import_error:
@@ -669,46 +971,43 @@ Format as JSON:
         problem_date = problem_data.get('date', '')
         difficulty = problem_data.get('difficulty', '')
         final_solution = {"solutions": {}}
+        self._seed_existing_solution(problem_data, final_solution)
         total_elapsed_time = 0.0
         
-        # Determine batches dynamically
-        diff_upper = difficulty.upper() if difficulty else ""
-        if diff_upper == "HARD":
-            # 5 requests
-            batches = [
-                ["C++", "Java", "Python"],
-                ["Python3", "C", "C#", "JavaScript"],
-                ["TypeScript", "PHP", "Swift", "Kotlin"],
-                ["Dart", "Go", "Ruby", "Scala"],
-                ["Rust", "Racket", "Erlang", "Elixir"]
-            ]
-        elif diff_upper == "MEDIUM":
-            # 4 requests (chunks of ~5)
-            batches = [
-                ["C++", "Java", "Python", "Python3", "C"],
-                ["C#", "JavaScript", "TypeScript", "PHP", "Swift"],
-                ["Kotlin", "Dart", "Go", "Ruby", "Scala"],
-                ["Rust", "Racket", "Erlang", "Elixir"]
-            ]
-        else:
-            # 3 requests (EASY or unknown)
-            batches = self.LANGUAGE_BATCHES
+        batches = self._get_batches_for_difficulty(difficulty)
+        only_missing = bool(problem_data.get("only_missing"))
         
         for i, batch in enumerate(batches):
+            if only_missing and self._is_batch_already_solved(final_solution, batch):
+                print(f"  - Batch {i+1}/{len(batches)}: {', '.join(batch)} [already solved, skipping]", file=sys.stderr)
+                continue
+
             print(f"  - Batch {i+1}/{len(batches)}: {', '.join(batch)}", file=sys.stderr)
             try:
-                include_metadata = (i == 0) or not final_solution.get("approach")
-                prompt = self.create_prompt(problem_data, batch, include_metadata=include_metadata)
+                include_metadata = (i == 0 and not final_solution.get("approach")) or not final_solution.get("approach")
+                prompt = self.create_prompt(
+                    problem_data,
+                    batch,
+                    include_metadata=include_metadata,
+                    reference_solution=final_solution if not include_metadata else None,
+                )
                 start_time = time.time()
                 response = self._generate_with_backoff(prompt, i + 1)
                 end_time = time.time()
                 batch_time = end_time - start_time
                 total_elapsed_time += batch_time
                 
-                # Log usage metadata if available
+                # Log usage metadata if available (including thoughts_token_count for thinking models)
                 if hasattr(response, 'usage_metadata'):
                     usage = response.usage_metadata
-                    print(f"[Gemini] Batch {i+1} Usage: prompt_token_count: {usage.prompt_token_count}, candidates_token_count: {usage.candidates_token_count}, total_token_count: {usage.total_token_count}", file=sys.stderr)
+                    thoughts_tokens = getattr(usage, 'thoughts_token_count', 0) or 0
+                    print(
+                        f"[Gemini] Batch {i+1} Usage: prompt_token_count: {usage.prompt_token_count}, "
+                        f"thoughts_token_count: {thoughts_tokens}, "
+                        f"candidates_token_count: {usage.candidates_token_count}, "
+                        f"total_token_count: {usage.total_token_count}",
+                        file=sys.stderr,
+                    )
 
                 # Check for blocked/empty response or finish reason
                 # Safely access candidate
@@ -763,17 +1062,20 @@ Format as JSON:
         return final_solution
 
     def _fill_failed_batch(self, final_solution: Dict, batch: list, error_msg: str) -> None:
-        """Fill failed languages with error placeholders"""
+        """Fill failed languages with error placeholders (without overwriting already-valid solutions)."""
         if "solutions" not in final_solution:
             final_solution["solutions"] = {}
         
         for lang in batch:
             key = lang.lower().replace("c++", "cpp").replace("c#", "csharp")
-            final_solution["solutions"][key] = f"// Generation failed for {lang}\n// Reason: {error_msg}"
+            if not self._is_valid_code(final_solution["solutions"].get(key)):
+                final_solution["solutions"][key] = f"// Generation failed for {lang}\n// Reason: {error_msg}"
 
     def generate_solution(self, problem_data: Dict) -> Optional[Dict]:
-        """Generate solution using Gemini"""
-        print(f"Generating solution with {self.model_name}...", file=sys.stderr)
+        """Generate solution using the configured provider ('gemini' or 'codex')."""
+        print(f"Generating solution with {self.model_name} (provider={self.provider})...", file=sys.stderr)
+        if self.provider == "codex":
+            return self.solve_with_codex(problem_data)
         return self.solve_with_gemini(problem_data)
 
 
