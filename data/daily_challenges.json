@@ -1502,5 +1502,9 @@
   "2026-11-11": {
     "link": "/problems/minimum-cost-to-acquire-required-items/",
     "titleSlug": "minimum-cost-to-acquire-required-items"
+  },
+  "2026-11-12": {
+    "link": "/problems/longest-strictly-increasing-or-strictly-decreasing-subarray/",
+    "titleSlug": "longest-strictly-increasing-or-strictly-decreasing-subarray"
   }
 }
