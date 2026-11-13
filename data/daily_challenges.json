@@ -1506,5 +1506,9 @@
   "2026-11-12": {
     "link": "/problems/longest-strictly-increasing-or-strictly-decreasing-subarray/",
     "titleSlug": "longest-strictly-increasing-or-strictly-decreasing-subarray"
+  },
+  "2026-11-13": {
+    "link": "/problems/count-non-decreasing-subarrays-after-k-operations/",
+    "titleSlug": "count-non-decreasing-subarrays-after-k-operations"
   }
 }
