@@ -15,15 +15,14 @@ layout: default
 
     <div class="post-metadata">
       <div class="metadata-item">
-        <span class="metadata-icon">📅</span>
         <time datetime="{{ page.date | date_to_xmlschema }}">
-          {{ page.date | date: "%B %d, %Y" }}
+          {{ page.date | date: "%Y-%m-%d" }}
         </time>
       </div>
 
       {% if page.difficulty %}
+      <span class="meta-sep">·</span>
       <div class="metadata-item">
-        <span class="metadata-icon">⚡</span>
         <span class="difficulty difficulty-{{ page.difficulty | downcase }}">
           {{ page.difficulty }}
         </span>
@@ -31,11 +30,11 @@ layout: default
       {% endif %}
 
       {% if page.tags and page.tags.size > 0 %}
+      <span class="meta-sep">·</span>
       <div class="metadata-item tags-metadata">
-        <span class="metadata-icon">🏷️</span>
         <div class="post-tags">
           {% for tag in page.tags %}
-            <a href="{{ '/topics/' | relative_url }}" class="post-tag">{{ tag }}</a>
+            <a href="{{ '/topics/' | relative_url }}#{{ tag | slugify }}" class="post-tag">{{ tag }}</a>
           {% endfor %}
         </div>
       </div>
@@ -45,9 +44,8 @@ layout: default
     {% if page.leetcode_url %}
     <div class="problem-link-header">
       <a href="{{ page.leetcode_url }}" target="_blank" rel="noopener noreferrer" class="leetcode-button">
-        <span class="button-icon">🔗</span>
         View on LeetCode
-        <span class="arrow-icon">→</span>
+        <span class="arrow-icon" aria-hidden="true">↗</span>
       </a>
     </div>
     {% endif %}

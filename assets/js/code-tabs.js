@@ -55,17 +55,14 @@
     };
 
     const geminiCards = cards.filter(isGeminiCard);
-    const hideNonGemini = true;
-
-    cards.forEach(card => {
-      const isGemini = isGeminiCard(card);
-      if (hideNonGemini && !isGemini) {
-        card.style.display = 'none';
-      }
-      if (!geminiCards.length) {
-        card.style.display = 'none';
-      }
-    });
+    // Only hide legacy non-Gemini cards when a Gemini solution card is also present
+    if (geminiCards.length > 0) {
+      cards.forEach(card => {
+        if (!isGeminiCard(card)) {
+          card.style.display = 'none';
+        }
+      });
+    }
 
     const separators = document.querySelectorAll('.ai-solution-separator, hr.ai-solution-separator');
     separators.forEach(sep => {

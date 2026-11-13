@@ -31,7 +31,7 @@
       // Create copy button
       const button = document.createElement('button');
       button.className = 'copy-code-btn';
-      button.textContent = '📋 Copy';
+      button.textContent = 'Copy';
       button.setAttribute('aria-label', 'Copy code to clipboard');
 
       // Insert wrapper before pre element
