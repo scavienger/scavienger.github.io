@@ -6,6 +6,316 @@ categories: [LeetCode, Medium]
 tags: ["Array", "Matrix", "Simulation"]
 difficulty: Medium
 leetcode_url: https://leetcode.com/problems/count-unguarded-cells-in-the-grid/
+ai_solutions:
+  - solutions:
+      cpp: "class Solution {\npublic:\n    int countUnguarded(int m, int n, vector<vector<int>>&\
+        \ guards, vector<vector<int>>& walls) {\n        vector<vector<int>> grid(m,\
+        \ vector<int>(n, 0));\n        for (const auto& wall : walls) grid[wall[0]][wall[1]]\
+        \ = 2;\n        for (const auto& guard : guards) grid[guard[0]][guard[1]] =\
+        \ 3;\n\n        const int directions[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0,\
+        \ 1}};\n        for (const auto& guard : guards) {\n            for (const auto&\
+        \ direction : directions) {\n                int row = guard[0] + direction[0];\n\
+        \                int col = guard[1] + direction[1];\n                while (row\
+        \ >= 0 && row < m && col >= 0 && col < n && grid[row][col] != 2 && grid[row][col]\
+        \ != 3) {\n                    if (grid[row][col] == 0) grid[row][col] = 1;\n\
+        \                    row += direction[0];\n                    col += direction[1];\n\
+        \                }\n            }\n        }\n\n        int unguarded = 0;\n\
+        \        for (const auto& row : grid) {\n            for (int cell : row) {\n\
+        \                if (cell == 0) ++unguarded;\n            }\n        }\n   \
+        \     return unguarded;\n    }\n};"
+      java: "class Solution {\n    public int countUnguarded(int m, int n, int[][] guards,\
+        \ int[][] walls) {\n        int[][] grid = new int[m][n];\n        for (int[]\
+        \ wall : walls) grid[wall[0]][wall[1]] = 2;\n        for (int[] guard : guards)\
+        \ grid[guard[0]][guard[1]] = 3;\n\n        int[][] directions = {{-1, 0}, {1,\
+        \ 0}, {0, -1}, {0, 1}};\n        for (int[] guard : guards) {\n            for\
+        \ (int[] direction : directions) {\n                int row = guard[0] + direction[0];\n\
+        \                int col = guard[1] + direction[1];\n                while (row\
+        \ >= 0 && row < m && col >= 0 && col < n && grid[row][col] != 2 && grid[row][col]\
+        \ != 3) {\n                    if (grid[row][col] == 0) grid[row][col] = 1;\n\
+        \                    row += direction[0];\n                    col += direction[1];\n\
+        \                }\n            }\n        }\n\n        int unguarded = 0;\n\
+        \        for (int[] row : grid) {\n            for (int cell : row) {\n    \
+        \            if (cell == 0) unguarded++;\n            }\n        }\n       \
+        \ return unguarded;\n    }\n}"
+      python: "class Solution(object):\n    def countUnguarded(self, m, n, guards, walls):\n\
+        \        \"\"\"\n        :type m: int\n        :type n: int\n        :type guards:\
+        \ List[List[int]]\n        :type walls: List[List[int]]\n        :rtype: int\n\
+        \        \"\"\"\n        grid = [[0] * n for _ in range(m)]\n        for row,\
+        \ col in walls:\n            grid[row][col] = 2\n        for row, col in guards:\n\
+        \            grid[row][col] = 3\n\n        directions = ((-1, 0), (1, 0), (0,\
+        \ -1), (0, 1))\n        for guard_row, guard_col in guards:\n            for\
+        \ dr, dc in directions:\n                row, col = guard_row + dr, guard_col\
+        \ + dc\n                while 0 <= row < m and 0 <= col < n and grid[row][col]\
+        \ not in (2, 3):\n                    if grid[row][col] == 0:\n            \
+        \            grid[row][col] = 1\n                    row += dr\n           \
+        \         col += dc\n\n        return sum(cell == 0 for row in grid for cell\
+        \ in row)"
+      python3: "class Solution:\n    def countUnguarded(self, m: int, n: int, guards:\
+        \ list[list[int]], walls: list[list[int]]) -> int:\n        grid = [[0] * n\
+        \ for _ in range(m)]\n        for row, col in walls:\n            grid[row][col]\
+        \ = 2\n        for row, col in guards:\n            grid[row][col] = 3\n\n \
+        \       directions = ((-1, 0), (1, 0), (0, -1), (0, 1))\n        for guard_row,\
+        \ guard_col in guards:\n            for dr, dc in directions:\n            \
+        \    row, col = guard_row + dr, guard_col + dc\n                while 0 <= row\
+        \ < m and 0 <= col < n and grid[row][col] not in (2, 3):\n                 \
+        \   if grid[row][col] == 0:\n                        grid[row][col] = 1\n  \
+        \                  row += dr\n                    col += dc\n\n        return\
+        \ sum(cell == 0 for row in grid for cell in row)"
+      c: "int countUnguarded(int m, int n, int** guards, int guardsSize, int* guardsColSize,\
+        \ int** walls, int wallsSize, int* wallsColSize) {\n    int** grid = (int**)calloc(m,\
+        \ sizeof(int*));\n    for (int row = 0; row < m; ++row) {\n        grid[row]\
+        \ = (int*)calloc(n, sizeof(int));\n    }\n\n    for (int i = 0; i < wallsSize;\
+        \ ++i) {\n        grid[walls[i][0]][walls[i][1]] = 2;\n    }\n    for (int i\
+        \ = 0; i < guardsSize; ++i) {\n        grid[guards[i][0]][guards[i][1]] = 3;\n\
+        \    }\n\n    int directions[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};\n \
+        \   for (int i = 0; i < guardsSize; ++i) {\n        int guardRow = guards[i][0];\n\
+        \        int guardCol = guards[i][1];\n        for (int d = 0; d < 4; ++d) {\n\
+        \            int row = guardRow + directions[d][0];\n            int col = guardCol\
+        \ + directions[d][1];\n            while (row >= 0 && row < m && col >= 0 &&\
+        \ col < n && grid[row][col] != 2 && grid[row][col] != 3) {\n               \
+        \ if (grid[row][col] == 0) grid[row][col] = 1;\n                row += directions[d][0];\n\
+        \                col += directions[d][1];\n            }\n        }\n    }\n\
+        \n    int unguarded = 0;\n    for (int row = 0; row < m; ++row) {\n        for\
+        \ (int col = 0; col < n; ++col) {\n            if (grid[row][col] == 0) ++unguarded;\n\
+        \        }\n        free(grid[row]);\n    }\n    free(grid);\n    return unguarded;\n\
+        }"
+      csharp: "public class Solution {\n    public int CountUnguarded(int m, int n,\
+        \ int[][] guards, int[][] walls) {\n        int[,] grid = new int[m, n];\n \
+        \       foreach (int[] wall in walls) {\n            grid[wall[0], wall[1]]\
+        \ = 2;\n        }\n        foreach (int[] guard in guards) {\n            grid[guard[0],\
+        \ guard[1]] = 3;\n        }\n\n        int[][] directions = new int[][] {\n\
+        \            new int[] { -1, 0 },\n            new int[] { 1, 0 },\n       \
+        \     new int[] { 0, -1 },\n            new int[] { 0, 1 }\n        };\n\n \
+        \       foreach (int[] guard in guards) {\n            foreach (int[] direction\
+        \ in directions) {\n                int row = guard[0] + direction[0];\n   \
+        \             int col = guard[1] + direction[1];\n                while (row\
+        \ >= 0 && row < m && col >= 0 && col < n && grid[row, col] != 2 && grid[row,\
+        \ col] != 3) {\n                    if (grid[row, col] == 0) {\n           \
+        \             grid[row, col] = 1;\n                    }\n                 \
+        \   row += direction[0];\n                    col += direction[1];\n       \
+        \         }\n            }\n        }\n\n        int count = 0;\n        for\
+        \ (int row = 0; row < m; row++) {\n            for (int col = 0; col < n; col++)\
+        \ {\n                if (grid[row, col] == 0) {\n                    count++;\n\
+        \                }\n            }\n        }\n        return count;\n    }\n\
+        }"
+      javascript: "/**\n * @param {number} m\n * @param {number} n\n * @param {number[][]}\
+        \ guards\n * @param {number[][]} walls\n * @return {number}\n */\nvar countUnguarded\
+        \ = function(m, n, guards, walls) {\n    const grid = Array.from({ length: m\
+        \ }, () => Array(n).fill(0));\n    for (const [row, col] of walls) {\n     \
+        \   grid[row][col] = 2;\n    }\n    for (const [row, col] of guards) {\n   \
+        \     grid[row][col] = 3;\n    }\n\n    const directions = [[-1, 0], [1, 0],\
+        \ [0, -1], [0, 1]];\n    for (const [guardRow, guardCol] of guards) {\n    \
+        \    for (const [dr, dc] of directions) {\n            let row = guardRow +\
+        \ dr;\n            let col = guardCol + dc;\n            while (row >= 0 &&\
+        \ row < m && col >= 0 && col < n && grid[row][col] !== 2 && grid[row][col] !==\
+        \ 3) {\n                if (grid[row][col] === 0) {\n                    grid[row][col]\
+        \ = 1;\n                }\n                row += dr;\n                col +=\
+        \ dc;\n            }\n        }\n    }\n\n    let count = 0;\n    for (let row\
+        \ = 0; row < m; row++) {\n        for (let col = 0; col < n; col++) {\n    \
+        \        if (grid[row][col] === 0) {\n                count++;\n           \
+        \ }\n        }\n    }\n    return count;\n};"
+      typescript: "function countUnguarded(m: number, n: number, guards: number[][],\
+        \ walls: number[][]): number {\n    const grid: number[][] = Array.from({ length:\
+        \ m }, () => Array(n).fill(0));\n    for (const [row, col] of walls) {\n   \
+        \     grid[row][col] = 2;\n    }\n    for (const [row, col] of guards) {\n \
+        \       grid[row][col] = 3;\n    }\n\n    const directions: number[][] = [[-1,\
+        \ 0], [1, 0], [0, -1], [0, 1]];\n    for (const [guardRow, guardCol] of guards)\
+        \ {\n        for (const [dr, dc] of directions) {\n            let row = guardRow\
+        \ + dr;\n            let col = guardCol + dc;\n            while (row >= 0 &&\
+        \ row < m && col >= 0 && col < n && grid[row][col] !== 2 && grid[row][col] !==\
+        \ 3) {\n                if (grid[row][col] === 0) {\n                    grid[row][col]\
+        \ = 1;\n                }\n                row += dr;\n                col +=\
+        \ dc;\n            }\n        }\n    }\n\n    let count = 0;\n    for (let row\
+        \ = 0; row < m; row++) {\n        for (let col = 0; col < n; col++) {\n    \
+        \        if (grid[row][col] === 0) {\n                count++;\n           \
+        \ }\n        }\n    }\n    return count;\n};"
+      php: "class Solution {\n\n    /**\n     * @param Integer $m\n     * @param Integer\
+        \ $n\n     * @param Integer[][] $guards\n     * @param Integer[][] $walls\n\
+        \     * @return Integer\n     */\n    function countUnguarded($m, $n, $guards,\
+        \ $walls) {\n        $grid = array_fill(0, $m, array_fill(0, $n, 0));\n    \
+        \    foreach ($walls as $wall) {\n            $grid[$wall[0]][$wall[1]] = 2;\n\
+        \        }\n        foreach ($guards as $guard) {\n            $grid[$guard[0]][$guard[1]]\
+        \ = 3;\n        }\n\n        $directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];\n\
+        \        foreach ($guards as $guard) {\n            foreach ($directions as\
+        \ $direction) {\n                $row = $guard[0] + $direction[0];\n       \
+        \         $col = $guard[1] + $direction[1];\n                while ($row >=\
+        \ 0 && $row < $m && $col >= 0 && $col < $n && $grid[$row][$col] !== 2 && $grid[$row][$col]\
+        \ !== 3) {\n                    if ($grid[$row][$col] === 0) {\n           \
+        \             $grid[$row][$col] = 1;\n                    }\n              \
+        \      $row += $direction[0];\n                    $col += $direction[1];\n\
+        \                }\n            }\n        }\n\n        $count = 0;\n      \
+        \  for ($row = 0; $row < $m; $row++) {\n            for ($col = 0; $col < $n;\
+        \ $col++) {\n                if ($grid[$row][$col] === 0) {\n              \
+        \      $count++;\n                }\n            }\n        }\n        return\
+        \ $count;\n    }\n}"
+      swift: "class Solution {\n    func countUnguarded(_ m: Int, _ n: Int, _ guards:\
+        \ [[Int]], _ walls: [[Int]]) -> Int {\n        var grid = Array(repeating: Array(repeating:\
+        \ 0, count: n), count: m)\n        for wall in walls {\n            grid[wall[0]][wall[1]]\
+        \ = 2\n        }\n        for guardPosition in guards {\n            grid[guardPosition[0]][guardPosition[1]]\
+        \ = 3\n        }\n\n        let directions = [(-1, 0), (1, 0), (0, -1), (0,\
+        \ 1)]\n        for guardPosition in guards {\n            for (dr, dc) in directions\
+        \ {\n                var row = guardPosition[0] + dr\n                var col\
+        \ = guardPosition[1] + dc\n                while row >= 0 && row < m && col\
+        \ >= 0 && col < n && grid[row][col] != 2 && grid[row][col] != 3 {\n        \
+        \            if grid[row][col] == 0 {\n                        grid[row][col]\
+        \ = 1\n                    }\n                    row += dr\n              \
+        \      col += dc\n                }\n            }\n        }\n\n        var\
+        \ count = 0\n        for row in 0..<m {\n            for col in 0..<n {\n  \
+        \              if grid[row][col] == 0 {\n                    count += 1\n  \
+        \              }\n            }\n        }\n        return count\n    }\n}"
+      kotlin: "class Solution {\n    fun countUnguarded(m: Int, n: Int, guards: Array<IntArray>,\
+        \ walls: Array<IntArray>): Int {\n        val grid = Array(m) { IntArray(n)\
+        \ }\n        for (wall in walls) {\n            grid[wall[0]][wall[1]] = 2\n\
+        \        }\n        for (guard in guards) {\n            grid[guard[0]][guard[1]]\
+        \ = 3\n        }\n\n        val directions = arrayOf(intArrayOf(-1, 0), intArrayOf(1,\
+        \ 0), intArrayOf(0, -1), intArrayOf(0, 1))\n        for (guard in guards) {\n\
+        \            for (direction in directions) {\n                var row = guard[0]\
+        \ + direction[0]\n                var col = guard[1] + direction[1]\n      \
+        \          while (row in 0 until m && col in 0 until n && grid[row][col] !=\
+        \ 2 && grid[row][col] != 3) {\n                    if (grid[row][col] == 0)\
+        \ {\n                        grid[row][col] = 1\n                    }\n   \
+        \                 row += direction[0]\n                    col += direction[1]\n\
+        \                }\n            }\n        }\n\n        var count = 0\n    \
+        \    for (row in grid) {\n            for (cell in row) {\n                if\
+        \ (cell == 0) count++\n            }\n        }\n        return count\n    }\n\
+        }"
+      dart: "class Solution {\n  int countUnguarded(int m, int n, List<List<int>> guards,\
+        \ List<List<int>> walls) {\n    final grid = List.generate(m, (_) => List<int>.filled(n,\
+        \ 0));\n    for (final wall in walls) {\n      grid[wall[0]][wall[1]] = 2;\n\
+        \    }\n    for (final guard in guards) {\n      grid[guard[0]][guard[1]] =\
+        \ 3;\n    }\n\n    const directions = [\n      [-1, 0],\n      [1, 0],\n   \
+        \   [0, -1],\n      [0, 1],\n    ];\n    for (final guard in guards) {\n   \
+        \   for (final direction in directions) {\n        var row = guard[0] + direction[0];\n\
+        \        var col = guard[1] + direction[1];\n        while (row >= 0 && row\
+        \ < m && col >= 0 && col < n &&\n            grid[row][col] != 2 && grid[row][col]\
+        \ != 3) {\n          if (grid[row][col] == 0) {\n            grid[row][col]\
+        \ = 1;\n          }\n          row += direction[0];\n          col += direction[1];\n\
+        \        }\n      }\n    }\n\n    var count = 0;\n    for (final row in grid)\
+        \ {\n      for (final cell in row) {\n        if (cell == 0) count++;\n    \
+        \  }\n    }\n    return count;\n  }\n}"
+      go: "func countUnguarded(m int, n int, guards [][]int, walls [][]int) int {\n\t\
+        grid := make([][]int, m)\n\tfor row := range grid {\n\t\tgrid[row] = make([]int,\
+        \ n)\n\t}\n\tfor _, wall := range walls {\n\t\tgrid[wall[0]][wall[1]] = 2\n\t\
+        }\n\tfor _, guard := range guards {\n\t\tgrid[guard[0]][guard[1]] = 3\n\t}\n\
+        \n\tdirections := [][2]int{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}\n\tfor _, guard\
+        \ := range guards {\n\t\tfor _, direction := range directions {\n\t\t\trow :=\
+        \ guard[0] + direction[0]\n\t\t\tcol := guard[1] + direction[1]\n\t\t\tfor row\
+        \ >= 0 && row < m && col >= 0 && col < n && grid[row][col] != 2 && grid[row][col]\
+        \ != 3 {\n\t\t\t\tif grid[row][col] == 0 {\n\t\t\t\t\tgrid[row][col] = 1\n\t\
+        \t\t\t}\n\t\t\t\trow += direction[0]\n\t\t\t\tcol += direction[1]\n\t\t\t}\n\
+        \t\t}\n\t}\n\n\tcount := 0\n\tfor _, row := range grid {\n\t\tfor _, cell :=\
+        \ range row {\n\t\t\tif cell == 0 {\n\t\t\t\tcount++\n\t\t\t}\n\t\t}\n\t}\n\t\
+        return count\n}"
+      ruby: "# @param {Integer} m\n# @param {Integer} n\n# @param {Integer[][]} guards\n\
+        # @param {Integer[][]} walls\n# @return {Integer}\ndef count_unguarded(m, n,\
+        \ guards, walls)\n  grid = Array.new(m) { Array.new(n, 0) }\n  walls.each do\
+        \ |row, col|\n    grid[row][col] = 2\n  end\n  guards.each do |row, col|\n \
+        \   grid[row][col] = 3\n  end\n\n  directions = [[-1, 0], [1, 0], [0, -1], [0,\
+        \ 1]]\n  guards.each do |guard_row, guard_col|\n    directions.each do |dr,\
+        \ dc|\n      row = guard_row + dr\n      col = guard_col + dc\n      while row\
+        \ >= 0 && row < m && col >= 0 && col < n && grid[row][col] != 2 && grid[row][col]\
+        \ != 3\n        grid[row][col] = 1 if grid[row][col] == 0\n        row += dr\n\
+        \        col += dc\n      end\n    end\n  end\n\n  grid.sum { |row| row.count(0)\
+        \ }\nend"
+      scala: "object Solution {\n    def countUnguarded(m: Int, n: Int, guards: Array[Array[Int]],\
+        \ walls: Array[Array[Int]]): Int = {\n        val grid = Array.fill(m, n)(0)\n\
+        \        walls.foreach { wall =>\n            grid(wall(0))(wall(1)) = 2\n \
+        \       }\n        guards.foreach { guard =>\n            grid(guard(0))(guard(1))\
+        \ = 3\n        }\n\n        val directions = Array((-1, 0), (1, 0), (0, -1),\
+        \ (0, 1))\n        guards.foreach { guard =>\n            directions.foreach\
+        \ { case (dr, dc) =>\n                var row = guard(0) + dr\n            \
+        \    var col = guard(1) + dc\n                while (row >= 0 && row < m &&\
+        \ col >= 0 && col < n && grid(row)(col) != 2 && grid(row)(col) != 3) {\n   \
+        \                 if (grid(row)(col) == 0) {\n                        grid(row)(col)\
+        \ = 1\n                    }\n                    row += dr\n              \
+        \      col += dc\n                }\n            }\n        }\n\n        grid.iterator.map(_.count(_\
+        \ == 0)).sum\n    }\n}"
+      rust: "impl Solution {\n    pub fn count_unguarded(m: i32, n: i32, guards: Vec<Vec<i32>>,\
+        \ walls: Vec<Vec<i32>>) -> i32 {\n        let rows = m as usize;\n        let\
+        \ cols = n as usize;\n        let mut grid = vec![vec![0u8; cols]; rows];\n\n\
+        \        for wall in &walls {\n            grid[wall[0] as usize][wall[1] as\
+        \ usize] = 2;\n        }\n        for guard in &guards {\n            grid[guard[0]\
+        \ as usize][guard[1] as usize] = 3;\n        }\n\n        let directions = [(-1i32,\
+        \ 0i32), (1, 0), (0, -1), (0, 1)];\n        for guard in &guards {\n       \
+        \     for (dr, dc) in directions {\n                let mut row = guard[0] +\
+        \ dr;\n                let mut col = guard[1] + dc;\n                while row\
+        \ >= 0 && row < m && col >= 0 && col < n {\n                    let cell = &mut\
+        \ grid[row as usize][col as usize];\n                    if *cell == 2 || *cell\
+        \ == 3 {\n                        break;\n                    }\n          \
+        \          if *cell == 0 {\n                        *cell = 1;\n           \
+        \         }\n                    row += dr;\n                    col += dc;\n\
+        \                }\n            }\n        }\n\n        grid.iter().flatten().filter(|&&cell|\
+        \ cell == 0).count() as i32\n    }\n}"
+      racket: "(define/contract (count-unguarded m n guards walls)\n  (-> exact-integer?\
+        \ exact-integer? (listof (listof exact-integer?)) (listof (listof exact-integer?))\
+        \ exact-integer?)\n  (let ([grid (build-vector m (lambda (_) (make-vector n\
+        \ 0)))])\n    (for-each\n     (lambda (wall)\n       (vector-set! (vector-ref\
+        \ grid (first wall)) (second wall) 2))\n     walls)\n    (for-each\n     (lambda\
+        \ (guard)\n       (vector-set! (vector-ref grid (first guard)) (second guard)\
+        \ 3))\n     guards)\n    (define directions '((-1 0) (1 0) (0 -1) (0 1)))\n\
+        \    (for-each\n     (lambda (guard)\n       (for-each\n        (lambda (direction)\n\
+        \          (let loop ([row (+ (first guard) (first direction))]\n          \
+        \           [col (+ (second guard) (second direction))])\n            (when\
+        \ (and (<= 0 row) (< row m) (<= 0 col) (< col n)\n                       (not\
+        \ (member (vector-ref (vector-ref grid row) col) '(2 3))))\n              (when\
+        \ (= (vector-ref (vector-ref grid row) col) 0)\n                (vector-set!\
+        \ (vector-ref grid row) col 1))\n              (loop (+ row (first direction))\
+        \ (+ col (second direction)))))\n        directions))\n     guards)\n    (for*/sum\
+        \ ([row (in-range m)] [col (in-range n)])\n      (if (= (vector-ref (vector-ref\
+        \ grid row) col) 0) 1 0))))"
+      erlang: "-spec count_unguarded(M :: integer(), N :: integer(), Guards :: [[integer()]],\
+        \ Walls :: [[integer()]]) -> integer().\ncount_unguarded(M, N, Guards, Walls)\
+        \ ->\n  Grid0 = array:new([{size, M}, {default, array:new([{size, N}, {default,\
+        \ 0}])}]),\n  Grid1 = lists:foldl(\n    fun([Row, Col], Grid) ->\n      RowArray\
+        \ = array:get(Row, Grid),\n      array:set(Row, array:set(Col, 2, RowArray),\
+        \ Grid)\n    end,\n    Grid0,\n    Walls\n  ),\n  Grid2 = lists:foldl(\n   \
+        \ fun([Row, Col], Grid) ->\n      RowArray = array:get(Row, Grid),\n      array:set(Row,\
+        \ array:set(Col, 3, RowArray), Grid)\n    end,\n    Grid1,\n    Guards\n  ),\n\
+        \  Directions = [{-1, 0}, {1, 0}, {0, -1}, {0, 1}],\n  Grid3 = lists:foldl(\n\
+        \    fun([GuardRow, GuardCol], Grid) ->\n      lists:foldl(\n        fun({Dr,\
+        \ Dc}, CurrentGrid) ->\n          scan(GuardRow + Dr, GuardCol + Dc, Dr, Dc,\
+        \ M, N, CurrentGrid)\n        end,\n        Grid,\n        Directions\n    \
+        \  )\n    end,\n    Grid2,\n    Guards\n  ),\n  lists:sum([\n    case array:get(Col,\
+        \ array:get(Row, Grid3)) of\n      0 -> 1;\n      _ -> 0\n    end\n    || Row\
+        \ <- lists:seq(0, M - 1), Col <- lists:seq(0, N - 1)\n  ]).\n\nscan(Row, Col,\
+        \ Dr, Dc, M, N, Grid) when Row >= 0, Row < M, Col >= 0, Col < N ->\n  RowArray\
+        \ = array:get(Row, Grid),\n  case array:get(Col, RowArray) of\n    2 -> Grid;\n\
+        \    3 -> Grid;\n    0 ->\n      UpdatedGrid = array:set(Row, array:set(Col,\
+        \ 1, RowArray), Grid),\n      scan(Row + Dr, Col + Dc, Dr, Dc, M, N, UpdatedGrid);\n\
+        \    1 -> scan(Row + Dr, Col + Dc, Dr, Dc, M, N, Grid)\n  end;\nscan(_Row, _Col,\
+        \ _Dr, _Dc, _M, _N, Grid) -> Grid."
+      elixir: "defmodule Solution do\n  @spec count_unguarded(m :: integer, n :: integer,\
+        \ guards :: [[integer]], walls :: [[integer]]) :: integer\n  def count_unguarded(m,\
+        \ n, guards, walls) do\n    grid = List.duplicate(List.duplicate(0, n), m)\n\
+        \    grid = Enum.reduce(walls, grid, fn [row, col], acc -> put_in(acc, [Access.at(row),\
+        \ Access.at(col)], 2) end)\n    grid = Enum.reduce(guards, grid, fn [row, col],\
+        \ acc -> put_in(acc, [Access.at(row), Access.at(col)], 3) end)\n\n    directions\
+        \ = [{-1, 0}, {1, 0}, {0, -1}, {0, 1}]\n\n    grid =\n      Enum.reduce(guards,\
+        \ grid, fn [guard_row, guard_col], acc ->\n        Enum.reduce(directions, acc,\
+        \ fn {dr, dc}, current_grid ->\n          scan(guard_row + dr, guard_col + dc,\
+        \ dr, dc, m, n, current_grid)\n        end)\n      end)\n\n    Enum.sum(Enum.map(grid,\
+        \ fn row -> Enum.count(row, &(&1 == 0)) end))\n  end\n\n  defp scan(row, col,\
+        \ dr, dc, m, n, grid)\n       when row >= 0 and row < m and col >= 0 and col\
+        \ < n do\n    cell = grid |> Enum.at(row) |> Enum.at(col)\n\n    if cell in\
+        \ [2, 3] do\n      grid\n    else\n      updated_grid =\n        if cell ==\
+        \ 0 do\n          put_in(grid, [Access.at(row), Access.at(col)], 1)\n      \
+        \  else\n          grid\n        end\n\n      scan(row + dr, col + dc, dr, dc,\
+        \ m, n, updated_grid)\n    end\n  end\n\n  defp scan(_row, _col, _dr, _dc, _m,\
+        \ _n, grid), do: grid\nend"
+    approach: 'Create a grid that marks each cell as empty, a guard, or a wall. For
+      every guard, scan outward in the four cardinal directions, marking empty cells
+      as guarded until the scan reaches the edge of the grid or an occupied cell.
+
+
+      Count the cells that are still empty after all scans. Guards and walls stop visibility,
+      and cells seen by multiple guards are counted only once.'
+    time_complexity: O(m * n + g * (m + n)), where g is the number of guards. Initializing
+      and counting the grid takes O(m * n), and scanning in four directions from every
+      guard takes at most O(m + n) per guard.
+    space_complexity: O(m * n) for the grid state.
+    elapsed_time: 142.7330813407898
+    model: gpt-6-luna
+    generated_at: '2026-11-13 00:16:52 '
 ---
 
 ## Problem #2257: Count Unguarded Cells in the Grid
@@ -62,65 +372,56 @@ There are a total of 4 unguarded cells, so we return 4.
 
 2. Iterate over the guards, and for each of the 4 directions, advance the current tile and mark the tile. When should you stop advancing?
 
-## 🤖 AI-Generated Solutions
-
-We've generated solutions using multiple AI models. Click to expand each solution:
-
-
-<details class="ai-solution-card" open markdown="1">
-<summary class="ai-solution-header">
-  <span class="ai-model-badge">✨ Solution from <strong>gemini-2.5-flash</strong></span>
-  <small class="solution-timestamp">(2025-11-23 07:25:26 UTC)</small>
-</summary>
-
-<div class="ai-solution-content">
+## 🤖 AI-Generated Solution (gpt-6-luna)
 
 ### Approach
 
-Initialize a grid marking walls and guards. For each guard, simulate its line of sight in four directions, marking visible empty cells as guarded until an obstruction (wall or another guard) is encountered. Finally, count the remaining empty, unmarked cells.
+Create a grid that marks each cell as empty, a guard, or a wall. For every guard, scan outward in the four cardinal directions, marking empty cells as guarded until the scan reaches the edge of the grid or an occupied cell.
+
+Count the cells that are still empty after all scans. Guards and walls stop visibility, and cells seen by multiple guards are counted only once.
 
 ### Code
 
 <div class="code-tabs" markdown="0">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-cpp-gemini-2-5-flash" checked>
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-java-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-python-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-python3-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-c-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-csharp-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-javascript-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-typescript-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-php-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-swift-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-kotlin-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-dart-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-go-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-ruby-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-scala-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-rust-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-racket-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-erlang-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-elixir-gemini-2-5-flash">
+  <input type="radio" name="code-lang" id="lang-cpp" checked>
+  <input type="radio" name="code-lang" id="lang-java">
+  <input type="radio" name="code-lang" id="lang-python">
+  <input type="radio" name="code-lang" id="lang-python3">
+  <input type="radio" name="code-lang" id="lang-c">
+  <input type="radio" name="code-lang" id="lang-csharp">
+  <input type="radio" name="code-lang" id="lang-javascript">
+  <input type="radio" name="code-lang" id="lang-typescript">
+  <input type="radio" name="code-lang" id="lang-php">
+  <input type="radio" name="code-lang" id="lang-swift">
+  <input type="radio" name="code-lang" id="lang-kotlin">
+  <input type="radio" name="code-lang" id="lang-dart">
+  <input type="radio" name="code-lang" id="lang-go">
+  <input type="radio" name="code-lang" id="lang-ruby">
+  <input type="radio" name="code-lang" id="lang-scala">
+  <input type="radio" name="code-lang" id="lang-rust">
+  <input type="radio" name="code-lang" id="lang-racket">
+  <input type="radio" name="code-lang" id="lang-erlang">
+  <input type="radio" name="code-lang" id="lang-elixir">
   <div class="tab-labels">
-    <label for="lang-cpp-gemini-2-5-flash">C++</label>
-    <label for="lang-java-gemini-2-5-flash">Java</label>
-    <label for="lang-python-gemini-2-5-flash">Python</label>
-    <label for="lang-python3-gemini-2-5-flash">Python3</label>
-    <label for="lang-c-gemini-2-5-flash">C</label>
-    <label for="lang-csharp-gemini-2-5-flash">C#</label>
-    <label for="lang-javascript-gemini-2-5-flash">JavaScript</label>
-    <label for="lang-typescript-gemini-2-5-flash">TypeScript</label>
-    <label for="lang-php-gemini-2-5-flash">PHP</label>
-    <label for="lang-swift-gemini-2-5-flash">Swift</label>
-    <label for="lang-kotlin-gemini-2-5-flash">Kotlin</label>
-    <label for="lang-dart-gemini-2-5-flash">Dart</label>
-    <label for="lang-go-gemini-2-5-flash">Go</label>
-    <label for="lang-ruby-gemini-2-5-flash">Ruby</label>
-    <label for="lang-scala-gemini-2-5-flash">Scala</label>
-    <label for="lang-rust-gemini-2-5-flash">Rust</label>
-    <label for="lang-racket-gemini-2-5-flash">Racket</label>
-    <label for="lang-erlang-gemini-2-5-flash">Erlang</label>
-    <label for="lang-elixir-gemini-2-5-flash">Elixir</label>
+    <label for="lang-cpp">C++</label>
+    <label for="lang-java">Java</label>
+    <label for="lang-python">Python</label>
+    <label for="lang-python3">Python3</label>
+    <label for="lang-c">C</label>
+    <label for="lang-csharp">C#</label>
+    <label for="lang-javascript">JavaScript</label>
+    <label for="lang-typescript">TypeScript</label>
+    <label for="lang-php">PHP</label>
+    <label for="lang-swift">Swift</label>
+    <label for="lang-kotlin">Kotlin</label>
+    <label for="lang-dart">Dart</label>
+    <label for="lang-go">Go</label>
+    <label for="lang-ruby">Ruby</label>
+    <label for="lang-scala">Scala</label>
+    <label for="lang-rust">Rust</label>
+    <label for="lang-racket">Racket</label>
+    <label for="lang-erlang">Erlang</label>
+    <label for="lang-elixir">Elixir</label>
   </div>
 
   <div class="tab-panel" data-lang="cpp">
@@ -129,55 +430,31 @@ Initialize a grid marking walls and guards. For each guard, simulate its line of
 {% raw %}
 class Solution {
 public:
-    int countUnguarded(int m, int n, std::vector<std::vector<int>>& guards, std::vector<std::vector<int>>& walls) {
-        std::vector<std::vector<int>> grid(m, std::vector<int>(n, 0));
+    int countUnguarded(int m, int n, vector<vector<int>>& guards, vector<vector<int>>& walls) {
+        vector<vector<int>> grid(m, vector<int>(n, 0));
+        for (const auto& wall : walls) grid[wall[0]][wall[1]] = 2;
+        for (const auto& guard : guards) grid[guard[0]][guard[1]] = 3;
 
-        for (const auto& wall : walls) {
-            grid[wall[0]][wall[1]] = 1;
-        }
-
+        const int directions[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
         for (const auto& guard : guards) {
-            grid[guard[0]][guard[1]] = 2;
-        }
-
-        std::vector<std::pair<int, int>> directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
-
-        for (const auto& guard_pos : guards) {
-            int gr = guard_pos[0];
-            int gc = guard_pos[1];
-
-            for (const auto& dir : directions) {
-                int dr = dir.first;
-                int dc = dir.second;
-
-                int r = gr + dr;
-                int c = gc + dc;
-
-                while (r >= 0 && r < m && c >= 0 && c < n) {
-                    if (grid[r][c] == 1 || grid[r][c] == 2) {
-                        break;
-                    }
-
-                    if (grid[r][c] == 0) {
-                        grid[r][c] = 3;
-                    }
-
-                    r += dr;
-                    c += dc;
+            for (const auto& direction : directions) {
+                int row = guard[0] + direction[0];
+                int col = guard[1] + direction[1];
+                while (row >= 0 && row < m && col >= 0 && col < n && grid[row][col] != 2 && grid[row][col] != 3) {
+                    if (grid[row][col] == 0) grid[row][col] = 1;
+                    row += direction[0];
+                    col += direction[1];
                 }
             }
         }
 
-        int unguarded_count = 0;
-        for (int r = 0; r < m; ++r) {
-            for (int c = 0; c < n; ++c) {
-                if (grid[r][c] == 0) {
-                    unguarded_count += 1;
-                }
+        int unguarded = 0;
+        for (const auto& row : grid) {
+            for (int cell : row) {
+                if (cell == 0) ++unguarded;
             }
         }
-
-        return unguarded_count;
+        return unguarded;
     }
 };
 {% endraw %}
@@ -189,58 +466,32 @@ public:
 
 {% highlight java %}
 {% raw %}
-import java.util.List;
-
 class Solution {
-    public int countUnguarded(int m, int n, List<List<Integer>> guards, List<List<Integer>> walls) {
+    public int countUnguarded(int m, int n, int[][] guards, int[][] walls) {
         int[][] grid = new int[m][n];
+        for (int[] wall : walls) grid[wall[0]][wall[1]] = 2;
+        for (int[] guard : guards) grid[guard[0]][guard[1]] = 3;
 
-        for (List<Integer> wall : walls) {
-            grid[wall.get(0)][wall.get(1)] = 1;
-        }
-
-        for (List<Integer> guard : guards) {
-            grid[guard.get(0)][guard.get(1)] = 2;
-        }
-
-        int[][] directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
-
-        for (List<Integer> guard_pos : guards) {
-            int gr = guard_pos.get(0);
-            int gc = guard_pos.get(1);
-
-            for (int[] dir : directions) {
-                int dr = dir[0];
-                int dc = dir[1];
-
-                int r = gr + dr;
-                int c = gc + dc;
-
-                while (r >= 0 && r < m && c >= 0 && c < n) {
-                    if (grid[r][c] == 1 || grid[r][c] == 2) {
-                        break;
-                    }
-
-                    if (grid[r][c] == 0) {
-                        grid[r][c] = 3;
-                    }
-
-                    r += dr;
-                    c += dc;
+        int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        for (int[] guard : guards) {
+            for (int[] direction : directions) {
+                int row = guard[0] + direction[0];
+                int col = guard[1] + direction[1];
+                while (row >= 0 && row < m && col >= 0 && col < n && grid[row][col] != 2 && grid[row][col] != 3) {
+                    if (grid[row][col] == 0) grid[row][col] = 1;
+                    row += direction[0];
+                    col += direction[1];
                 }
             }
         }
 
-        int unguarded_count = 0;
-        for (int r = 0; r < m; ++r) {
-            for (int c = 0; c < n; ++c) {
-                if (grid[r][c] == 0) {
-                    unguarded_count += 1;
-                }
+        int unguarded = 0;
+        for (int[] row : grid) {
+            for (int cell : row) {
+                if (cell == 0) unguarded++;
             }
         }
-
-        return unguarded_count;
+        return unguarded;
     }
 }
 {% endraw %}
@@ -252,38 +503,32 @@ class Solution {
 
 {% highlight python %}
 {% raw %}
-class Solution:
-    def countUnguarded(self, m: int, n: int, guards: List[List[int]], walls: List[List[int]]) -> int:
+class Solution(object):
+    def countUnguarded(self, m, n, guards, walls):
+        """
+        :type m: int
+        :type n: int
+        :type guards: List[List[int]]
+        :type walls: List[List[int]]
+        :rtype: int
+        """
         grid = [[0] * n for _ in range(m)]
+        for row, col in walls:
+            grid[row][col] = 2
+        for row, col in guards:
+            grid[row][col] = 3
 
-        for r, c in walls:
-            grid[r][c] = 1
-
-        for r, c in guards:
-            grid[r][c] = 2
-
-        directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
-
-        for gr, gc in guards:
+        directions = ((-1, 0), (1, 0), (0, -1), (0, 1))
+        for guard_row, guard_col in guards:
             for dr, dc in directions:
-                r, c = gr + dr, gc + dc
-                while 0 <= r < m and 0 <= c < n:
-                    if grid[r][c] == 1 or grid[r][c] == 2:
-                        break
+                row, col = guard_row + dr, guard_col + dc
+                while 0 <= row < m and 0 <= col < n and grid[row][col] not in (2, 3):
+                    if grid[row][col] == 0:
+                        grid[row][col] = 1
+                    row += dr
+                    col += dc
 
-                    if grid[r][c] == 0:
-                        grid[r][c] = 3
-
-                    r += dr
-                    c += dc
-
-        unguarded_count = 0
-        for r in range(m):
-            for c in range(n):
-                if grid[r][c] == 0:
-                    unguarded_count += 1
-
-        return unguarded_count
+        return sum(cell == 0 for row in grid for cell in row)
 {% endraw %}
 {% endhighlight %}
 
@@ -294,37 +539,24 @@ class Solution:
 {% highlight python %}
 {% raw %}
 class Solution:
-    def countUnguarded(self, m: int, n: int, guards: List[List[int]], walls: List[List[int]]) -> int:
+    def countUnguarded(self, m: int, n: int, guards: list[list[int]], walls: list[list[int]]) -> int:
         grid = [[0] * n for _ in range(m)]
+        for row, col in walls:
+            grid[row][col] = 2
+        for row, col in guards:
+            grid[row][col] = 3
 
-        for r, c in walls:
-            grid[r][c] = 1
-
-        for r, c in guards:
-            grid[r][c] = 2
-
-        directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
-
-        for gr, gc in guards:
+        directions = ((-1, 0), (1, 0), (0, -1), (0, 1))
+        for guard_row, guard_col in guards:
             for dr, dc in directions:
-                r, c = gr + dr, gc + dc
-                while 0 <= r < m and 0 <= c < n:
-                    if grid[r][c] == 1 or grid[r][c] == 2:
-                        break
+                row, col = guard_row + dr, guard_col + dc
+                while 0 <= row < m and 0 <= col < n and grid[row][col] not in (2, 3):
+                    if grid[row][col] == 0:
+                        grid[row][col] = 1
+                    row += dr
+                    col += dc
 
-                    if grid[r][c] == 0:
-                        grid[r][c] = 3
-
-                    r += dr
-                    c += dc
-
-        unguarded_count = 0
-        for r in range(m):
-            for c in range(n):
-                if grid[r][c] == 0:
-                    unguarded_count += 1
-
-        return unguarded_count
+        return sum(cell == 0 for row in grid for cell in row)
 {% endraw %}
 {% endhighlight %}
 
@@ -334,61 +566,43 @@ class Solution:
 
 {% highlight c %}
 {% raw %}
-#include <stdlib.h>
-#include <string.h>
-
 int countUnguarded(int m, int n, int** guards, int guardsSize, int* guardsColSize, int** walls, int wallsSize, int* wallsColSize) {
-    int* grid = (int*)malloc(m * n * sizeof(int));
-    if (grid == NULL) return -1;
-    memset(grid, 0, m * n * sizeof(int));
+    int** grid = (int**)calloc(m, sizeof(int*));
+    for (int row = 0; row < m; ++row) {
+        grid[row] = (int*)calloc(n, sizeof(int));
+    }
 
     for (int i = 0; i < wallsSize; ++i) {
-        grid[walls[i][0] * n + walls[i][1]] = 1;
+        grid[walls[i][0]][walls[i][1]] = 2;
+    }
+    for (int i = 0; i < guardsSize; ++i) {
+        grid[guards[i][0]][guards[i][1]] = 3;
     }
 
+    int directions[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
     for (int i = 0; i < guardsSize; ++i) {
-        grid[guards[i][0] * n + guards[i][1]] = 2;
-    }
-
-    int directions[4][2] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
-
-    for (int i = 0; i < guardsSize; ++i) {
-        int gr = guards[i][0];
-        int gc = guards[i][1];
-
+        int guardRow = guards[i][0];
+        int guardCol = guards[i][1];
         for (int d = 0; d < 4; ++d) {
-            int dr = directions[d][0];
-            int dc = directions[d][1];
-
-            int r = gr + dr;
-            int c = gc + dc;
-
-            while (r >= 0 && r < m && c >= 0 && c < n) {
-                if (grid[r * n + c] == 1 || grid[r * n + c] == 2) {
-                    break;
-                }
-
-                if (grid[r * n + c] == 0) {
-                    grid[r * n + c] = 3;
-                }
-
-                r += dr;
-                c += dc;
+            int row = guardRow + directions[d][0];
+            int col = guardCol + directions[d][1];
+            while (row >= 0 && row < m && col >= 0 && col < n && grid[row][col] != 2 && grid[row][col] != 3) {
+                if (grid[row][col] == 0) grid[row][col] = 1;
+                row += directions[d][0];
+                col += directions[d][1];
             }
         }
     }
 
-    int unguarded_count = 0;
-    for (int r = 0; r < m; ++r) {
-        for (int c = 0; c < n; ++c) {
-            if (grid[r * n + c] == 0) {
-                unguarded_count += 1;
-            }
+    int unguarded = 0;
+    for (int row = 0; row < m; ++row) {
+        for (int col = 0; col < n; ++col) {
+            if (grid[row][col] == 0) ++unguarded;
         }
+        free(grid[row]);
     }
-
     free(grid);
-    return unguarded_count;
+    return unguarded;
 }
 {% endraw %}
 {% endhighlight %}
@@ -399,67 +613,46 @@ int countUnguarded(int m, int n, int** guards, int guardsSize, int* guardsColSiz
 
 {% highlight csharp %}
 {% raw %}
-using System;
-using System.Collections.Generic;
-
 public class Solution {
-    public int CountUnguarded(int m, int n, IList<IList<int>> guards, IList<IList<int>> walls) {
-        int[][] grid = new int[m][];
-        for (int i = 0; i < m; i++) {
-            grid[i] = new int[n];
+    public int CountUnguarded(int m, int n, int[][] guards, int[][] walls) {
+        int[,] grid = new int[m, n];
+        foreach (int[] wall in walls) {
+            grid[wall[0], wall[1]] = 2;
         }
-
-        foreach (var wall in walls) {
-            grid[wall[0]][wall[1]] = 1;
-        }
-
-        foreach (var guard in guards) {
-            grid[guard[0]][guard[1]] = 2;
+        foreach (int[] guard in guards) {
+            grid[guard[0], guard[1]] = 3;
         }
 
         int[][] directions = new int[][] {
-            new int[] {0, 1},
-            new int[] {0, -1},
-            new int[] {1, 0},
-            new int[] {-1, 0}
+            new int[] { -1, 0 },
+            new int[] { 1, 0 },
+            new int[] { 0, -1 },
+            new int[] { 0, 1 }
         };
 
-        foreach (var guard_pos in guards) {
-            int gr = guard_pos[0];
-            int gc = guard_pos[1];
-
-            foreach (var dir in directions) {
-                int dr = dir[0];
-                int dc = dir[1];
-
-                int r = gr + dr;
-                int c = gc + dc;
-
-                while (r >= 0 && r < m && c >= 0 && c < n) {
-                    if (grid[r][c] == 1 || grid[r][c] == 2) {
-                        break;
+        foreach (int[] guard in guards) {
+            foreach (int[] direction in directions) {
+                int row = guard[0] + direction[0];
+                int col = guard[1] + direction[1];
+                while (row >= 0 && row < m && col >= 0 && col < n && grid[row, col] != 2 && grid[row, col] != 3) {
+                    if (grid[row, col] == 0) {
+                        grid[row, col] = 1;
                     }
-
-                    if (grid[r][c] == 0) {
-                        grid[r][c] = 3;
-                    }
-
-                    r += dr;
-                    c += dc;
+                    row += direction[0];
+                    col += direction[1];
                 }
             }
         }
 
-        int unguarded_count = 0;
-        for (int r = 0; r < m; ++r) {
-            for (int c = 0; c < n; ++c) {
-                if (grid[r][c] == 0) {
-                    unguarded_count += 1;
+        int count = 0;
+        for (int row = 0; row < m; row++) {
+            for (int col = 0; col < n; col++) {
+                if (grid[row, col] == 0) {
+                    count++;
                 }
             }
         }
-
-        return unguarded_count;
+        return count;
     }
 }
 {% endraw %}
@@ -479,1251 +672,38 @@ public class Solution {
  * @return {number}
  */
 var countUnguarded = function(m, n, guards, walls) {
-    const grid = Array(m).fill(0).map(() => Array(n).fill(0));
-
-    for (const [r, c] of walls) {
-        grid[r][c] = 1;
+    const grid = Array.from({ length: m }, () => Array(n).fill(0));
+    for (const [row, col] of walls) {
+        grid[row][col] = 2;
+    }
+    for (const [row, col] of guards) {
+        grid[row][col] = 3;
     }
 
-    for (const [r, c] of guards) {
-        grid[r][c] = 2;
-    }
-
-    const directions = [[0, 1], [0, -1], [1, 0], [-1, 0]];
-
-    for (const [gr, gc] of guards) {
+    const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+    for (const [guardRow, guardCol] of guards) {
         for (const [dr, dc] of directions) {
-            let r = gr + dr;
-            let c = gc + dc;
-
-            while (r >= 0 && r < m && c >= 0 && c < n) {
-                if (grid[r][c] === 1 || grid[r][c] === 2) {
-                    break;
+            let row = guardRow + dr;
+            let col = guardCol + dc;
+            while (row >= 0 && row < m && col >= 0 && col < n && grid[row][col] !== 2 && grid[row][col] !== 3) {
+                if (grid[row][col] === 0) {
+                    grid[row][col] = 1;
                 }
-
-                if (grid[r][c] === 0) {
-                    grid[r][c] = 3;
-                }
-
-                r += dr;
-                c += dc;
+                row += dr;
+                col += dc;
             }
         }
     }
 
-    let unguarded_count = 0;
-    for (let r = 0; r < m; ++r) {
-        for (let c = 0; c < n; ++c) {
-            if (grid[r][c] === 0) {
-                unguarded_count += 1;
-            }
-        }
-    }
-
-    return unguarded_count;
-};
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="typescript">
-
-{% highlight typescript %}
-{% raw %}
-function countUnguarded(m: number, n: number, guards: number[][], walls: number[][]): number {
-    const grid: number[][] = Array(m).fill(0).map(() => Array(n).fill(0));
-
-    for (const [r, c] of walls) {
-        grid[r][c] = 1;
-    }
-
-    for (const [r, c] of guards) {
-        grid[r][c] = 2;
-    }
-
-    const directions: number[][] = [[0, 1], [0, -1], [1, 0], [-1, 0]];
-
-    for (const [gr, gc] of guards) {
-        for (const [dr, dc] of directions) {
-            let r: number = gr + dr;
-            let c: number = gc + dc;
-
-            while (r >= 0 && r < m && c >= 0 && c < n) {
-                if (grid[r][c] === 1 || grid[r][c] === 2) {
-                    break;
-                }
-
-                if (grid[r][c] === 0) {
-                    grid[r][c] = 3;
-                }
-
-                r += dr;
-                c += dc;
-            }
-        }
-    }
-
-    let unguarded_count: number = 0;
-    for (let r = 0; r < m; ++r) {
-        for (let c = 0; c < n; ++c) {
-            if (grid[r][c] === 0) {
-                unguarded_count += 1;
-            }
-        }
-    }
-
-    return unguarded_count;
-};
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="php">
-
-{% highlight php %}
-{% raw %}
-<?php
-
-class Solution {
-
-    function countUnguarded($m, $n, $guards, $walls) {
-        $grid = array_fill(0, $m, array_fill(0, $n, 0));
-
-        foreach ($walls as $wall) {
-            $grid[$wall[0]][$wall[1]] = 1;
-        }
-
-        foreach ($guards as $guard) {
-            $grid[$guard[0]][$guard[1]] = 2;
-        }
-
-        $directions = [[0, 1], [0, -1], [1, 0], [-1, 0]];
-
-        foreach ($guards as $guard_pos) {
-            $gr = $guard_pos[0];
-            $gc = $guard_pos[1];
-
-            foreach ($directions as $dir) {
-                $dr = $dir[0];
-                $dc = $dir[1];
-
-                $r = $gr + $dr;
-                $c = $gc + $dc;
-
-                while ($r >= 0 && $r < $m && $c >= 0 && $c < $n) {
-                    if ($grid[$r][$c] == 1 || $grid[$r][$c] == 2) {
-                        break;
-                    }
-
-                    if ($grid[$r][$c] == 0) {
-                        $grid[$r][$c] = 3;
-                    }
-
-                    $r += $dr;
-                    $c += $dc;
-                }
-            }
-        }
-
-        $unguarded_count = 0;
-        for ($r = 0; $r < $m; ++$r) {
-            for ($c = 0; $c < $n; ++$c) {
-                if ($grid[$r][$c] == 0) {
-                    $unguarded_count += 1;
-                }
-            }
-        }
-
-        return $unguarded_count;
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="swift">
-
-{% highlight swift %}
-{% raw %}
-class Solution {
-    func countUnguarded(_ m: Int, _ n: Int, _ guards: [[Int]], _ walls: [[Int]]) -> Int {
-        var grid = Array(repeating: Array(repeating: 0, count: n), count: m);
-
-        for wall in walls {
-            grid[wall[0]][wall[1]] = 1;
-        }
-
-        for guardPos in guards {
-            grid[guardPos[0]][guardPos[1]] = 2;
-        }
-
-        let directions = [[0, 1], [0, -1], [1, 0], [-1, 0]];
-
-        for guardPos in guards {
-            let gr = guardPos[0];
-            let gc = guardPos[1];
-
-            for dir in directions {
-                let dr = dir[0];
-                let dc = dir[1];
-
-                var r = gr + dr;
-                var c = gc + dc;
-
-                while r >= 0 && r < m && c >= 0 && c < n {
-                    if grid[r][c] == 1 || grid[r][c] == 2 {
-                        break;
-                    }
-
-                    if grid[r][c] == 0 {
-                        grid[r][c] = 3;
-                    }
-
-                    r += dr;
-                    c += dc;
-                }
-            }
-        }
-
-        var unguardedCount = 0;
-        for r in 0..<m {
-            for c in 0..<n {
-                if grid[r][c] == 0 {
-                    unguardedCount += 1;
-                }
-            }
-        }
-
-        return unguardedCount;
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="kotlin">
-
-{% highlight kotlin %}
-{% raw %}
-class Solution {
-    fun countUnguarded(m: Int, n: Int, guards: List<List<Int>>, walls: List<List<Int>>): Int {
-        val grid = Array(m) { IntArray(n) { 0 } }
-
-        for (wall in walls) {
-            grid[wall[0]][wall[1]] = 1
-        }
-
-        for (guard in guards) {
-            grid[guard[0]][guard[1]] = 2
-        }
-
-        val directions = arrayOf(intArrayOf(0, 1), intArrayOf(0, -1), intArrayOf(1, 0), intArrayOf(-1, 0))
-
-        for (guardPos in guards) {
-            val gr = guardPos[0]
-            val gc = guardPos[1]
-
-            for (dir in directions) {
-                val dr = dir[0]
-                val dc = dir[1]
-
-                var r = gr + dr
-                var c = gc + dc
-
-                while (r >= 0 && r < m && c >= 0 && c < n) {
-                    if (grid[r][c] == 1 || grid[r][c] == 2) {
-                        break
-                    }
-
-                    if (grid[r][c] == 0) {
-                        grid[r][c] = 3
-                    }
-
-                    r += dr
-                    c += dc
-                }
-            }
-        }
-
-        var unguardedCount = 0
-        for (r in 0 until m) {
-            for (c in 0 until n) {
-                if (grid[r][c] == 0) {
-                    unguardedCount += 1
-                }
-            }
-        }
-
-        return unguardedCount
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="dart">
-
-{% highlight dart %}
-{% raw %}
-class Solution {
-  int countUnguarded(int m, int n, List<List<int>> guards, List<List<int>> walls) {
-    List<List<int>> grid = List.generate(m, (_) => List.filled(n, 0));
-
-    for (final wall in walls) {
-      grid[wall[0]][wall[1]] = 1;
-    }
-
-    for (final guard in guards) {
-      grid[guard[0]][guard[1]] = 2;
-    }
-
-    List<List<int>> directions = [
-      [0, 1],
-      [0, -1],
-      [1, 0],
-      [-1, 0]
-    ];
-
-    for (final guardPos in guards) {
-      int gr = guardPos[0];
-      int gc = guardPos[1];
-
-      for (final dir in directions) {
-        int dr = dir[0];
-        int dc = dir[1];
-
-        int r = gr + dr;
-        int c = gc + dc;
-
-        while (r >= 0 && r < m && c >= 0 && c < n) {
-          if (grid[r][c] == 1 || grid[r][c] == 2) {
-            break;
-          }
-
-          if (grid[r][c] == 0) {
-            grid[r][c] = 3;
-          }
-
-          r += dr;
-          c += dc;
-        }
-      }
-    }
-
-    int unguardedCount = 0;
-    for (int r = 0; r < m; ++r) {
-      for (int c = 0; c < n; ++c) {
-        if (grid[r][c] == 0) {
-          unguardedCount += 1;
-        }
-      }
-    }
-
-    return unguardedCount;
-  }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="go">
-
-{% highlight go %}
-{% raw %}
-package main
-
-func countUnguarded(m int, n int, guards [][]int, walls [][]int) int {
-    grid := make([][]int, m)
-    for i := range grid {
-        grid[i] = make([]int, n)
-    }
-
-    for _, wall := range walls {
-        grid[wall[0]][wall[1]] = 1
-    }
-
-    for _, guard := range guards {
-        grid[guard[0]][guard[1]] = 2
-    }
-
-    directions := [][]int{{0, 1}, {0, -1}, {1, 0}, {-1, 0}}
-
-    for _, guard_pos := range guards {
-        gr := guard_pos[0]
-        gc := guard_pos[1]
-
-        for _, dir := range directions {
-            dr := dir[0]
-            dc := dir[1]
-
-            r := gr + dr
-            c := gc + dc
-
-            for r >= 0 && r < m && c >= 0 && c < n {
-                if grid[r][c] == 1 || grid[r][c] == 2 {
-                    break
-                }
-
-                if grid[r][c] == 0 {
-                    grid[r][c] = 3
-                }
-
-                r += dr
-                c += dc
-            }
-        }
-    }
-
-    unguarded_count := 0
-    for r := 0; r < m; r++ {
-        for c := 0; c < n; c++ {
-            if grid[r][c] == 0 {
-                unguarded_count += 1
-            }
-        }
-    }
-
-    return unguarded_count
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="ruby">
-
-{% highlight ruby %}
-{% raw %}
-class Solution
-    def count_unguarded(m, n, guards, walls)
-        grid = Array.new(m) { Array.new(n, 0) }
-
-        walls.each do |r, c|
-            grid[r][c] = 1
-        end
-
-        guards.each do |r, c|
-            grid[r][c] = 2
-        end
-
-        directions = [[0, 1], [0, -1], [1, 0], [-1, 0]]
-
-        guards.each do |gr, gc|
-            directions.each do |dr, dc|
-                r, c = gr + dr, gc + dc
-                while r >= 0 && r < m && c >= 0 && c < n
-                    if grid[r][c] == 1 || grid[r][c] == 2
-                        break
-                    end
-
-                    if grid[r][c] == 0
-                        grid[r][c] = 3
-                    end
-
-                    r += dr
-                    c += dc
-                end
-            end
-        end
-
-        unguarded_count = 0
-        (0...m).each do |r|
-            (0...n).each do |c|
-                if grid[r][c] == 0
-                    unguarded_count += 1
-                end
-            end
-        end
-
-        unguarded_count
-    end
-end
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="scala">
-
-{% highlight scala %}
-{% raw %}
-import scala.collection.mutable.ArrayBuffer
-
-object Solution {
-    def countUnguarded(m: Int, n: Int, guards: List[List[Int]], walls: List[List[Int]]): Int = {
-        val grid: Array[Array[Int]] = Array.ofDim[Int](m, n)
-
-        for (wall <- walls) {
-            grid(wall(0))(wall(1)) = 1
-        }
-
-        for (guardPos <- guards) {
-            grid(guardPos(0))(guardPos(1)) = 2
-        }
-
-        val directions = Array((0, 1), (0, -1), (1, 0), (-1, 0))
-
-        for (guardPos <- guards) {
-            val gr = guardPos(0)
-            val gc = guardPos(1)
-
-            for (dir <- directions) {
-                val dr = dir._1
-                val dc = dir._2
-
-                var r = gr + dr
-                var c = gc + dc
-
-                while (r >= 0 && r < m && c >= 0 && c < n) {
-                    if (grid(r)(c) == 1 || grid(r)(c) == 2) {
-                        break
-                    }
-
-                    if (grid(r)(c) == 0) {
-                        grid(r)(c) = 3
-                    }
-
-                    r += dr
-                    c += dc
-                }
-            }
-        }
-
-        var unguardedCount = 0
-        for (r <- 0 until m) {
-            for (c <- 0 until n) {
-                if (grid(r)(c) == 0) {
-                    unguardedCount += 1
-                }
-            }
-        }
-
-        unguardedCount
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="rust">
-
-{% highlight rust %}
-{% raw %}
-impl Solution {
-    pub fn count_unguarded(m: i32, n: i32, guards: Vec<Vec<i32>>, walls: Vec<Vec<i32>>) -> i32 {
-        let m_usize = m as usize;
-        let n_usize = n as usize;
-
-        let mut grid = vec![vec![0; n_usize]; m_usize];
-
-        for wall in walls {
-            grid[wall[0] as usize][wall[1] as usize] = 1;
-        }
-
-        for guard_pos in &guards {
-            grid[guard_pos[0] as usize][guard_pos[1] as usize] = 2;
-        }
-
-        let directions = [(0, 1), (0, -1), (1, 0), (-1, 0)];
-
-        for guard_pos in guards {
-            let gr = guard_pos[0];
-            let gc = guard_pos[1];
-
-            for (dr, dc) in directions.iter() {
-                let mut r = gr + dr;
-                let mut c = gc + dc;
-
-                while r >= 0 && r < m && c >= 0 && c < n {
-                    let r_usize = r as usize;
-                    let c_usize = c as usize;
-
-                    if grid[r_usize][c_usize] == 1 || grid[r_usize][c_usize] == 2 {
-                        break;
-                    }
-
-                    if grid[r_usize][c_usize] == 0 {
-                        grid[r_usize][c_usize] = 3;
-                    }
-
-                    r += dr;
-                    c += dc;
-                }
-            }
-        }
-
-        let mut unguarded_count = 0;
-        for r in 0..m_usize {
-            for c in 0..n_usize {
-                if grid[r][c] == 0 {
-                    unguarded_count += 1;
-                }
-            }
-        }
-
-        unguarded_count
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="racket">
-
-{% highlight racket %}
-{% raw %}
-#lang racket
-
-(define (count-unguarded m n guards walls)
-  (define grid (build-vector m (lambda (r) (build-vector n (lambda (c) 0)))))
-
-  (for-each (lambda (wall)
-              (vector-set! (vector-ref grid (car wall)) (cadr wall) 1))
-            walls)
-
-  (for-each (lambda (guard)
-              (vector-set! (vector-ref grid (car guard)) (cadr guard) 2))
-            guards)
-
-  (define directions '((0 1) (0 -1) (1 0) (-1 0)))
-
-  (for-each (lambda (guard-pos)
-              (define gr (car guard-pos))
-              (define gc (cadr guard-pos))
-
-              (for-each (lambda (dir)
-                          (define dr (car dir))
-                          (define dc (cadr dir))
-
-                          (let loop ((r (+ gr dr)) (c (+ gc dc)))
-                            (when (and (>= r 0) (< r m) (>= c 0) (< c n))
-                              (define current-cell (vector-ref (vector-ref grid r) c))
-                              (unless (or (= current-cell 1) (= current-cell 2))
-                                (when (= current-cell 0)
-                                  (vector-set! (vector-ref grid r) c 3))
-
-                                (loop (+ r dr) (+ c dc)))))))
-            guards)
-
-  (define unguarded-count 0)
-  (for ([r (in-range m)])
-    (for ([c (in-range n)])
-      (when (= (vector-ref (vector-ref grid r) c) 0)
-        (set! unguarded-count (+ unguarded-count 1)))))
-
-  unguarded-count)
-
-(provide (all-defined-out))
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="erlang">
-
-{% highlight erlang %}
-{% raw %}
--module(solution).
--export([count_unguarded/4]).
-
-count_unguarded(M, N, Guards, Walls) ->
-    GridSize = M * N,
-    InitialGrid = array:new(GridSize, 0),
-
-    GridWithWalls = lists:foldl(
-        fun([R, C], AccGrid) ->
-            array:set(R * N + C, 1, AccGrid)
-        end, InitialGrid, Walls),
-
-    GridWithGuards = lists:foldl(
-        fun([R, C], AccGrid) ->
-            array:set(R * N + C, 2, AccGrid)
-        end, GridWithWalls, Guards),
-
-    Directions = [{0, 1}, {0, -1}, {1, 0}, {-1, 0}],
-
-    FinalGrid = lists:foldl(
-        fun([Gr, Gc], CurrentGrid) ->
-            lists:foldl(
-                fun({Dr, Dc}, InnerGrid) ->
-                    propagate_guard_vision(Gr, Gc, Dr, Dc, M, N, InnerGrid)
-                end, CurrentGrid, Directions)
-        end, GridWithGuards, Guards),
-
-    count_unguarded_cells(M, N, FinalGrid, 0).
-
-propagate_guard_vision(Gr, Gc, Dr, Dc, M, N, Grid) ->
-    R = Gr + Dr,
-    C = Gc + Dc,
-    propagate_guard_vision_loop(R, C, Dr, Dc, M, N, Grid).
-
-propagate_guard_vision_loop(R, C, Dr, Dc, M, N, Grid) ->
-    if
-        R >= 0 andalso R < M andalso C >= 0 andalso C < N ->
-            CurrentCell = array:get(R * N + C, Grid),
-            if
-                CurrentCell == 1; CurrentCell == 2 ->
-                    Grid;
-                true ->
-                    NewGrid = if
-                        CurrentCell == 0 ->
-                            array:set(R * N + C, 3, Grid);
-                        true ->
-                            Grid
-                    end,
-                    propagate_guard_vision_loop(R + Dr, C + Dc, Dr, Dc, M, N, NewGrid)
-            end;
-        true ->
-            Grid
-    end.
-
-count_unguarded_cells(M, N, Grid, Count) ->
-    count_unguarded_cells_loop(0, 0, M, N, Grid, Count).
-
-count_unguarded_cells_loop(R, C, M, N, Grid, Acc) ->
-    if
-        R < M ->
-            if
-                C < N ->
-                    CurrentCell = array:get(R * N + C, Grid),
-                    NewAcc = if CurrentCell == 0 -> Acc + 1; true -> Acc end,
-                    count_unguarded_cells_loop(R, C + 1, M, N, Grid, NewAcc);
-                true ->
-                    count_unguarded_cells_loop(R + 1, 0, M, N, Grid, Acc)
-            end;
-        true ->
-            Acc
-    end.
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="elixir">
-
-{% highlight elixir %}
-{% raw %}
-defmodule Solution do
-  def count_unguarded(m, n, guards, walls) do
-    grid_size = m * n
-    initial_grid = :array.new(grid_size, 0)
-
-    grid_with_walls = Enum.reduce(walls, initial_grid, fn [r, c], acc_grid ->
-      :array.set(r * n + c, 1, acc_grid)
-    end)
-
-    grid_with_guards = Enum.reduce(guards, grid_with_walls, fn [r, c], acc_grid ->
-      :array.set(r * n + c, 2, acc_grid)
-    end)
-
-    directions = [{0, 1}, {0, -1}, {1, 0}, {-1, 0}]
-
-    final_grid = Enum.reduce(guards, grid_with_guards, fn [gr, gc], current_grid ->
-      Enum.reduce(directions, current_grid, fn {dr, dc}, inner_grid ->
-        propagate_guard_vision(gr, gc, dr, dc, m, n, inner_grid)
-      end)
-    end)
-
-    count_unguarded_cells(m, n, final_grid, 0)
-  end
-
-  defp propagate_guard_vision(gr, gc, dr, dc, m, n, grid) do
-    r = gr + dr
-    c = gc + dc
-    propagate_guard_vision_loop(r, c, dr, dc, m, n, grid)
-  end
-
-  defp propagate_guard_vision_loop(r, c, dr, dc, m, n, grid) do
-    if r >= 0 and r < m and c >= 0 and c < n do
-      current_cell = :array.get(r * n + c, grid)
-      cond do
-        current_cell == 1 or current_cell == 2 ->
-          grid
-        true ->
-          new_grid = if current_cell == 0 do
-            :array.set(r * n + c, 3, grid)
-          else
-            grid
-          end
-          propagate_guard_vision_loop(r + dr, c + dc, dr, dc, m, n, new_grid)
-      end
-    else
-      grid
-    end
-  end
-
-  defp count_unguarded_cells(m, n, grid, count) do
-    count_unguarded_cells_loop(0, 0, m, n, grid, count)
-  end
-
-  defp count_unguarded_cells_loop(r, c, m, n, grid, acc) do
-    if r < m do
-      if c < n do
-        current_cell = :array.get(r * n + c, grid)
-        new_acc = if current_cell == 0, do: acc + 1, else: acc
-        count_unguarded_cells_loop(r, c + 1, m, n, grid, new_acc)
-      else
-        count_unguarded_cells_loop(r + 1, 0, m, n, grid, acc)
-      end
-    else
-      acc
-    end
-  end
-end
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-</div>
-
-### Complexity Analysis
-
-- **Time Complexity:** O(m * n)
-
-- **Space Complexity:** O(m * n)
-
-</div>
-</details>
-
-
-<details class="ai-solution-card" markdown="1">
-<summary class="ai-solution-header">
-  <span class="ai-model-badge">⚡ Solution from <strong>llama-3.3-70b-versatile</strong></span>
-  <small class="solution-timestamp">(2025-11-23 07:25:42 UTC)</small>
-</summary>
-
-<div class="ai-solution-content">
-
-### Approach
-
-Create a 2D array to represent the grid and mark the tiles that can be seen by a guard. Iterate over the guards and mark the tiles in the four cardinal directions.
-
-### Code
-
-<div class="code-tabs" markdown="0">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-cpp-llama-3-3-70b-versatile" checked>
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-java-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-python-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-python3-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-c-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-csharp-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-javascript-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-typescript-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-php-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-swift-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-kotlin-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-dart-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-go-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-ruby-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-scala-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-rust-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-racket-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-erlang-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-elixir-llama-3-3-70b-versatile">
-  <div class="tab-labels">
-    <label for="lang-cpp-llama-3-3-70b-versatile">C++</label>
-    <label for="lang-java-llama-3-3-70b-versatile">Java</label>
-    <label for="lang-python-llama-3-3-70b-versatile">Python</label>
-    <label for="lang-python3-llama-3-3-70b-versatile">Python3</label>
-    <label for="lang-c-llama-3-3-70b-versatile">C</label>
-    <label for="lang-csharp-llama-3-3-70b-versatile">C#</label>
-    <label for="lang-javascript-llama-3-3-70b-versatile">JavaScript</label>
-    <label for="lang-typescript-llama-3-3-70b-versatile">TypeScript</label>
-    <label for="lang-php-llama-3-3-70b-versatile">PHP</label>
-    <label for="lang-swift-llama-3-3-70b-versatile">Swift</label>
-    <label for="lang-kotlin-llama-3-3-70b-versatile">Kotlin</label>
-    <label for="lang-dart-llama-3-3-70b-versatile">Dart</label>
-    <label for="lang-go-llama-3-3-70b-versatile">Go</label>
-    <label for="lang-ruby-llama-3-3-70b-versatile">Ruby</label>
-    <label for="lang-scala-llama-3-3-70b-versatile">Scala</label>
-    <label for="lang-rust-llama-3-3-70b-versatile">Rust</label>
-    <label for="lang-racket-llama-3-3-70b-versatile">Racket</label>
-    <label for="lang-erlang-llama-3-3-70b-versatile">Erlang</label>
-    <label for="lang-elixir-llama-3-3-70b-versatile">Elixir</label>
-  </div>
-
-  <div class="tab-panel" data-lang="cpp">
-
-{% highlight cpp %}
-{% raw %}
-#include <iostream>
-#include <vector>
-using namespace std;
-
-class Solution {
-public:
-    int countUnguarded(int m, int n, vector<vector<int>>& guards, vector<vector<int>>& walls) {
-        vector<vector<int>> grid(m, vector<int>(n, 0));
-        for (auto& wall : walls) {
-            grid[wall[0]][wall[1]] = -1;
-        }
-        int count = 0;
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (grid[i][j] == 0) {
-                    bool seen = false;
-                    for (auto& guard : guards) {
-                        if (canSee(grid, i, j, guard[0], guard[1])) {
-                            seen = true;
-                            break;
-                        }
-                    }
-                    if (!seen) {
-                        count++;
-                    }
-                }
-            }
-        }
-        return count;
-    }
-
-    bool canSee(vector<vector<int>>& grid, int x, int y, int guardX, int guardY) {
-        int dx = x - guardX;
-        int dy = y - guardY;
-        if (dx == 0) {
-            for (int i = min(y, guardY) + 1; i < max(y, guardY); i++) {
-                if (grid[x][i] == -1) {
-                    return false;
-                }
-            }
-        } else if (dy == 0) {
-            for (int i = min(x, guardX) + 1; i < max(x, guardX); i++) {
-                if (grid[i][y] == -1) {
-                    return false;
-                }
-            }
-        } else {
-            return false;
-        }
-        return true;
-    }
-};
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="java">
-
-{% highlight java %}
-{% raw %}
-public class Solution {
-    public int countUnguarded(int m, int n, int[][] guards, int[][] walls) {
-        int[][] grid = new int[m][n];
-        for (int[] wall : walls) {
-            grid[wall[0]][wall[1]] = -1;
-        }
-        int count = 0;
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (grid[i][j] == 0) {
-                    boolean seen = false;
-                    for (int[] guard : guards) {
-                        if (canSee(grid, i, j, guard[0], guard[1])) {
-                            seen = true;
-                            break;
-                        }
-                    }
-                    if (!seen) {
-                        count++;
-                    }
-                }
-            }
-        }
-        return count;
-    }
-
-    boolean canSee(int[][] grid, int x, int y, int guardX, int guardY) {
-        int dx = x - guardX;
-        int dy = y - guardY;
-        if (dx == 0) {
-            for (int i = Math.min(y, guardY) + 1; i < Math.max(y, guardY); i++) {
-                if (grid[x][i] == -1) {
-                    return false;
-                }
-            }
-        } else if (dy == 0) {
-            for (int i = Math.min(x, guardX) + 1; i < Math.max(x, guardX); i++) {
-                if (grid[i][y] == -1) {
-                    return false;
-                }
-            }
-        } else {
-            return false;
-        }
-        return true;
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="python">
-
-{% highlight python %}
-{% raw %}
-class Solution:
-    def countUnguarded(self, m: int, n: int, guards: list[list[int]], walls: list[list[int]]) -> int:
-        grid = [[0] * n for _ in range(m)]
-        for x, y in walls:
-            grid[x][y] = -1
-        count = 0
-        for i in range(m):
-            for j in range(n):
-                if grid[i][j] == 0:
-                    seen = False
-                    for x, y in guards:
-                        if self.canSee(grid, i, j, x, y):
-                            seen = True
-                            break
-                    if not seen:
-                        count += 1
-        return count
-
-    def canSee(self, grid, x, y, guardX, guardY):
-        dx = x - guardX
-        dy = y - guardY
-        if dx == 0:
-            for i in range(min(y, guardY) + 1, max(y, guardY)):
-                if grid[x][i] == -1:
-                    return False
-        elif dy == 0:
-            for i in range(min(x, guardX) + 1, max(x, guardX)):
-                if grid[i][y] == -1:
-                    return False
-        else:
-            return False
-        return True
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="python3">
-
-{% highlight python %}
-{% raw %}
-class Solution:
-    def countUnguarded(self, m: int, n: int, guards: list[list[int]], walls: list[list[int]]) -> int:
-        grid = [[0] * n for _ in range(m)]
-        for x, y in walls:
-            grid[x][y] = -1
-        count = 0
-        for i in range(m):
-            for j in range(n):
-                if grid[i][j] == 0:
-                    seen = False
-                    for x, y in guards:
-                        if self.canSee(grid, i, j, x, y):
-                            seen = True
-                            break
-                    if not seen:
-                        count += 1
-        return count
-
-    def canSee(self, grid, x, y, guardX, guardY):
-        dx = x - guardX
-        dy = y - guardY
-        if dx == 0:
-            for i in range(min(y, guardY) + 1, max(y, guardY)):
-                if grid[x][i] == -1:
-                    return False
-        elif dy == 0:
-            for i in range(min(x, guardX) + 1, max(x, guardX)):
-                if grid[i][y] == -1:
-                    return False
-        else:
-            return False
-        return True
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="c">
-
-{% highlight c %}
-{% raw %}
-#include <stdio.h>
-#include <stdlib.h>
-
-int canSee(int** grid, int m, int n, int x, int y, int guardX, int guardY) {
-    int dx = x - guardX;
-    int dy = y - guardY;
-    if (dx == 0) {
-        for (int i = (y < guardY ? y + 1 : guardY + 1); i < (y > guardY ? y : guardY); i++) {
-            if (grid[x][i] == -1) {
-                return 0;
-            }
-        }
-    } else if (dy == 0) {
-        for (int i = (x < guardX ? x + 1 : guardX + 1); i < (x > guardX ? x : guardX); i++) {
-            if (grid[i][y] == -1) {
-                return 0;
-            }
-        }
-    } else {
-        return 0;
-    }
-    return 1;
-}
-
-int countUnguarded(int m, int n, int** guards, int guardsSize, int* guardsColSize, int** walls, int wallsSize, int* wallsColSize) {
-    int** grid = (int**)malloc(m * sizeof(int*));
-    for (int i = 0; i < m; i++) {
-        grid[i] = (int*)malloc(n * sizeof(int));
-        for (int j = 0; j < n; j++) {
-            grid[i][j] = 0;
-        }
-    }
-    for (int i = 0; i < wallsSize; i++) {
-        grid[walls[i][0]][walls[i][1]] = -1;
-    }
-    int count = 0;
-    for (int i = 0; i < m; i++) {
-        for (int j = 0; j < n; j++) {
-            if (grid[i][j] == 0) {
-                int seen = 0;
-                for (int k = 0; k < guardsSize; k++) {
-                    if (canSee(grid, m, n, i, j, guards[k][0], guards[k][1])) {
-                        seen = 1;
-                        break;
-                    }
-                }
-                if (!seen) {
-                    count++;
-                }
-            }
-        }
-    }
-    for (int i = 0; i < m; i++) {
-        free(grid[i]);
-    }
-    free(grid);
-    return count;
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="csharp">
-
-{% highlight csharp %}
-{% raw %}
-public class Solution {
-    public int CountUnguarded(int m, int n, int[][] guards, int[][] walls) {
-        int[][] grid = new int[m][];
-        for (int i = 0; i < m; i++) {
-            grid[i] = new int[n];
-        }
-        foreach (int[] wall in walls) {
-            grid[wall[0]][wall[1]] = -1;
-        }
-        int count = 0;
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (grid[i][j] == 0) {
-                    bool seen = false;
-                    foreach (int[] guard in guards) {
-                        if (CanSee(grid, i, j, guard[0], guard[1])) {
-                            seen = true;
-                            break;
-                        }
-                    }
-                    if (!seen) {
-                        count++;
-                    }
-                }
-            }
-        }
-        return count;
-    }
-
-    bool CanSee(int[][] grid, int x, int y, int guardX, int guardY) {
-        int dx = x - guardX;
-        int dy = y - guardY;
-        if (dx == 0) {
-            for (int i = Math.Min(y, guardY) + 1; i < Math.Max(y, guardY); i++) {
-                if (grid[x][i] == -1) {
-                    return false;
-                }
-            }
-        } else if (dy == 0) {
-            for (int i = Math.Min(x, guardX) + 1; i < Math.Max(x, guardX); i++) {
-                if (grid[i][y] == -1) {
-                    return false;
-                }
-            }
-        } else {
-            return false;
-        }
-        return true;
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="javascript">
-
-{% highlight javascript %}
-{% raw %}
-var countUnguarded = function(m, n, guards, walls) {
-    let grid = Array(m).fill(0).map(() => Array(n).fill(0));
-    for (let [x, y] of walls) {
-        grid[x][y] = -1;
-    }
     let count = 0;
-    for (let i = 0; i < m; i++) {
-        for (let j = 0; j < n; j++) {
-            if (grid[i][j] == 0) {
-                let seen = false;
-                for (let [x, y] of guards) {
-                    if (canSee(grid, i, j, x, y)) {
-                        seen = true;
-                        break;
-                    }
-                }
-                if (!seen) {
-                    count++;
-                }
+    for (let row = 0; row < m; row++) {
+        for (let col = 0; col < n; col++) {
+            if (grid[row][col] === 0) {
+                count++;
             }
         }
     }
     return count;
-
-    function canSee(grid, x, y, guardX, guardY) {
-        let dx = x - guardX;
-        let dy = y - guardY;
-        if (dx == 0) {
-            for (let i = Math.min(y, guardY) + 1; i < Math.max(y, guardY); i++) {
-                if (grid[x][i] == -1) {
-                    return false;
-                }
-            }
-        } else if (dy == 0) {
-            for (let i = Math.min(x, guardX) + 1; i < Math.max(x, guardX); i++) {
-                if (grid[i][y] == -1) {
-                    return false;
-                }
-            }
-        } else {
-            return false;
-        }
-        return true;
-    }
 };
 {% endraw %}
 {% endhighlight %}
@@ -1735,50 +715,39 @@ var countUnguarded = function(m, n, guards, walls) {
 {% highlight typescript %}
 {% raw %}
 function countUnguarded(m: number, n: number, guards: number[][], walls: number[][]): number {
-    let grid: number[][] = Array(m).fill(0).map(() => Array(n).fill(0));
-    for (let [x, y] of walls) {
-        grid[x][y] = -1;
+    const grid: number[][] = Array.from({ length: m }, () => Array(n).fill(0));
+    for (const [row, col] of walls) {
+        grid[row][col] = 2;
     }
-    let count: number = 0;
-    for (let i = 0; i < m; i++) {
-        for (let j = 0; j < n; j++) {
-            if (grid[i][j] == 0) {
-                let seen: boolean = false;
-                for (let [x, y] of guards) {
-                    if (canSee(grid, i, j, x, y)) {
-                        seen = true;
-                        break;
-                    }
+    for (const [row, col] of guards) {
+        grid[row][col] = 3;
+    }
+
+    const directions: number[][] = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+    for (const [guardRow, guardCol] of guards) {
+        for (const [dr, dc] of directions) {
+            let row = guardRow + dr;
+            let col = guardCol + dc;
+            while (row >= 0 && row < m && col >= 0 && col < n && grid[row][col] !== 2 && grid[row][col] !== 3) {
+                if (grid[row][col] === 0) {
+                    grid[row][col] = 1;
                 }
-                if (!seen) {
-                    count++;
-                }
+                row += dr;
+                col += dc;
+            }
+        }
+    }
+
+    let count = 0;
+    for (let row = 0; row < m; row++) {
+        for (let col = 0; col < n; col++) {
+            if (grid[row][col] === 0) {
+                count++;
             }
         }
     }
     return count;
-
-    function canSee(grid: number[][], x: number, y: number, guardX: number, guardY: number): boolean {
-        let dx: number = x - guardX;
-        let dy: number = y - guardY;
-        if (dx == 0) {
-            for (let i: number = Math.min(y, guardY) + 1; i < Math.max(y, guardY); i++) {
-                if (grid[x][i] == -1) {
-                    return false;
-                }
-            }
-        } else if (dy == 0) {
-            for (let i: number = Math.min(x, guardX) + 1; i < Math.max(x, guardX); i++) {
-                if (grid[i][y] == -1) {
-                    return false;
-                }
-            }
-        } else {
-            return false;
-        }
-        return true;
-    }
-}
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -1789,50 +758,47 @@ function countUnguarded(m: number, n: number, guards: number[][], walls: number[
 {% highlight php %}
 {% raw %}
 class Solution {
+
+    /**
+     * @param Integer $m
+     * @param Integer $n
+     * @param Integer[][] $guards
+     * @param Integer[][] $walls
+     * @return Integer
+     */
     function countUnguarded($m, $n, $guards, $walls) {
         $grid = array_fill(0, $m, array_fill(0, $n, 0));
         foreach ($walls as $wall) {
-            $grid[$wall[0]][$wall[1]] = -1;
+            $grid[$wall[0]][$wall[1]] = 2;
         }
+        foreach ($guards as $guard) {
+            $grid[$guard[0]][$guard[1]] = 3;
+        }
+
+        $directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+        foreach ($guards as $guard) {
+            foreach ($directions as $direction) {
+                $row = $guard[0] + $direction[0];
+                $col = $guard[1] + $direction[1];
+                while ($row >= 0 && $row < $m && $col >= 0 && $col < $n && $grid[$row][$col] !== 2 && $grid[$row][$col] !== 3) {
+                    if ($grid[$row][$col] === 0) {
+                        $grid[$row][$col] = 1;
+                    }
+                    $row += $direction[0];
+                    $col += $direction[1];
+                }
+            }
+        }
+
         $count = 0;
-        for ($i = 0; $i < $m; $i++) {
-            for ($j = 0; $j < $n; $j++) {
-                if ($grid[$i][$j] == 0) {
-                    $seen = false;
-                    foreach ($guards as $guard) {
-                        if ($this->canSee($grid, $i, $j, $guard[0], $guard[1])) {
-                            $seen = true;
-                            break;
-                        }
-                    }
-                    if (!$seen) {
-                        $count++;
-                    }
+        for ($row = 0; $row < $m; $row++) {
+            for ($col = 0; $col < $n; $col++) {
+                if ($grid[$row][$col] === 0) {
+                    $count++;
                 }
             }
         }
         return $count;
-    }
-
-    function canSee($grid, $x, $y, $guardX, $guardY) {
-        $dx = $x - $guardX;
-        $dy = $y - $guardY;
-        if ($dx == 0) {
-            for ($i = min($y, $guardY) + 1; $i < max($y, $guardY); $i++) {
-                if ($grid[$x][$i] == -1) {
-                    return false;
-                }
-            }
-        } else if ($dy == 0) {
-            for ($i = min($x, $guardX) + 1; $i < max($x, $guardX); $i++) {
-                if ($grid[$i][$y] == -1) {
-                    return false;
-                }
-            }
-        } else {
-            return false;
-        }
-        return true;
     }
 }
 {% endraw %}
@@ -1848,47 +814,36 @@ class Solution {
     func countUnguarded(_ m: Int, _ n: Int, _ guards: [[Int]], _ walls: [[Int]]) -> Int {
         var grid = Array(repeating: Array(repeating: 0, count: n), count: m)
         for wall in walls {
-            grid[wall[0]][wall[1]] = -1
+            grid[wall[0]][wall[1]] = 2
         }
+        for guardPosition in guards {
+            grid[guardPosition[0]][guardPosition[1]] = 3
+        }
+
+        let directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+        for guardPosition in guards {
+            for (dr, dc) in directions {
+                var row = guardPosition[0] + dr
+                var col = guardPosition[1] + dc
+                while row >= 0 && row < m && col >= 0 && col < n && grid[row][col] != 2 && grid[row][col] != 3 {
+                    if grid[row][col] == 0 {
+                        grid[row][col] = 1
+                    }
+                    row += dr
+                    col += dc
+                }
+            }
+        }
+
         var count = 0
-        for i in 0..<m {
-            for j in 0..<n {
-                if grid[i][j] == 0 {
-                    var seen = false
-                    for guard in guards {
-                        if canSee(&grid, i, j, guard[0], guard[1]) {
-                            seen = true
-                            break
-                        }
-                    }
-                    if !seen {
-                        count += 1
-                    }
+        for row in 0..<m {
+            for col in 0..<n {
+                if grid[row][col] == 0 {
+                    count += 1
                 }
             }
         }
         return count
-    }
-
-    func canSee(_ grid: inout [[Int]], _ x: Int, _ y: Int, _ guardX: Int, _ guardY: Int) -> Bool {
-        let dx = x - guardX
-        let dy = y - guardY
-        if dx == 0 {
-            for i in min(y, guardY) + 1..<max(y, guardY) {
-                if grid[x][i] == -1 {
-                    return false
-                }
-            }
-        } else if dy == 0 {
-            for i in min(x, guardX) + 1..<max(x, guardX) {
-                if grid[i][y] == -1 {
-                    return false
-                }
-            }
-        } else {
-            return false
-        }
-        return true
     }
 }
 {% endraw %}
@@ -1904,47 +859,34 @@ class Solution {
     fun countUnguarded(m: Int, n: Int, guards: Array<IntArray>, walls: Array<IntArray>): Int {
         val grid = Array(m) { IntArray(n) }
         for (wall in walls) {
-            grid[wall[0]][wall[1]] = -1
+            grid[wall[0]][wall[1]] = 2
         }
-        var count = 0
-        for (i in 0 until m) {
-            for (j in 0 until n) {
-                if (grid[i][j] == 0) {
-                    var seen = false
-                    for (guard in guards) {
-                        if (canSee(grid, i, j, guard[0], guard[1])) {
-                            seen = true
-                            break
-                        }
+        for (guard in guards) {
+            grid[guard[0]][guard[1]] = 3
+        }
+
+        val directions = arrayOf(intArrayOf(-1, 0), intArrayOf(1, 0), intArrayOf(0, -1), intArrayOf(0, 1))
+        for (guard in guards) {
+            for (direction in directions) {
+                var row = guard[0] + direction[0]
+                var col = guard[1] + direction[1]
+                while (row in 0 until m && col in 0 until n && grid[row][col] != 2 && grid[row][col] != 3) {
+                    if (grid[row][col] == 0) {
+                        grid[row][col] = 1
                     }
-                    if (!seen) {
-                        count++
-                    }
+                    row += direction[0]
+                    col += direction[1]
                 }
+            }
+        }
+
+        var count = 0
+        for (row in grid) {
+            for (cell in row) {
+                if (cell == 0) count++
             }
         }
         return count
-    }
-
-    fun canSee(grid: Array<IntArray>, x: Int, y: Int, guardX: Int, guardY: Int): Boolean {
-        val dx = x - guardX
-        val dy = y - guardY
-        if (dx == 0) {
-            for (i in minOf(y, guardY) + 1 until maxOf(y, guardY)) {
-                if (grid[x][i] == -1) {
-                    return false
-                }
-            }
-        } else if (dy == 0) {
-            for (i in minOf(x, guardX) + 1 until maxOf(x, guardX)) {
-                if (grid[i][y] == -1) {
-                    return false
-                }
-            }
-        } else {
-            return false
-        }
-        return true
     }
 }
 {% endraw %}
@@ -1958,49 +900,42 @@ class Solution {
 {% raw %}
 class Solution {
   int countUnguarded(int m, int n, List<List<int>> guards, List<List<int>> walls) {
-      List<List<int>> grid = List.generate(m, (i) => List.generate(n, (j) => 0));
-      for (var wall in walls) {
-          grid[wall[0]][wall[1]] = -1;
-      }
-      int count = 0;
-      for (int i = 0; i < m; i++) {
-          for (int j = 0; j < n; j++) {
-              if (grid[i][j] == 0) {
-                  bool seen = false;
-                  for (var guard in guards) {
-                      if (canSee(grid, i, j, guard[0], guard[1])) {
-                          seen = true;
-                          break;
-                      }
-                  }
-                  if (!seen) {
-                      count++;
-                  }
-              }
-          }
-      }
-      return count;
-  }
+    final grid = List.generate(m, (_) => List<int>.filled(n, 0));
+    for (final wall in walls) {
+      grid[wall[0]][wall[1]] = 2;
+    }
+    for (final guard in guards) {
+      grid[guard[0]][guard[1]] = 3;
+    }
 
-  bool canSee(List<List<int>> grid, int x, int y, int guardX, int guardY) {
-      int dx = x - guardX;
-      int dy = y - guardY;
-      if (dx == 0) {
-          for (int i = min(y, guardY) + 1; i < max(y, guardY); i++) {
-              if (grid[x][i] == -1) {
-                  return false;
-              }
+    const directions = [
+      [-1, 0],
+      [1, 0],
+      [0, -1],
+      [0, 1],
+    ];
+    for (final guard in guards) {
+      for (final direction in directions) {
+        var row = guard[0] + direction[0];
+        var col = guard[1] + direction[1];
+        while (row >= 0 && row < m && col >= 0 && col < n &&
+            grid[row][col] != 2 && grid[row][col] != 3) {
+          if (grid[row][col] == 0) {
+            grid[row][col] = 1;
           }
-      } else if (dy == 0) {
-          for (int i = min(x, guardX) + 1; i < max(x, guardX); i++) {
-              if (grid[i][y] == -1) {
-                  return false;
-              }
-          }
-      } else {
-          return false;
+          row += direction[0];
+          col += direction[1];
+        }
       }
-      return true;
+    }
+
+    var count = 0;
+    for (final row in grid) {
+      for (final cell in row) {
+        if (cell == 0) count++;
+      }
+    }
+    return count;
   }
 }
 {% endraw %}
@@ -2012,73 +947,42 @@ class Solution {
 
 {% highlight go %}
 {% raw %}
-package main
-
-import (
-    "fmt"
-)
-
 func countUnguarded(m int, n int, guards [][]int, walls [][]int) int {
-    grid := make([][]int, m)
-    for i := range grid {
-        grid[i] = make([]int, n)
-    }
-    for _, wall := range walls {
-        grid[wall[0]][wall[1]] = -1
-    }
-    count := 0
-    for i := 0; i < m; i++ {
-        for j := 0; j < n; j++ {
-            if grid[i][j] == 0 {
-                seen := false
-                for _, guard := range guards {
-                    if canSee(grid, i, j, guard[0], guard[1]) {
-                        seen = true
-                        break
-                    }
-                }
-                if !seen {
-                    count++
-                }
-            }
-        }
-    }
-    return count
-}
+	grid := make([][]int, m)
+	for row := range grid {
+		grid[row] = make([]int, n)
+	}
+	for _, wall := range walls {
+		grid[wall[0]][wall[1]] = 2
+	}
+	for _, guard := range guards {
+		grid[guard[0]][guard[1]] = 3
+	}
 
-func canSee(grid [][]int, x int, y int, guardX int, guardY int) bool {
-    dx := x - guardX
-    dy := y - guardY
-    if dx == 0 {
-        for i := min(y, guardY) + 1; i < max(y, guardY); i++ {
-            if grid[x][i] == -1 {
-                return false
-            }
-        }
-    } else if dy == 0 {
-        for i := min(x, guardX) + 1; i < max(x, guardX); i++ {
-            if grid[i][y] == -1 {
-                return false
-            }
-        }
-    } else {
-        return false
-    }
-    return true
-}
+	directions := [][2]int{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}
+	for _, guard := range guards {
+		for _, direction := range directions {
+			row := guard[0] + direction[0]
+			col := guard[1] + direction[1]
+			for row >= 0 && row < m && col >= 0 && col < n && grid[row][col] != 2 && grid[row][col] != 3 {
+				if grid[row][col] == 0 {
+					grid[row][col] = 1
+				}
+				row += direction[0]
+				col += direction[1]
+			}
+		}
+	}
 
-func min(a int, b int) int {
-    if a < b {
-        return a
-    }
-    return b
-}
-
-func max(a int, b int) int {
-    if a > b {
-        return a
-    }
-    return b
+	count := 0
+	for _, row := range grid {
+		for _, cell := range row {
+			if cell == 0 {
+				count++
+			}
+		}
+	}
+	return count
 }
 {% endraw %}
 {% endhighlight %}
@@ -2089,52 +993,34 @@ func max(a int, b int) int {
 
 {% highlight ruby %}
 {% raw %}
-class Solution
+# @param {Integer} m
+# @param {Integer} n
+# @param {Integer[][]} guards
+# @param {Integer[][]} walls
+# @return {Integer}
 def count_unguarded(m, n, guards, walls)
-    grid = Array.new(m) { Array.new(n, 0) }
-    walls.each do |wall|
-        grid[wall[0]][wall[1]] = -1
-    end
-    count = 0
-    (0...m).each do |i|
-        (0...n).each do |j|
-            if grid[i][j] == 0
-                seen = false
-                guards.each do |guard|
-                    if can_see(grid, i, j, guard[0], guard[1])
-                        seen = true
-                        break
-                    end
-                end
-                if !seen
-                    count += 1
-                end
-            end
-        end
-    end
-    count
-end
+  grid = Array.new(m) { Array.new(n, 0) }
+  walls.each do |row, col|
+    grid[row][col] = 2
+  end
+  guards.each do |row, col|
+    grid[row][col] = 3
+  end
 
-def can_see(grid, x, y, guard_x, guard_y)
-    dx = x - guard_x
-    dy = y - guard_y
-    if dx == 0
-        (([y, guard_y].min + 1)...([y, guard_y].max)).each do |i|
-            if grid[x][i] == -1
-                return false
-            end
-        end
-    elsif dy == 0
-        (([x, guard_x].min + 1)...([x, guard_x].max)).each do |i|
-            if grid[i][y] == -1
-                return false
-            end
-        end
-    else
-        return false
+  directions = [[-1, 0], [1, 0], [0, -1], [0, 1]]
+  guards.each do |guard_row, guard_col|
+    directions.each do |dr, dc|
+      row = guard_row + dr
+      col = guard_col + dc
+      while row >= 0 && row < m && col >= 0 && col < n && grid[row][col] != 2 && grid[row][col] != 3
+        grid[row][col] = 1 if grid[row][col] == 0
+        row += dr
+        col += dc
+      end
     end
-    true
-end
+  end
+
+  grid.sum { |row| row.count(0) }
 end
 {% endraw %}
 {% endhighlight %}
@@ -2148,46 +1034,29 @@ end
 object Solution {
     def countUnguarded(m: Int, n: Int, guards: Array[Array[Int]], walls: Array[Array[Int]]): Int = {
         val grid = Array.fill(m, n)(0)
-        for (wall <- walls) {
-            grid(wall(0))(wall(1)) = -1
+        walls.foreach { wall =>
+            grid(wall(0))(wall(1)) = 2
         }
-        var count = 0
-        for (i <- 0 until m; j <- 0 until n) {
-            if (grid(i)(j) == 0) {
-                var seen = false
-                for (guard <- guards) {
-                    if (canSee(grid, i, j, guard(0), guard(1))) {
-                        seen = true
-                        break
-                    }
-                }
-                if (!seen) {
-                    count += 1
-                }
-            }
+        guards.foreach { guard =>
+            grid(guard(0))(guard(1)) = 3
         }
-        count
-    }
 
-    def canSee(grid: Array[Array[Int]], x: Int, y: Int, guardX: Int, guardY: Int): Boolean = {
-        val dx = x - guardX
-        val dy = y - guardY
-        if (dx == 0) {
-            for (i <- math.min(y, guardY) + 1 until math.max(y, guardY)) {
-                if (grid(x)(i) == -1) {
-                    return false
+        val directions = Array((-1, 0), (1, 0), (0, -1), (0, 1))
+        guards.foreach { guard =>
+            directions.foreach { case (dr, dc) =>
+                var row = guard(0) + dr
+                var col = guard(1) + dc
+                while (row >= 0 && row < m && col >= 0 && col < n && grid(row)(col) != 2 && grid(row)(col) != 3) {
+                    if (grid(row)(col) == 0) {
+                        grid(row)(col) = 1
+                    }
+                    row += dr
+                    col += dc
                 }
             }
-        } else if (dy == 0) {
-            for (i <- math.min(x, guardX) + 1 until math.max(x, guardX)) {
-                if (grid(i)(y) == -1) {
-                    return false
-                }
-            }
-        } else {
-            return false
         }
-        true
+
+        grid.iterator.map(_.count(_ == 0)).sum
     }
 }
 {% endraw %}
@@ -2199,53 +1068,39 @@ object Solution {
 
 {% highlight rust %}
 {% raw %}
-struct Solution;
-
 impl Solution {
     pub fn count_unguarded(m: i32, n: i32, guards: Vec<Vec<i32>>, walls: Vec<Vec<i32>>) -> i32 {
-        let mut grid = vec![vec![0; n as usize]; m as usize];
-        for wall in walls {
-            grid[wall[0] as usize][wall[1] as usize] = -1;
-        }
-        let mut count = 0;
-        for i in 0..m {
-            for j in 0..n {
-                if grid[i as usize][j as usize] == 0 {
-                    let mut seen = false;
-                    for guard in &guards {
-                        if Solution::can_see(&grid, i as usize, j as usize, guard[0] as usize, guard[1] as usize) {
-                            seen = true;
-                            break;
-                        }
-                    }
-                    if !seen {
-                        count += 1;
-                    }
-                }
-            }
-        }
-        count
-    }
+        let rows = m as usize;
+        let cols = n as usize;
+        let mut grid = vec![vec![0u8; cols]; rows];
 
-    fn can_see(grid: &Vec<Vec<i32>>, x: usize, y: usize, guard_x: usize, guard_y: usize) -> bool {
-        let dx = x as i32 - guard_x as i32;
-        let dy = y as i32 - guard_y as i32;
-        if dx == 0 {
-            for i in std::cmp::min(y, guard_y) + 1..std::cmp::max(y, guard_y) {
-                if grid[x][i] == -1 {
-                    return false;
-                }
-            }
-        } else if dy == 0 {
-            for i in std::cmp::min(x, guard_x) + 1..std::cmp::max(x, guard_x) {
-                if grid[i][y] == -1 {
-                    return false;
-                }
-            }
-        } else {
-            return false;
+        for wall in &walls {
+            grid[wall[0] as usize][wall[1] as usize] = 2;
         }
-        true
+        for guard in &guards {
+            grid[guard[0] as usize][guard[1] as usize] = 3;
+        }
+
+        let directions = [(-1i32, 0i32), (1, 0), (0, -1), (0, 1)];
+        for guard in &guards {
+            for (dr, dc) in directions {
+                let mut row = guard[0] + dr;
+                let mut col = guard[1] + dc;
+                while row >= 0 && row < m && col >= 0 && col < n {
+                    let cell = &mut grid[row as usize][col as usize];
+                    if *cell == 2 || *cell == 3 {
+                        break;
+                    }
+                    if *cell == 0 {
+                        *cell = 1;
+                    }
+                    row += dr;
+                    col += dc;
+                }
+            }
+        }
+
+        grid.iter().flatten().filter(|&&cell| cell == 0).count() as i32
     }
 }
 {% endraw %}
@@ -2257,33 +1112,33 @@ impl Solution {
 
 {% highlight racket %}
 {% raw %}
-#lang racket
-
-(define (count-unguarded m n guards walls)
-    (define grid (make-vector m (make-vector n 0)))
-    (for-each (lambda (wall) (vector-set! (vector-ref grid (first wall)) (second wall) -1)) walls)
-    (define count 0)
-    (for* ((i (range m)) (j (range n)))
-      (when (= (vector-ref (vector-ref grid i) j) 0)
-        (define seen #f)
-        (for-each (lambda (guard) (when (can-see grid i j (first guard) (second guard))
-                                  (set! seen #t)
-                                  (break)))
-                  guards)
-        (unless seen (set! count (+ count 1)))))
-    count)
-
-(define (can-see grid x y guard-x guard-y)
-    (define dx (- x guard-x))
-    (define dy (- y guard-y))
-    (cond
-      ((= dx 0)
-       (for/and ((i (range (add1 (min y guard-y)) (min y guard-y))))
-         (not (= (vector-ref (vector-ref grid x) i) -1))))
-      ((= dy 0)
-       (for/and ((i (range (add1 (min x guard-x)) (min x guard-x))))
-         (not (= (vector-ref (vector-ref grid i) y) -1))))
-      (else #f)))
+(define/contract (count-unguarded m n guards walls)
+  (-> exact-integer? exact-integer? (listof (listof exact-integer?)) (listof (listof exact-integer?)) exact-integer?)
+  (let ([grid (build-vector m (lambda (_) (make-vector n 0)))])
+    (for-each
+     (lambda (wall)
+       (vector-set! (vector-ref grid (first wall)) (second wall) 2))
+     walls)
+    (for-each
+     (lambda (guard)
+       (vector-set! (vector-ref grid (first guard)) (second guard) 3))
+     guards)
+    (define directions '((-1 0) (1 0) (0 -1) (0 1)))
+    (for-each
+     (lambda (guard)
+       (for-each
+        (lambda (direction)
+          (let loop ([row (+ (first guard) (first direction))]
+                     [col (+ (second guard) (second direction))])
+            (when (and (<= 0 row) (< row m) (<= 0 col) (< col n)
+                       (not (member (vector-ref (vector-ref grid row) col) '(2 3))))
+              (when (= (vector-ref (vector-ref grid row) col) 0)
+                (vector-set! (vector-ref grid row) col 1))
+              (loop (+ row (first direction)) (+ col (second direction)))))
+        directions))
+     guards)
+    (for*/sum ([row (in-range m)] [col (in-range n)])
+      (if (= (vector-ref (vector-ref grid row) col) 0) 1 0))))
 {% endraw %}
 {% endhighlight %}
 
@@ -2293,59 +1148,58 @@ impl Solution {
 
 {% highlight erlang %}
 {% raw %}
--module(solution).
--export([count_unguarded/4]).
-
+-spec count_unguarded(M :: integer(), N :: integer(), Guards :: [[integer()]], Walls :: [[integer()]]) -> integer().
 count_unguarded(M, N, Guards, Walls) ->
-    Grid = array:new(M, {default, 0}),
-    lists:foreach(fun(Wall) -> array:set(Wall, -1, Grid) end, Walls),
-    Count = count_unguarded(Grid, Guards, 0, 0, M, N, 0),
-    Count.
+  Grid0 = array:new([{size, M}, {default, array:new([{size, N}, {default, 0}])}]),
+  Grid1 = lists:foldl(
+    fun([Row, Col], Grid) ->
+      RowArray = array:get(Row, Grid),
+      array:set(Row, array:set(Col, 2, RowArray), Grid)
+    end,
+    Grid0,
+    Walls
+  ),
+  Grid2 = lists:foldl(
+    fun([Row, Col], Grid) ->
+      RowArray = array:get(Row, Grid),
+      array:set(Row, array:set(Col, 3, RowArray), Grid)
+    end,
+    Grid1,
+    Guards
+  ),
+  Directions = [{-1, 0}, {1, 0}, {0, -1}, {0, 1}],
+  Grid3 = lists:foldl(
+    fun([GuardRow, GuardCol], Grid) ->
+      lists:foldl(
+        fun({Dr, Dc}, CurrentGrid) ->
+          scan(GuardRow + Dr, GuardCol + Dc, Dr, Dc, M, N, CurrentGrid)
+        end,
+        Grid,
+        Directions
+      )
+    end,
+    Grid2,
+    Guards
+  ),
+  lists:sum([
+    case array:get(Col, array:get(Row, Grid3)) of
+      0 -> 1;
+      _ -> 0
+    end
+    || Row <- lists:seq(0, M - 1), Col <- lists:seq(0, N - 1)
+  ]).
 
-count_unguarded(Grid, Guards, I, J, M, N, Count) when I >= M ->
-    Count;
-count_unguarded(Grid, Guards, I, J, M, N, Count) when J >= N ->
-    count_unguarded(Grid, Guards, I + 1, 0, M, N, Count);
-count_unguarded(Grid, Guards, I, J, M, N, Count) ->
-    Seen = lists:any(fun(Guard) -> can_see(Grid, I, J, Guard) end, Guards),
-    case array:get([I, J], Grid) of
-        0 when not Seen ->
-            count_unguarded(Grid, Guards, I, J + 1, M, N, Count + 1);
-        _ ->
-            count_unguarded(Grid, Guards, I, J + 1, M, N, Count)
-    end.
-
-can_see(Grid, X, Y, [GuardX, GuardY]) ->
-    DX = X - GuardX,
-    DY = Y - GuardY,
-    case {DX, DY} of
-        {0, _} ->
-            can_see_x(Grid, X, min(Y, GuardY) + 1, max(Y, GuardY));
-        {_, 0} ->
-            can_see_y(Grid, min(X, GuardX) + 1, max(X, GuardX), Y);
-        _ ->
-            false
-    end.
-
-can_see_x(Grid, X, I, MaxY) when I >= MaxY ->
-    true;
-can_see_x(Grid, X, I, MaxY) ->
-    case array:get([X, I], Grid) of
-        -1 ->
-            false;
-        _ ->
-            can_see_x(Grid, X, I + 1, MaxY)
-    end.
-
-can_see_y(Grid, I, MaxX, Y) when I >= MaxX ->
-    true;
-can_see_y(Grid, I, MaxX, Y) ->
-    case array:get([I, Y], Grid) of
-        -1 ->
-            false;
-        _ ->
-            can_see_y(Grid, I + 1, MaxX, Y)
-    end.
+scan(Row, Col, Dr, Dc, M, N, Grid) when Row >= 0, Row < M, Col >= 0, Col < N ->
+  RowArray = array:get(Row, Grid),
+  case array:get(Col, RowArray) of
+    2 -> Grid;
+    3 -> Grid;
+    0 ->
+      UpdatedGrid = array:set(Row, array:set(Col, 1, RowArray), Grid),
+      scan(Row + Dr, Col + Dc, Dr, Dc, M, N, UpdatedGrid);
+    1 -> scan(Row + Dr, Col + Dc, Dr, Dc, M, N, Grid)
+  end;
+scan(_Row, _Col, _Dr, _Dc, _M, _N, Grid) -> Grid.
 {% endraw %}
 {% endhighlight %}
 
@@ -2356,47 +1210,43 @@ can_see_y(Grid, I, MaxX, Y) ->
 {% highlight elixir %}
 {% raw %}
 defmodule Solution do
+  @spec count_unguarded(m :: integer, n :: integer, guards :: [[integer]], walls :: [[integer]]) :: integer
   def count_unguarded(m, n, guards, walls) do
-      grid = for i <- 0..m-1, do: for j <- 0..n-1, do: 0
-      Enum.each(walls, fn [x, y] -> grid = List.update_at(grid, x, fn row -> List.update_at(row, y, fn _ -> -1 end) end) end)
-      count_unguarded(grid, guards, 0, 0, m, n, 0)
+    grid = List.duplicate(List.duplicate(0, n), m)
+    grid = Enum.reduce(walls, grid, fn [row, col], acc -> put_in(acc, [Access.at(row), Access.at(col)], 2) end)
+    grid = Enum.reduce(guards, grid, fn [row, col], acc -> put_in(acc, [Access.at(row), Access.at(col)], 3) end)
+
+    directions = [{-1, 0}, {1, 0}, {0, -1}, {0, 1}]
+
+    grid =
+      Enum.reduce(guards, grid, fn [guard_row, guard_col], acc ->
+        Enum.reduce(directions, acc, fn {dr, dc}, current_grid ->
+          scan(guard_row + dr, guard_col + dc, dr, dc, m, n, current_grid)
+        end)
+      end)
+
+    Enum.sum(Enum.map(grid, fn row -> Enum.count(row, &(&1 == 0)) end))
   end
 
-  defp count_unguarded(grid, guards, i, j, m, n, count) when i >= m, do: count
-  defp count_unguarded(grid, guards, i, j, m, n, count) when j >= n, do: count_unguarded(grid, guards, i + 1, 0, m, n, count)
-  defp count_unguarded(grid, guards, i, j, m, n, count) do
-      seen = Enum.any?(guards, fn [x, y] -> can_see(grid, i, j, x, y) end)
-      case Enum.at(Enum.at(grid, i), j) do
-          0 when not seen -> count_unguarded(grid, guards, i, j + 1, m, n, count + 1)
-          _ -> count_unguarded(grid, guards, i, j + 1, m, n, count)
-      end
+  defp scan(row, col, dr, dc, m, n, grid)
+       when row >= 0 and row < m and col >= 0 and col < n do
+    cell = grid |> Enum.at(row) |> Enum.at(col)
+
+    if cell in [2, 3] do
+      grid
+    else
+      updated_grid =
+        if cell == 0 do
+          put_in(grid, [Access.at(row), Access.at(col)], 1)
+        else
+          grid
+        end
+
+      scan(row + dr, col + dc, dr, dc, m, n, updated_grid)
+    end
   end
 
-  defp can_see(grid, x, y, guard_x, guard_y) do
-      dx = x - guard_x
-      dy = y - guard_y
-      cond do
-          dx == 0 -> can_see_x(grid, x, min(y, guard_y) + 1, max(y, guard_y))
-          dy == 0 -> can_see_y(grid, min(x, guard_x) + 1, max(x, guard_x), y)
-          true -> false
-      end
-  end
-
-  defp can_see_x(grid, x, i, max_y) when i >= max_y, do: true
-  defp can_see_x(grid, x, i, max_y) do
-      case Enum.at(Enum.at(grid, x), i) do
-          -1 -> false
-          _ -> can_see_x(grid, x, i + 1, max_y)
-      end
-  end
-
-  defp can_see_y(grid, i, max_x, y) when i >= max_x, do: true
-  defp can_see_y(grid, i, max_x, y) do
-      case Enum.at(Enum.at(grid, i), y) do
-          -1 -> false
-          _ -> can_see_y(grid, i + 1, max_x, y)
-      end
-  end
+  defp scan(_row, _col, _dr, _dc, _m, _n, grid), do: grid
 end
 {% endraw %}
 {% endhighlight %}
@@ -2407,9 +1257,5 @@ end
 
 ### Complexity Analysis
 
-- **Time Complexity:** O(m * n + g * (m + n))
-
-- **Space Complexity:** O(m * n)
-
-</div>
-</details>
+- **Time Complexity:** O(m * n + g * (m + n)), where g is the number of guards. Initializing and counting the grid takes O(m * n), and scanning in four directions from every guard takes at most O(m + n) per guard.
+- **Space Complexity:** O(m * n) for the grid state.

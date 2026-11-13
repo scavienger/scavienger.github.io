@@ -6,6 +6,162 @@ categories: [LeetCode, Medium]
 tags: ["Array", "Dynamic Programming", "Greedy", "Sorting"]
 difficulty: Medium
 leetcode_url: https://leetcode.com/problems/greatest-sum-divisible-by-three/
+ai_solutions:
+  - solutions:
+      cpp: "class Solution {\npublic:\n    int maxSumDivThree(vector<int>& nums) {\n\
+        \        const int neg = -1000000000;\n        vector<int> dp = {0, neg, neg};\n\
+        \        for (int x : nums) {\n            vector<int> next = dp;\n        \
+        \    for (int r = 0; r < 3; ++r) {\n                if (dp[r] != neg) {\n  \
+        \                  int nr = (r + x) % 3;\n                    next[nr] = max(next[nr],\
+        \ dp[r] + x);\n                }\n            }\n            dp = next;\n  \
+        \      }\n        return dp[0];\n    }\n};"
+      java: "class Solution {\n    public int maxSumDivThree(int[] nums) {\n       \
+        \ final int neg = -1000000000;\n        int[] dp = {0, neg, neg};\n        for\
+        \ (int x : nums) {\n            int[] next = dp.clone();\n            for (int\
+        \ r = 0; r < 3; r++) {\n                if (dp[r] != neg) {\n              \
+        \      int nr = (r + x) % 3;\n                    next[nr] = Math.max(next[nr],\
+        \ dp[r] + x);\n                }\n            }\n            dp = next;\n  \
+        \      }\n        return dp[0];\n    }\n}"
+      python: "class Solution(object):\n    def maxSumDivThree(self, nums):\n      \
+        \  \"\"\"\n        :type nums: List[int]\n        :rtype: int\n        \"\"\"\
+        \n        neg = -10**9\n        dp = [0, neg, neg]\n        for x in nums:\n\
+        \            next_dp = dp[:]\n            for r in range(3):\n             \
+        \   if dp[r] != neg:\n                    nr = (r + x) % 3\n               \
+        \     next_dp[nr] = max(next_dp[nr], dp[r] + x)\n            dp = next_dp\n\
+        \        return dp[0]"
+      python3: "class Solution:\n    def maxSumDivThree(self, nums: list[int]) -> int:\n\
+        \        neg = -10**9\n        dp = [0, neg, neg]\n        for x in nums:\n\
+        \            next_dp = dp[:]\n            for r in range(3):\n             \
+        \   if dp[r] != neg:\n                    nr = (r + x) % 3\n               \
+        \     next_dp[nr] = max(next_dp[nr], dp[r] + x)\n            dp = next_dp\n\
+        \        return dp[0]"
+      c: "int maxSumDivThree(int* nums, int numsSize) {\n    const int neg = -1000000000;\n\
+        \    int dp[3] = {0, neg, neg};\n    for (int i = 0; i < numsSize; ++i) {\n\
+        \        int next[3] = {dp[0], dp[1], dp[2]};\n        for (int r = 0; r < 3;\
+        \ ++r) {\n            if (dp[r] != neg) {\n                int nr = (r + nums[i])\
+        \ % 3;\n                int candidate = dp[r] + nums[i];\n                if\
+        \ (candidate > next[nr]) {\n                    next[nr] = candidate;\n    \
+        \            }\n            }\n        }\n        dp[0] = next[0];\n       \
+        \ dp[1] = next[1];\n        dp[2] = next[2];\n    }\n    return dp[0];\n}"
+      csharp: "public class Solution {\n    public int MaxSumDivThree(int[] nums) {\n\
+        \        int neg = -1000000000;\n        int[] dp = { 0, neg, neg };\n     \
+        \   foreach (int x in nums) {\n            int[] nextDp = (int[])dp.Clone();\n\
+        \            for (int r = 0; r < 3; r++) {\n                if (dp[r] != neg)\
+        \ {\n                    int nr = (r + x) % 3;\n                    nextDp[nr]\
+        \ = Math.Max(nextDp[nr], dp[r] + x);\n                }\n            }\n   \
+        \         dp = nextDp;\n        }\n        return dp[0];\n    }\n}"
+      javascript: "/**\n * @param {number[]} nums\n * @return {number}\n */\nvar maxSumDivThree\
+        \ = function(nums) {\n    const neg = -1000000000;\n    let dp = [0, neg, neg];\n\
+        \    for (const x of nums) {\n        const nextDp = dp.slice();\n        for\
+        \ (let r = 0; r < 3; r++) {\n            if (dp[r] !== neg) {\n            \
+        \    const nr = (r + x) % 3;\n                nextDp[nr] = Math.max(nextDp[nr],\
+        \ dp[r] + x);\n            }\n        }\n        dp = nextDp;\n    }\n    return\
+        \ dp[0];\n};"
+      typescript: "function maxSumDivThree(nums: number[]): number {\n    const neg\
+        \ = -1000000000;\n    let dp = [0, neg, neg];\n    for (const x of nums) {\n\
+        \        const nextDp = dp.slice();\n        for (let r = 0; r < 3; r++) {\n\
+        \            if (dp[r] !== neg) {\n                const nr = (r + x) % 3;\n\
+        \                nextDp[nr] = Math.max(nextDp[nr], dp[r] + x);\n           \
+        \ }\n        }\n        dp = nextDp;\n    }\n    return dp[0];\n};"
+      php: "class Solution {\n\n    /**\n     * @param Integer[] $nums\n     * @return\
+        \ Integer\n     */\n    function maxSumDivThree($nums) {\n        $neg = -1000000000;\n\
+        \        $dp = [0, $neg, $neg];\n        foreach ($nums as $x) {\n         \
+        \   $nextDp = $dp;\n            for ($r = 0; $r < 3; $r++) {\n             \
+        \   if ($dp[$r] !== $neg) {\n                    $nr = ($r + $x) % 3;\n    \
+        \                $nextDp[$nr] = max($nextDp[$nr], $dp[$r] + $x);\n         \
+        \       }\n            }\n            $dp = $nextDp;\n        }\n        return\
+        \ $dp[0];\n    }\n}"
+      swift: "class Solution {\n    func maxSumDivThree(_ nums: [Int]) -> Int {\n  \
+        \      let neg = -1000000000\n        var dp = [0, neg, neg]\n        for x\
+        \ in nums {\n            var nextDp = dp\n            for r in 0..<3 {\n   \
+        \             if dp[r] != neg {\n                    let nr = (r + x) % 3\n\
+        \                    nextDp[nr] = max(nextDp[nr], dp[r] + x)\n             \
+        \   }\n            }\n            dp = nextDp\n        }\n        return dp[0]\n\
+        \    }\n}"
+      kotlin: "class Solution {\n    fun maxSumDivThree(nums: IntArray): Int {\n   \
+        \     val neg = -1_000_000_000\n        var dp = intArrayOf(0, neg, neg)\n \
+        \       for (x in nums) {\n            val nextDp = dp.copyOf()\n          \
+        \  for (r in 0..2) {\n                if (dp[r] != neg) {\n                \
+        \    val nr = (r + x) % 3\n                    nextDp[nr] = maxOf(nextDp[nr],\
+        \ dp[r] + x)\n                }\n            }\n            dp = nextDp\n  \
+        \      }\n        return dp[0]\n    }\n}"
+      dart: "class Solution {\n  int maxSumDivThree(List<int> nums) {\n    const neg\
+        \ = -1000000000;\n    var dp = [0, neg, neg];\n    for (final x in nums) {\n\
+        \      final nextDp = List<int>.from(dp);\n      for (var r = 0; r < 3; r++)\
+        \ {\n        if (dp[r] != neg) {\n          final nr = (r + x) % 3;\n      \
+        \    if (dp[r] + x > nextDp[nr]) {\n            nextDp[nr] = dp[r] + x;\n  \
+        \        }\n        }\n      }\n      dp = nextDp;\n    }\n    return dp[0];\n\
+        \  }\n}"
+      go: "func maxSumDivThree(nums []int) int {\n\tconst neg = -1000000000\n\tdp :=\
+        \ [3]int{0, neg, neg}\n\tfor _, x := range nums {\n\t\tnextDp := dp\n\t\tfor\
+        \ r := 0; r < 3; r++ {\n\t\t\tif dp[r] != neg {\n\t\t\t\tnr := (r + x) % 3\n\
+        \t\t\t\tif dp[r]+x > nextDp[nr] {\n\t\t\t\t\tnextDp[nr] = dp[r] + x\n\t\t\t\t\
+        }\n\t\t\t}\n\t\t}\n\t\tdp = nextDp\n\t}\n\treturn dp[0]\n}"
+      ruby: "# @param {Integer[]} nums\n# @return {Integer}\ndef max_sum_div_three(nums)\n\
+        \  neg = -1_000_000_000\n  dp = [0, neg, neg]\n  nums.each do |x|\n    next_dp\
+        \ = dp.dup\n    3.times do |r|\n      if dp[r] != neg\n        nr = (r + x)\
+        \ % 3\n        next_dp[nr] = [next_dp[nr], dp[r] + x].max\n      end\n    end\n\
+        \    dp = next_dp\n  end\n  dp[0]\nend"
+      scala: "object Solution {\n    def maxSumDivThree(nums: Array[Int]): Int = {\n\
+        \        val neg = -1000000000\n        var dp = Array(0, neg, neg)\n      \
+        \  for (x <- nums) {\n            val nextDp = dp.clone()\n            for (r\
+        \ <- 0 until 3) {\n                if (dp(r) != neg) {\n                   \
+        \ val nr = (r + x) % 3\n                    nextDp(nr) = nextDp(nr).max(dp(r)\
+        \ + x)\n                }\n            }\n            dp = nextDp\n        }\n\
+        \        dp(0)\n    }\n}"
+      rust: "impl Solution {\n    pub fn max_sum_div_three(nums: Vec<i32>) -> i32 {\n\
+        \        let neg = i32::MIN / 2;\n        let mut dp = [0, neg, neg];\n    \
+        \    for x in nums {\n            let mut next_dp = dp;\n            for r in\
+        \ 0..3 {\n                if dp[r] != neg {\n                    let nr = (r\
+        \ + x as usize) % 3;\n                    next_dp[nr] = next_dp[nr].max(dp[r]\
+        \ + x);\n                }\n            }\n            dp = next_dp;\n     \
+        \   }\n        dp[0]\n    }\n}"
+      racket: "(define/contract (max-sum-div-three nums)\n  (-> (listof exact-integer?)\
+        \ exact-integer?)\n  (let loop ([remaining nums] [dp (vector 0 -1000000000 -1000000000)])\n\
+        \    (if (null? remaining)\n        (vector-ref dp 0)\n        (let* ([x (car\
+        \ remaining)]\n               [next-dp (vector-copy dp)])\n          (for ([r\
+        \ (in-range 3)])\n            (define best (vector-ref dp r))\n            (unless\
+        \ (= best -1000000000)\n              (define nr (modulo (+ r x) 3))\n     \
+        \         (vector-set! next-dp nr\n                           (max (vector-ref\
+        \ next-dp nr) (+ best x))))\n          (loop (cdr remaining) next-dp)))))"
+      erlang: "-spec max_sum_div_three(Nums :: [integer()]) -> integer().\nmax_sum_div_three(Nums)\
+        \ ->\n  lists:foldl(\n    fun(X, Dp) ->\n      lists:foldl(\n        fun(R,\
+        \ NextDp) ->\n          Best = lists:nth(R + 1, Dp),\n          case Best of\n\
+        \            -1000000000 -> NextDp;\n            _ ->\n              Nr = (R\
+        \ + X) rem 3,\n              Updated = max(lists:nth(Nr + 1, NextDp), Best +\
+        \ X),\n              lists:sublist(NextDp, Nr) ++ [Updated] ++ lists:nthtail(Nr\
+        \ + 1, NextDp)\n          end\n        end,\n        Dp,\n        [0, 1, 2]\n\
+        \      )\n    end,\n    [0, -1000000000, -1000000000],\n    Nums\n  ),\n  element(1,\
+        \ list_to_tuple(\n    lists:foldl(\n      fun(X, Dp) ->\n        lists:foldl(\n\
+        \          fun(R, NextDp) ->\n            Best = lists:nth(R + 1, Dp),\n   \
+        \         case Best of\n              -1000000000 -> NextDp;\n             \
+        \ _ ->\n                Nr = (R + X) rem 3,\n                Updated = max(lists:nth(Nr\
+        \ + 1, NextDp), Best + X),\n                lists:sublist(NextDp, Nr) ++ [Updated]\
+        \ ++ lists:nthtail(Nr + 1, NextDp)\n            end\n          end,\n      \
+        \    Dp,\n          [0, 1, 2]\n        )\n      end,\n      [0, -1000000000,\
+        \ -1000000000],\n      Nums\n    end\n  ))."
+      elixir: "defmodule Solution do\n  @spec max_sum_div_three(nums :: [integer]) ::\
+        \ integer\n  def max_sum_div_three(nums) do\n    neg = -1_000_000_000\n    dp\
+        \ = Enum.reduce(nums, [0, neg, neg], fn x, dp ->\n      Enum.reduce(0..2, dp,\
+        \ fn r, next_dp ->\n        best = Enum.at(dp, r)\n        if best == neg do\n\
+        \          next_dp\n        else\n          nr = rem(r + x, 3)\n          List.replace_at(next_dp,\
+        \ nr, max(Enum.at(next_dp, nr), best + x))\n        end\n      end)\n    end)\n\
+        \    Enum.at(dp, 0)\n  end\nend"
+    approach: 'Maintain the best sum found for each remainder modulo 3. Initialize the
+      states as [0, -infinity, -infinity], since choosing no elements gives remainder
+      0. For each number, create a fresh copy of the states so it can either be skipped
+      or added once.
+
+
+      When adding a number, update the state for the resulting remainder using the previous
+      best sum plus that number. After processing every element, the best sum divisible
+      by 3 is the state for remainder 0.'
+    time_complexity: O(n), where n is the number of elements, with three remainder states
+      processed for each element.
+    space_complexity: O(1), using a fixed number of states regardless of the array length.
+    elapsed_time: 77.30283951759338
+    model: gpt-6-luna
+    generated_at: '2026-11-13 00:11:11 '
 ---
 
 ## Problem #1262: Greatest Sum Divisible by Three
@@ -55,69 +211,56 @@ leetcode_url: https://leetcode.com/problems/greatest-sum-divisible-by-three/
 
 1. Represent the state as DP[pos][mod]: maximum possible sum starting in the position "pos" in the array where the current sum modulo 3 is equal to mod.
 
-## 🤖 AI-Generated Solutions
-
-We've generated solutions using multiple AI models. Click to expand each solution:
-
-
-<details class="ai-solution-card" open markdown="1">
-<summary class="ai-solution-header">
-  <span class="ai-model-badge">✨ Solution from <strong>gemini-2.5-flash</strong></span>
-  <small class="solution-timestamp">(2025-11-25 03:30:00 UTC)</small>
-</summary>
-
-<div class="ai-solution-content">
+## 🤖 AI-Generated Solution (gpt-6-luna)
 
 ### Approach
 
-The problem asks for the maximum possible sum of elements from an array `nums` such that the sum is divisible by three. This can be efficiently solved using dynamic programming. We maintain a small DP array, `dp`, of size 3, where `dp[i]` represents the maximum sum encountered so far that has a remainder of `i` when divided by 3.
+Maintain the best sum found for each remainder modulo 3. Initialize the states as [0, -infinity, -infinity], since choosing no elements gives remainder 0. For each number, create a fresh copy of the states so it can either be skipped or added once.
 
-We initialize `dp = [0, 0, 0]`. `dp[0]` is initialized to 0 because an empty sum (0) is divisible by 3. `dp[1]` and `dp[2]` are also initialized to 0. This works because all numbers in `nums` are positive (`nums[i] >= 1`). If we add any positive number to a sum of 0, the new sum will be positive. The `max` operation will ensure we always pick the largest valid sum. If no numbers can form a sum with remainder 1 or 2, `dp[1]` or `dp[2]` might remain 0, which is fine as they won't contribute to the final `dp[0]` unless combined with other numbers to form a sum divisible by 3.
-
-We iterate through each `num` in the input array `nums`. For each `num`, we consider how adding it affects the current maximum sums stored in `dp`. It's crucial to use the `dp` values from the *previous* state (before considering the current `num`) to calculate the *new* `dp` values. To achieve this, we create a temporary copy of the `dp` array, say `temp_dp`, at the beginning of each iteration for `num`. Then, for each possible remainder `rem` (0, 1, 2), we calculate `current_sum = temp_dp[rem] + num`. The new remainder for this `current_sum` will be `new_rem = current_sum % 3`. We then update `dp[new_rem]` by taking the maximum of its current value and `current_sum`. After processing all `num`s, `dp[0]` will hold the maximum sum divisible by three.
+When adding a number, update the state for the resulting remainder using the previous best sum plus that number. After processing every element, the best sum divisible by 3 is the state for remainder 0.
 
 ### Code
 
 <div class="code-tabs" markdown="0">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-cpp-gemini-2-5-flash" checked>
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-java-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-python-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-python3-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-c-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-csharp-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-javascript-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-typescript-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-php-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-swift-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-kotlin-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-dart-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-go-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-ruby-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-scala-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-rust-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-racket-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-erlang-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-elixir-gemini-2-5-flash">
+  <input type="radio" name="code-lang" id="lang-cpp" checked>
+  <input type="radio" name="code-lang" id="lang-java">
+  <input type="radio" name="code-lang" id="lang-python">
+  <input type="radio" name="code-lang" id="lang-python3">
+  <input type="radio" name="code-lang" id="lang-c">
+  <input type="radio" name="code-lang" id="lang-csharp">
+  <input type="radio" name="code-lang" id="lang-javascript">
+  <input type="radio" name="code-lang" id="lang-typescript">
+  <input type="radio" name="code-lang" id="lang-php">
+  <input type="radio" name="code-lang" id="lang-swift">
+  <input type="radio" name="code-lang" id="lang-kotlin">
+  <input type="radio" name="code-lang" id="lang-dart">
+  <input type="radio" name="code-lang" id="lang-go">
+  <input type="radio" name="code-lang" id="lang-ruby">
+  <input type="radio" name="code-lang" id="lang-scala">
+  <input type="radio" name="code-lang" id="lang-rust">
+  <input type="radio" name="code-lang" id="lang-racket">
+  <input type="radio" name="code-lang" id="lang-erlang">
+  <input type="radio" name="code-lang" id="lang-elixir">
   <div class="tab-labels">
-    <label for="lang-cpp-gemini-2-5-flash">C++</label>
-    <label for="lang-java-gemini-2-5-flash">Java</label>
-    <label for="lang-python-gemini-2-5-flash">Python</label>
-    <label for="lang-python3-gemini-2-5-flash">Python3</label>
-    <label for="lang-c-gemini-2-5-flash">C</label>
-    <label for="lang-csharp-gemini-2-5-flash">C#</label>
-    <label for="lang-javascript-gemini-2-5-flash">JavaScript</label>
-    <label for="lang-typescript-gemini-2-5-flash">TypeScript</label>
-    <label for="lang-php-gemini-2-5-flash">PHP</label>
-    <label for="lang-swift-gemini-2-5-flash">Swift</label>
-    <label for="lang-kotlin-gemini-2-5-flash">Kotlin</label>
-    <label for="lang-dart-gemini-2-5-flash">Dart</label>
-    <label for="lang-go-gemini-2-5-flash">Go</label>
-    <label for="lang-ruby-gemini-2-5-flash">Ruby</label>
-    <label for="lang-scala-gemini-2-5-flash">Scala</label>
-    <label for="lang-rust-gemini-2-5-flash">Rust</label>
-    <label for="lang-racket-gemini-2-5-flash">Racket</label>
-    <label for="lang-erlang-gemini-2-5-flash">Erlang</label>
-    <label for="lang-elixir-gemini-2-5-flash">Elixir</label>
+    <label for="lang-cpp">C++</label>
+    <label for="lang-java">Java</label>
+    <label for="lang-python">Python</label>
+    <label for="lang-python3">Python3</label>
+    <label for="lang-c">C</label>
+    <label for="lang-csharp">C#</label>
+    <label for="lang-javascript">JavaScript</label>
+    <label for="lang-typescript">TypeScript</label>
+    <label for="lang-php">PHP</label>
+    <label for="lang-swift">Swift</label>
+    <label for="lang-kotlin">Kotlin</label>
+    <label for="lang-dart">Dart</label>
+    <label for="lang-go">Go</label>
+    <label for="lang-ruby">Ruby</label>
+    <label for="lang-scala">Scala</label>
+    <label for="lang-rust">Rust</label>
+    <label for="lang-racket">Racket</label>
+    <label for="lang-erlang">Erlang</label>
+    <label for="lang-elixir">Elixir</label>
   </div>
 
   <div class="tab-panel" data-lang="cpp">
@@ -126,19 +269,19 @@ We iterate through each `num` in the input array `nums`. For each `num`, we cons
 {% raw %}
 class Solution {
 public:
-    int maxSumDivThree(std::vector<int>& nums) {
-        std::vector<int> dp(3, 0); // dp[i] stores the maximum sum with remainder i
-
-        for (int num : nums) {
-            std::vector<int> temp_dp = dp; // Create a temporary copy of dp for current iteration
-            for (int rem = 0; rem < 3; ++rem) {
-                // current_sum will always be non-negative because nums[i] >= 1 and dp values are non-negative.
-                int current_sum = temp_dp[rem] + num;
-                int new_rem = current_sum % 3;
-                dp[new_rem] = std::max(dp[new_rem], current_sum);
+    int maxSumDivThree(vector<int>& nums) {
+        const int neg = -1000000000;
+        vector<int> dp = {0, neg, neg};
+        for (int x : nums) {
+            vector<int> next = dp;
+            for (int r = 0; r < 3; ++r) {
+                if (dp[r] != neg) {
+                    int nr = (r + x) % 3;
+                    next[nr] = max(next[nr], dp[r] + x);
+                }
             }
+            dp = next;
         }
-
         return dp[0];
     }
 };
@@ -153,20 +296,18 @@ public:
 {% raw %}
 class Solution {
     public int maxSumDivThree(int[] nums) {
-        int[] dp = new int[3]; // dp[i] stores the maximum sum with remainder i
-
-        for (int num : nums) {
-            int[] temp_dp = new int[3];
-            System.arraycopy(dp, 0, temp_dp, 0, 3); // Create a temporary copy of dp for current iteration
-
-            for (int rem = 0; rem < 3; ++rem) {
-                // current_sum will always be non-negative because nums[i] >= 1 and dp values are non-negative.
-                int current_sum = temp_dp[rem] + num;
-                int new_rem = current_sum % 3;
-                dp[new_rem] = Math.max(dp[new_rem], current_sum);
+        final int neg = -1000000000;
+        int[] dp = {0, neg, neg};
+        for (int x : nums) {
+            int[] next = dp.clone();
+            for (int r = 0; r < 3; r++) {
+                if (dp[r] != neg) {
+                    int nr = (r + x) % 3;
+                    next[nr] = Math.max(next[nr], dp[r] + x);
+                }
             }
+            dp = next;
         }
-
         return dp[0];
     }
 }
@@ -179,18 +320,21 @@ class Solution {
 
 {% highlight python %}
 {% raw %}
-class Solution:
-    def maxSumDivThree(self, nums: List[int]) -> int:
-        dp = [0, 0, 0] # dp[i] stores the maximum sum with remainder i
-
-        for num in nums:
-            temp_dp = dp[:] # Create a temporary copy of dp for current iteration
-            for rem in range(3):
-                # current_sum will always be non-negative because nums[i] >= 1 and dp values are non-negative.
-                current_sum = temp_dp[rem] + num
-                new_rem = current_sum % 3
-                dp[new_rem] = max(dp[new_rem], current_sum)
-
+class Solution(object):
+    def maxSumDivThree(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        neg = -10**9
+        dp = [0, neg, neg]
+        for x in nums:
+            next_dp = dp[:]
+            for r in range(3):
+                if dp[r] != neg:
+                    nr = (r + x) % 3
+                    next_dp[nr] = max(next_dp[nr], dp[r] + x)
+            dp = next_dp
         return dp[0]
 {% endraw %}
 {% endhighlight %}
@@ -202,17 +346,16 @@ class Solution:
 {% highlight python %}
 {% raw %}
 class Solution:
-    def maxSumDivThree(self, nums: List[int]) -> int:
-        dp = [0, 0, 0] # dp[i] stores the maximum sum with remainder i
-
-        for num in nums:
-            temp_dp = dp[:] # Create a temporary copy of dp for current iteration
-            for rem in range(3):
-                # current_sum will always be non-negative because nums[i] >= 1 and dp values are non-negative.
-                current_sum = temp_dp[rem] + num
-                new_rem = current_sum % 3
-                dp[new_rem] = max(dp[new_rem], current_sum)
-
+    def maxSumDivThree(self, nums: list[int]) -> int:
+        neg = -10**9
+        dp = [0, neg, neg]
+        for x in nums:
+            next_dp = dp[:]
+            for r in range(3):
+                if dp[r] != neg:
+                    nr = (r + x) % 3
+                    next_dp[nr] = max(next_dp[nr], dp[r] + x)
+            dp = next_dp
         return dp[0]
 {% endraw %}
 {% endhighlight %}
@@ -223,31 +366,24 @@ class Solution:
 
 {% highlight c %}
 {% raw %}
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-// Helper for max function
-int max(int a, int b) {
-    return a > b ? a : b;
-}
-
 int maxSumDivThree(int* nums, int numsSize) {
-    int dp[3] = {0, 0, 0}; // dp[i] stores the maximum sum with remainder i
-
+    const int neg = -1000000000;
+    int dp[3] = {0, neg, neg};
     for (int i = 0; i < numsSize; ++i) {
-        int num = nums[i];
-        int temp_dp[3];
-        memcpy(temp_dp, dp, sizeof(int) * 3); // Create a temporary copy of dp for current iteration
-
-        for (int rem = 0; rem < 3; ++rem) {
-            // current_sum will always be non-negative because nums[i] >= 1 and dp values are non-negative.
-            int current_sum = temp_dp[rem] + num;
-            int new_rem = current_sum % 3;
-            dp[new_rem] = max(dp[new_rem], current_sum);
+        int next[3] = {dp[0], dp[1], dp[2]};
+        for (int r = 0; r < 3; ++r) {
+            if (dp[r] != neg) {
+                int nr = (r + nums[i]) % 3;
+                int candidate = dp[r] + nums[i];
+                if (candidate > next[nr]) {
+                    next[nr] = candidate;
+                }
+            }
         }
+        dp[0] = next[0];
+        dp[1] = next[1];
+        dp[2] = next[2];
     }
-
     return dp[0];
 }
 {% endraw %}
@@ -261,20 +397,18 @@ int maxSumDivThree(int* nums, int numsSize) {
 {% raw %}
 public class Solution {
     public int MaxSumDivThree(int[] nums) {
-        int[] dp = new int[3]; // dp[i] stores the maximum sum with remainder i
-
-        foreach (int num in nums) {
-            int[] temp_dp = new int[3];
-            Array.Copy(dp, temp_dp, 3); // Create a temporary copy of dp for current iteration
-
-            for (int rem = 0; rem < 3; ++rem) {
-                // current_sum will always be non-negative because nums[i] >= 1 and dp values are non-negative.
-                int current_sum = temp_dp[rem] + num;
-                int new_rem = current_sum % 3;
-                dp[new_rem] = Math.Max(dp[new_rem], current_sum);
+        int neg = -1000000000;
+        int[] dp = { 0, neg, neg };
+        foreach (int x in nums) {
+            int[] nextDp = (int[])dp.Clone();
+            for (int r = 0; r < 3; r++) {
+                if (dp[r] != neg) {
+                    int nr = (r + x) % 3;
+                    nextDp[nr] = Math.Max(nextDp[nr], dp[r] + x);
+                }
             }
+            dp = nextDp;
         }
-
         return dp[0];
     }
 }
@@ -292,18 +426,18 @@ public class Solution {
  * @return {number}
  */
 var maxSumDivThree = function(nums) {
-    let dp = [0, 0, 0]; // dp[i] stores the maximum sum with remainder i
-
-    for (let num of nums) {
-        let temp_dp = [...dp]; // Create a temporary copy of dp for current iteration
-        for (let rem = 0; rem < 3; ++rem) {
-            // current_sum will always be non-negative because nums[i] >= 1 and dp values are non-negative.
-            let current_sum = temp_dp[rem] + num;
-            let new_rem = current_sum % 3;
-            dp[new_rem] = Math.max(dp[new_rem], current_sum);
+    const neg = -1000000000;
+    let dp = [0, neg, neg];
+    for (const x of nums) {
+        const nextDp = dp.slice();
+        for (let r = 0; r < 3; r++) {
+            if (dp[r] !== neg) {
+                const nr = (r + x) % 3;
+                nextDp[nr] = Math.max(nextDp[nr], dp[r] + x);
+            }
         }
+        dp = nextDp;
     }
-
     return dp[0];
 };
 {% endraw %}
@@ -316,20 +450,20 @@ var maxSumDivThree = function(nums) {
 {% highlight typescript %}
 {% raw %}
 function maxSumDivThree(nums: number[]): number {
-    let dp: number[] = [0, 0, 0]; // dp[i] stores the maximum sum with remainder i
-
-    for (const num of nums) {
-        const temp_dp: number[] = [...dp]; // Create a temporary copy of dp for current iteration
-        for (let rem = 0; rem < 3; ++rem) {
-            // current_sum will always be non-negative because nums[i] >= 1 and dp values are non-negative.
-            const current_sum: number = temp_dp[rem] + num;
-            const new_rem: number = current_sum % 3;
-            dp[new_rem] = Math.max(dp[new_rem], current_sum);
+    const neg = -1000000000;
+    let dp = [0, neg, neg];
+    for (const x of nums) {
+        const nextDp = dp.slice();
+        for (let r = 0; r < 3; r++) {
+            if (dp[r] !== neg) {
+                const nr = (r + x) % 3;
+                nextDp[nr] = Math.max(nextDp[nr], dp[r] + x);
+            }
         }
+        dp = nextDp;
     }
-
     return dp[0];
-}
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -340,23 +474,24 @@ function maxSumDivThree(nums: number[]): number {
 {% highlight php %}
 {% raw %}
 class Solution {
+
     /**
      * @param Integer[] $nums
      * @return Integer
      */
     function maxSumDivThree($nums) {
-        $dp = [0, 0, 0]; // dp[i] stores the maximum sum with remainder i
-
-        foreach ($nums as $num) {
-            $temp_dp = $dp; // Create a temporary copy of dp for current iteration
-            for ($rem = 0; $rem < 3; ++$rem) {
-                // current_sum will always be non-negative because nums[i] >= 1 and dp values are non-negative.
-                $current_sum = $temp_dp[$rem] + $num;
-                $new_rem = $current_sum % 3;
-                $dp[$new_rem] = max($dp[$new_rem], $current_sum);
+        $neg = -1000000000;
+        $dp = [0, $neg, $neg];
+        foreach ($nums as $x) {
+            $nextDp = $dp;
+            for ($r = 0; $r < 3; $r++) {
+                if ($dp[$r] !== $neg) {
+                    $nr = ($r + $x) % 3;
+                    $nextDp[$nr] = max($nextDp[$nr], $dp[$r] + $x);
+                }
             }
+            $dp = $nextDp;
         }
-
         return $dp[0];
     }
 }
@@ -371,18 +506,18 @@ class Solution {
 {% raw %}
 class Solution {
     func maxSumDivThree(_ nums: [Int]) -> Int {
-        var dp = [0, 0, 0] // dp[i] stores the maximum sum with remainder i
-
-        for num in nums {
-            var temp_dp = dp // Create a temporary copy of dp for current iteration
-            for rem in 0..<3 {
-                // current_sum will always be non-negative because nums[i] >= 1 and dp values are non-negative.
-                let current_sum = temp_dp[rem] + num
-                let new_rem = current_sum % 3
-                dp[new_rem] = max(dp[new_rem], current_sum)
+        let neg = -1000000000
+        var dp = [0, neg, neg]
+        for x in nums {
+            var nextDp = dp
+            for r in 0..<3 {
+                if dp[r] != neg {
+                    let nr = (r + x) % 3
+                    nextDp[nr] = max(nextDp[nr], dp[r] + x)
+                }
             }
+            dp = nextDp
         }
-
         return dp[0]
     }
 }
@@ -397,18 +532,18 @@ class Solution {
 {% raw %}
 class Solution {
     fun maxSumDivThree(nums: IntArray): Int {
-        val dp = IntArray(3) { 0 } // dp[i] stores the maximum sum with remainder i
-
-        for (num in nums) {
-            val temp_dp = dp.copyOf() // Create a temporary copy of dp for current iteration
-            for (rem in 0 until 3) {
-                // current_sum will always be non-negative because nums[i] >= 1 and dp values are non-negative.
-                val current_sum = temp_dp[rem] + num
-                val new_rem = current_sum % 3
-                dp[new_rem] = Math.max(dp[new_rem], current_sum)
+        val neg = -1_000_000_000
+        var dp = intArrayOf(0, neg, neg)
+        for (x in nums) {
+            val nextDp = dp.copyOf()
+            for (r in 0..2) {
+                if (dp[r] != neg) {
+                    val nr = (r + x) % 3
+                    nextDp[nr] = maxOf(nextDp[nr], dp[r] + x)
+                }
             }
+            dp = nextDp
         }
-
         return dp[0]
     }
 }
@@ -423,18 +558,20 @@ class Solution {
 {% raw %}
 class Solution {
   int maxSumDivThree(List<int> nums) {
-    List<int> dp = [0, 0, 0]; // dp[i] stores the maximum sum with remainder i
-
-    for (int num in nums) {
-      List<int> temp_dp = List.from(dp); // Create a temporary copy of dp for current iteration
-      for (int rem = 0; rem < 3; ++rem) {
-        // current_sum will always be non-negative because nums[i] >= 1 and dp values are non-negative.
-        int current_sum = temp_dp[rem] + num;
-        int new_rem = current_sum % 3;
-        dp[new_rem] = Math.max(dp[new_rem], current_sum);
+    const neg = -1000000000;
+    var dp = [0, neg, neg];
+    for (final x in nums) {
+      final nextDp = List<int>.from(dp);
+      for (var r = 0; r < 3; r++) {
+        if (dp[r] != neg) {
+          final nr = (r + x) % 3;
+          if (dp[r] + x > nextDp[nr]) {
+            nextDp[nr] = dp[r] + x;
+          }
+        }
       }
+      dp = nextDp;
     }
-
     return dp[0];
   }
 }
@@ -448,23 +585,21 @@ class Solution {
 {% highlight go %}
 {% raw %}
 func maxSumDivThree(nums []int) int {
-    dp := [3]int{0, 0, 0} // dp[i] stores the maximum sum with remainder i
-
-    for _, num := range nums {
-        temp_dp := [3]int{}
-        copy(temp_dp[:], dp[:]) // Create a temporary copy of dp for current iteration
-
-        for rem := 0; rem < 3; rem++ {
-            // current_sum will always be non-negative because nums[i] >= 1 and dp values are non-negative.
-            current_sum := temp_dp[rem] + num
-            new_rem := current_sum % 3
-            if current_sum > dp[new_rem] {
-                dp[new_rem] = current_sum
-            }
-        }
-    }
-
-    return dp[0]
+	const neg = -1000000000
+	dp := [3]int{0, neg, neg}
+	for _, x := range nums {
+		nextDp := dp
+		for r := 0; r < 3; r++ {
+			if dp[r] != neg {
+				nr := (r + x) % 3
+				if dp[r]+x > nextDp[nr] {
+					nextDp[nr] = dp[r] + x
+				}
+			}
+		}
+		dp = nextDp
+	}
+	return dp[0]
 }
 {% endraw %}
 {% endhighlight %}
@@ -475,24 +610,22 @@ func maxSumDivThree(nums []int) int {
 
 {% highlight ruby %}
 {% raw %}
-class Solution
-    # @param {Integer[]} nums
-    # @return {Integer}
-    def max_sum_div_three(nums)
-        dp = [0, 0, 0] # dp[i] stores the maximum sum with remainder i
-
-        nums.each do |num|
-            temp_dp = dp.dup # Create a temporary copy of dp for current iteration
-            (0..2).each do |rem|
-                # current_sum will always be non-negative because nums[i] >= 1 and dp values are non-negative.
-                current_sum = temp_dp[rem] + num
-                new_rem = current_sum % 3
-                dp[new_rem] = [dp[new_rem], current_sum].max
-            end
-        end
-
-        return dp[0]
+# @param {Integer[]} nums
+# @return {Integer}
+def max_sum_div_three(nums)
+  neg = -1_000_000_000
+  dp = [0, neg, neg]
+  nums.each do |x|
+    next_dp = dp.dup
+    3.times do |r|
+      if dp[r] != neg
+        nr = (r + x) % 3
+        next_dp[nr] = [next_dp[nr], dp[r] + x].max
+      end
     end
+    dp = next_dp
+  end
+  dp[0]
 end
 {% endraw %}
 {% endhighlight %}
@@ -505,18 +638,18 @@ end
 {% raw %}
 object Solution {
     def maxSumDivThree(nums: Array[Int]): Int = {
-        var dp = Array(0, 0, 0) // dp(i) stores the maximum sum with remainder i
-
-        for (num <- nums) {
-            val temp_dp = dp.clone() // Create a temporary copy of dp for current iteration
-            for (rem <- 0 until 3) {
-                // current_sum will always be non-negative because nums(i) >= 1 and dp values are non-negative.
-                val current_sum = temp_dp(rem) + num
-                val new_rem = current_sum % 3
-                dp(new_rem) = math.max(dp(new_rem), current_sum)
+        val neg = -1000000000
+        var dp = Array(0, neg, neg)
+        for (x <- nums) {
+            val nextDp = dp.clone()
+            for (r <- 0 until 3) {
+                if (dp(r) != neg) {
+                    val nr = (r + x) % 3
+                    nextDp(nr) = nextDp(nr).max(dp(r) + x)
+                }
             }
+            dp = nextDp
         }
-
         dp(0)
     }
 }
@@ -531,18 +664,18 @@ object Solution {
 {% raw %}
 impl Solution {
     pub fn max_sum_div_three(nums: Vec<i32>) -> i32 {
-        let mut dp = [0, 0, 0]; // dp[i] stores the maximum sum with remainder i
-
-        for num in nums {
-            let temp_dp = dp; // Create a temporary copy of dp for current iteration
-            for rem in 0..3 {
-                // current_sum will always be non-negative because nums[i] >= 1 and dp values are non-negative.
-                let current_sum = temp_dp[rem] + num;
-                let new_rem = current_sum % 3;
-                dp[new_rem as usize] = dp[new_rem as usize].max(current_sum);
+        let neg = i32::MIN / 2;
+        let mut dp = [0, neg, neg];
+        for x in nums {
+            let mut next_dp = dp;
+            for r in 0..3 {
+                if dp[r] != neg {
+                    let nr = (r + x as usize) % 3;
+                    next_dp[nr] = next_dp[nr].max(dp[r] + x);
+                }
             }
+            dp = next_dp;
         }
-
         dp[0]
     }
 }
@@ -555,20 +688,20 @@ impl Solution {
 
 {% highlight racket %}
 {% raw %}
-#lang racket
 (define/contract (max-sum-div-three nums)
   (-> (listof exact-integer?) exact-integer?)
-  (let loop ((nums nums) (dp (vector 0 0 0)))
-    (if (empty? nums)
+  (let loop ([remaining nums] [dp (vector 0 -1000000000 -1000000000)])
+    (if (null? remaining)
         (vector-ref dp 0)
-        (let* ((num (first nums))
-               (temp-dp (vector-copy dp)))
-          (for ([rem (in-range 3)])
-            (let* ((current-sum (+ (vector-ref temp-dp rem) num))
-                   (new-rem (modulo current-sum 3)))
-              ;; current_sum will always be non-negative because nums[i] >= 1 and dp values are non-negative.
-              (vector-set! dp new-rem (max (vector-ref dp new-rem) current-sum))))
-          (loop (rest nums) dp)))))
+        (let* ([x (car remaining)]
+               [next-dp (vector-copy dp)])
+          (for ([r (in-range 3)])
+            (define best (vector-ref dp r))
+            (unless (= best -1000000000)
+              (define nr (modulo (+ r x) 3))
+              (vector-set! next-dp nr
+                           (max (vector-ref next-dp nr) (+ best x))))
+          (loop (cdr remaining) next-dp)))))
 {% endraw %}
 {% endhighlight %}
 
@@ -578,40 +711,50 @@ impl Solution {
 
 {% highlight erlang %}
 {% raw %}
--module(solution).
--export([max_sum_div_three/1]).
-
+-spec max_sum_div_three(Nums :: [integer()]) -> integer().
 max_sum_div_three(Nums) ->
-    % dp[i] stores the maximum sum with remainder i
-    % Initial state: {0, 0, 0} representing {dp0, dp1, dp2}
-    {Dp0, _, _} = lists:foldl(fun(Num, {Dp0Acc, Dp1Acc, Dp2Acc}) ->
-        % Calculate all possible new sums based on the *current* dp state
-        % and the new 'Num'. These are candidates for the *next* dp state.
-        Candidates = [
-            {Dp0Acc + Num, (Dp0Acc + Num) rem 3},
-            {Dp1Acc + Num, (Dp1Acc + Num) rem 3},
-            {Dp2Acc + Num, (Dp2Acc + Num) rem 3}
-        ],
-
-        % Initialize the next dp state with the current dp state
-        NextDp0 = Dp0Acc,
-        NextDp1 = Dp1Acc,
-        NextDp2 = Dp2Acc,
-
-        % Iterate through candidates and update the next dp state
-        lists:foldl(fun({Sum, Rem}, {Acc0, Acc1, Acc2}) ->
-            % current_sum will always be non-negative because nums[i] >= 1 and dp values are non-negative.
-            case Rem of
-                0 -> {max(Acc0, Sum), Acc1, Acc2};
-                1 -> {Acc0, max(Acc1, Sum), Acc2};
-                2 -> {Acc0, Acc1, max(Acc2, Sum)}
+  lists:foldl(
+    fun(X, Dp) ->
+      lists:foldl(
+        fun(R, NextDp) ->
+          Best = lists:nth(R + 1, Dp),
+          case Best of
+            -1000000000 -> NextDp;
+            _ ->
+              Nr = (R + X) rem 3,
+              Updated = max(lists:nth(Nr + 1, NextDp), Best + X),
+              lists:sublist(NextDp, Nr) ++ [Updated] ++ lists:nthtail(Nr + 1, NextDp)
+          end
+        end,
+        Dp,
+        [0, 1, 2]
+      )
+    end,
+    [0, -1000000000, -1000000000],
+    Nums
+  ),
+  element(1, list_to_tuple(
+    lists:foldl(
+      fun(X, Dp) ->
+        lists:foldl(
+          fun(R, NextDp) ->
+            Best = lists:nth(R + 1, Dp),
+            case Best of
+              -1000000000 -> NextDp;
+              _ ->
+                Nr = (R + X) rem 3,
+                Updated = max(lists:nth(Nr + 1, NextDp), Best + X),
+                lists:sublist(NextDp, Nr) ++ [Updated] ++ lists:nthtail(Nr + 1, NextDp)
             end
-        end, {NextDp0, NextDp1, NextDp2}, Candidates)
-    end, {0, 0, 0}, Nums),
-    Dp0.
-
-max(A, B) when A > B -> A;
-max(A, B) -> B.
+          end,
+          Dp,
+          [0, 1, 2]
+        )
+      end,
+      [0, -1000000000, -1000000000],
+      Nums
+    end
+  )).
 {% endraw %}
 {% endhighlight %}
 
@@ -624,33 +767,19 @@ max(A, B) -> B.
 defmodule Solution do
   @spec max_sum_div_three(nums :: [integer]) :: integer
   def max_sum_div_three(nums) do
-    # dp[i] stores the maximum sum with remainder i
-    # Initial state: {0, 0, 0} representing {dp0, dp1, dp2}
-    Enum.reduce(nums, {0, 0, 0}, fn num, {dp0, dp1, dp2} ->
-      # Calculate all possible new sums based on the *current* dp state
-      # and the new 'num'. These are candidates for the *next* dp state.
-      candidates = [
-        {dp0 + num, rem(dp0 + num, 3)},
-        {dp1 + num, rem(dp1 + num, 3)},
-        {dp2 + num, rem(dp2 + num, 3)}
-      ]
-
-      # Initialize the next dp state with the current dp state
-      next_dp0 = dp0
-      next_dp1 = dp1
-      next_dp2 = dp2
-
-      # Iterate through candidates and update the next dp state
-      Enum.reduce(candidates, {next_dp0, next_dp1, next_dp2}, fn {s, r}, {acc0, acc1, acc2} ->
-        # current_sum will always be non-negative because nums[i] >= 1 and dp values are non-negative.
-        case r do
-          0 -> {max(acc0, s), acc1, acc2}
-          1 -> {acc0, max(acc1, s), acc2}
-          2 -> {acc0, acc1, max(acc2, s)}
+    neg = -1_000_000_000
+    dp = Enum.reduce(nums, [0, neg, neg], fn x, dp ->
+      Enum.reduce(0..2, dp, fn r, next_dp ->
+        best = Enum.at(dp, r)
+        if best == neg do
+          next_dp
+        else
+          nr = rem(r + x, 3)
+          List.replace_at(next_dp, nr, max(Enum.at(next_dp, nr), best + x))
         end
       end)
     end)
-    |> elem(0) # Return dp0
+    Enum.at(dp, 0)
   end
 end
 {% endraw %}
@@ -662,700 +791,5 @@ end
 
 ### Complexity Analysis
 
-- **Time Complexity:** O(N) with detailed explanation
-
-- **Space Complexity:** O(1) with detailed explanation
-
-</div>
-</details>
-
-
-<details class="ai-solution-card" markdown="1">
-<summary class="ai-solution-header">
-  <span class="ai-model-badge">⚡ Solution from <strong>llama-3.3-70b-versatile</strong></span>
-  <small class="solution-timestamp">(2025-11-25 03:30:10 UTC)</small>
-</summary>
-
-<div class="ai-solution-content">
-
-### Approach
-
-The problem can be solved using dynamic programming. We can represent the state as DP[pos][mod]: maximum possible sum starting in the position "pos" in the array where the current sum modulo 3 is equal to mod. We initialize DP[0][0] to 0, and DP[0][1] and DP[0][2] to negative infinity. Then, for each position in the array, we update DP[pos][mod] to be the maximum of its current value and DP[pos-1][mod], DP[pos-1][(mod-nums[pos])%3] + nums[pos], and DP[pos-1][(mod-nums[pos]+3)%3] + nums[pos]. Finally, we return DP[n-1][0], where n is the length of the array. This approach ensures that we consider all possible sums and choose the maximum one that is divisible by 3. The time complexity of this approach is O(n), where n is the length of the array, because we make a constant amount of work for each position in the array. The space complexity is also O(n), because we need to store the DP table of size n x 3.
-
-### Code
-
-<div class="code-tabs" markdown="0">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-cpp-llama-3-3-70b-versatile" checked>
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-java-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-python-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-python3-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-c-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-csharp-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-javascript-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-typescript-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-php-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-swift-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-kotlin-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-dart-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-go-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-ruby-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-scala-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-rust-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-racket-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-erlang-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-elixir-llama-3-3-70b-versatile">
-  <div class="tab-labels">
-    <label for="lang-cpp-llama-3-3-70b-versatile">C++</label>
-    <label for="lang-java-llama-3-3-70b-versatile">Java</label>
-    <label for="lang-python-llama-3-3-70b-versatile">Python</label>
-    <label for="lang-python3-llama-3-3-70b-versatile">Python3</label>
-    <label for="lang-c-llama-3-3-70b-versatile">C</label>
-    <label for="lang-csharp-llama-3-3-70b-versatile">C#</label>
-    <label for="lang-javascript-llama-3-3-70b-versatile">JavaScript</label>
-    <label for="lang-typescript-llama-3-3-70b-versatile">TypeScript</label>
-    <label for="lang-php-llama-3-3-70b-versatile">PHP</label>
-    <label for="lang-swift-llama-3-3-70b-versatile">Swift</label>
-    <label for="lang-kotlin-llama-3-3-70b-versatile">Kotlin</label>
-    <label for="lang-dart-llama-3-3-70b-versatile">Dart</label>
-    <label for="lang-go-llama-3-3-70b-versatile">Go</label>
-    <label for="lang-ruby-llama-3-3-70b-versatile">Ruby</label>
-    <label for="lang-scala-llama-3-3-70b-versatile">Scala</label>
-    <label for="lang-rust-llama-3-3-70b-versatile">Rust</label>
-    <label for="lang-racket-llama-3-3-70b-versatile">Racket</label>
-    <label for="lang-erlang-llama-3-3-70b-versatile">Erlang</label>
-    <label for="lang-elixir-llama-3-3-70b-versatile">Elixir</label>
-  </div>
-
-  <div class="tab-panel" data-lang="cpp">
-
-{% highlight cpp %}
-{% raw %}
-#include <vector>
-#include <climits>
-using namespace std;
-class Solution {
-public:
-    int maxSumDivThree(vector<int>& nums) {
-        int n = nums.size();
-        vector<vector<int>> dp(n, vector<int>(3, INT_MIN));
-        dp[0][0] = 0;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (i > 0) {
-                    dp[i][j] = max(dp[i][j], dp[i-1][j]);
-                }
-                int mod = (j - nums[i]) % 3;
-                if (mod < 0) mod += 3;
-                if (i > 0) {
-                    dp[i][j] = max(dp[i][j], dp[i-1][mod] + nums[i]);
-                }
-            }
-        }
-        return dp[n-1][0];
-    }
-};
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="java">
-
-{% highlight java %}
-{% raw %}
-import java.util.*;
-public class Solution {
-    public int maxSumDivThree(int[] nums) {
-        int n = nums.length;
-        int[][] dp = new int[n][3];
-        for (int i = 0; i < n; i++) {
-            Arrays.fill(dp[i], Integer.MIN_VALUE);
-        }
-        dp[0][0] = 0;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (i > 0) {
-                    dp[i][j] = Math.max(dp[i][j], dp[i-1][j]);
-                }
-                int mod = (j - nums[i]) % 3;
-                if (mod < 0) mod += 3;
-                if (i > 0) {
-                    dp[i][j] = Math.max(dp[i][j], dp[i-1][mod] + nums[i]);
-                }
-            }
-        }
-        return dp[n-1][0];
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="python">
-
-{% highlight python %}
-{% raw %}
-class Solution:
-    def maxSumDivThree(self, nums: list[int]) -> int:
-        n = len(nums)
-        dp = [[float('-inf')] * 3 for _ in range(n)]
-        dp[0][0] = 0
-        for i in range(n):
-            for j in range(3):
-                if i > 0:
-                    dp[i][j] = max(dp[i][j], dp[i-1][j])
-                mod = (j - nums[i]) % 3
-                if mod < 0:
-                    mod += 3
-                if i > 0:
-                    dp[i][j] = max(dp[i][j], dp[i-1][mod] + nums[i])
-        return dp[n-1][0]
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="python3">
-
-{% highlight python %}
-{% raw %}
-class Solution:
-    def maxSumDivThree(self, nums: list[int]) -> int:
-        n = len(nums)
-        dp = [[float('-inf')] * 3 for _ in range(n)]
-        dp[0][0] = 0
-        for i in range(n):
-            for j in range(3):
-                if i > 0:
-                    dp[i][j] = max(dp[i][j], dp[i-1][j])
-                mod = (j - nums[i]) % 3
-                if mod < 0:
-                    mod += 3
-                if i > 0:
-                    dp[i][j] = max(dp[i][j], dp[i-1][mod] + nums[i])
-        return dp[n-1][0]
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="c">
-
-{% highlight c %}
-{% raw %}
-#include <stdio.h>
-#include <limits.h>
-int maxSumDivThree(int* nums, int numsSize) {
-    int dp[numsSize][3];
-    for (int i = 0; i < numsSize; i++) {
-        for (int j = 0; j < 3; j++) {
-            dp[i][j] = INT_MIN;
-        }
-    }
-    dp[0][0] = 0;
-    for (int i = 0; i < numsSize; i++) {
-        for (int j = 0; j < 3; j++) {
-            if (i > 0) {
-                dp[i][j] = (dp[i][j] > dp[i-1][j]) ? dp[i][j] : dp[i-1][j];
-            }
-            int mod = (j - nums[i]) % 3;
-            if (mod < 0) mod += 3;
-            if (i > 0) {
-                dp[i][j] = (dp[i][j] > dp[i-1][mod] + nums[i]) ? dp[i][j] : dp[i-1][mod] + nums[i];
-            }
-        }
-    }
-    return dp[numsSize-1][0];
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="csharp">
-
-{% highlight csharp %}
-{% raw %}
-using System;
-public class Solution {
-    public int MaxSumDivThree(int[] nums) {
-        int n = nums.Length;
-        int[][] dp = new int[n][];
-        for (int i = 0; i < n; i++) {
-            dp[i] = new int[3];
-            for (int j = 0; j < 3; j++) {
-                dp[i][j] = int.MinValue;
-            }
-        }
-        dp[0][0] = 0;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (i > 0) {
-                    dp[i][j] = Math.Max(dp[i][j], dp[i-1][j]);
-                }
-                int mod = (j - nums[i]) % 3;
-                if (mod < 0) mod += 3;
-                if (i > 0) {
-                    dp[i][j] = Math.Max(dp[i][j], dp[i-1][mod] + nums[i]);
-                }
-            }
-        }
-        return dp[n-1][0];
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="javascript">
-
-{% highlight javascript %}
-{% raw %}
-var maxSumDivThree = function(nums) {
-    let n = nums.length;
-    let dp = new Array(n);
-    for (let i = 0; i < n; i++) {
-        dp[i] = new Array(3).fill(-Infinity);
-    }
-    dp[0][0] = 0;
-    for (let i = 0; i < n; i++) {
-        for (let j = 0; j < 3; j++) {
-            if (i > 0) {
-                dp[i][j] = Math.max(dp[i][j], dp[i-1][j]);
-            }
-            let mod = (j - nums[i]) % 3;
-            if (mod < 0) mod += 3;
-            if (i > 0) {
-                dp[i][j] = Math.max(dp[i][j], dp[i-1][mod] + nums[i]);
-            }
-        }
-    }
-    return dp[n-1][0];
-};
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="typescript">
-
-{% highlight typescript %}
-{% raw %}
-function maxSumDivThree(nums: number[]): number {
-    let n: number = nums.length;
-    let dp: number[][] = new Array(n);
-    for (let i: number = 0; i < n; i++) {
-        dp[i] = new Array(3).fill(-Infinity);
-    }
-    dp[0][0] = 0;
-    for (let i: number = 0; i < n; i++) {
-        for (let j: number = 0; j < 3; j++) {
-            if (i > 0) {
-                dp[i][j] = Math.max(dp[i][j], dp[i-1][j]);
-            }
-            let mod: number = (j - nums[i]) % 3;
-            if (mod < 0) mod += 3;
-            if (i > 0) {
-                dp[i][j] = Math.max(dp[i][j], dp[i-1][mod] + nums[i]);
-            }
-        }
-    }
-    return dp[n-1][0];
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="php">
-
-{% highlight php %}
-{% raw %}
-class Solution {
-    function maxSumDivThree($nums) {
-        $n = count($nums);
-        $dp = array_fill(0, $n, array_fill(0, 3, -INF));
-        $dp[0][0] = 0;
-        for ($i = 0; $i < $n; $i++) {
-            for ($j = 0; $j < 3; $j++) {
-                if ($i > 0) {
-                    $dp[$i][$j] = max($dp[$i][$j], $dp[$i-1][$j]);
-                }
-                $mod = ($j - $nums[$i]) % 3;
-                if ($mod < 0) $mod += 3;
-                if ($i > 0) {
-                    $dp[$i][$j] = max($dp[$i][$j], $dp[$i-1][$mod] + $nums[$i]);
-                }
-            }
-        }
-        return $dp[$n-1][0];
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="swift">
-
-{% highlight swift %}
-{% raw %}
-class Solution {
-    func maxSumDivThree(_ nums: [Int]) -> Int {
-        let n = nums.count
-        var dp = [[Int]](repeating: [Int](repeating: Int.min, count: 3), count: n)
-        dp[0][0] = 0
-        for i in 0..<n {
-            for j in 0..<3 {
-                if i > 0 {
-                    dp[i][j] = max(dp[i][j], dp[i-1][j])
-                }
-                let mod = (j - nums[i]) % 3
-                if mod < 0 {
-                    let mod = mod + 3
-                }
-                if i > 0 {
-                    dp[i][j] = max(dp[i][j], dp[i-1][mod] + nums[i])
-                }
-            }
-        }
-        return dp[n-1][0]
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="kotlin">
-
-{% highlight kotlin %}
-{% raw %}
-class Solution {
-    fun maxSumDivThree(nums: IntArray): Int {
-        val n = nums.size
-        val dp = Array(n) { IntArray(3) { Int.MIN_VALUE } }
-        dp[0][0] = 0
-        for (i in 0 until n) {
-            for (j in 0 until 3) {
-                if (i > 0) {
-                    dp[i][j] = maxOf(dp[i][j], dp[i-1][j])
-                }
-                val mod = (j - nums[i]) % 3
-                if (mod < 0) {
-                    val mod = mod + 3
-                }
-                if (i > 0) {
-                    dp[i][j] = maxOf(dp[i][j], dp[i-1][mod] + nums[i])
-                }
-            }
-        }
-        return dp[n-1][0]
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="dart">
-
-{% highlight dart %}
-{% raw %}
-class Solution {
-    int maxSumDivThree(List<int> nums) {
-        int n = nums.length;
-        List<List<int>> dp = List.generate(n, (i) => List.generate(3, (j) => -1000000));
-        dp[0][0] = 0;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (i > 0) {
-                    dp[i][j] = max(dp[i][j], dp[i-1][j]);
-                }
-                int mod = (j - nums[i]) % 3;
-                if (mod < 0) mod += 3;
-                if (i > 0) {
-                    dp[i][j] = max(dp[i][j], dp[i-1][mod] + nums[i]);
-                }
-            }
-        }
-        return dp[n-1][0];
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="go">
-
-{% highlight go %}
-{% raw %}
-package main
-import "fmt"
-func maxSumDivThree(nums []int) int {
-    n := len(nums)
-    dp := make([][]int, n)
-    for i := range dp {
-        dp[i] = make([]int, 3)
-        for j := range dp[i] {
-            dp[i][j] = -1 << 31
-        }
-    }
-    dp[0][0] = 0
-    for i := 0; i < n; i++ {
-        for j := 0; j < 3; j++ {
-            if i > 0 {
-                dp[i][j] = max(dp[i][j], dp[i-1][j])
-            }
-            mod := (j - nums[i]) % 3
-            if mod < 0 {
-                mod += 3
-            }
-            if i > 0 {
-                dp[i][j] = max(dp[i][j], dp[i-1][mod]+nums[i])
-            }
-        }
-    }
-    return dp[n-1][0]
-}
-func max(a, b int) int {
-    if a > b {
-        return a
-    }
-    return b
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="ruby">
-
-{% highlight ruby %}
-{% raw %}
-class Solution
-    def max_sum_div_three(nums)
-        n = nums.size
-        dp = Array.new(n) { Array.new(3, -1000000) }
-        dp[0][0] = 0
-        for i in 0...n
-            for j in 0...3
-                if i > 0
-                    dp[i][j] = [dp[i][j], dp[i-1][j]].max
-                end
-                mod = (j - nums[i]) % 3
-                if mod < 0
-                    mod += 3
-                end
-                if i > 0
-                    dp[i][j] = [dp[i][j], dp[i-1][mod] + nums[i]].max
-                end
-            end
-        end
-        dp[n-1][0]
-    end
-end
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="scala">
-
-{% highlight scala %}
-{% raw %}
-object Solution {
-    def maxSumDivThree(nums: Array[Int]): Int = {
-        val n = nums.length
-        val dp = Array.fill(n)(Array.fill(3)(Int.MinValue))
-        dp(0)(0) = 0
-        for (i <- 0 until n) {
-            for (j <- 0 until 3) {
-                if (i > 0) {
-                    dp(i)(j) = math.max(dp(i)(j), dp(i-1)(j))
-                }
-                val mod = (j - nums(i)) % 3
-                if (mod < 0) {
-                    val mod = mod + 3
-                }
-                if (i > 0) {
-                    dp(i)(j) = math.max(dp(i)(j), dp(i-1)(mod) + nums(i))
-                }
-            }
-        }
-        dp(n-1)(0)
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="rust">
-
-{% highlight rust %}
-{% raw %}
-impl Solution {
-    pub fn max_sum_div_three(nums: Vec<i32>) -> i32 {
-        let n = nums.len();
-        let mut dp: Vec<Vec<i32>> = vec![vec![-1000000; 3]; n];
-        dp[0][0] = 0;
-        for i in 0..n {
-            for j in 0..3 {
-                if i > 0 {
-                    dp[i][j] = std::cmp::max(dp[i][j], dp[i-1][j]);
-                }
-                let mod = (j as i32 - nums[i]) % 3;
-                if mod < 0 {
-                    let mod = mod + 3;
-                }
-                if i > 0 {
-                    dp[i][j] = std::cmp::max(dp[i][j], dp[i-1][mod as usize] + nums[i]);
-                }
-            }
-        }
-        dp[n-1][0]
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="racket">
-
-{% highlight racket %}
-{% raw %}
-#lang racket
-(define (max-sum-div-three nums)
-  (let* ((n (length nums))
-         (dp (make-vector n (make-vector 3 -1000000))))
-    (vector-set! (vector-ref dp 0) 0 0)
-    (for ((i (range n)))
-      (for ((j (range 3)))
-        (when (> i 0)
-          (vector-set! (vector-ref dp i) j (max (vector-ref (vector-ref dp i) j) (vector-ref (vector-ref dp (- i 1)) j))))
-        (let ((mod (- j (vector-ref nums i))))
-          (when (< mod 0)
-            (set! mod (+ mod 3)))
-          (when (> i 0)
-            (vector-set! (vector-ref dp i) j (max (vector-ref (vector-ref dp i) j) (+ (vector-ref (vector-ref dp (- i 1)) mod) (vector-ref nums i))))))))
-    (vector-ref (vector-ref dp (- n 1)) 0))
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="erlang">
-
-{% highlight erlang %}
-{% raw %}
--module(solutions).
--export([maxSumDivThree/1]).
-maxSumDivThree(Nums) ->
-    Length = length(Nums),
-    DP = array:new(Length, {default, -1000000}),
-    array:set(0, 0, DP),
-    maxSumDivThree(Nums, DP, 0, Length).
-maxSumDivThree([_|T], DP, I, Length) when I >= Length ->
-    array:get(Length - 1, 0, DP);
-maxSumDivThree([H|T], DP, I, Length) ->
-    NewDP = lists:foldl(
-        fun(J, Acc) ->
-            case I of
-                0 ->
-                    array:set(I, J, max(array:get(I, J, Acc), 0), Acc);
-                _ ->
-                    array:set(I, J, max(array:get(I, J, Acc), array:get(I - 1, J, Acc)), Acc)
-            end
-        end,
-        DP,
-        lists:seq(0, 2)
-    ),
-    Mod = fun(J) -> (J - H) rem 3 end,
-    NewDP2 = lists:foldl(
-        fun(J, Acc) ->
-            case I of
-                0 ->
-                    Acc;
-                _ ->
-                    M = Mod(J),
-                    case M < 0 of
-                        true -> M1 = M + 3;
-                        false -> M1 = M
-                    end,
-                    array:set(I, J, max(array:get(I, J, Acc), array:get(I - 1, M1, Acc) + H), Acc)
-            end
-        end,
-        NewDP,
-        lists:seq(0, 2)
-    ),
-    maxSumDivThree(T, NewDP2, I + 1, Length).
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="elixir">
-
-{% highlight elixir %}
-{% raw %}
-defmodule Solution do
-  def max_sum_div_three(nums) do
-    n = length(nums)
-    dp = for i <- 0..n-1, do: for j <- 0..2, do: -1000000
-    dp = List.update_at(dp, 0, fn x -> List.update_at(x, 0, fn _ -> 0 end) end)
-    max_sum_div_three(nums, dp, 0, n)
-  end
-
-  defp max_sum_div_three([], dp, _, _), do: Enum.at(Enum.at(dp, -1), 0)
-
-  defp max_sum_div_three([h|t], dp, i, n) do
-    dp = Enum.with_index(dp)
-    |> Enum.map(fn {row, row_index} ->
-      Enum.with_index(row)
-      |> Enum.map(fn {val, col_index} ->
-        cond do
-          row_index == 0 -> val
-          true ->
-            max(val, Enum.at(Enum.at(dp, row_index - 1), col_index))
-        end
-      end)
-    end)
-    dp = Enum.with_index(dp)
-    |> Enum.map(fn {row, row_index} ->
-      Enum.with_index(row)
-      |> Enum.map(fn {val, col_index} ->
-        cond do
-          row_index == 0 -> val
-          true ->
-            mod = (col_index - h) |> rem(3)
-            cond do
-              mod < 0 -> mod = mod + 3
-              true -> mod
-            end
-            max(val, Enum.at(Enum.at(dp, row_index - 1), mod) + h)
-        end
-      end)
-    end)
-    max_sum_div_three(t, dp, i + 1, n)
-  end
-end
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-</div>
-
-### Complexity Analysis
-
-- **Time Complexity:** O(n) where n is the length of the array, because we make a constant amount of work for each position in the array.
-
-- **Space Complexity:** O(n) because we need to store the DP table of size n x 3.
-
-</div>
-</details>
+- **Time Complexity:** O(n), where n is the number of elements, with three remainder states processed for each element.
+- **Space Complexity:** O(1), using a fixed number of states regardless of the array length.

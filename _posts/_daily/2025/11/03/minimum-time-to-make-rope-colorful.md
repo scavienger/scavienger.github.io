@@ -6,6 +6,179 @@ categories: [LeetCode, Medium]
 tags: ["Array", "String", "Dynamic Programming", "Greedy"]
 difficulty: Medium
 leetcode_url: https://leetcode.com/problems/minimum-time-to-make-rope-colorful/
+ai_solutions:
+  - solutions:
+      cpp: "class Solution {\npublic:\n    int minCost(string colors, vector<int>& neededTime)\
+        \ {\n        int total = 0;\n        int runSum = neededTime[0];\n        int\
+        \ runMax = neededTime[0];\n\n        for (int i = 1; i < colors.size(); ++i)\
+        \ {\n            if (colors[i] == colors[i - 1]) {\n                runSum +=\
+        \ neededTime[i];\n                runMax = max(runMax, neededTime[i]);\n   \
+        \         } else {\n                total += runSum - runMax;\n            \
+        \    runSum = neededTime[i];\n                runMax = neededTime[i];\n    \
+        \        }\n        }\n\n        return total + runSum - runMax;\n    }\n};"
+      java: "class Solution {\n    public int minCost(String colors, int[] neededTime)\
+        \ {\n        int total = 0;\n        int runSum = neededTime[0];\n        int\
+        \ runMax = neededTime[0];\n\n        for (int i = 1; i < colors.length(); i++)\
+        \ {\n            if (colors.charAt(i) == colors.charAt(i - 1)) {\n         \
+        \       runSum += neededTime[i];\n                runMax = Math.max(runMax,\
+        \ neededTime[i]);\n            } else {\n                total += runSum - runMax;\n\
+        \                runSum = neededTime[i];\n                runMax = neededTime[i];\n\
+        \            }\n        }\n\n        return total + runSum - runMax;\n    }\n\
+        }"
+      python: "class Solution(object):\n    def minCost(self, colors, neededTime):\n\
+        \        \"\"\"\n        :type colors: str\n        :type neededTime: List[int]\n\
+        \        :rtype: int\n        \"\"\"\n        total = 0\n        run_sum = neededTime[0]\n\
+        \        run_max = neededTime[0]\n\n        for i in range(1, len(colors)):\n\
+        \            if colors[i] == colors[i - 1]:\n                run_sum += neededTime[i]\n\
+        \                run_max = max(run_max, neededTime[i])\n            else:\n\
+        \                total += run_sum - run_max\n                run_sum = neededTime[i]\n\
+        \                run_max = neededTime[i]\n\n        return total + run_sum -\
+        \ run_max"
+      python3: "class Solution:\n    def minCost(self, colors: str, neededTime: list[int])\
+        \ -> int:\n        total = 0\n        run_sum = neededTime[0]\n        run_max\
+        \ = neededTime[0]\n\n        for i in range(1, len(colors)):\n            if\
+        \ colors[i] == colors[i - 1]:\n                run_sum += neededTime[i]\n  \
+        \              run_max = max(run_max, neededTime[i])\n            else:\n  \
+        \              total += run_sum - run_max\n                run_sum = neededTime[i]\n\
+        \                run_max = neededTime[i]\n\n        return total + run_sum -\
+        \ run_max"
+      c: "int minCost(char* colors, int* neededTime, int neededTimeSize) {\n    int\
+        \ total = 0;\n    int runSum = neededTime[0];\n    int runMax = neededTime[0];\n\
+        \n    for (int i = 1; i < neededTimeSize; ++i) {\n        if (colors[i] == colors[i\
+        \ - 1]) {\n            runSum += neededTime[i];\n            if (neededTime[i]\
+        \ > runMax) {\n                runMax = neededTime[i];\n            }\n    \
+        \    } else {\n            total += runSum - runMax;\n            runSum = neededTime[i];\n\
+        \            runMax = neededTime[i];\n        }\n    }\n\n    return total +\
+        \ runSum - runMax;\n}"
+      csharp: "public class Solution {\n    public int MinCost(string colors, int[]\
+        \ neededTime) {\n        int total = 0;\n        int runSum = neededTime[0];\n\
+        \        int runMax = neededTime[0];\n\n        for (int i = 1; i < colors.Length;\
+        \ i++) {\n            if (colors[i] == colors[i - 1]) {\n                runSum\
+        \ += neededTime[i];\n                runMax = Math.Max(runMax, neededTime[i]);\n\
+        \            } else {\n                total += runSum - runMax;\n         \
+        \       runSum = neededTime[i];\n                runMax = neededTime[i];\n \
+        \           }\n        }\n\n        return total + runSum - runMax;\n    }\n\
+        }"
+      javascript: "/**\n * @param {string} colors\n * @param {number[]} neededTime\n\
+        \ * @return {number}\n */\nvar minCost = function(colors, neededTime) {\n  \
+        \  let total = 0;\n    let runSum = neededTime[0];\n    let runMax = neededTime[0];\n\
+        \n    for (let i = 1; i < colors.length; i++) {\n        if (colors[i] === colors[i\
+        \ - 1]) {\n            runSum += neededTime[i];\n            runMax = Math.max(runMax,\
+        \ neededTime[i]);\n        } else {\n            total += runSum - runMax;\n\
+        \            runSum = neededTime[i];\n            runMax = neededTime[i];\n\
+        \        }\n    }\n\n    return total + runSum - runMax;\n};"
+      typescript: "function minCost(colors: string, neededTime: number[]): number {\n\
+        \    let total = 0;\n    let runSum = neededTime[0];\n    let runMax = neededTime[0];\n\
+        \n    for (let i = 1; i < colors.length; i++) {\n        if (colors[i] === colors[i\
+        \ - 1]) {\n            runSum += neededTime[i];\n            runMax = Math.max(runMax,\
+        \ neededTime[i]);\n        } else {\n            total += runSum - runMax;\n\
+        \            runSum = neededTime[i];\n            runMax = neededTime[i];\n\
+        \        }\n    }\n\n    return total + runSum - runMax;\n};"
+      php: "class Solution {\n\n    /**\n     * @param String $colors\n     * @param\
+        \ Integer[] $neededTime\n     * @return Integer\n     */\n    function minCost($colors,\
+        \ $neededTime) {\n        $total = 0;\n        $runSum = $neededTime[0];\n \
+        \       $runMax = $neededTime[0];\n        $length = strlen($colors);\n\n  \
+        \      for ($i = 1; $i < $length; $i++) {\n            if ($colors[$i] === $colors[$i\
+        \ - 1]) {\n                $runSum += $neededTime[$i];\n                $runMax\
+        \ = max($runMax, $neededTime[$i]);\n            } else {\n                $total\
+        \ += $runSum - $runMax;\n                $runSum = $neededTime[$i];\n      \
+        \          $runMax = $neededTime[$i];\n            }\n        }\n\n        return\
+        \ $total + $runSum - $runMax;\n    }\n}"
+      swift: "class Solution {\n    func minCost(_ colors: String, _ neededTime: [Int])\
+        \ -> Int {\n        let chars = Array(colors)\n        var total = 0\n     \
+        \   var runSum = neededTime[0]\n        var runMax = neededTime[0]\n\n     \
+        \   for i in 1..<chars.count {\n            if chars[i] == chars[i - 1] {\n\
+        \                runSum += neededTime[i]\n                runMax = max(runMax,\
+        \ neededTime[i])\n            } else {\n                total += runSum - runMax\n\
+        \                runSum = neededTime[i]\n                runMax = neededTime[i]\n\
+        \            }\n        }\n\n        return total + runSum - runMax\n    }\n\
+        }"
+      kotlin: "class Solution {\n    fun minCost(colors: String, neededTime: IntArray):\
+        \ Int {\n        var total = 0\n        var runSum = neededTime[0]\n       \
+        \ var runMax = neededTime[0]\n\n        for (i in 1 until colors.length) {\n\
+        \            if (colors[i] == colors[i - 1]) {\n                runSum += neededTime[i]\n\
+        \                runMax = maxOf(runMax, neededTime[i])\n            } else {\n\
+        \                total += runSum - runMax\n                runSum = neededTime[i]\n\
+        \                runMax = neededTime[i]\n            }\n        }\n\n      \
+        \  return total + runSum - runMax\n    }\n}"
+      dart: "class Solution {\n  int minCost(String colors, List<int> neededTime) {\n\
+        \    var total = 0;\n    var runSum = neededTime[0];\n    var runMax = neededTime[0];\n\
+        \n    for (var i = 1; i < colors.length; i++) {\n      if (colors[i] == colors[i\
+        \ - 1]) {\n        runSum += neededTime[i];\n        runMax = runMax > neededTime[i]\
+        \ ? runMax : neededTime[i];\n      } else {\n        total += runSum - runMax;\n\
+        \        runSum = neededTime[i];\n        runMax = neededTime[i];\n      }\n\
+        \    }\n\n    return total + runSum - runMax;\n  }\n}"
+      go: "func minCost(colors string, neededTime []int) int {\n\ttotal := 0\n\trunSum\
+        \ := neededTime[0]\n\trunMax := neededTime[0]\n\n\tfor i := 1; i < len(colors);\
+        \ i++ {\n\t\tif colors[i] == colors[i-1] {\n\t\t\trunSum += neededTime[i]\n\t\
+        \t\tif neededTime[i] > runMax {\n\t\t\t\trunMax = neededTime[i]\n\t\t\t}\n\t\
+        \t} else {\n\t\t\ttotal += runSum - runMax\n\t\t\trunSum = neededTime[i]\n\t\
+        \t\trunMax = neededTime[i]\n\t\t}\n\t}\n\n\treturn total + runSum - runMax\n\
+        }"
+      ruby: "# @param {String} colors\n# @param {Integer[]} needed_time\n# @return {Integer}\n\
+        def min_cost(colors, needed_time)\n  total = 0\n  run_sum = needed_time[0]\n\
+        \  run_max = needed_time[0]\n\n  (1...colors.length).each do |i|\n    if colors[i]\
+        \ == colors[i - 1]\n      run_sum += needed_time[i]\n      run_max = [run_max,\
+        \ needed_time[i]].max\n    else\n      total += run_sum - run_max\n      run_sum\
+        \ = needed_time[i]\n      run_max = needed_time[i]\n    end\n  end\n\n  total\
+        \ + run_sum - run_max\nend"
+      scala: "object Solution {\n    def minCost(colors: String, neededTime: Array[Int]):\
+        \ Int = {\n        var total = 0\n        var runSum = neededTime(0)\n     \
+        \   var runMax = neededTime(0)\n\n        for (i <- 1 until colors.length) {\n\
+        \            if (colors(i) == colors(i - 1)) {\n                runSum += neededTime(i)\n\
+        \                runMax = runMax.max(neededTime(i))\n            } else {\n\
+        \                total += runSum - runMax\n                runSum = neededTime(i)\n\
+        \                runMax = neededTime(i)\n            }\n        }\n\n      \
+        \  total + runSum - runMax\n    }\n}"
+      rust: "impl Solution {\n    pub fn min_cost(colors: String, needed_time: Vec<i32>)\
+        \ -> i32 {\n        let colors = colors.as_bytes();\n        let mut total =\
+        \ 0;\n        let mut run_sum = needed_time[0];\n        let mut run_max = needed_time[0];\n\
+        \n        for i in 1..colors.len() {\n            if colors[i] == colors[i -\
+        \ 1] {\n                run_sum += needed_time[i];\n                run_max\
+        \ = run_max.max(needed_time[i]);\n            } else {\n                total\
+        \ += run_sum - run_max;\n                run_sum = needed_time[i];\n       \
+        \         run_max = needed_time[i];\n            }\n        }\n\n        total\
+        \ + run_sum - run_max\n    }\n}"
+      racket: "(define/contract (min-cost colors neededTime)\n  (-> string? (listof\
+        \ exact-integer?) exact-integer?)\n  (define n (string-length colors))\n  (define\
+        \ total 0)\n  (define run-sum (first neededTime))\n  (define run-max (first\
+        \ neededTime))\n  (for ([i (in-range 1 n)])\n    (if (char=? (string-ref colors\
+        \ i) (string-ref colors (sub1 i)))\n        (begin\n          (set! run-sum\
+        \ (+ run-sum (list-ref neededTime i)))\n          (set! run-max (max run-max\
+        \ (list-ref neededTime i))))\n        (begin\n          (set! total (+ total\
+        \ (- run-sum run-max)))\n          (set! run-sum (list-ref neededTime i))\n\
+        \          (set! run-max (list-ref neededTime i)))))\n  (+ total (- run-sum\
+        \ run-max)))"
+      erlang: "-spec min_cost(Colors :: unicode:unicode_binary(), NeededTime :: [integer()])\
+        \ -> integer().\nmin_cost(Colors, NeededTime) ->\n  [First | Rest] = binary_to_list(Colors),\n\
+        \  [FirstTime | RestTimes] = NeededTime,\n  {Total, _, RunSum, RunMax} = lists:foldl(\n\
+        \    fun({Color, Time}, {Acc, PrevColor, Sum, MaxTime}) ->\n      case Color\
+        \ =:= PrevColor of\n        true -> {Acc, Color, Sum + Time, max(MaxTime, Time)};\n\
+        \        false -> {Acc + Sum - MaxTime, Color, Time, Time}\n      end\n    end,\n\
+        \    {0, First, FirstTime, FirstTime},\n    lists:zip(Rest, RestTimes)\n  ),\n\
+        \  Total + RunSum - RunMax."
+      elixir: "defmodule Solution do\n  @spec min_cost(colors :: String.t, needed_time\
+        \ :: [integer]) :: integer\n  def min_cost(colors, needed_time) do\n    [first_time\
+        \ | rest_times] = needed_time\n    [first_color | rest_colors] = String.to_charlist(colors)\n\
+        \n    {total, _, run_sum, run_max} =\n      Enum.zip(rest_colors, rest_times)\n\
+        \      |> Enum.reduce({0, first_color, first_time, first_time}, fn {color, time},\
+        \ {total, prev_color, run_sum, run_max} ->\n        if color == prev_color do\n\
+        \          {total, color, run_sum + time, max(run_max, time)}\n        else\n\
+        \          {total + run_sum - run_max, color, time, time}\n        end\n   \
+        \   end)\n\n    total + run_sum - run_max\n  end\nend"
+    approach: 'Scan the balloons from left to right and group each maximal consecutive
+      run of the same color. In every run, at least all but one balloon must be removed
+      to avoid equal adjacent colors.
+
+
+      For each run, add the removal times of all balloons except the one with the greatest
+      removal time. Summing these costs across the runs gives the minimum time.'
+    time_complexity: O(n), where n is the number of balloons, since each balloon is
+      processed once.
+    space_complexity: O(1), using only a few variables beyond the input.
+    elapsed_time: 73.42002320289612
+    model: gpt-6-luna
+    generated_at: '2026-11-13 00:18:10 '
 ---
 
 ## Problem #1578: Minimum Time to Make Rope Colorful
@@ -64,65 +237,56 @@ There are no longer two consecutive balloons of the same color. Total time = 1 +
 
 1. Maintain the running sum and max value for repeated letters.
 
-## 🤖 AI-Generated Solutions
-
-We've generated solutions using multiple AI models. Click to expand each solution:
-
-
-<details class="ai-solution-card" open markdown="1">
-<summary class="ai-solution-header">
-  <span class="ai-model-badge">✨ Solution from <strong>gemini-2.5-flash</strong></span>
-  <small class="solution-timestamp">(2025-11-23 07:32:30 UTC)</small>
-</summary>
-
-<div class="ai-solution-content">
+## 🤖 AI-Generated Solution (gpt-6-luna)
 
 ### Approach
 
-Iterate through the balloons, keeping track of the sum of removal times and the maximum removal time for the current consecutive block of same-colored balloons. When a block of identical colors ends, add the sum of times for that block minus its maximum time to the total cost, effectively removing all but the most expensive balloon in that block.
+Scan the balloons from left to right and group each maximal consecutive run of the same color. In every run, at least all but one balloon must be removed to avoid equal adjacent colors.
+
+For each run, add the removal times of all balloons except the one with the greatest removal time. Summing these costs across the runs gives the minimum time.
 
 ### Code
 
 <div class="code-tabs" markdown="0">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-cpp-gemini-2-5-flash" checked>
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-java-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-python-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-python3-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-c-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-csharp-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-javascript-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-typescript-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-php-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-swift-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-kotlin-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-dart-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-go-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-ruby-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-scala-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-rust-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-racket-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-erlang-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-elixir-gemini-2-5-flash">
+  <input type="radio" name="code-lang" id="lang-cpp" checked>
+  <input type="radio" name="code-lang" id="lang-java">
+  <input type="radio" name="code-lang" id="lang-python">
+  <input type="radio" name="code-lang" id="lang-python3">
+  <input type="radio" name="code-lang" id="lang-c">
+  <input type="radio" name="code-lang" id="lang-csharp">
+  <input type="radio" name="code-lang" id="lang-javascript">
+  <input type="radio" name="code-lang" id="lang-typescript">
+  <input type="radio" name="code-lang" id="lang-php">
+  <input type="radio" name="code-lang" id="lang-swift">
+  <input type="radio" name="code-lang" id="lang-kotlin">
+  <input type="radio" name="code-lang" id="lang-dart">
+  <input type="radio" name="code-lang" id="lang-go">
+  <input type="radio" name="code-lang" id="lang-ruby">
+  <input type="radio" name="code-lang" id="lang-scala">
+  <input type="radio" name="code-lang" id="lang-rust">
+  <input type="radio" name="code-lang" id="lang-racket">
+  <input type="radio" name="code-lang" id="lang-erlang">
+  <input type="radio" name="code-lang" id="lang-elixir">
   <div class="tab-labels">
-    <label for="lang-cpp-gemini-2-5-flash">C++</label>
-    <label for="lang-java-gemini-2-5-flash">Java</label>
-    <label for="lang-python-gemini-2-5-flash">Python</label>
-    <label for="lang-python3-gemini-2-5-flash">Python3</label>
-    <label for="lang-c-gemini-2-5-flash">C</label>
-    <label for="lang-csharp-gemini-2-5-flash">C#</label>
-    <label for="lang-javascript-gemini-2-5-flash">JavaScript</label>
-    <label for="lang-typescript-gemini-2-5-flash">TypeScript</label>
-    <label for="lang-php-gemini-2-5-flash">PHP</label>
-    <label for="lang-swift-gemini-2-5-flash">Swift</label>
-    <label for="lang-kotlin-gemini-2-5-flash">Kotlin</label>
-    <label for="lang-dart-gemini-2-5-flash">Dart</label>
-    <label for="lang-go-gemini-2-5-flash">Go</label>
-    <label for="lang-ruby-gemini-2-5-flash">Ruby</label>
-    <label for="lang-scala-gemini-2-5-flash">Scala</label>
-    <label for="lang-rust-gemini-2-5-flash">Rust</label>
-    <label for="lang-racket-gemini-2-5-flash">Racket</label>
-    <label for="lang-erlang-gemini-2-5-flash">Erlang</label>
-    <label for="lang-elixir-gemini-2-5-flash">Elixir</label>
+    <label for="lang-cpp">C++</label>
+    <label for="lang-java">Java</label>
+    <label for="lang-python">Python</label>
+    <label for="lang-python3">Python3</label>
+    <label for="lang-c">C</label>
+    <label for="lang-csharp">C#</label>
+    <label for="lang-javascript">JavaScript</label>
+    <label for="lang-typescript">TypeScript</label>
+    <label for="lang-php">PHP</label>
+    <label for="lang-swift">Swift</label>
+    <label for="lang-kotlin">Kotlin</label>
+    <label for="lang-dart">Dart</label>
+    <label for="lang-go">Go</label>
+    <label for="lang-ruby">Ruby</label>
+    <label for="lang-scala">Scala</label>
+    <label for="lang-rust">Rust</label>
+    <label for="lang-racket">Racket</label>
+    <label for="lang-erlang">Erlang</label>
+    <label for="lang-elixir">Elixir</label>
   </div>
 
   <div class="tab-panel" data-lang="cpp">
@@ -131,29 +295,23 @@ Iterate through the balloons, keeping track of the sum of removal times and the 
 {% raw %}
 class Solution {
 public:
-    int minCost(std::string colors, std::vector<int>& neededTime) {
-        int n = colors.length();
-        if (n == 0) {
-            return 0;
-        }
+    int minCost(string colors, vector<int>& neededTime) {
+        int total = 0;
+        int runSum = neededTime[0];
+        int runMax = neededTime[0];
 
-        int total_cost = 0;
-        int current_sum_time = neededTime[0];
-        int current_max_time = neededTime[0];
-
-        for (int i = 1; i < n; ++i) {
-            if (colors[i] == colors[i-1]) {
-                current_sum_time += neededTime[i];
-                current_max_time = std::max(current_max_time, neededTime[i]);
+        for (int i = 1; i < colors.size(); ++i) {
+            if (colors[i] == colors[i - 1]) {
+                runSum += neededTime[i];
+                runMax = max(runMax, neededTime[i]);
             } else {
-                total_cost += current_sum_time - current_max_time;
-                current_sum_time = neededTime[i];
-                current_max_time = neededTime[i];
+                total += runSum - runMax;
+                runSum = neededTime[i];
+                runMax = neededTime[i];
             }
         }
 
-        total_cost += current_sum_time - current_max_time;
-        return total_cost;
+        return total + runSum - runMax;
     }
 };
 {% endraw %}
@@ -165,32 +323,24 @@ public:
 
 {% highlight java %}
 {% raw %}
-import java.util.List;
-
 class Solution {
     public int minCost(String colors, int[] neededTime) {
-        int n = colors.length();
-        if (n == 0) {
-            return 0;
-        }
+        int total = 0;
+        int runSum = neededTime[0];
+        int runMax = neededTime[0];
 
-        int totalCost = 0;
-        int currentSumTime = neededTime[0];
-        int currentMaxTime = neededTime[0];
-
-        for (int i = 1; i < n; ++i) {
-            if (colors.charAt(i) == colors.charAt(i-1)) {
-                currentSumTime += neededTime[i];
-                currentMaxTime = Math.max(currentMaxTime, neededTime[i]);
+        for (int i = 1; i < colors.length(); i++) {
+            if (colors.charAt(i) == colors.charAt(i - 1)) {
+                runSum += neededTime[i];
+                runMax = Math.max(runMax, neededTime[i]);
             } else {
-                totalCost += currentSumTime - currentMaxTime;
-                currentSumTime = neededTime[i];
-                currentMaxTime = neededTime[i];
+                total += runSum - runMax;
+                runSum = neededTime[i];
+                runMax = neededTime[i];
             }
         }
 
-        totalCost += currentSumTime - currentMaxTime;
-        return totalCost;
+        return total + runSum - runMax;
     }
 }
 {% endraw %}
@@ -202,27 +352,27 @@ class Solution {
 
 {% highlight python %}
 {% raw %}
-class Solution:
-    def minCost(self, colors: str, neededTime: List[int]) -> int:
-        n = len(colors)
-        if n == 0:
-            return 0
+class Solution(object):
+    def minCost(self, colors, neededTime):
+        """
+        :type colors: str
+        :type neededTime: List[int]
+        :rtype: int
+        """
+        total = 0
+        run_sum = neededTime[0]
+        run_max = neededTime[0]
 
-        total_cost = 0
-        current_sum_time = neededTime[0]
-        current_max_time = neededTime[0]
-
-        for i in range(1, n):
-            if colors[i] == colors[i-1]:
-                current_sum_time += neededTime[i]
-                current_max_time = max(current_max_time, neededTime[i])
+        for i in range(1, len(colors)):
+            if colors[i] == colors[i - 1]:
+                run_sum += neededTime[i]
+                run_max = max(run_max, neededTime[i])
             else:
-                total_cost += current_sum_time - current_max_time
-                current_sum_time = neededTime[i]
-                current_max_time = neededTime[i]
+                total += run_sum - run_max
+                run_sum = neededTime[i]
+                run_max = neededTime[i]
 
-        total_cost += current_sum_time - current_max_time
-        return total_cost
+        return total + run_sum - run_max
 {% endraw %}
 {% endhighlight %}
 
@@ -233,26 +383,21 @@ class Solution:
 {% highlight python %}
 {% raw %}
 class Solution:
-    def minCost(self, colors: str, neededTime: List[int]) -> int:
-        n = len(colors)
-        if n == 0:
-            return 0
+    def minCost(self, colors: str, neededTime: list[int]) -> int:
+        total = 0
+        run_sum = neededTime[0]
+        run_max = neededTime[0]
 
-        total_cost = 0
-        current_sum_time = neededTime[0]
-        current_max_time = neededTime[0]
-
-        for i in range(1, n):
-            if colors[i] == colors[i-1]:
-                current_sum_time += neededTime[i]
-                current_max_time = max(current_max_time, neededTime[i])
+        for i in range(1, len(colors)):
+            if colors[i] == colors[i - 1]:
+                run_sum += neededTime[i]
+                run_max = max(run_max, neededTime[i])
             else:
-                total_cost += current_sum_time - current_max_time
-                current_sum_time = neededTime[i]
-                current_max_time = neededTime[i]
+                total += run_sum - run_max
+                run_sum = neededTime[i]
+                run_max = neededTime[i]
 
-        total_cost += current_sum_time - current_max_time
-        return total_cost
+        return total + run_sum - run_max
 {% endraw %}
 {% endhighlight %}
 
@@ -262,32 +407,25 @@ class Solution:
 
 {% highlight c %}
 {% raw %}
-#include <string.h>
-#include <stdlib.h>
+int minCost(char* colors, int* neededTime, int neededTimeSize) {
+    int total = 0;
+    int runSum = neededTime[0];
+    int runMax = neededTime[0];
 
-int minCost(char * colors, int* neededTime, int neededTimeSize){
-    int n = neededTimeSize;
-    if (n == 0) {
-        return 0;
-    }
-
-    int totalCost = 0;
-    int currentSumTime = neededTime[0];
-    int currentMaxTime = neededTime[0];
-
-    for (int i = 1; i < n; ++i) {
-        if (colors[i] == colors[i-1]) {
-            currentSumTime += neededTime[i];
-            currentMaxTime = (currentMaxTime > neededTime[i]) ? currentMaxTime : neededTime[i];
+    for (int i = 1; i < neededTimeSize; ++i) {
+        if (colors[i] == colors[i - 1]) {
+            runSum += neededTime[i];
+            if (neededTime[i] > runMax) {
+                runMax = neededTime[i];
+            }
         } else {
-            totalCost += currentSumTime - currentMaxTime;
-            currentSumTime = neededTime[i];
-            currentMaxTime = neededTime[i];
+            total += runSum - runMax;
+            runSum = neededTime[i];
+            runMax = neededTime[i];
         }
     }
 
-    totalCost += currentSumTime - currentMaxTime;
-    return totalCost;
+    return total + runSum - runMax;
 }
 {% endraw %}
 {% endhighlight %}
@@ -298,33 +436,24 @@ int minCost(char * colors, int* neededTime, int neededTimeSize){
 
 {% highlight csharp %}
 {% raw %}
-using System;
-using System.Collections.Generic;
-
 public class Solution {
     public int MinCost(string colors, int[] neededTime) {
-        int n = colors.Length;
-        if (n == 0) {
-            return 0;
-        }
+        int total = 0;
+        int runSum = neededTime[0];
+        int runMax = neededTime[0];
 
-        int totalCost = 0;
-        int currentSumTime = neededTime[0];
-        int currentMaxTime = neededTime[0];
-
-        for (int i = 1; i < n; ++i) {
-            if (colors[i] == colors[i-1]) {
-                currentSumTime += neededTime[i];
-                currentMaxTime = Math.Max(currentMaxTime, neededTime[i]);
+        for (int i = 1; i < colors.Length; i++) {
+            if (colors[i] == colors[i - 1]) {
+                runSum += neededTime[i];
+                runMax = Math.Max(runMax, neededTime[i]);
             } else {
-                totalCost += currentSumTime - currentMaxTime;
-                currentSumTime = neededTime[i];
-                currentMaxTime = neededTime[i];
+                total += runSum - runMax;
+                runSum = neededTime[i];
+                runMax = neededTime[i];
             }
         }
 
-        totalCost += currentSumTime - currentMaxTime;
-        return totalCost;
+        return total + runSum - runMax;
     }
 }
 {% endraw %}
@@ -342,28 +471,22 @@ public class Solution {
  * @return {number}
  */
 var minCost = function(colors, neededTime) {
-    const n = colors.length;
-    if (n === 0) {
-        return 0;
-    }
+    let total = 0;
+    let runSum = neededTime[0];
+    let runMax = neededTime[0];
 
-    let totalCost = 0;
-    let currentSumTime = neededTime[0];
-    let currentMaxTime = neededTime[0];
-
-    for (let i = 1; i < n; ++i) {
-        if (colors[i] === colors[i-1]) {
-            currentSumTime += neededTime[i];
-            currentMaxTime = Math.max(currentMaxTime, neededTime[i]);
+    for (let i = 1; i < colors.length; i++) {
+        if (colors[i] === colors[i - 1]) {
+            runSum += neededTime[i];
+            runMax = Math.max(runMax, neededTime[i]);
         } else {
-            totalCost += currentSumTime - currentMaxTime;
-            currentSumTime = neededTime[i];
-            currentMaxTime = neededTime[i];
+            total += runSum - runMax;
+            runSum = neededTime[i];
+            runMax = neededTime[i];
         }
     }
 
-    totalCost += currentSumTime - currentMaxTime;
-    return totalCost;
+    return total + runSum - runMax;
 };
 {% endraw %}
 {% endhighlight %}
@@ -375,28 +498,22 @@ var minCost = function(colors, neededTime) {
 {% highlight typescript %}
 {% raw %}
 function minCost(colors: string, neededTime: number[]): number {
-    const n = colors.length;
-    if (n === 0) {
-        return 0;
-    }
+    let total = 0;
+    let runSum = neededTime[0];
+    let runMax = neededTime[0];
 
-    let totalCost: number = 0;
-    let currentSumTime: number = neededTime[0];
-    let currentMaxTime: number = neededTime[0];
-
-    for (let i = 1; i < n; ++i) {
-        if (colors[i] === colors[i-1]) {
-            currentSumTime += neededTime[i];
-            currentMaxTime = Math.max(currentMaxTime, neededTime[i]);
+    for (let i = 1; i < colors.length; i++) {
+        if (colors[i] === colors[i - 1]) {
+            runSum += neededTime[i];
+            runMax = Math.max(runMax, neededTime[i]);
         } else {
-            totalCost += currentSumTime - currentMaxTime;
-            currentSumTime = neededTime[i];
-            currentMaxTime = neededTime[i];
+            total += runSum - runMax;
+            runSum = neededTime[i];
+            runMax = neededTime[i];
         }
     }
 
-    totalCost += currentSumTime - currentMaxTime;
-    return totalCost;
+    return total + runSum - runMax;
 };
 {% endraw %}
 {% endhighlight %}
@@ -407,7 +524,6 @@ function minCost(colors: string, neededTime: number[]): number {
 
 {% highlight php %}
 {% raw %}
-<?php
 class Solution {
 
     /**
@@ -416,31 +532,25 @@ class Solution {
      * @return Integer
      */
     function minCost($colors, $neededTime) {
-        $n = strlen($colors);
-        if ($n === 0) {
-            return 0;
-        }
+        $total = 0;
+        $runSum = $neededTime[0];
+        $runMax = $neededTime[0];
+        $length = strlen($colors);
 
-        $totalCost = 0;
-        $currentSumTime = $neededTime[0];
-        $currentMaxTime = $neededTime[0];
-
-        for ($i = 1; $i < $n; ++$i) {
-            if ($colors[$i] === $colors[$i-1]) {
-                $currentSumTime += $neededTime[$i];
-                $currentMaxTime = max($currentMaxTime, $neededTime[$i]);
+        for ($i = 1; $i < $length; $i++) {
+            if ($colors[$i] === $colors[$i - 1]) {
+                $runSum += $neededTime[$i];
+                $runMax = max($runMax, $neededTime[$i]);
             } else {
-                $totalCost += $currentSumTime - $currentMaxTime;
-                $currentSumTime = $neededTime[$i];
-                $currentMaxTime = $neededTime[$i];
+                $total += $runSum - $runMax;
+                $runSum = $neededTime[$i];
+                $runMax = $neededTime[$i];
             }
         }
 
-        $totalCost += $currentSumTime - $currentMaxTime;
-        return $totalCost;
+        return $total + $runSum - $runMax;
     }
 }
-?>
 {% endraw %}
 {% endhighlight %}
 
@@ -450,34 +560,25 @@ class Solution {
 
 {% highlight swift %}
 {% raw %}
-import Foundation
-
 class Solution {
     func minCost(_ colors: String, _ neededTime: [Int]) -> Int {
-        let n = colors.count
-        if n == 0 {
-            return 0
-        }
+        let chars = Array(colors)
+        var total = 0
+        var runSum = neededTime[0]
+        var runMax = neededTime[0]
 
-        var totalCost = 0
-        var currentSumTime = neededTime[0]
-        var currentMaxTime = neededTime[0]
-
-        let colorChars = Array(colors)
-
-        for i in 1..<n {
-            if colorChars[i] == colorChars[i-1] {
-                currentSumTime += neededTime[i]
-                currentMaxTime = max(currentMaxTime, neededTime[i])
+        for i in 1..<chars.count {
+            if chars[i] == chars[i - 1] {
+                runSum += neededTime[i]
+                runMax = max(runMax, neededTime[i])
             } else {
-                totalCost += currentSumTime - currentMaxTime
-                currentSumTime = neededTime[i]
-                currentMaxTime = neededTime[i]
+                total += runSum - runMax
+                runSum = neededTime[i]
+                runMax = neededTime[i]
             }
         }
 
-        totalCost += currentSumTime - currentMaxTime
-        return totalCost
+        return total + runSum - runMax
     }
 }
 {% endraw %}
@@ -491,28 +592,22 @@ class Solution {
 {% raw %}
 class Solution {
     fun minCost(colors: String, neededTime: IntArray): Int {
-        val n = colors.length
-        if (n == 0) {
-            return 0
-        }
+        var total = 0
+        var runSum = neededTime[0]
+        var runMax = neededTime[0]
 
-        var totalCost = 0
-        var currentSumTime = neededTime[0]
-        var currentMaxTime = neededTime[0]
-
-        for (i in 1 until n) {
-            if (colors[i] == colors[i-1]) {
-                currentSumTime += neededTime[i]
-                currentMaxTime = maxOf(currentMaxTime, neededTime[i])
+        for (i in 1 until colors.length) {
+            if (colors[i] == colors[i - 1]) {
+                runSum += neededTime[i]
+                runMax = maxOf(runMax, neededTime[i])
             } else {
-                totalCost += currentSumTime - currentMaxTime
-                currentSumTime = neededTime[i]
-                currentMaxTime = neededTime[i]
+                total += runSum - runMax
+                runSum = neededTime[i]
+                runMax = neededTime[i]
             }
         }
 
-        totalCost += currentSumTime - currentMaxTime
-        return totalCost
+        return total + runSum - runMax
     }
 }
 {% endraw %}
@@ -524,32 +619,24 @@ class Solution {
 
 {% highlight dart %}
 {% raw %}
-import 'dart:math';
-
 class Solution {
   int minCost(String colors, List<int> neededTime) {
-    final int n = colors.length;
-    if (n == 0) {
-      return 0;
-    }
+    var total = 0;
+    var runSum = neededTime[0];
+    var runMax = neededTime[0];
 
-    int totalCost = 0;
-    int currentSumTime = neededTime[0];
-    int currentMaxTime = neededTime[0];
-
-    for (int i = 1; i < n; ++i) {
-      if (colors[i] == colors[i-1]) {
-        currentSumTime += neededTime[i];
-        currentMaxTime = max(currentMaxTime, neededTime[i]);
+    for (var i = 1; i < colors.length; i++) {
+      if (colors[i] == colors[i - 1]) {
+        runSum += neededTime[i];
+        runMax = runMax > neededTime[i] ? runMax : neededTime[i];
       } else {
-        totalCost += currentSumTime - currentMaxTime;
-        currentSumTime = neededTime[i];
-        currentMaxTime = neededTime[i];
+        total += runSum - runMax;
+        runSum = neededTime[i];
+        runMax = neededTime[i];
       }
     }
 
-    totalCost += currentSumTime - currentMaxTime;
-    return totalCost;
+    return total + runSum - runMax;
   }
 }
 {% endraw %}
@@ -561,38 +648,25 @@ class Solution {
 
 {% highlight go %}
 {% raw %}
-package main
-
-func max(a, b int) int {
-    if a > b {
-        return a
-    }
-    return b
-}
-
 func minCost(colors string, neededTime []int) int {
-    n := len(colors)
-    if n == 0 {
-        return 0
-    }
+	total := 0
+	runSum := neededTime[0]
+	runMax := neededTime[0]
 
-    totalCost := 0
-    currentSumTime := neededTime[0]
-    currentMaxTime := neededTime[0]
+	for i := 1; i < len(colors); i++ {
+		if colors[i] == colors[i-1] {
+			runSum += neededTime[i]
+			if neededTime[i] > runMax {
+				runMax = neededTime[i]
+			}
+		} else {
+			total += runSum - runMax
+			runSum = neededTime[i]
+			runMax = neededTime[i]
+		}
+	}
 
-    for i := 1; i < n; i++ {
-        if colors[i] == colors[i-1] {
-            currentSumTime += neededTime[i]
-            currentMaxTime = max(currentMaxTime, neededTime[i])
-        } else {
-            totalCost += currentSumTime - currentMaxTime
-            currentSumTime = neededTime[i]
-            currentMaxTime = neededTime[i];
-        }
-    }
-
-    totalCost += currentSumTime - currentMaxTime
-    return totalCost
+	return total + runSum - runMax
 }
 {% endraw %}
 {% endhighlight %}
@@ -607,26 +681,22 @@ func minCost(colors string, neededTime []int) int {
 # @param {Integer[]} needed_time
 # @return {Integer}
 def min_cost(colors, needed_time)
-    n = colors.length
-    return 0 if n == 0
+  total = 0
+  run_sum = needed_time[0]
+  run_max = needed_time[0]
 
-    total_cost = 0
-    current_sum_time = needed_time[0]
-    current_max_time = needed_time[0]
-
-    (1...n).each do |i|
-        if colors[i] == colors[i-1]
-            current_sum_time += needed_time[i]
-            current_max_time = [current_max_time, needed_time[i]].max
-        else
-            total_cost += current_sum_time - current_max_time
-            current_sum_time = needed_time[i]
-            current_max_time = needed_time[i]
-        end
+  (1...colors.length).each do |i|
+    if colors[i] == colors[i - 1]
+      run_sum += needed_time[i]
+      run_max = [run_max, needed_time[i]].max
+    else
+      total += run_sum - run_max
+      run_sum = needed_time[i]
+      run_max = needed_time[i]
     end
+  end
 
-    total_cost += current_sum_time - current_max_time
-    return total_cost
+  total + run_sum - run_max
 end
 {% endraw %}
 {% endhighlight %}
@@ -639,28 +709,22 @@ end
 {% raw %}
 object Solution {
     def minCost(colors: String, neededTime: Array[Int]): Int = {
-        val n = colors.length
-        if (n == 0) {
-            return 0
-        }
+        var total = 0
+        var runSum = neededTime(0)
+        var runMax = neededTime(0)
 
-        var totalCost = 0
-        var currentSumTime = neededTime(0)
-        var currentMaxTime = neededTime(0)
-
-        for (i <- 1 until n) {
-            if (colors(i) == colors(i-1)) {
-                currentSumTime += neededTime(i)
-                currentMaxTime = currentMaxTime.max(neededTime(i))
+        for (i <- 1 until colors.length) {
+            if (colors(i) == colors(i - 1)) {
+                runSum += neededTime(i)
+                runMax = runMax.max(neededTime(i))
             } else {
-                totalCost += currentSumTime - currentMaxTime
-                currentSumTime = neededTime(i)
-                currentMaxTime = neededTime(i)
+                total += runSum - runMax
+                runSum = neededTime(i)
+                runMax = neededTime(i)
             }
         }
 
-        totalCost += currentSumTime - currentMaxTime
-        return totalCost
+        total + runSum - runMax
     }
 }
 {% endraw %}
@@ -674,30 +738,23 @@ object Solution {
 {% raw %}
 impl Solution {
     pub fn min_cost(colors: String, needed_time: Vec<i32>) -> i32 {
-        let n = colors.len();
-        if n == 0 {
-            return 0;
-        }
+        let colors = colors.as_bytes();
+        let mut total = 0;
+        let mut run_sum = needed_time[0];
+        let mut run_max = needed_time[0];
 
-        let mut total_cost = 0;
-        let mut current_sum_time = needed_time[0];
-        let mut current_max_time = needed_time[0];
-
-        let colors_chars: Vec<char> = colors.chars().collect();
-
-        for i in 1..n {
-            if colors_chars[i] == colors_chars[i-1] {
-                current_sum_time += needed_time[i];
-                current_max_time = current_max_time.max(needed_time[i]);
+        for i in 1..colors.len() {
+            if colors[i] == colors[i - 1] {
+                run_sum += needed_time[i];
+                run_max = run_max.max(needed_time[i]);
             } else {
-                total_cost += current_sum_time - current_max_time;
-                current_sum_time = needed_time[i];
-                current_max_time = needed_time[i];
+                total += run_sum - run_max;
+                run_sum = needed_time[i];
+                run_max = needed_time[i];
             }
         }
 
-        total_cost += current_sum_time - current_max_time;
-        return total_cost;
+        total + run_sum - run_max
     }
 }
 {% endraw %}
@@ -709,31 +766,22 @@ impl Solution {
 
 {% highlight racket %}
 {% raw %}
-#lang racket
-
-(define (min-cost colors needed-time)
-  (let* ([n (string-length colors)]
-         [total-cost 0]
-         [current-sum-time 0]
-         [current-max-time 0])
-    (when (> n 0)
-      (set! current-sum-time (vector-ref needed-time 0))
-      (set! current-max-time (vector-ref needed-time 0))
-
-      (for ([i (in-range 1 n)])
-        (if (char=? (string-ref colors i) (string-ref colors (- i 1)))
-            (begin
-              (set! current-sum-time (+ current-sum-time (vector-ref needed-time i)))
-              (set! current-max-time (max current-max-time (vector-ref needed-time i))))
-            (begin
-              (set! total-cost (+ total-cost (- current-sum-time current-max-time)))
-              (set! current-sum-time (vector-ref needed-time i))
-              (set! current-max-time (vector-ref needed-time i))))))
-
-    (when (> n 0) 
-      (set! total-cost (+ total-cost (- current-sum-time current-max-time))))
-
-    total-cost))
+(define/contract (min-cost colors neededTime)
+  (-> string? (listof exact-integer?) exact-integer?)
+  (define n (string-length colors))
+  (define total 0)
+  (define run-sum (first neededTime))
+  (define run-max (first neededTime))
+  (for ([i (in-range 1 n)])
+    (if (char=? (string-ref colors i) (string-ref colors (sub1 i)))
+        (begin
+          (set! run-sum (+ run-sum (list-ref neededTime i)))
+          (set! run-max (max run-max (list-ref neededTime i))))
+        (begin
+          (set! total (+ total (- run-sum run-max)))
+          (set! run-sum (list-ref neededTime i))
+          (set! run-max (list-ref neededTime i)))))
+  (+ total (- run-sum run-max)))
 {% endraw %}
 {% endhighlight %}
 
@@ -743,29 +791,21 @@ impl Solution {
 
 {% highlight erlang %}
 {% raw %}
--module(solution).
--export([min_cost/2]).
-
+-spec min_cost(Colors :: unicode:unicode_binary(), NeededTime :: [integer()]) -> integer().
 min_cost(Colors, NeededTime) ->
-    N = length(Colors),
-    case N of
-        0 -> 0;
-        _ ->
-            ColorsList = string:to_list(Colors),
-            min_cost_helper(tl(ColorsList), tl(NeededTime), hd(ColorsList), 0, hd(NeededTime), hd(NeededTime))
-    end.
-
-min_cost_helper([], [], _PrevColor, TotalCost, CurrentSumTime, CurrentMaxTime) ->
-    TotalCost + (CurrentSumTime - CurrentMaxTime);
-min_cost_helper([Color | RestColors], [Time | RestNeededTime], PrevColor, AccTotalCost, AccCurrentSumTime, AccCurrentMaxTime) ->
-    if Color == PrevColor ->
-        NewCurrentSumTime = AccCurrentSumTime + Time,
-        NewCurrentMaxTime = max(AccCurrentMaxTime, Time),
-        min_cost_helper(RestColors, RestNeededTime, Color, AccTotalCost, NewCurrentSumTime, NewCurrentMaxTime);
-    true ->
-        NewTotalCost = AccTotalCost + (AccCurrentSumTime - AccCurrentMaxTime),
-        min_cost_helper(RestColors, RestNeededTime, Color, NewTotalCost, Time, Time)
-    end.
+  [First | Rest] = binary_to_list(Colors),
+  [FirstTime | RestTimes] = NeededTime,
+  {Total, _, RunSum, RunMax} = lists:foldl(
+    fun({Color, Time}, {Acc, PrevColor, Sum, MaxTime}) ->
+      case Color =:= PrevColor of
+        true -> {Acc, Color, Sum + Time, max(MaxTime, Time)};
+        false -> {Acc + Sum - MaxTime, Color, Time, Time}
+      end
+    end,
+    {0, First, FirstTime, FirstTime},
+    lists:zip(Rest, RestTimes)
+  ),
+  Total + RunSum - RunMax.
 {% endraw %}
 {% endhighlight %}
 
@@ -778,624 +818,20 @@ min_cost_helper([Color | RestColors], [Time | RestNeededTime], PrevColor, AccTot
 defmodule Solution do
   @spec min_cost(colors :: String.t, needed_time :: [integer]) :: integer
   def min_cost(colors, needed_time) do
-    n = String.length(colors)
-    if n == 0 do
-      0
-    else
-      colors_list = String.to_charlist(colors)
+    [first_time | rest_times] = needed_time
+    [first_color | rest_colors] = String.to_charlist(colors)
 
-      initial_state = {0, hd(needed_time), hd(needed_time), hd(colors_list)}
-
-      {final_total_cost, final_current_sum_time, final_current_max_time, _} = 
-        Enum.zip(tl(colors_list), tl(needed_time))
-        |> Enum.reduce(initial_state, fn {char, time}, {acc_total_cost, acc_sum_time, acc_max_time, prev_char} ->
-          if char == prev_char do
-            {acc_total_cost, acc_sum_time + time, max(acc_max_time, time), char}
-          else
-            {acc_total_cost + (acc_sum_time - acc_max_time), time, time, char}
-          end
-        end)
-
-      final_total_cost + (final_current_sum_time - final_current_max_time)
-    end
-  end
-
-  defp max(a, b), do: if a > b, do: a, else: b
-end
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-</div>
-
-### Complexity Analysis
-
-- **Time Complexity:** O(N)
-
-- **Space Complexity:** O(1)
-
-</div>
-</details>
-
-
-<details class="ai-solution-card" markdown="1">
-<summary class="ai-solution-header">
-  <span class="ai-model-badge">⚡ Solution from <strong>llama-3.3-70b-versatile</strong></span>
-  <small class="solution-timestamp">(2025-11-23 07:32:37 UTC)</small>
-</summary>
-
-<div class="ai-solution-content">
-
-### Approach
-
-The approach is to iterate through the string of colors and whenever a sequence of the same color is found, calculate the total time needed to remove balloons of that color and subtract the maximum time from it. This is because we want to keep the balloon with the maximum time and remove the rest.
-
-### Code
-
-<div class="code-tabs" markdown="0">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-cpp-llama-3-3-70b-versatile" checked>
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-java-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-python-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-python3-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-c-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-csharp-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-javascript-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-typescript-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-php-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-swift-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-kotlin-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-dart-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-go-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-ruby-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-scala-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-rust-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-racket-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-erlang-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-elixir-llama-3-3-70b-versatile">
-  <div class="tab-labels">
-    <label for="lang-cpp-llama-3-3-70b-versatile">C++</label>
-    <label for="lang-java-llama-3-3-70b-versatile">Java</label>
-    <label for="lang-python-llama-3-3-70b-versatile">Python</label>
-    <label for="lang-python3-llama-3-3-70b-versatile">Python3</label>
-    <label for="lang-c-llama-3-3-70b-versatile">C</label>
-    <label for="lang-csharp-llama-3-3-70b-versatile">C#</label>
-    <label for="lang-javascript-llama-3-3-70b-versatile">JavaScript</label>
-    <label for="lang-typescript-llama-3-3-70b-versatile">TypeScript</label>
-    <label for="lang-php-llama-3-3-70b-versatile">PHP</label>
-    <label for="lang-swift-llama-3-3-70b-versatile">Swift</label>
-    <label for="lang-kotlin-llama-3-3-70b-versatile">Kotlin</label>
-    <label for="lang-dart-llama-3-3-70b-versatile">Dart</label>
-    <label for="lang-go-llama-3-3-70b-versatile">Go</label>
-    <label for="lang-ruby-llama-3-3-70b-versatile">Ruby</label>
-    <label for="lang-scala-llama-3-3-70b-versatile">Scala</label>
-    <label for="lang-rust-llama-3-3-70b-versatile">Rust</label>
-    <label for="lang-racket-llama-3-3-70b-versatile">Racket</label>
-    <label for="lang-erlang-llama-3-3-70b-versatile">Erlang</label>
-    <label for="lang-elixir-llama-3-3-70b-versatile">Elixir</label>
-  </div>
-
-  <div class="tab-panel" data-lang="cpp">
-
-{% highlight cpp %}
-{% raw %}
-#include <iostream>
-#include <vector>
-#include <string>
-using namespace std;
-class Solution {
-public:
-    int minCost(string colors, vector<int>& neededTime) {
-        int res = 0;
-        for (int i = 0; i < colors.size();) {
-            int j = i + 1;
-            int sum = neededTime[i];
-            int mx = neededTime[i];
-            while (j < colors.size() && colors[j] == colors[i]) {
-                sum += neededTime[j];
-                mx = max(mx, neededTime[j]);
-                j++;
-            }
-            if (j - i > 1) res += sum - mx;
-            i = j;
-        }
-        return res;
-    }
-};
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="java">
-
-{% highlight java %}
-{% raw %}
-class Solution {
-    public int minCost(String colors, int[] neededTime) {
-        int res = 0;
-        for (int i = 0; i < colors.length();) {
-            int j = i + 1;
-            int sum = neededTime[i];
-            int mx = neededTime[i];
-            while (j < colors.length() && colors.charAt(j) == colors.charAt(i)) {
-                sum += neededTime[j];
-                mx = Math.max(mx, neededTime[j]);
-                j++;
-            }
-            if (j - i > 1) res += sum - mx;
-            i = j;
-        }
-        return res;
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="python">
-
-{% highlight python %}
-{% raw %}
-class Solution:
-    def minCost(self, colors: str, neededTime: list[int]) -> int:
-        res = 0
-        i = 0
-        while i < len(colors):
-            j = i + 1
-            sum_val = neededTime[i]
-            mx = neededTime[i]
-            while j < len(colors) and colors[j] == colors[i]:
-                sum_val += neededTime[j]
-                mx = max(mx, neededTime[j])
-                j += 1
-            if j - i > 1: res += sum_val - mx
-            i = j
-        return res
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="python3">
-
-{% highlight python %}
-{% raw %}
-class Solution:
-    def minCost(self, colors: str, neededTime: list[int]) -> int:
-        res = 0
-        i = 0
-        while i < len(colors):
-            j = i + 1
-            sum_val = neededTime[i]
-            mx = neededTime[i]
-            while j < len(colors) and colors[j] == colors[i]:
-                sum_val += neededTime[j]
-                mx = max(mx, neededTime[j])
-                j += 1
-            if j - i > 1: res += sum_val - mx
-            i = j
-        return res
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="c">
-
-{% highlight c %}
-{% raw %}
-#include <stdio.h>
-#include <string.h>
-int minCost(char * colors, int* neededTime, int colorsSize){
-    int res = 0;
-    int i = 0;
-    while (i < colorsSize) {
-        int j = i + 1;
-        int sum = neededTime[i];
-        int mx = neededTime[i];
-        while (j < colorsSize && colors[j] == colors[i]) {
-            sum += neededTime[j];
-            mx = (mx > neededTime[j]) ? mx : neededTime[j];
-            j++;
-        }
-        if (j - i > 1) res += sum - mx;
-        i = j;
-    }
-    return res;
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="csharp">
-
-{% highlight csharp %}
-{% raw %}
-public class Solution {
-    public int MinCost(string colors, int[] neededTime) {
-        int res = 0;
-        int i = 0;
-        while (i < colors.Length) {
-            int j = i + 1;
-            int sum = neededTime[i];
-            int mx = neededTime[i];
-            while (j < colors.Length && colors[j] == colors[i]) {
-                sum += neededTime[j];
-                mx = Math.Max(mx, neededTime[j]);
-                j++;
-            }
-            if (j - i > 1) res += sum - mx;
-            i = j;
-        }
-        return res;
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="javascript">
-
-{% highlight javascript %}
-{% raw %}
-var minCost = function(colors, neededTime) {
-    let res = 0;
-    let i = 0;
-    while (i < colors.length) {
-        let j = i + 1;
-        let sum = neededTime[i];
-        let mx = neededTime[i];
-        while (j < colors.length && colors[j] == colors[i]) {
-            sum += neededTime[j];
-            mx = Math.max(mx, neededTime[j]);
-            j++;
-        }
-        if (j - i > 1) res += sum - mx;
-        i = j;
-    }
-    return res;
-};
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="typescript">
-
-{% highlight typescript %}
-{% raw %}
-function minCost(colors: string, neededTime: number[]): number {
-    let res: number = 0;
-    let i: number = 0;
-    while (i < colors.length) {
-        let j: number = i + 1;
-        let sum: number = neededTime[i];
-        let mx: number = neededTime[i];
-        while (j < colors.length && colors[j] == colors[i]) {
-            sum += neededTime[j];
-            mx = Math.max(mx, neededTime[j]);
-            j++;
-        }
-        if (j - i > 1) res += sum - mx;
-        i = j;
-    }
-    return res;
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="php">
-
-{% highlight php %}
-{% raw %}
-class Solution {
-    function minCost($colors, $neededTime) {
-        $res = 0;
-        $i = 0;
-        while ($i < strlen($colors)) {
-            $j = $i + 1;
-            $sum = $neededTime[$i];
-            $mx = $neededTime[$i];
-            while ($j < strlen($colors) && $colors[$j] == $colors[$i]) {
-                $sum += $neededTime[$j];
-                $mx = max($mx, $neededTime[$j]);
-                $j++;
-            }
-            if ($j - $i > 1) $res += $sum - $mx;
-            $i = $j;
-        }
-        return $res;
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="swift">
-
-{% highlight swift %}
-{% raw %}
-class Solution {
-    func minCost(_ colors: String, _ neededTime: [Int]) -> Int {
-        var res = 0
-        var i = 0
-        while i < colors.count {
-            var j = i + 1
-            var sum = neededTime[i]
-            var mx = neededTime[i]
-            while j < colors.count && String(colors[colors.index(colors.startIndex, offsetBy: j)]) == String(colors[colors.index(colors.startIndex, offsetBy: i)]) {
-                sum += neededTime[j]
-                mx = max(mx, neededTime[j])
-                j += 1
-            }
-            if j - i > 1 { res += sum - mx }
-            i = j
-        }
-        return res
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="kotlin">
-
-{% highlight kotlin %}
-{% raw %}
-class Solution {
-    fun minCost(colors: String, neededTime: IntArray): Int {
-        var res = 0
-        var i = 0
-        while (i < colors.length) {
-            var j = i + 1
-            var sum = neededTime[i]
-            var mx = neededTime[i]
-            while (j < colors.length && colors[j] == colors[i]) {
-                sum += neededTime[j]
-                mx = maxOf(mx, neededTime[j])
-                j++
-            }
-            if (j - i > 1) res += sum - mx
-            i = j
-        }
-        return res
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="dart">
-
-{% highlight dart %}
-{% raw %}
-class Solution {
-  int minCost(String colors, List<int> neededTime) {
-      int res = 0;
-      int i = 0;
-      while (i < colors.length) {
-          int j = i + 1;
-          int sum = neededTime[i];
-          int mx = neededTime[i];
-          while (j < colors.length && colors[j] == colors[i]) {
-              sum += neededTime[j];
-              mx = max(mx, neededTime[j]);
-              j++;
-          }
-          if (j - i > 1) res += sum - mx;
-          i = j;
-      }
-      return res;
-  }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="go">
-
-{% highlight go %}
-{% raw %}
-package main
-import (
-    "fmt"
-)
-func minCost(colors string, neededTime []int) int {
-    res := 0
-    i := 0
-    for i < len(colors) {
-        j := i + 1
-        sum := neededTime[i]
-        mx := neededTime[i]
-        for j < len(colors) && colors[j] == colors[i] {
-            sum += neededTime[j]
-            if neededTime[j] > mx {
-                mx = neededTime[j]
-            }
-            j++
-        }
-        if j-i > 1 {
-            res += sum - mx
-        }
-        i = j
-    }
-    return res
-}
-func main() {
-    fmt.Println(minCost("abaac", []int{1, 2, 3, 4, 5}))
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="ruby">
-
-{% highlight ruby %}
-{% raw %}
-# @param {String} colors
-# @param {Integer[]} needed_time
-# @return {Integer}
-def min_cost(colors, needed_time)
-    res = 0
-    i = 0
-    while i < colors.size
-        j = i + 1
-        sum = needed_time[i]
-        mx = needed_time[i]
-        while j < colors.size && colors[j] == colors[i]
-            sum += needed_time[j]
-            mx = [mx, needed_time[j]].max
-            j += 1
+    {total, _, run_sum, run_max} =
+      Enum.zip(rest_colors, rest_times)
+      |> Enum.reduce({0, first_color, first_time, first_time}, fn {color, time}, {total, prev_color, run_sum, run_max} ->
+        if color == prev_color do
+          {total, color, run_sum + time, max(run_max, time)}
+        else
+          {total + run_sum - run_max, color, time, time}
         end
-        res += sum - mx if j - i > 1
-        i = j
-    end
-    res
-end
-{% endraw %}
-{% endhighlight %}
+      end)
 
-  </div>
-
-  <div class="tab-panel" data-lang="scala">
-
-{% highlight scala %}
-{% raw %}
-object Solution {
-    def minCost(colors: String, neededTime: Array[Int]): Int = {
-        var res = 0
-        var i = 0
-        while (i < colors.length) {
-            var j = i + 1
-            var sum = neededTime(i)
-            var mx = neededTime(i)
-            while (j < colors.length && colors(j) == colors(i)) {
-                sum += neededTime(j)
-                mx = Math.max(mx, neededTime(j))
-                j += 1
-            }
-            if (j - i > 1) res += sum - mx
-            i = j
-        }
-        res
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="rust">
-
-{% highlight rust %}
-{% raw %}
-impl Solution {
-    pub fn min_cost(colors: String, needed_time: Vec<i32>) -> i32 {
-        let mut res = 0;
-        let mut i = 0;
-        while i < colors.len() {
-            let mut j = i + 1;
-            let mut sum = needed_time[i];
-            let mut mx = needed_time[i];
-            while j < colors.len() && colors.as_bytes()[j] == colors.as_bytes()[i] {
-                sum += needed_time[j];
-                mx = mx.max(needed_time[j]);
-                j += 1;
-            }
-            if j - i > 1 {
-                res += sum - mx;
-            }
-            i = j;
-        }
-        res
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="racket">
-
-{% highlight racket %}
-{% raw %}
-#lang racket
-(define (minCost colors neededTime)
-    (let loop ((i 0) (res 0))
-        (cond
-            [(>= i (string-length colors)) res]
-            [else
-                (let* ((j (+ i 1))
-                       (sum (list-ref neededTime i))
-                       (mx (list-ref neededTime i)))
-                    (let loop2 ((j j) (sum sum) (mx mx))
-                        (cond
-                            [(>= j (string-length colors)) (loop (+ i 1) (+ res (- sum mx)))]
-                            [(eq? (string-ref colors i) (string-ref colors j))
-                                (loop2 (+ j 1) (+ sum (list-ref neededTime j)) (max mx (list-ref neededTime j)))]
-                            [else (loop (+ i 1) res)]))))])))
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="erlang">
-
-{% highlight erlang %}
-{% raw %}
--module(solution).
--export([minCost/2]).
-minCost(Colors, NeededTime) ->
-    minCost(Colors, NeededTime, 0, 0).
-minCost([], _, Res, _) ->
-    Res;
-minCost([C | Cs], [T | Ts], Res, I) ->
-    {J, Sum, Mx} = loop(Cs, Ts, I + 1, T, T, C),
-    minCost(lists:sublist(Cs, J - I), lists:sublist(Ts, J - I), Res + Sum - Mx, J).
-loop([], [], J, Sum, Mx, _) ->
-    {J, Sum, Mx};
-loop([C | Cs], [T | Ts], I, Sum, Mx, C0) ->
-    case C of
-        C0 ->
-            loop(Cs, Ts, I + 1, Sum + T, max(Mx, T), C0);
-        _ ->
-            {I, Sum, Mx}
-    end.
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="elixir">
-
-{% highlight elixir %}
-{% raw %}
-defmodule Solution do
-  def min_cost(colors, needed_time) do
-      min_cost(colors, needed_time, 0, 0)
-  end
-  defp min_cost([], _, res, _), do: res
-  defp min_cost([c | cs], [t | ts], res, i) do
-      {j, sum, mx} = loop(cs, ts, i + 1, t, t, c)
-      min_cost(Enum.slice(cs, j - i..-1), Enum.slice(ts, j - i..-1), res + sum - mx, j)
-  end
-  defp loop([], [], j, sum, mx, _), do: {j, sum, mx}
-  defp loop([c | cs], [t | ts], i, sum, mx, c0) do
-      case c do
-          ^c0 -> loop(cs, ts, i + 1, sum + t, max(mx, t), c0)
-          _ -> {i, sum, mx}
-      end
+    total + run_sum - run_max
   end
 end
 {% endraw %}
@@ -1407,9 +843,5 @@ end
 
 ### Complexity Analysis
 
-- **Time Complexity:** O(n)
-
-- **Space Complexity:** O(1)
-
-</div>
-</details>
+- **Time Complexity:** O(n), where n is the number of balloons, since each balloon is processed once.
+- **Space Complexity:** O(1), using only a few variables beyond the input.

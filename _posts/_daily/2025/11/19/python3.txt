@@ -1,0 +1,3 @@
+class Solution:
+    def findFinalValue(self, nums: list[int], original: int) -> int:
+        

@@ -6,6 +6,194 @@ categories: [LeetCode, Medium]
 tags: ["Array", "Hash Table", "Linked List"]
 difficulty: Medium
 leetcode_url: https://leetcode.com/problems/delete-nodes-from-linked-list-present-in-array/
+ai_solutions:
+  - solutions:
+      cpp: "/**\n * Definition for singly-linked list.\n * struct ListNode {\n *   \
+        \  int val;\n *     ListNode *next;\n *     ListNode() : val(0), next(nullptr)\
+        \ {}\n *     ListNode(int x) : val(x), next(nullptr) {}\n *     ListNode(int\
+        \ x, ListNode *next) : val(x), next(next) {}\n * };\n */\nclass Solution {\n\
+        public:\n    ListNode* modifiedList(vector<int>& nums, ListNode* head) {\n \
+        \       unordered_set<int> values(nums.begin(), nums.end());\n        ListNode\
+        \ dummy(0, head);\n        ListNode* prev = &dummy;\n        while (prev->next\
+        \ != nullptr) {\n            if (values.count(prev->next->val)) {\n        \
+        \        prev->next = prev->next->next;\n            } else {\n            \
+        \    prev = prev->next;\n            }\n        }\n        return dummy.next;\n\
+        \    }\n};"
+      java: "/**\n * Definition for singly-linked list.\n * public class ListNode {\n\
+        \ *     int val;\n *     ListNode next;\n *     ListNode() {}\n *     ListNode(int\
+        \ val) { this.val = val; }\n *     ListNode(int val, ListNode next) { this.val\
+        \ = val; this.next = next; }\n * }\n */\nclass Solution {\n    public ListNode\
+        \ modifiedList(int[] nums, ListNode head) {\n        Set<Integer> values = new\
+        \ HashSet<>();\n        for (int value : nums) {\n            values.add(value);\n\
+        \        }\n        ListNode dummy = new ListNode(0, head);\n        ListNode\
+        \ prev = dummy;\n        while (prev.next != null) {\n            if (values.contains(prev.next.val))\
+        \ {\n                prev.next = prev.next.next;\n            } else {\n   \
+        \             prev = prev.next;\n            }\n        }\n        return dummy.next;\n\
+        \    }\n}"
+      python: "# Definition for singly-linked list.\n# class ListNode(object):\n#  \
+        \   def __init__(self, val=0, next=None):\n#         self.val = val\n#     \
+        \    self.next = next\nclass Solution(object):\n    def modifiedList(self, nums,\
+        \ head):\n        \"\"\"\n        :type nums: List[int]\n        :type head:\
+        \ Optional[ListNode]\n        :rtype: Optional[ListNode]\n        \"\"\"\n \
+        \       values = set(nums)\n        dummy = ListNode(0, head)\n        prev\
+        \ = dummy\n        while prev.next is not None:\n            if prev.next.val\
+        \ in values:\n                prev.next = prev.next.next\n            else:\n\
+        \                prev = prev.next\n        return dummy.next"
+      python3: "# Definition for singly-linked list.\n# class ListNode:\n#     def __init__(self,\
+        \ val=0, next=None):\n#         self.val = val\n#         self.next = next\n\
+        class Solution:\n    def modifiedList(self, nums: List[int], head: Optional[ListNode])\
+        \ -> Optional[ListNode]:\n        values = set(nums)\n        dummy = ListNode(0,\
+        \ head)\n        prev = dummy\n        while prev.next is not None:\n      \
+        \      if prev.next.val in values:\n                prev.next = prev.next.next\n\
+        \            else:\n                prev = prev.next\n        return dummy.next"
+      c: "/**\n * Definition for singly-linked list.\n * struct ListNode {\n *     int\
+        \ val;\n *     struct ListNode *next;\n * };\n */\nstruct ListNode* modifiedList(int*\
+        \ nums, int numsSize, struct ListNode* head) {\n    int* values = calloc(100001,\
+        \ sizeof(int));\n    for (int i = 0; i < numsSize; i++) {\n        values[nums[i]]\
+        \ = 1;\n    }\n    struct ListNode dummy;\n    dummy.val = 0;\n    dummy.next\
+        \ = head;\n    struct ListNode* prev = &dummy;\n    while (prev->next != NULL)\
+        \ {\n        if (values[prev->next->val]) {\n            prev->next = prev->next->next;\n\
+        \        } else {\n            prev = prev->next;\n        }\n    }\n    free(values);\n\
+        \    return dummy.next;\n}"
+      csharp: "/**\n * Definition for singly-linked list.\n * public class ListNode\
+        \ {\n *     public int val;\n *     public ListNode next;\n *     public ListNode(int\
+        \ val=0, ListNode next=null) {\n *         this.val = val;\n *         this.next\
+        \ = next;\n *     }\n * }\n */\npublic class Solution {\n    public ListNode\
+        \ ModifiedList(int[] nums, ListNode head) {\n        var values = new HashSet<int>(nums);\n\
+        \        var dummy = new ListNode(0, head);\n        var prev = dummy;\n   \
+        \     while (prev.next != null) {\n            if (values.Contains(prev.next.val))\
+        \ {\n                prev.next = prev.next.next;\n            } else {\n   \
+        \             prev = prev.next;\n            }\n        }\n        return dummy.next;\n\
+        \    }\n}"
+      javascript: "/**\n * Definition for singly-linked list.\n * function ListNode(val,\
+        \ next) {\n *     this.val = (val===undefined ? 0 : val)\n *     this.next =\
+        \ (next===undefined ? null : next)\n * }\n */\n/**\n * @param {number[]} nums\n\
+        \ * @param {ListNode} head\n * @return {ListNode}\n */\nvar modifiedList = function(nums,\
+        \ head) {\n    const values = new Set(nums);\n    const dummy = new ListNode(0,\
+        \ head);\n    let prev = dummy;\n    while (prev.next !== null) {\n        if\
+        \ (values.has(prev.next.val)) {\n            prev.next = prev.next.next;\n \
+        \       } else {\n            prev = prev.next;\n        }\n    }\n    return\
+        \ dummy.next;\n};"
+      typescript: "/**\n * Definition for singly-linked list.\n * class ListNode {\n\
+        \ *     val: number\n *     next: ListNode | null\n *     constructor(val?:\
+        \ number, next?: ListNode | null) {\n *         this.val = (val===undefined\
+        \ ? 0 : val)\n *         this.next = (next===undefined ? null : next)\n *  \
+        \   }\n * }\n */\n\nfunction modifiedList(nums: number[], head: ListNode | null):\
+        \ ListNode | null {\n    const values = new Set(nums);\n    const dummy = new\
+        \ ListNode(0, head);\n    let prev = dummy;\n    while (prev.next !== null)\
+        \ {\n        if (values.has(prev.next.val)) {\n            prev.next = prev.next.next;\n\
+        \        } else {\n            prev = prev.next;\n        }\n    }\n    return\
+        \ dummy.next;\n};"
+      php: "/**\n * Definition for a singly-linked list.\n * class ListNode {\n *  \
+        \   public $val = 0;\n *     public $next = null;\n *     function __construct($val\
+        \ = 0, $next = null) {\n *         $this->val = $val;\n *         $this->next\
+        \ = $next;\n *     }\n * }\n */\nclass Solution {\n\n    /**\n     * @param\
+        \ Integer[] $nums\n     * @param ListNode $head\n     * @return ListNode\n \
+        \    */\n    function modifiedList($nums, $head) {\n        $values = array_fill_keys($nums,\
+        \ true);\n        $dummy = new ListNode(0, $head);\n        $prev = $dummy;\n\
+        \        while ($prev->next !== null) {\n            if (isset($values[$prev->next->val]))\
+        \ {\n                $prev->next = $prev->next->next;\n            } else {\n\
+        \                $prev = $prev->next;\n            }\n        }\n        return\
+        \ $dummy->next;\n    }\n}"
+      swift: "/**\n * Definition for singly-linked list.\n * public class ListNode {\n\
+        \ *     public var val: Int\n *     public var next: ListNode?\n *     public\
+        \ init() { self.val = 0; self.next = nil; }\n *     public init(_ val: Int)\
+        \ { self.val = val; self.next = nil; }\n *     public init(_ val: Int, _ next:\
+        \ ListNode?) { self.val = val; self.next = next; }\n * }\n */\nclass Solution\
+        \ {\n    func modifiedList(_ nums: [Int], _ head: ListNode?) -> ListNode? {\n\
+        \        let values = Set(nums)\n        let dummy = ListNode(0, head)\n   \
+        \     var prev = dummy\n        while let next = prev.next {\n            if\
+        \ values.contains(next.val) {\n                prev.next = next.next\n     \
+        \       } else {\n                prev = next\n            }\n        }\n  \
+        \      return dummy.next\n    }\n}"
+      kotlin: "class Solution {\n    fun modifiedList(nums: IntArray, head: ListNode?):\
+        \ ListNode? {\n        val values = nums.toHashSet()\n        val dummy = ListNode(0)\n\
+        \        dummy.next = head\n        var prev = dummy\n        while (prev.next\
+        \ != null) {\n            val next = prev.next!!\n            if (next.`val`\
+        \ in values) {\n                prev.next = next.next\n            } else {\n\
+        \                prev = next\n            }\n        }\n        return dummy.next\n\
+        \    }\n}"
+      dart: "class Solution {\n  ListNode? modifiedList(List<int> nums, ListNode? head)\
+        \ {\n    final values = nums.toSet();\n    final dummy = ListNode(0, head);\n\
+        \    var prev = dummy;\n    while (prev.next != null) {\n      final next =\
+        \ prev.next!;\n      if (values.contains(next.val)) {\n        prev.next = next.next;\n\
+        \      } else {\n        prev = next;\n      }\n    }\n    return dummy.next;\n\
+        \  }\n}"
+      go: "func modifiedList(nums []int, head *ListNode) *ListNode {\n\tvalues := make(map[int]struct{},\
+        \ len(nums))\n\tfor _, value := range nums {\n\t\tvalues[value] = struct{}{}\n\
+        \t}\n\n\tdummy := &ListNode{Next: head}\n\tprev := dummy\n\tfor prev.Next !=\
+        \ nil {\n\t\tif _, exists := values[prev.Next.Val]; exists {\n\t\t\tprev.Next\
+        \ = prev.Next.Next\n\t\t} else {\n\t\t\tprev = prev.Next\n\t\t}\n\t}\n\treturn\
+        \ dummy.Next\n}"
+      ruby: "def modified_list(nums, head)\n    values = nums.to_set\n    dummy = ListNode.new(0,\
+        \ head)\n    prev = dummy\n    while prev.next\n        if values.include?(prev.next.val)\n\
+        \            prev.next = prev.next.next\n        else\n            prev = prev.next\n\
+        \        end\n    end\n    dummy.next\nend"
+      scala: "object Solution {\n    def modifiedList(nums: Array[Int], head: ListNode):\
+        \ ListNode = {\n        val values = nums.toSet\n        val dummy = new ListNode(0,\
+        \ head)\n        var prev = dummy\n        while (prev.next != null) {\n   \
+        \         if (values.contains(prev.next.x)) {\n                prev.next = prev.next.next\n\
+        \            } else {\n                prev = prev.next\n            }\n   \
+        \     }\n        dummy.next\n    }\n}"
+      rust: "// Definition for singly-linked list.\n// #[derive(PartialEq, Eq, Clone,\
+        \ Debug)]\n// pub struct ListNode {\n//   pub val: i32,\n//   pub next: Option<Box<ListNode>>\n\
+        // }\n// \n// impl ListNode {\n//   #[inline]\n//   fn new(val: i32) -> Self\
+        \ {\n//     ListNode {\n//       next: None,\n//       val\n//     }\n//   }\n\
+        // }\nimpl Solution {\n    pub fn modified_list(nums: Vec<i32>, head: Option<Box<ListNode>>)\
+        \ -> Option<Box<ListNode>> {\n        use std::collections::HashSet;\n\n   \
+        \     let values: HashSet<i32> = nums.into_iter().collect();\n        let mut\
+        \ dummy = Box::new(ListNode { val: 0, next: head });\n        let mut prev =\
+        \ &mut dummy;\n\n        while prev.next.is_some() {\n            if values.contains(&prev.next.as_ref().unwrap().val)\
+        \ {\n                let next = prev.next.as_mut().unwrap().next.take();\n \
+        \               prev.next = next;\n            } else {\n                prev\
+        \ = prev.next.as_mut().unwrap();\n            }\n        }\n\n        dummy.next\n\
+        \    }\n}"
+      racket: "; Definition for singly-linked list:\n#|\n\n; val : integer?\n; next\
+        \ : (or/c list-node? #f)\n(struct list-node\n  (val next) #:mutable #:transparent)\n\
+        \n; constructor\n(define (make-list-node [val 0])\n  (list-node val #f))\n\n\
+        |#\n\n(define/contract (modified-list nums head)\n  (-> (listof exact-integer?)\
+        \ (or/c list-node? #f) (or/c list-node? #f))\n  (let ([values (list->set nums)])\n\
+        \    (define dummy (make-list-node 0))\n    (set-list-node-next! dummy head)\n\
+        \    (let loop ([prev dummy])\n      (define next (list-node-next prev))\n \
+        \     (when next\n        (if (set-member? values (list-node-val next))\n  \
+        \          (set-list-node-next! prev (list-node-next next))\n            (loop\
+        \ next)))\n      (when (and next (set-member? values (list-node-val next)))\n\
+        \        (loop prev)))\n    (list-node-next dummy)))"
+      erlang: "%% Definition for singly-linked list.\n%%\n%% -record(list_node, {val\
+        \ = 0 :: integer(),\n%%                     next = null :: 'null' | #list_node{}}).\n\
+        \n-spec modified_list(Nums :: [integer()], Head :: #list_node{} | null) -> #list_node{}\
+        \ | null.\nmodified_list(Nums, Head) ->\n  Values = sets:from_list(Nums),\n\
+        \  Dummy = #list_node{val = 0, next = Head},\n  modified_list_loop(Dummy, Values),\n\
+        \  Dummy#list_node.next.\n\nmodified_list_loop(Prev, Values) ->\n  case Prev#list_node.next\
+        \ of\n    null ->\n      ok;\n    Next ->\n      case sets:is_element(Next#list_node.val,\
+        \ Values) of\n        true ->\n          Prev#list_node{next = Next#list_node.next},\n\
+        \          modified_list_loop(Prev, Values);\n        false ->\n          modified_list_loop(Next,\
+        \ Values)\n      end\n  end."
+      elixir: "# Definition for singly-linked list.\n#\n# defmodule ListNode do\n# \
+        \  @type t :: %__MODULE__{\n#           val: integer,\n#           next: ListNode.t()\
+        \ | nil\n#         }\n#   defstruct val: 0, next: nil\n# end\n\ndefmodule Solution\
+        \ do\n  @spec modified_list(nums :: [integer], head :: ListNode.t | nil) ::\
+        \ ListNode.t | nil\n  def modified_list(nums, head) do\n    values = MapSet.new(nums)\n\
+        \    dummy = %ListNode{val: 0, next: head}\n    remove_nodes(dummy, values)\n\
+        \    dummy.next\n  end\n\n  defp remove_nodes(prev, values) do\n    case prev.next\
+        \ do\n      nil ->\n        :ok\n\n      next ->\n        if MapSet.member?(values,\
+        \ next.val) do\n          prev.next = next.next\n          remove_nodes(prev,\
+        \ values)\n        else\n          remove_nodes(next, values)\n        end\n\
+        \    end\n  end\nend"
+    approach: 'Store the values in nums in a hash set so each list node can be checked
+      for removal in expected constant time. Use a dummy node before the head to handle
+      deletions at the beginning uniformly.
+
+
+      Traverse the list with a pointer to the previous node. If the next node''s value
+      is in the set, bypass that node; otherwise advance the pointer. Return the dummy
+      node''s next pointer.'
+    time_complexity: O(m + n) expected time, where m is the length of nums and n is
+      the number of list nodes.
+    space_complexity: O(m) for the set of values from nums.
+    elapsed_time: 78.65448641777039
+    model: gpt-6-luna
+    generated_at: '2026-11-13 00:14:24 '
 ---
 
 ## Problem #3217: Delete Nodes From Linked List Present in Array
@@ -80,123 +268,85 @@ leetcode_url: https://leetcode.com/problems/delete-nodes-from-linked-list-presen
 
 2. Scan the list to check if the current element should be deleted by checking the Set.
 
-## 🤖 AI-Generated Solutions
-
-We've generated solutions using multiple AI models. Click to expand each solution:
-
-
-<details class="ai-solution-card" open markdown="1">
-<summary class="ai-solution-header">
-  <span class="ai-model-badge">✨ Solution from <strong>gemini-2.5-flash</strong></span>
-  <small class="solution-timestamp">(2025-11-21 06:27:47 UTC)</small>
-</summary>
-
-<div class="ai-solution-content">
+## 🤖 AI-Generated Solution (gpt-6-luna)
 
 ### Approach
 
-The problem asks us to remove all nodes from a given linked list whose values are present in an input array `nums`. We need to return the head of the modified linked list.
+Store the values in nums in a hash set so each list node can be checked for removal in expected constant time. Use a dummy node before the head to handle deletions at the beginning uniformly.
 
-The core challenge is efficiently determining if a node's value exists in the `nums` array. A naive approach would be to iterate through `nums` for each node in the linked list, which would lead to a time complexity of O(N*M), where N is the number of nodes in the list and M is the length of `nums`. Given that both N and M can be up to 10^5, N*M could be 10^10, which is too slow.
-
-To optimize the lookup, we can use a hash set (also known as a hash table, `HashSet` in Java/C#, `set` in Python, `unordered_set` in C++, `Map` or `Set` in JavaScript/TypeScript/Go/Kotlin/Swift, etc.). By first converting all elements of `nums` into a hash set, we can check for the existence of any value in O(1) average time. This pre-processing step takes O(M) time.
-
-Once we have the hash set, we traverse the linked list. During traversal, we need to handle node deletions. Deleting a node in a singly linked list requires modifying the `next` pointer of the *previous* node. To simplify the logic, especially when the head node itself needs to be deleted, we introduce a 'dummy' or 'sentinel' node. This dummy node points to the original head of the list. We maintain two pointers: `previous` (initially pointing to the dummy node) and `current` (initially pointing to the actual head). As we iterate, if `current.val` is in our hash set, it means the node should be deleted. We perform the deletion by setting `previous.next = current.next`, effectively bypassing `current`. In this case, `previous` does not advance, because the new `current` (which was `current.next`) might also need to be deleted, and `previous` still needs to point to the node *before* it. If `current.val` is not in the hash set, the node should be kept. In this scenario, both `previous` and `current` advance one step forward (`previous = current` and `current = current.next`). After iterating through the entire list, the modified list's head will be `dummy.next`.
-
-This two-phase approach (build hash set, then traverse and delete) ensures efficiency. The problem statement guarantees that there will be at least one node in the linked list that is *not* present in `nums`, meaning the resulting list will never be empty, and `dummy.next` will always point to a valid (though possibly short) linked list.
+Traverse the list with a pointer to the previous node. If the next node's value is in the set, bypass that node; otherwise advance the pointer. Return the dummy node's next pointer.
 
 ### Code
 
 <div class="code-tabs" markdown="0">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-cpp-gemini-2-5-flash" checked>
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-java-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-python-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-python3-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-c-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-csharp-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-javascript-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-typescript-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-php-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-swift-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-kotlin-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-dart-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-go-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-ruby-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-scala-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-rust-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-racket-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-erlang-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-elixir-gemini-2-5-flash">
+  <input type="radio" name="code-lang" id="lang-cpp" checked>
+  <input type="radio" name="code-lang" id="lang-java">
+  <input type="radio" name="code-lang" id="lang-python">
+  <input type="radio" name="code-lang" id="lang-python3">
+  <input type="radio" name="code-lang" id="lang-c">
+  <input type="radio" name="code-lang" id="lang-csharp">
+  <input type="radio" name="code-lang" id="lang-javascript">
+  <input type="radio" name="code-lang" id="lang-typescript">
+  <input type="radio" name="code-lang" id="lang-php">
+  <input type="radio" name="code-lang" id="lang-swift">
+  <input type="radio" name="code-lang" id="lang-kotlin">
+  <input type="radio" name="code-lang" id="lang-dart">
+  <input type="radio" name="code-lang" id="lang-go">
+  <input type="radio" name="code-lang" id="lang-ruby">
+  <input type="radio" name="code-lang" id="lang-scala">
+  <input type="radio" name="code-lang" id="lang-rust">
+  <input type="radio" name="code-lang" id="lang-racket">
+  <input type="radio" name="code-lang" id="lang-erlang">
+  <input type="radio" name="code-lang" id="lang-elixir">
   <div class="tab-labels">
-    <label for="lang-cpp-gemini-2-5-flash">C++</label>
-    <label for="lang-java-gemini-2-5-flash">Java</label>
-    <label for="lang-python-gemini-2-5-flash">Python</label>
-    <label for="lang-python3-gemini-2-5-flash">Python3</label>
-    <label for="lang-c-gemini-2-5-flash">C</label>
-    <label for="lang-csharp-gemini-2-5-flash">C#</label>
-    <label for="lang-javascript-gemini-2-5-flash">JavaScript</label>
-    <label for="lang-typescript-gemini-2-5-flash">TypeScript</label>
-    <label for="lang-php-gemini-2-5-flash">PHP</label>
-    <label for="lang-swift-gemini-2-5-flash">Swift</label>
-    <label for="lang-kotlin-gemini-2-5-flash">Kotlin</label>
-    <label for="lang-dart-gemini-2-5-flash">Dart</label>
-    <label for="lang-go-gemini-2-5-flash">Go</label>
-    <label for="lang-ruby-gemini-2-5-flash">Ruby</label>
-    <label for="lang-scala-gemini-2-5-flash">Scala</label>
-    <label for="lang-rust-gemini-2-5-flash">Rust</label>
-    <label for="lang-racket-gemini-2-5-flash">Racket</label>
-    <label for="lang-erlang-gemini-2-5-flash">Erlang</label>
-    <label for="lang-elixir-gemini-2-5-flash">Elixir</label>
+    <label for="lang-cpp">C++</label>
+    <label for="lang-java">Java</label>
+    <label for="lang-python">Python</label>
+    <label for="lang-python3">Python3</label>
+    <label for="lang-c">C</label>
+    <label for="lang-csharp">C#</label>
+    <label for="lang-javascript">JavaScript</label>
+    <label for="lang-typescript">TypeScript</label>
+    <label for="lang-php">PHP</label>
+    <label for="lang-swift">Swift</label>
+    <label for="lang-kotlin">Kotlin</label>
+    <label for="lang-dart">Dart</label>
+    <label for="lang-go">Go</label>
+    <label for="lang-ruby">Ruby</label>
+    <label for="lang-scala">Scala</label>
+    <label for="lang-rust">Rust</label>
+    <label for="lang-racket">Racket</label>
+    <label for="lang-erlang">Erlang</label>
+    <label for="lang-elixir">Elixir</label>
   </div>
 
   <div class="tab-panel" data-lang="cpp">
 
 {% highlight cpp %}
 {% raw %}
-#include <vector>
-#include <unordered_set>
-#include <cstddef> // For NULL or nullptr
-
-// Definition for singly-linked list.
-struct ListNode {
-    int val;
-    ListNode *next;
-    ListNode() : val(0), next(nullptr) {}
-    ListNode(int x) : val(x), next(nullptr) {}
-    ListNode(int x, ListNode *next) : val(x), next(next) {}
-};
-
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
 class Solution {
 public:
-    ListNode* modifiedList(std::vector<int>& nums, ListNode* head) {
-        std::unordered_set<int> delete_set;
-        for (int num : nums) {
-            delete_set.insert(num);
-        }
-
-        ListNode dummy(0);
-        dummy.next = head;
+    ListNode* modifiedList(vector<int>& nums, ListNode* head) {
+        unordered_set<int> values(nums.begin(), nums.end());
+        ListNode dummy(0, head);
         ListNode* prev = &dummy;
-        ListNode* curr = head;
-
-        while (curr != nullptr) {
-            if (delete_set.count(curr->val)) {
-                // Current node's value is in the set, delete it
-                prev->next = curr->next;
-                // Move curr to the next node to check, prev stays the same
-                ListNode* node_to_delete = curr; // Temporarily store curr for deletion if needed
-                curr = curr->next;
-                // In C++, if ListNode objects are dynamically allocated with `new`,
-                // they should be freed with `delete`. LeetCode usually manages this.
-                // If managing memory explicitly:
-                // delete node_to_delete;
+        while (prev->next != nullptr) {
+            if (values.count(prev->next->val)) {
+                prev->next = prev->next->next;
             } else {
-                // Current node's value is not in the set, keep it
-                prev = curr;
-                curr = curr->next;
+                prev = prev->next;
             }
         }
-
         return dummy.next;
     }
 };
@@ -209,43 +359,31 @@ public:
 
 {% highlight java %}
 {% raw %}
-import java.util.HashSet;
-import java.util.Set;
-
-// Definition for singly-linked list.
-class ListNode {
-    int val;
-    ListNode next;
-    ListNode() {}
-    ListNode(int val) { this.val = val; }
-    ListNode(int val, ListNode next) { this.val = val; this.next = next; }
-}
-
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
 class Solution {
     public ListNode modifiedList(int[] nums, ListNode head) {
-        Set<Integer> deleteSet = new HashSet<>();
-        for (int num : nums) {
-            deleteSet.add(num);
+        Set<Integer> values = new HashSet<>();
+        for (int value : nums) {
+            values.add(value);
         }
-
-        ListNode dummy = new ListNode(0);
-        dummy.next = head;
+        ListNode dummy = new ListNode(0, head);
         ListNode prev = dummy;
-        ListNode curr = head;
-
-        while (curr != null) {
-            if (deleteSet.contains(curr.val)) {
-                // Current node's value is in the set, delete it
-                prev.next = curr.next;
-                // Move curr to the next node to check, prev stays the same
-                curr = curr.next;
+        while (prev.next != null) {
+            if (values.contains(prev.next.val)) {
+                prev.next = prev.next.next;
             } else {
-                // Current node's value is not in the set, keep it
-                prev = curr;
-                curr = curr.next;
+                prev = prev.next;
             }
         }
-
         return dummy.next;
     }
 }
@@ -259,33 +397,25 @@ class Solution {
 {% highlight python %}
 {% raw %}
 # Definition for singly-linked list.
-# class ListNode:
+# class ListNode(object):
 #     def __init__(self, val=0, next=None):
 #         self.val = val
 #         self.next = next
-from typing import List, Optional
-
-class Solution:
-    def modifiedList(self, nums: List[int], head: Optional[ListNode]) -> Optional[ListNode]:
-        delete_set = set(nums)
-
-        dummy = ListNode(0)
-        dummy.next = head
-
+class Solution(object):
+    def modifiedList(self, nums, head):
+        """
+        :type nums: List[int]
+        :type head: Optional[ListNode]
+        :rtype: Optional[ListNode]
+        """
+        values = set(nums)
+        dummy = ListNode(0, head)
         prev = dummy
-        curr = head
-
-        while curr:
-            if curr.val in delete_set:
-                # Current node's value is in the set, delete it
-                prev.next = curr.next
-                # Move curr to the next node to check, prev stays the same
-                curr = curr.next
+        while prev.next is not None:
+            if prev.next.val in values:
+                prev.next = prev.next.next
             else:
-                # Current node's value is not in the set, keep it
-                prev = curr
-                curr = curr.next
-
+                prev = prev.next
         return dummy.next
 {% endraw %}
 {% endhighlight %}
@@ -301,29 +431,16 @@ class Solution:
 #     def __init__(self, val=0, next=None):
 #         self.val = val
 #         self.next = next
-from typing import List, Optional
-
 class Solution:
     def modifiedList(self, nums: List[int], head: Optional[ListNode]) -> Optional[ListNode]:
-        delete_set = set(nums)
-
-        dummy = ListNode(0)
-        dummy.next = head
-
+        values = set(nums)
+        dummy = ListNode(0, head)
         prev = dummy
-        curr = head
-
-        while curr:
-            if curr.val in delete_set:
-                # Current node's value is in the set, delete it
-                prev.next = curr.next
-                # Move curr to the next node to check, prev stays the same
-                curr = curr.next
+        while prev.next is not None:
+            if prev.next.val in values:
+                prev.next = prev.next.next
             else:
-                # Current node's value is not in the set, keep it
-                prev = curr
-                curr = curr.next
-
+                prev = prev.next
         return dummy.next
 {% endraw %}
 {% endhighlight %}
@@ -334,60 +451,31 @@ class Solution:
 
 {% highlight c %}
 {% raw %}
-#include <stdlib.h> // For malloc, free, NULL
-#include <stdbool.h> // For bool type
-
-// Definition for singly-linked list.
-struct ListNode {
-    int val;
-    struct ListNode *next;
-};
-
-// A basic hash set implementation for integers within a known range.
-// Constraints: 1 <= Node.val <= 10^5, so a boolean array is efficient enough.
-#define MAX_VAL 100001 // Max Node.val + 1
-bool exists_in_nums_set[MAX_VAL];
-
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     struct ListNode *next;
+ * };
+ */
 struct ListNode* modifiedList(int* nums, int numsSize, struct ListNode* head) {
-    // Initialize the set (boolean array) to false
-    for (int i = 0; i < MAX_VAL; ++i) {
-        exists_in_nums_set[i] = false;
+    int* values = calloc(100001, sizeof(int));
+    for (int i = 0; i < numsSize; i++) {
+        values[nums[i]] = 1;
     }
-
-    // Populate the set
-    for (int i = 0; i < numsSize; ++i) {
-        if (nums[i] >= 1 && nums[i] < MAX_VAL) { // Ensure value is within bounds
-            exists_in_nums_set[nums[i]] = true;
-        }
-    }
-
-    // Create a dummy node
-    struct ListNode* dummy = (struct ListNode*) malloc(sizeof(struct ListNode));
-    if (dummy == NULL) { /* Handle allocation failure */ return NULL; }
-    dummy->val = 0; // Value doesn't matter for dummy node
-    dummy->next = head;
-
-    struct ListNode* prev = dummy;
-    struct ListNode* curr = head;
-
-    while (curr != NULL) {
-        if (curr->val >= 1 && curr->val < MAX_VAL && exists_in_nums_set[curr->val]) {
-            // Current node's value is in the set, delete it
-            prev->next = curr->next;
-            // Move curr to the next node to check, prev stays the same
-            struct ListNode* node_to_free = curr;
-            curr = curr->next;
-            free(node_to_free); // Free the deleted node's memory
+    struct ListNode dummy;
+    dummy.val = 0;
+    dummy.next = head;
+    struct ListNode* prev = &dummy;
+    while (prev->next != NULL) {
+        if (values[prev->next->val]) {
+            prev->next = prev->next->next;
         } else {
-            // Current node's value is not in the set, keep it
-            prev = curr;
-            curr = curr->next;
+            prev = prev->next;
         }
     }
-
-    struct ListNode* new_head = dummy->next;
-    free(dummy); // Free the dummy node
-    return new_head;
+    free(values);
+    return dummy.next;
 }
 {% endraw %}
 {% endhighlight %}
@@ -398,43 +486,29 @@ struct ListNode* modifiedList(int* nums, int numsSize, struct ListNode* head) {
 
 {% highlight csharp %}
 {% raw %}
-using System.Collections.Generic;
-
-// Definition for singly-linked list.
-public class ListNode {
-    public int val;
-    public ListNode next;
-    public ListNode(int val=0, ListNode next=null) {
-        this.val = val;
-        this.next = next;
-    }
-}
-
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     public int val;
+ *     public ListNode next;
+ *     public ListNode(int val=0, ListNode next=null) {
+ *         this.val = val;
+ *         this.next = next;
+ *     }
+ * }
+ */
 public class Solution {
     public ListNode ModifiedList(int[] nums, ListNode head) {
-        HashSet<int> deleteSet = new HashSet<int>();
-        foreach (int num in nums) {
-            deleteSet.Add(num);
-        }
-
-        ListNode dummy = new ListNode(0);
-        dummy.next = head;
-        ListNode prev = dummy;
-        ListNode curr = head;
-
-        while (curr != null) {
-            if (deleteSet.Contains(curr.val)) {
-                // Current node's value is in the set, delete it
-                prev.next = curr.next;
-                // Move curr to the next node to check, prev stays the same
-                curr = curr.next;
+        var values = new HashSet<int>(nums);
+        var dummy = new ListNode(0, head);
+        var prev = dummy;
+        while (prev.next != null) {
+            if (values.Contains(prev.next.val)) {
+                prev.next = prev.next.next;
             } else {
-                // Current node's value is not in the set, keep it
-                prev = curr;
-                curr = curr.next;
+                prev = prev.next;
             }
         }
-
         return dummy.next;
     }
 }
@@ -447,39 +521,29 @@ public class Solution {
 
 {% highlight javascript %}
 {% raw %}
-// Definition for singly-linked list.
-function ListNode(val, next) {
-    this.val = (val===undefined ? 0 : val)
-    this.next = (next===undefined ? null : next)
-}
-
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
 /**
  * @param {number[]} nums
  * @param {ListNode} head
  * @return {ListNode}
  */
 var modifiedList = function(nums, head) {
-    const deleteSet = new Set(nums);
-
-    const dummy = new ListNode(0);
-    dummy.next = head;
-
+    const values = new Set(nums);
+    const dummy = new ListNode(0, head);
     let prev = dummy;
-    let curr = head;
-
-    while (curr !== null) {
-        if (deleteSet.has(curr.val)) {
-            // Current node's value is in the set, delete it
-            prev.next = curr.next;
-            // Move curr to the next node to check, prev stays the same
-            curr = curr.next;
+    while (prev.next !== null) {
+        if (values.has(prev.next.val)) {
+            prev.next = prev.next.next;
         } else {
-            // Current node's value is not in the set, keep it
-            prev = curr;
-            curr = curr.next;
+            prev = prev.next;
         }
     }
-
     return dummy.next;
 };
 {% endraw %}
@@ -491,38 +555,29 @@ var modifiedList = function(nums, head) {
 
 {% highlight typescript %}
 {% raw %}
-// Definition for singly-linked list.
-class ListNode {
-    val: number
-    next: ListNode | null
-    constructor(val?: number, next?: ListNode | null) {
-        this.val = (val===undefined ? 0 : val)
-        this.next = (next===undefined ? null : next)
-    }
-}
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     val: number
+ *     next: ListNode | null
+ *     constructor(val?: number, next?: ListNode | null) {
+ *         this.val = (val===undefined ? 0 : val)
+ *         this.next = (next===undefined ? null : next)
+ *     }
+ * }
+ */
 
 function modifiedList(nums: number[], head: ListNode | null): ListNode | null {
-    const deleteSet: Set<number> = new Set(nums);
-
-    const dummy: ListNode = new ListNode(0);
-    dummy.next = head;
-
-    let prev: ListNode = dummy;
-    let curr: ListNode | null = head;
-
-    while (curr !== null) {
-        if (deleteSet.has(curr.val)) {
-            // Current node's value is in the set, delete it
-            prev.next = curr.next;
-            // Move curr to the next node to check, prev stays the same
-            curr = curr.next;
+    const values = new Set(nums);
+    const dummy = new ListNode(0, head);
+    let prev = dummy;
+    while (prev.next !== null) {
+        if (values.has(prev.next.val)) {
+            prev.next = prev.next.next;
         } else {
-            // Current node's value is not in the set, keep it
-            prev = curr;
-            curr = curr.next;
+            prev = prev.next;
         }
     }
-
     return dummy.next;
 };
 {% endraw %}
@@ -534,18 +589,17 @@ function modifiedList(nums: number[], head: ListNode | null): ListNode | null {
 
 {% highlight php %}
 {% raw %}
-<?php
-
-// Definition for a singly-linked list.
-class ListNode {
-    public $val = 0;
-    public $next = null;
-    function __construct($val = 0, $next = null) {
-        $this->val = $val;
-        $this->next = $next;
-    }
-}
-
+/**
+ * Definition for a singly-linked list.
+ * class ListNode {
+ *     public $val = 0;
+ *     public $next = null;
+ *     function __construct($val = 0, $next = null) {
+ *         $this->val = $val;
+ *         $this->next = $next;
+ *     }
+ * }
+ */
 class Solution {
 
     /**
@@ -554,30 +608,16 @@ class Solution {
      * @return ListNode
      */
     function modifiedList($nums, $head) {
-        $deleteSet = [];
-        foreach ($nums as $num) {
-            $deleteSet[$num] = true; // Using associative array as a hash set
-        }
-
-        $dummy = new ListNode(0);
-        $dummy->next = $head;
-
+        $values = array_fill_keys($nums, true);
+        $dummy = new ListNode(0, $head);
         $prev = $dummy;
-        $curr = $head;
-
-        while ($curr !== null) {
-            if (isset($deleteSet[$curr->val])) {
-                // Current node's value is in the set, delete it
-                $prev->next = $curr->next;
-                // Move curr to the next node to check, prev stays the same
-                $curr = $curr->next;
+        while ($prev->next !== null) {
+            if (isset($values[$prev->next->val])) {
+                $prev->next = $prev->next->next;
             } else {
-                // Current node's value is not in the set, keep it
-                $prev = $curr;
-                $curr = $curr->next;
+                $prev = $prev->next;
             }
         }
-
         return $dummy->next;
     }
 }
@@ -590,40 +630,28 @@ class Solution {
 
 {% highlight swift %}
 {% raw %}
-import Foundation
-
-// Definition for singly-linked list.
-public class ListNode {
-    public var val: Int
-    public var next: ListNode?
-    public init() { self.val = 0; self.next = nil; }
-    public init(_ val: Int) { self.val = val; self.next = nil; }
-    public init(_ val: Int, _ next: ListNode?) { self.val = val; self.next = next; }
-}
-
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     public var val: Int
+ *     public var next: ListNode?
+ *     public init() { self.val = 0; self.next = nil; }
+ *     public init(_ val: Int) { self.val = val; self.next = nil; }
+ *     public init(_ val: Int, _ next: ListNode?) { self.val = val; self.next = next; }
+ * }
+ */
 class Solution {
     func modifiedList(_ nums: [Int], _ head: ListNode?) -> ListNode? {
-        let deleteSet = Set(nums)
-
-        let dummy = ListNode(0)
-        dummy.next = head
-
-        var prev: ListNode = dummy
-        var curr: ListNode? = head
-
-        while curr != nil {
-            if deleteSet.contains(curr!.val) {
-                // Current node's value is in the set, delete it
-                prev.next = curr!.next
-                // Move curr to the next node to check, prev stays the same
-                curr = curr!.next
+        let values = Set(nums)
+        let dummy = ListNode(0, head)
+        var prev = dummy
+        while let next = prev.next {
+            if values.contains(next.val) {
+                prev.next = next.next
             } else {
-                // Current node's value is not in the set, keep it
-                prev = curr!
-                curr = curr!.next
+                prev = next
             }
         }
-
         return dummy.next
     }
 }
@@ -636,34 +664,20 @@ class Solution {
 
 {% highlight kotlin %}
 {% raw %}
-// Definition for singly-linked list.
-class ListNode(var `val`: Int = 0) {
-    var next: ListNode? = null
-}
-
 class Solution {
     fun modifiedList(nums: IntArray, head: ListNode?): ListNode? {
-        val deleteSet = nums.toHashSet()
-
+        val values = nums.toHashSet()
         val dummy = ListNode(0)
         dummy.next = head
-
-        var prev: ListNode = dummy
-        var curr: ListNode? = head
-
-        while (curr != null) {
-            if (deleteSet.contains(curr.`val`)) {
-                // Current node's value is in the set, delete it
-                prev.next = curr.next
-                // Move curr to the next node to check, prev stays the same
-                curr = curr.next
+        var prev = dummy
+        while (prev.next != null) {
+            val next = prev.next!!
+            if (next.`val` in values) {
+                prev.next = next.next
             } else {
-                // Current node's value is not in the set, keep it
-                prev = curr
-                curr = curr.next
+                prev = next
             }
         }
-
         return dummy.next
     }
 }
@@ -676,36 +690,19 @@ class Solution {
 
 {% highlight dart %}
 {% raw %}
-// Definition for singly-linked list.
-class ListNode {
-  int val;
-  ListNode? next;
-  ListNode([this.val = 0, this.next]);
-}
-
 class Solution {
   ListNode? modifiedList(List<int> nums, ListNode? head) {
-    final Set<int> deleteSet = nums.toSet();
-
-    final ListNode dummy = ListNode(0);
-    dummy.next = head;
-
-    ListNode prev = dummy;
-    ListNode? curr = head;
-
-    while (curr != null) {
-      if (deleteSet.contains(curr.val)) {
-        // Current node's value is in the set, delete it
-        prev.next = curr.next;
-        // Move curr to the next node to check, prev stays the same
-        curr = curr.next;
+    final values = nums.toSet();
+    final dummy = ListNode(0, head);
+    var prev = dummy;
+    while (prev.next != null) {
+      final next = prev.next!;
+      if (values.contains(next.val)) {
+        prev.next = next.next;
       } else {
-        // Current node's value is not in the set, keep it
-        prev = curr;
-        curr = curr.next;
+        prev = next;
       }
     }
-
     return dummy.next;
   }
 }
@@ -718,39 +715,22 @@ class Solution {
 
 {% highlight go %}
 {% raw %}
-package main
-
-// Definition for singly-linked list.
-type ListNode struct {
-    Val int
-    Next *ListNode
-}
-
 func modifiedList(nums []int, head *ListNode) *ListNode {
-    deleteSet := make(map[int]bool)
-    for _, num := range nums {
-        deleteSet[num] = true
-    }
+	values := make(map[int]struct{}, len(nums))
+	for _, value := range nums {
+		values[value] = struct{}{}
+	}
 
-    dummy := &ListNode{Val: 0, Next: head}
-
-    prev := dummy
-    curr := head
-
-    for curr != nil {
-        if deleteSet[curr.Val] {
-            // Current node's value is in the set, delete it
-            prev.Next = curr.Next
-            // Move curr to the next node to check, prev stays the same
-            curr = curr.Next
-        } else {
-            // Current node's value is not in the set, keep it
-            prev = curr
-            curr = curr.Next
-        }
-    }
-
-    return dummy.Next
+	dummy := &ListNode{Next: head}
+	prev := dummy
+	for prev.Next != nil {
+		if _, exists := values[prev.Next.Val]; exists {
+			prev.Next = prev.Next.Next
+		} else {
+			prev = prev.Next
+		}
+	}
+	return dummy.Next
 }
 {% endraw %}
 {% endhighlight %}
@@ -761,41 +741,17 @@ func modifiedList(nums []int, head *ListNode) *ListNode {
 
 {% highlight ruby %}
 {% raw %}
-# Definition for singly-linked list.
-# class ListNode
-#     attr_accessor :val, :next
-#     def initialize(val = 0, _next = nil)
-#         @val = val
-#         @next = _next
-#     end
-# end
-
-# @param {Integer[]} nums
-# @param {ListNode} head
-# @return {ListNode}
 def modified_list(nums, head)
-    require 'set' # Ensure Set is available
-    delete_set = Set.new(nums)
-
-    dummy = ListNode.new(0)
-    dummy.next = head
-
+    values = nums.to_set
+    dummy = ListNode.new(0, head)
     prev = dummy
-    curr = head
-
-    while curr
-        if delete_set.include?(curr.val)
-            # Current node's value is in the set, delete it
-            prev.next = curr.next
-            # Move curr to the next node to check, prev stays the same
-            curr = curr.next
+    while prev.next
+        if values.include?(prev.next.val)
+            prev.next = prev.next.next
         else
-            # Current node's value is not in the set, keep it
-            prev = curr
-            curr = curr.next
+            prev = prev.next
         end
     end
-
     dummy.next
 end
 {% endraw %}
@@ -807,855 +763,18 @@ end
 
 {% highlight scala %}
 {% raw %}
-import scala.collection.mutable
-
-// Definition for singly-linked list.
-class ListNode(_val: Int = 0, _next: ListNode = null) {
-  var next: ListNode = _next
-  var val: Int = _val
-}
-
 object Solution {
     def modifiedList(nums: Array[Int], head: ListNode): ListNode = {
-        val deleteSet: mutable.Set[Int] = mutable.Set.empty[Int]
-        nums.foreach(deleteSet.add)
-
-        val dummy = new ListNode(0)
-        dummy.next = head
-
-        var prev: ListNode = dummy
-        var curr: ListNode = head
-
-        while (curr != null) {
-            if (deleteSet.contains(curr.val)) {
-                // Current node's value is in the set, delete it
-                prev.next = curr.next
-                // Move curr to the next node to check, prev stays the same
-                curr = curr.next
+        val values = nums.toSet
+        val dummy = new ListNode(0, head)
+        var prev = dummy
+        while (prev.next != null) {
+            if (values.contains(prev.next.x)) {
+                prev.next = prev.next.next
             } else {
-                // Current node's value is not in the set, keep it
-                prev = curr
-                curr = curr.next
+                prev = prev.next
             }
         }
-
-        dummy.next
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="rust">
-
-{% highlight rust %}
-{% raw %}
-// Definition for singly-linked list.
-#[derive(PartialEq, Eq, Clone, Debug)]
-pub struct ListNode {
-  pub val: i32,
-  pub next: Option<Box<ListNode>>
-}
-
-impl ListNode {
-  #[inline]
-  fn new(val: i32) -> Self {
-    ListNode { next: None, val }
-  }
-}
-
-use std::collections::HashSet;
-
-impl Solution {
-    pub fn modified_list(nums: Vec<i32>, head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
-        let delete_set: HashSet<i32> = nums.into_iter().collect();
-
-        let mut dummy = ListNode::new(0);
-        let mut prev_ptr = &mut dummy.next; // A pointer to the 'next' field of the previous node
-        let mut current_node_opt = head; // The current node we are examining
-
-        while let Some(mut node) = current_node_opt.take() { // take() moves ownership out of current_node_opt
-            if delete_set.contains(&node.val) {
-                // This node should be deleted. Skip it by taking its 'next' field
-                // and making it the new `current_node_opt` for the next iteration.
-                current_node_opt = node.next;
-            } else {
-                // This node should be kept. Attach it to the `prev_ptr`.
-                // Then update `prev_ptr` to point to the `next` field of the node we just kept.
-                current_node_opt = node.next; // Store the next part of the original list
-                node.next = None; // Detach node from the rest of its original list
-                *prev_ptr = Some(node); // Attach the current node to the new list
-                prev_ptr = &mut prev_ptr.as_mut().unwrap().next; // Advance prev_ptr to the 'next' of the just-attached node
-            }
-        }
-
-        dummy.next
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="racket">
-
-{% highlight racket %}
-{% raw %}
-#lang racket
-
-;; Provided ListNode structure (assuming mutable for typical linked-list operations)
-(struct ListNode (val next) #:mutable #t)
-
-(define (modifiedList nums head)
-  (define delete-set (make-hash))
-  (for ([num nums])
-    (hash-set! delete-set num #t))
-
-  (define dummy (ListNode 0 #f))
-  (set-ListNode-next! dummy head)
-
-  (define prev dummy)
-  (define curr head)
-
-  (let loop ( (curr-node curr) (prev-node prev) )
-    (when curr-node
-      (if (hash-has-key? delete-set (ListNode-val curr-node))
-          ;; Delete current node: bypass it by linking prev-node's next to curr-node's next
-          (begin
-            (set-ListNode-next! prev-node (ListNode-next curr-node))
-            ;; Move to the next node, prev-node remains the same because the new curr-node might also be deleted
-            (loop (ListNode-next curr-node) prev-node))
-          ;; Keep current node: move both prev-node and curr-node forward
-          (begin
-            (loop (ListNode-next curr-node) curr-node)))))
-
-  (ListNode-next dummy))
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="erlang">
-
-{% highlight erlang %}
-{% raw %}
--module(solution).
--export([modified_list/2]).
-
-%% Definition for singly-linked list.
-%% Records are immutable. To simulate mutable pointers, we pass modified records.
-%% This approach rebuilds the list or passes accumulated state. The direct iterative
-%% approach with two pointers is not idiomatic Erlang. Instead, a recursive approach
-%% that constructs the new list is typically used.
-
--record(list_node, {val = 0, next = null}).
-
-modified_list(Nums, Head) ->
-    DeleteSet = sets:from_list(Nums),
-
-    % Recursive helper to build the new list
-    build_new_list(Head, DeleteSet).
-
-build_new_list(null, _DeleteSet) ->
-    null;
-build_new_list(Curr = #list_node{val = Val, next = Next}, DeleteSet) ->
-    case sets:is_element(Val, DeleteSet) of
-        true ->
-            % Node value is in delete set, skip this node
-            build_new_list(Next, DeleteSet);
-        false ->
-            % Node value is NOT in delete set, keep this node
-            #list_node{val = Val, next = build_new_list(Next, DeleteSet)}
-    end.
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="elixir">
-
-{% highlight elixir %}
-{% raw %}
-defmodule Solution do
-  @type list_node :: %__MODULE__{val: integer, next: list_node() | nil}
-  defstruct val: 0, next: nil
-
-  @spec modified_list(nums :: [integer], head :: list_node | nil) :: list_node | nil
-  def modified_list(nums, head) do
-    delete_set = MapSet.new(nums)
-
-    # In functional languages like Elixir, linked lists are typically immutable.
-    # We don't 'mutate' pointers; instead, we build a new list by recursing.
-    # This function recursively processes the input list and constructs the new list.
-    do_modified_list(head, delete_set)
-  end
-
-  defp do_modified_list(nil, _delete_set), do: nil
-  defp do_modified_list(%Solution.ListNode{val: val, next: next} = curr, delete_set) do
-    if MapSet.member?(delete_set, val) do
-      # If current node's value is in the set, skip this node and process the rest of the list.
-      do_modified_list(next, delete_set)
-    else
-      # If current node's value is not in the set, keep this node.
-      # Its 'next' pointer should point to the result of processing the rest of the list.
-      %Solution.ListNode{val: val, next: do_modified_list(next, delete_set)}
-    end
-  end
-end
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-</div>
-
-### Complexity Analysis
-
-- **Time Complexity:** O(M + N)
-
-- **Space Complexity:** O(M)
-
-</div>
-</details>
-
-
-<details class="ai-solution-card" markdown="1">
-<summary class="ai-solution-header">
-  <span class="ai-model-badge">⚡ Solution from <strong>llama-3.3-70b-versatile</strong></span>
-  <small class="solution-timestamp">(2025-11-21 06:27:57 UTC)</small>
-</summary>
-
-<div class="ai-solution-content">
-
-### Approach
-
-
-The problem requires us to remove nodes from a linked list that have values present in a given array. To solve this problem, we will follow these steps:
-
-1. Create a Set from the given array to store the values that need to be removed from the linked list. This is because checking if an element exists in a Set is an O(1) operation, which will help us to efficiently check if a node's value should be removed.
-
-2. Initialize a dummy node that points to the head of the linked list. This dummy node will help us to handle the case where the head node itself needs to be removed.
-
-3. Initialize a pointer to the current node in the linked list.
-
-4. Traverse the linked list. For each node, check if its value exists in the Set. If it does, skip this node by updating the next pointer of the previous node to point to the next node. If it does not, move the previous pointer to the current node.
-
-5. After traversing the entire linked list, the next pointer of the dummy node will point to the new head of the modified linked list.
-
-This approach ensures that we remove all nodes with values present in the given array and return the head of the modified linked list.
-
-The problem-solving strategy involves using a Set to efficiently check if a node's value should be removed, and using a dummy node to handle the case where the head node itself needs to be removed.
-
-The algorithm logic is as follows:
-
-- Create a Set from the given array.
-- Initialize a dummy node and a pointer to the current node.
-- Traverse the linked list, checking if each node's value exists in the Set.
-- If a node's value exists in the Set, skip this node by updating the next pointer of the previous node.
-- If a node's value does not exist in the Set, move the previous pointer to the current node.
-- Return the next pointer of the dummy node as the head of the modified linked list.
-
-Examples and edge cases:
-
-- If the given array is empty, the linked list remains unchanged.
-- If the linked list is empty, the function returns None.
-- If the head node itself needs to be removed, the function returns the next node as the new head.
-
-Time complexity:
-
-The time complexity of this solution is O(n + m), where n is the number of nodes in the linked list and m is the number of elements in the given array. This is because we are traversing the linked list once and creating a Set from the given array.
-
-Space complexity:
-
-The space complexity of this solution is O(m), where m is the number of elements in the given array. This is because we are storing the elements of the given array in a Set.
-
-
-
-### Code
-
-<div class="code-tabs" markdown="0">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-cpp-llama-3-3-70b-versatile" checked>
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-java-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-python-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-python3-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-c-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-csharp-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-javascript-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-typescript-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-php-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-swift-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-kotlin-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-dart-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-go-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-ruby-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-scala-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-rust-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-racket-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-erlang-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-elixir-llama-3-3-70b-versatile">
-  <div class="tab-labels">
-    <label for="lang-cpp-llama-3-3-70b-versatile">C++</label>
-    <label for="lang-java-llama-3-3-70b-versatile">Java</label>
-    <label for="lang-python-llama-3-3-70b-versatile">Python</label>
-    <label for="lang-python3-llama-3-3-70b-versatile">Python3</label>
-    <label for="lang-c-llama-3-3-70b-versatile">C</label>
-    <label for="lang-csharp-llama-3-3-70b-versatile">C#</label>
-    <label for="lang-javascript-llama-3-3-70b-versatile">JavaScript</label>
-    <label for="lang-typescript-llama-3-3-70b-versatile">TypeScript</label>
-    <label for="lang-php-llama-3-3-70b-versatile">PHP</label>
-    <label for="lang-swift-llama-3-3-70b-versatile">Swift</label>
-    <label for="lang-kotlin-llama-3-3-70b-versatile">Kotlin</label>
-    <label for="lang-dart-llama-3-3-70b-versatile">Dart</label>
-    <label for="lang-go-llama-3-3-70b-versatile">Go</label>
-    <label for="lang-ruby-llama-3-3-70b-versatile">Ruby</label>
-    <label for="lang-scala-llama-3-3-70b-versatile">Scala</label>
-    <label for="lang-rust-llama-3-3-70b-versatile">Rust</label>
-    <label for="lang-racket-llama-3-3-70b-versatile">Racket</label>
-    <label for="lang-erlang-llama-3-3-70b-versatile">Erlang</label>
-    <label for="lang-elixir-llama-3-3-70b-versatile">Elixir</label>
-  </div>
-
-  <div class="tab-panel" data-lang="cpp">
-
-{% highlight cpp %}
-{% raw %}
-// Definition for singly-linked list.
-// struct ListNode {
-//     int val;
-//     ListNode *next;
-//     ListNode() : val(0), next(nullptr) {}
-//     ListNode(int x) : val(x), next(nullptr) {}
-//     ListNode(int x, ListNode *next) : val(x), next(next) {}
-// };
-
-class Solution {
-public:
-    ListNode* removeElements(ListNode* head, vector<int>& nums) {
-        unordered_set<int> numSet(nums.begin(), nums.end());
-        ListNode* dummy = new ListNode(0);
-        dummy->next = head;
-        ListNode* prev = dummy;
-        ListNode* curr = head;
-
-        while (curr) {
-            if (numSet.find(curr->val) != numSet.end()) {
-                prev->next = curr->next;
-            } else {
-                prev = curr;
-            }
-            curr = curr->next;
-        }
-
-        return dummy->next;
-    }
-};
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="java">
-
-{% highlight java %}
-{% raw %}
-import java.util.*;
-
-// Definition for singly-linked list.
-// public class ListNode {
-//     int val;
-//     ListNode next;
-//     ListNode() {}
-//     ListNode(int val) { this.val = val; }
-//     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
-// }
-
-class Solution {
-    public ListNode removeElements(ListNode head, int[] nums) {
-        Set<Integer> numSet = new HashSet<>();
-        for (int num : nums) {
-            numSet.add(num);
-        }
-        ListNode dummy = new ListNode(0);
-        dummy.next = head;
-        ListNode prev = dummy;
-        ListNode curr = head;
-
-        while (curr != null) {
-            if (numSet.contains(curr.val)) {
-                prev.next = curr.next;
-            } else {
-                prev = curr;
-            }
-            curr = curr.next;
-        }
-
-        return dummy.next;
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="python">
-
-{% highlight python %}
-{% raw %}
-# Definition for singly-linked list.
-# class ListNode:
-#     def __init__(self, val=0, next=None):
-#         self.val = val
-#         self.next = next
-
-class Solution:
-    def removeElements(self, head: Optional[ListNode], nums: List[int]) -> Optional[ListNode]:
-        numSet = set(nums)
-        dummy = ListNode(0)
-        dummy.next = head
-        prev = dummy
-        curr = head
-
-        while curr:
-            if curr.val in numSet:
-                prev.next = curr.next
-            else:
-                prev = curr
-            curr = curr.next
-
-        return dummy.next
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="python3">
-
-{% highlight python %}
-{% raw %}
-# Definition for singly-linked list.
-# class ListNode:
-#     def __init__(self, val=0, next=None):
-#         self.val = val
-#         self.next = next
-
-class Solution:
-    def removeElements(self, head: Optional[ListNode], nums: List[int]) -> Optional[ListNode]:
-        numSet = set(nums)
-        dummy = ListNode(0)
-        dummy.next = head
-        prev = dummy
-        curr = head
-
-        while curr:
-            if curr.val in numSet:
-                prev.next = curr.next
-            else:
-                prev = curr
-            curr = curr.next
-
-        return dummy.next
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="c">
-
-{% highlight c %}
-{% raw %}
-// Definition for singly-linked list.
-// struct ListNode {
-//     int val;
-//     struct ListNode *next;
-// };
-
-struct ListNode* removeElements(struct ListNode* head, int* nums, int numsSize) {
-    int numSet[100001] = {0};
-    for (int i = 0; i < numsSize; i++) {
-        numSet[nums[i]] = 1;
-    }
-    struct ListNode* dummy = (struct ListNode*)malloc(sizeof(struct ListNode));
-    dummy->val = 0;
-    dummy->next = head;
-    struct ListNode* prev = dummy;
-    struct ListNode* curr = head;
-
-    while (curr) {
-        if (numSet[curr->val]) {
-            prev->next = curr->next;
-        } else {
-            prev = curr;
-        }
-        curr = curr->next;
-    }
-
-    return dummy->next;
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="csharp">
-
-{% highlight csharp %}
-{% raw %}
-// Definition for singly-linked list.
-// public class ListNode {
-//     public int val;
-//     public ListNode next;
-//     public ListNode(int val=0, ListNode next=null) {
-//         this.val = val;
-//         this.next = next;
-//     }
-// }
-
-public class Solution {
-    public ListNode RemoveElements(ListNode head, int[] nums) {
-        HashSet<int> numSet = new HashSet<int>(nums);
-        ListNode dummy = new ListNode(0);
-        dummy.next = head;
-        ListNode prev = dummy;
-        ListNode curr = head;
-
-        while (curr != null) {
-            if (numSet.Contains(curr.val)) {
-                prev.next = curr.next;
-            } else {
-                prev = curr;
-            }
-            curr = curr.next;
-        }
-
-        return dummy.next;
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="javascript">
-
-{% highlight javascript %}
-{% raw %}
-// Definition for singly-linked list.
-// var ListNode = function(val, next) {
-//     this.val = (val===undefined ? 0 : val)
-//     this.next = (next===undefined ? null : next)
-// }
-
-var removeElements = function(head, nums) {
-    let numSet = new Set(nums);
-    let dummy = new ListNode(0);
-    dummy.next = head;
-    let prev = dummy;
-    let curr = head;
-
-    while (curr) {
-        if (numSet.has(curr.val)) {
-            prev.next = curr.next;
-        } else {
-            prev = curr;
-        }
-        curr = curr.next;
-    }
-
-    return dummy.next;
-};
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="typescript">
-
-{% highlight typescript %}
-{% raw %}
-// Definition for singly-linked list.
-// class ListNode {
-//     val: number
-//     next: ListNode | null
-//     constructor(val?: number, next?: ListNode | null) {
-//         this.val = (val===undefined ? 0 : val)
-//         this.next = (next===undefined ? null : next)
-//     }
-// }
-
-function removeElements(head: ListNode | null, nums: number[]): ListNode | null {
-    let numSet: Set<number> = new Set(nums);
-    let dummy: ListNode = new ListNode(0);
-    dummy.next = head;
-    let prev: ListNode = dummy;
-    let curr: ListNode | null = head;
-
-    while (curr) {
-        if (numSet.has(curr.val)) {
-            prev.next = curr.next;
-        } else {
-            prev = curr;
-        }
-        curr = curr.next;
-    }
-
-    return dummy.next;
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="php">
-
-{% highlight php %}
-{% raw %}
-// Definition for singly-linked list.
-// class ListNode {
-//     public $val = 0;
-//     public $next = null;
-//     function __construct($val = 0, $next = null) {
-//         $this->val = $val;
-//         $this->next = $next;
-//     }
-// }
-
-class Solution {
-    function removeElements($head, $nums) {
-        $numSet = array_flip($nums);
-        $dummy = new ListNode(0);
-        $dummy->next = $head;
-        $prev = $dummy;
-        $curr = $head;
-
-        while ($curr) {
-            if (isset($numSet[$curr->val])) {
-                $prev->next = $curr->next;
-            } else {
-                $prev = $curr;
-            }
-            $curr = $curr->next;
-        }
-
-        return $dummy->next;
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="swift">
-
-{% highlight swift %}
-{% raw %}
-// Definition for singly-linked list.
-// public class ListNode {
-//     public var val: Int
-//     public var next: ListNode?
-//     public init(_ val: Int) {
-//         self.val = val
-//         self.next = nil
-//     }
-// }
-
-class Solution {
-    func removeElements(_ head: ListNode?, _ nums: [Int]) -> ListNode? {
-        let numSet = Set(nums)
-        let dummy = ListNode(0)
-        dummy.next = head
-        var prev: ListNode? = dummy
-        var curr: ListNode? = head
-
-        while let curr = curr {
-            if numSet.contains(curr.val) {
-                prev?.next = curr.next
-            } else {
-                prev = curr
-            }
-            curr = curr.next
-        }
-
-        return dummy.next
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="kotlin">
-
-{% highlight kotlin %}
-{% raw %}
-// Definition for singly-linked list.
-// class ListNode(var `val`: Int) {
-//     var next: ListNode? = null
-// }
-
-class Solution {
-    fun removeElements(head: ListNode?, nums: IntArray): ListNode? {
-        val numSet = nums.toSet()
-        val dummy = ListNode(0)
-        dummy.next = head
-        var prev: ListNode? = dummy
-        var curr: ListNode? = head
-
-        while (curr != null) {
-            if (curr.`val` in numSet) {
-                prev?.next = curr.next
-            } else {
-                prev = curr
-            }
-            curr = curr.next
-        }
-
-        return dummy.next
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="dart">
-
-{% highlight dart %}
-{% raw %}
-// Definition for singly-linked list.
-// class ListNode {
-//   int val;
-//   ListNode? next;
-//   ListNode([this.val = 0, this.next]);
-// }
-
-class Solution {
-    ListNode? removeElements(ListNode? head, List<int> nums) {
-        Set<int> numSet = Set.from(nums);
-        ListNode dummy = ListNode(0);
-        dummy.next = head;
-        ListNode? prev = dummy;
-        ListNode? curr = head;
-
-        while (curr != null) {
-            if (numSet.contains(curr.val)) {
-                prev?.next = curr.next;
-            } else {
-                prev = curr;
-            }
-            curr = curr.next;
-        }
-
-        return dummy.next;
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="go">
-
-{% highlight go %}
-{% raw %}
-// Definition for singly-linked list.
-// type ListNode struct {
-//     Val int
-//     Next *ListNode
-// }
-
-func removeElements(head *ListNode, nums []int) *ListNode {
-    numSet := make(map[int]bool)
-    for _, num := range nums {
-        numSet[num] = true
-    }
-    dummy := &ListNode{Val: 0}
-    dummy.Next = head
-    prev := dummy
-    curr := head
-
-    for curr != nil {
-        if numSet[curr.Val] {
-            prev.Next = curr.Next
-        } else {
-            prev = curr
-        }
-        curr = curr.Next
-    }
-
-    return dummy.Next
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="ruby">
-
-{% highlight ruby %}
-{% raw %}
-# Definition for singly-linked list.
-# # class ListNode
-# #     attr_accessor :val, :next
-# #     def initialize(val = 0, _next = nil)
-# #         @val = val
-# #         @next = _next
-# #     end
-# # end
-
-# @param {ListNode} head
-# @param {Integer[]} nums
-# @return {ListNode}
-def remove_elements(head, nums)
-    num_set = Set.new(nums)
-    dummy = ListNode.new(0)
-    dummy.next = head
-    prev = dummy
-    curr = head
-
-    while curr
-        if num_set.include?(curr.val)
-            prev.next = curr.next
-        else
-            prev = curr
-        end
-        curr = curr.next
-    end
-
-    dummy.next
-end
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="scala">
-
-{% highlight scala %}
-{% raw %}
-// Definition for singly-linked list.
-// class ListNode(_value: Int) {
-//   var value: Int = _value
-//   var next: ListNode = null
-// }
-
-object Solution {
-    def removeElements(_head: ListNode, nums: Array[Int]): ListNode = {
-        val numSet = nums.toSet
-        val dummy = new ListNode(0)
-        dummy.next = _head
-        var prev: ListNode = dummy
-        var curr: ListNode = _head
-
-        while (curr != null) {
-            if (numSet.contains(curr.value)) {
-                prev.next = curr.next
-            } else {
-                prev = curr
-            }
-            curr = curr.next
-        }
-
         dummy.next
     }
 }
@@ -1674,7 +793,7 @@ object Solution {
 //   pub val: i32,
 //   pub next: Option<Box<ListNode>>
 // }
-//
+// 
 // impl ListNode {
 //   #[inline]
 //   fn new(val: i32) -> Self {
@@ -1684,28 +803,24 @@ object Solution {
 //     }
 //   }
 // }
-
-struct Solution;
-
 impl Solution {
-    pub fn remove_elements(head: Option<Box<ListNode>>, nums: Vec<i32>) -> Option<Box<ListNode>> {
-        let num_set: std::collections::HashSet<i32> = nums.into_iter().collect();
-        let mut dummy = Some(Box::new(ListNode::new(0)));
-        dummy.as_mut().unwrap().next = head;
-        let mut prev = dummy.as_mut().unwrap();
-        let mut curr = prev.next.take();
+    pub fn modified_list(nums: Vec<i32>, head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+        use std::collections::HashSet;
 
-        while let Some(mut node) = curr {
-            if num_set.contains(&node.val) {
-                curr = node.next.take();
+        let values: HashSet<i32> = nums.into_iter().collect();
+        let mut dummy = Box::new(ListNode { val: 0, next: head });
+        let mut prev = &mut dummy;
+
+        while prev.next.is_some() {
+            if values.contains(&prev.next.as_ref().unwrap().val) {
+                let next = prev.next.as_mut().unwrap().next.take();
+                prev.next = next;
             } else {
-                prev.next = Some(node);
                 prev = prev.next.as_mut().unwrap();
-                curr = prev.next.take();
             }
         }
 
-        dummy.unwrap().next
+        dummy.next
     }
 }
 {% endraw %}
@@ -1717,21 +832,34 @@ impl Solution {
 
 {% highlight racket %}
 {% raw %}
-#lang racket
+; Definition for singly-linked list:
+#|
 
-; Definition for singly-linked list.
-(struct list-node (val next) #:transparent)
+; val : integer?
+; next : (or/c list-node? #f)
+(struct list-node
+  (val next) #:mutable #:transparent)
 
-(define (remove-elements head nums)
-  (let ((num-set (list->set nums)))
-    (let loop ((dummy (list-node 0 head)) (prev dummy) (curr head))
-      (cond
-        ((not curr) (list-node-next dummy))
-        ((set-member? num-set (list-node-val curr))
-         (set-list-node-next! prev (list-node-next curr))
-         (loop dummy prev (list-node-next curr)))
-        (else
-         (loop dummy curr (list-node-next curr)))))))
+; constructor
+(define (make-list-node [val 0])
+  (list-node val #f))
+
+|#
+
+(define/contract (modified-list nums head)
+  (-> (listof exact-integer?) (or/c list-node? #f) (or/c list-node? #f))
+  (let ([values (list->set nums)])
+    (define dummy (make-list-node 0))
+    (set-list-node-next! dummy head)
+    (let loop ([prev dummy])
+      (define next (list-node-next prev))
+      (when next
+        (if (set-member? values (list-node-val next))
+            (set-list-node-next! prev (list-node-next next))
+            (loop next)))
+      (when (and next (set-member? values (list-node-val next)))
+        (loop prev)))
+    (list-node-next dummy)))
 {% endraw %}
 {% endhighlight %}
 
@@ -1741,28 +869,31 @@ impl Solution {
 
 {% highlight erlang %}
 {% raw %}
--module(solution).
+%% Definition for singly-linked list.
+%%
+%% -record(list_node, {val = 0 :: integer(),
+%%                     next = null :: 'null' | #list_node{}}).
 
--export([remove_elements/2]).
+-spec modified_list(Nums :: [integer()], Head :: #list_node{} | null) -> #list_node{} | null.
+modified_list(Nums, Head) ->
+  Values = sets:from_list(Nums),
+  Dummy = #list_node{val = 0, next = Head},
+  modified_list_loop(Dummy, Values),
+  Dummy#list_node.next.
 
-% Definition for singly-linked list.
--record(list_node, {val, next}).
-
-remove_elements(Head, Nums) ->
-    NumSet = sets:from_list(Nums),
-    Dummy = #list_node{val = 0, next = Head},
-    remove_elements_loop(Dummy, Head, NumSet).
-
-remove_elements_loop(Prev, null, _NumSet) ->
-    Prev#list_node.next;
-remove_elements_loop(Prev, #list_node{val = Val, next = Next} = Curr, NumSet) ->
-    case sets:is_element(Val, NumSet) of
+modified_list_loop(Prev, Values) ->
+  case Prev#list_node.next of
+    null ->
+      ok;
+    Next ->
+      case sets:is_element(Next#list_node.val, Values) of
         true ->
-            Prev#list_node.next := Next,
-            remove_elements_loop(Prev, Next, NumSet);
+          Prev#list_node{next = Next#list_node.next},
+          modified_list_loop(Prev, Values);
         false ->
-            remove_elements_loop(Curr, Next, NumSet)
-    end.
+          modified_list_loop(Next, Values)
+      end
+  end.
 {% endraw %}
 {% endhighlight %}
 
@@ -1772,8 +903,40 @@ remove_elements_loop(Prev, #list_node{val = Val, next = Next} = Curr, NumSet) ->
 
 {% highlight elixir %}
 {% raw %}
+# Definition for singly-linked list.
+#
+# defmodule ListNode do
+#   @type t :: %__MODULE__{
+#           val: integer,
+#           next: ListNode.t() | nil
+#         }
+#   defstruct val: 0, next: nil
+# end
+
 defmodule Solution do
-  @doc
+  @spec modified_list(nums :: [integer], head :: ListNode.t | nil) :: ListNode.t | nil
+  def modified_list(nums, head) do
+    values = MapSet.new(nums)
+    dummy = %ListNode{val: 0, next: head}
+    remove_nodes(dummy, values)
+    dummy.next
+  end
+
+  defp remove_nodes(prev, values) do
+    case prev.next do
+      nil ->
+        :ok
+
+      next ->
+        if MapSet.member?(values, next.val) do
+          prev.next = next.next
+          remove_nodes(prev, values)
+        else
+          remove_nodes(next, values)
+        end
+    end
+  end
+end
 {% endraw %}
 {% endhighlight %}
 
@@ -1783,9 +946,5 @@ defmodule Solution do
 
 ### Complexity Analysis
 
-- **Time Complexity:** O(n + m) where n is the number of nodes in the linked list and m is the number of elements in the given array. This is because we are traversing the linked list once and creating a Set from the given array.
-
-- **Space Complexity:** O(m) where m is the number of elements in the given array. This is because we are storing the elements of the given array in a Set.
-
-</div>
-</details>
+- **Time Complexity:** O(m + n) expected time, where m is the length of nums and n is the number of list nodes.
+- **Space Complexity:** O(m) for the set of values from nums.

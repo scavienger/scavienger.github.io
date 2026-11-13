@@ -6,6 +6,187 @@ categories: [LeetCode, Medium]
 tags: ["Hash Table", "String", "Bit Manipulation", "Prefix Sum"]
 difficulty: Medium
 leetcode_url: https://leetcode.com/problems/unique-length-3-palindromic-subsequences/
+ai_solutions:
+  - solutions:
+      cpp: "class Solution {\npublic:\n    int countPalindromicSubsequence(string s)\
+        \ {\n        int n = s.size();\n        int answer = 0;\n        for (char outer\
+        \ = 'a'; outer <= 'z'; ++outer) {\n            int first = -1;\n           \
+        \ int last = -1;\n            for (int i = 0; i < n; ++i) {\n              \
+        \  if (s[i] == outer) {\n                    if (first == -1) first = i;\n \
+        \                   last = i;\n                }\n            }\n          \
+        \  if (last - first <= 1) continue;\n            bool seen[26] = {};\n     \
+        \       for (int i = first + 1; i < last; ++i) {\n                seen[s[i]\
+        \ - 'a'] = true;\n            }\n            for (bool present : seen) {\n \
+        \               if (present) ++answer;\n            }\n        }\n        return\
+        \ answer;\n    }\n};"
+      java: "class Solution {\n    public int countPalindromicSubsequence(String s)\
+        \ {\n        int n = s.length();\n        int answer = 0;\n        for (char\
+        \ outer = 'a'; outer <= 'z'; outer++) {\n            int first = -1;\n     \
+        \       int last = -1;\n            for (int i = 0; i < n; i++) {\n        \
+        \        if (s.charAt(i) == outer) {\n                    if (first == -1) first\
+        \ = i;\n                    last = i;\n                }\n            }\n  \
+        \          if (last - first <= 1) continue;\n            boolean[] seen = new\
+        \ boolean[26];\n            for (int i = first + 1; i < last; i++) {\n     \
+        \           seen[s.charAt(i) - 'a'] = true;\n            }\n            for\
+        \ (boolean present : seen) {\n                if (present) answer++;\n     \
+        \       }\n        }\n        return answer;\n    }\n}"
+      python: "class Solution(object):\n    def countPalindromicSubsequence(self, s):\n\
+        \        \"\"\"\n        :type s: str\n        :rtype: int\n        \"\"\"\n\
+        \        answer = 0\n        for outer in \"abcdefghijklmnopqrstuvwxyz\":\n\
+        \            first = s.find(outer)\n            last = s.rfind(outer)\n    \
+        \        if last - first <= 1:\n                continue\n            answer\
+        \ += len(set(s[first + 1:last]))\n        return answer"
+      python3: "class Solution:\n    def countPalindromicSubsequence(self, s: str) ->\
+        \ int:\n        answer = 0\n        for outer in \"abcdefghijklmnopqrstuvwxyz\"\
+        :\n            first = s.find(outer)\n            last = s.rfind(outer)\n  \
+        \          if last - first <= 1:\n                continue\n            answer\
+        \ += len(set(s[first + 1:last]))\n        return answer"
+      c: "int countPalindromicSubsequence(char* s) {\n    int n = 0;\n    while (s[n]\
+        \ != '\\0') {\n        n++;\n    }\n    int answer = 0;\n    for (char outer\
+        \ = 'a'; outer <= 'z'; outer++) {\n        int first = -1;\n        int last\
+        \ = -1;\n        for (int i = 0; i < n; i++) {\n            if (s[i] == outer)\
+        \ {\n                if (first == -1) first = i;\n                last = i;\n\
+        \            }\n        }\n        if (last - first <= 1) continue;\n      \
+        \  int seen[26] = {0};\n        for (int i = first + 1; i < last; i++) {\n \
+        \           seen[s[i] - 'a'] = 1;\n        }\n        for (int i = 0; i < 26;\
+        \ i++) {\n            answer += seen[i];\n        }\n    }\n    return answer;\n\
+        }"
+      csharp: "public class Solution {\n    public int CountPalindromicSubsequence(string\
+        \ s) {\n        int answer = 0;\n        for (char outer = 'a'; outer <= 'z';\
+        \ outer++) {\n            int first = s.IndexOf(outer);\n            int last\
+        \ = s.LastIndexOf(outer);\n            if (last - first <= 1) {\n          \
+        \      continue;\n            }\n\n            var middleCharacters = new HashSet<char>();\n\
+        \            for (int i = first + 1; i < last; i++) {\n                middleCharacters.Add(s[i]);\n\
+        \            }\n            answer += middleCharacters.Count;\n        }\n \
+        \       return answer;\n    }\n}"
+      javascript: "/**\n * @param {string} s\n * @return {number}\n */\nvar countPalindromicSubsequence\
+        \ = function(s) {\n    let answer = 0;\n    for (let code = 97; code <= 122;\
+        \ code++) {\n        const outer = String.fromCharCode(code);\n        const\
+        \ first = s.indexOf(outer);\n        const last = s.lastIndexOf(outer);\n  \
+        \      if (last - first <= 1) {\n            continue;\n        }\n\n      \
+        \  const middleCharacters = new Set(s.slice(first + 1, last));\n        answer\
+        \ += middleCharacters.size;\n    }\n    return answer;\n};"
+      typescript: "function countPalindromicSubsequence(s: string): number {\n    let\
+        \ answer = 0;\n    for (let code = 97; code <= 122; code++) {\n        const\
+        \ outer = String.fromCharCode(code);\n        const first = s.indexOf(outer);\n\
+        \        const last = s.lastIndexOf(outer);\n        if (last - first <= 1)\
+        \ {\n            continue;\n        }\n\n        const middleCharacters = new\
+        \ Set(s.slice(first + 1, last));\n        answer += middleCharacters.size;\n\
+        \    }\n    return answer;\n};"
+      php: "class Solution {\n\n    /**\n     * @param String $s\n     * @return Integer\n\
+        \     */\n    function countPalindromicSubsequence($s) {\n        $answer =\
+        \ 0;\n        for ($code = 97; $code <= 122; $code++) {\n            $outer\
+        \ = chr($code);\n            $first = strpos($s, $outer);\n            $last\
+        \ = strrpos($s, $outer);\n            if ($last - $first <= 1) {\n         \
+        \       continue;\n            }\n\n            $middleCharacters = [];\n  \
+        \          for ($i = $first + 1; $i < $last; $i++) {\n                $middleCharacters[$s[$i]]\
+        \ = true;\n            }\n            $answer += count($middleCharacters);\n\
+        \        }\n        return $answer;\n    }\n}"
+      swift: "class Solution {\n    func countPalindromicSubsequence(_ s: String) ->\
+        \ Int {\n        let characters = Array(s)\n        var answer = 0\n       \
+        \ for code in 97...122 {\n            let outer = Character(UnicodeScalar(code)!)\n\
+        \            guard let first = characters.firstIndex(of: outer),\n         \
+        \         let last = characters.lastIndex(of: outer),\n                  last\
+        \ - first > 1 else {\n                continue\n            }\n\n          \
+        \  var middleCharacters = Set<Character>()\n            for index in (first\
+        \ + 1)..<last {\n                middleCharacters.insert(characters[index])\n\
+        \            }\n            answer += middleCharacters.count\n        }\n  \
+        \      return answer\n    }\n}"
+      kotlin: "class Solution {\n    fun countPalindromicSubsequence(s: String): Int\
+        \ {\n        var answer = 0\n        for (outer in 'a'..'z') {\n           \
+        \ val first = s.indexOf(outer)\n            val last = s.lastIndexOf(outer)\n\
+        \            if (last - first <= 1) continue\n            val middleCharacters\
+        \ = mutableSetOf<Char>()\n            for (i in first + 1 until last) {\n  \
+        \              middleCharacters.add(s[i])\n            }\n            answer\
+        \ += middleCharacters.size\n        }\n        return answer\n    }\n}"
+      dart: "class Solution {\n  int countPalindromicSubsequence(String s) {\n    var\
+        \ answer = 0;\n    for (var code = 'a'.codeUnitAt(0); code <= 'z'.codeUnitAt(0);\
+        \ code++) {\n      final outer = String.fromCharCode(code);\n      final first\
+        \ = s.indexOf(outer);\n      final last = s.lastIndexOf(outer);\n      if (last\
+        \ - first <= 1) continue;\n      final middleCharacters = <String>{};\n    \
+        \  for (var i = first + 1; i < last; i++) {\n        middleCharacters.add(s[i]);\n\
+        \      }\n      answer += middleCharacters.length;\n    }\n    return answer;\n\
+        \  }\n}"
+      go: "func countPalindromicSubsequence(s string) int {\n\tanswer := 0\n\tfor outer\
+        \ := byte('a'); outer <= byte('z'); outer++ {\n\t\tfirst := -1\n\t\tlast :=\
+        \ -1\n\t\tfor i := 0; i < len(s); i++ {\n\t\t\tif s[i] == outer {\n\t\t\t\t\
+        if first == -1 {\n\t\t\t\t\tfirst = i\n\t\t\t\t}\n\t\t\t\tlast = i\n\t\t\t}\n\
+        \t\t}\n\t\tif last-first <= 1 {\n\t\t\tcontinue\n\t\t}\n\t\tvar seen [26]bool\n\
+        \t\tcount := 0\n\t\tfor i := first + 1; i < last; i++ {\n\t\t\tindex := s[i]\
+        \ - 'a'\n\t\t\tif !seen[index] {\n\t\t\t\tseen[index] = true\n\t\t\t\tcount++\n\
+        \t\t\t}\n\t\t}\n\t\tanswer += count\n\t}\n\treturn answer\n}"
+      ruby: "# @param {String} s\n# @return {Integer}\ndef count_palindromic_subsequence(s)\n\
+        \  answer = 0\n  ('a'..'z').each do |outer|\n    first = s.index(outer)\n  \
+        \  last = s.rindex(outer)\n    next if last - first <= 1\n\n    answer += s[(first\
+        \ + 1)...last].chars.uniq.length\n  end\n  answer\nend"
+      scala: "object Solution {\n    def countPalindromicSubsequence(s: String): Int\
+        \ = {\n        var answer = 0\n        for (outer <- 'a' to 'z') {\n       \
+        \     val first = s.indexOf(outer)\n            val last = s.lastIndexOf(outer)\n\
+        \            if (last - first > 1) {\n                answer += s.substring(first\
+        \ + 1, last).distinct.length\n            }\n        }\n        answer\n   \
+        \ }\n}"
+      rust: "impl Solution {\n    pub fn count_palindromic_subsequence(s: String) ->\
+        \ i32 {\n        let bytes = s.as_bytes();\n        let mut answer = 0;\n\n\
+        \        for outer in b'a'..=b'z' {\n            let first = bytes.iter().position(|&c|\
+        \ c == outer);\n            let last = bytes.iter().rposition(|&c| c == outer);\n\
+        \n            if let (Some(first), Some(last)) = (first, last) {\n         \
+        \       if last > first + 1 {\n                    let mut seen = [false; 26];\n\
+        \                    for &middle in &bytes[first + 1..last] {\n            \
+        \            seen[(middle - b'a') as usize] = true;\n                    }\n\
+        \                    answer += seen.iter().filter(|&&present| present).count()\
+        \ as i32;\n                }\n            }\n        }\n\n        answer\n \
+        \   }\n}"
+      racket: "(define/contract (count-palindromic-subsequence s)\n  (-> string? exact-integer?)\n\
+        \  (define chars (list->vector (string->list s)))\n  (define n (vector-length\
+        \ chars))\n  (for/sum ([outer (in-range 26)])\n    (define letter (integer->char\
+        \ (+ (char->integer #\\a) outer)))\n    (define first\n      (for/first ([i\
+        \ (in-range n)]\n                  #:when (char=? (vector-ref chars i) letter))\n\
+        \        i))\n    (define last\n      (for/first ([i (in-range (sub1 n) -1 -1)]\n\
+        \                  #:when (char=? (vector-ref chars i) letter))\n        i))\n\
+        \    (if (and first last (> (- last first) 1))\n        (let ([seen (make-vector\
+        \ 26 #f)])\n          (for ([i (in-range (add1 first) last)])\n            (define\
+        \ middle (vector-ref chars i))\n            (vector-set! seen (- (char->integer\
+        \ middle) (char->integer #\\a)) #t))\n          (for/sum ([present (in-vector\
+        \ seen)])\n            (if present 1 0)))\n        0)))"
+      erlang: "-spec count_palindromic_subsequence(S :: unicode:unicode_binary()) ->\
+        \ integer().\ncount_palindromic_subsequence(S) ->\n  Chars = unicode:characters_to_list(S),\n\
+        \  lists:sum([\n    case find_bounds(Chars, $a + Offset) of\n      {First, Last}\
+        \ when Last > First + 1 ->\n        length(lists:usort(lists:sublist(Chars,\
+        \ First + 2, Last - First - 1)));\n      _ ->\n        0\n    end\n    || Offset\
+        \ <- lists:seq(0, 25)\n  ]).\n\nfind_bounds(Chars, Letter) ->\n  find_bounds(Chars,\
+        \ Letter, 1, none, none).\n\nfind_bounds([], _Letter, _Index, First, Last) ->\n\
+        \  case {First, Last} of\n    {none, _} -> none;\n    {F, L} -> {F, L}\n  end;\n\
+        find_bounds([Letter | Rest], Letter, Index, none, _Last) ->\n  find_bounds(Rest,\
+        \ Letter, Index + 1, Index, Index);\nfind_bounds([Letter | Rest], Letter, Index,\
+        \ First, _Last) ->\n  find_bounds(Rest, Letter, Index + 1, First, Index);\n\
+        find_bounds([_ | Rest], Letter, Index, First, Last) ->\n  find_bounds(Rest,\
+        \ Letter, Index + 1, First, Last)."
+      elixir: "defmodule Solution do\n  @spec count_palindromic_subsequence(s :: String.t)\
+        \ :: integer\n  def count_palindromic_subsequence(s) do\n    chars = String.to_charlist(s)\n\
+        \n    Enum.reduce(?a..?z, 0, fn outer, answer ->\n      first = Enum.find_index(chars,\
+        \ &(&1 == outer))\n      last = Enum.find_index(Enum.reverse(chars), &(&1 ==\
+        \ outer))\n\n      case {first, last} do\n        {nil, _} ->\n          answer\n\
+        \n        {_, nil} ->\n          answer\n\n        {first, reversed_last} ->\n\
+        \          last = length(chars) - 1 - reversed_last\n\n          if last > first\
+        \ + 1 do\n            middle_count =\n              chars\n              |>\
+        \ Enum.slice((first + 1)..(last - 1))\n              |> Enum.uniq()\n      \
+        \        |> length()\n\n            answer + middle_count\n          else\n\
+        \            answer\n          end\n      end\n    end)\n  end\nend"
+    approach: 'For each lowercase letter, find its first and last occurrence in the
+      string. If there is at least one character between them, every distinct character
+      in that interval can serve as the middle of a length-3 palindrome with that letter
+      at both ends.
+
+
+      Count the distinct middle characters for each possible outer letter and sum those
+      counts. Each palindrome is counted once because its outer and middle characters
+      uniquely identify it.'
+    time_complexity: O(26n), which is O(n) for the fixed lowercase English alphabet,
+      to scan the interval for each possible outer character.
+    space_complexity: O(1), using a fixed-size array to track the 26 lowercase letters.
+    elapsed_time: 79.58785080909729
+    model: gpt-6-luna
+    generated_at: '2026-11-13 00:09:07 '
 ---
 
 ## Problem #1930: Unique Length-3 Palindromic Subsequences
@@ -75,69 +256,56 @@ leetcode_url: https://leetcode.com/problems/unique-length-3-palindromic-subseque
 
 2. How can we keep track of the characters that appeared to the left of a given position?
 
-## 🤖 AI-Generated Solutions
-
-We've generated solutions using multiple AI models. Click to expand each solution:
-
-
-<details class="ai-solution-card" open markdown="1">
-<summary class="ai-solution-header">
-  <span class="ai-model-badge">✨ Solution from <strong>gemini-2.5-flash</strong></span>
-  <small class="solution-timestamp">(2025-11-24 15:41:33 UTC)</small>
-</summary>
-
-<div class="ai-solution-content">
+## 🤖 AI-Generated Solution (gpt-6-luna)
 
 ### Approach
 
-The problem asks us to count the number of unique palindromic subsequences of length three. A length-3 palindrome has the form 'char1 + char2 + char1'. For example, 'aba', 'aca', 'bbb'. There are 26 possible choices for 'char1' (from 'a' to 'z') and 26 possible choices for 'char2' (also 'a' to 'z'), meaning there are at most 26 * 26 = 676 unique length-3 palindromes. This relatively small upper bound suggests that we can iterate through possible 'char1' values.
+For each lowercase letter, find its first and last occurrence in the string. If there is at least one character between them, every distinct character in that interval can serve as the middle of a length-3 palindrome with that letter at both ends.
 
-The core idea is to iterate through each possible character 'c' from 'a' to 'z' that could serve as 'char1'. For each such 'c', we need to find its first occurrence index (let's call it `first_idx`) and its last occurrence index (let's call it `last_idx`) in the input string `s`. If 'c' does not appear in `s`, or if it appears only once (i.e., `first_idx == last_idx`), then we cannot form a palindrome `c_c` because there's no character to place in the middle. If `first_idx < last_idx`, it means there are at least two occurrences of 'c' with other characters potentially in between them.
-
-Once we have `first_idx` and `last_idx` for a character 'c', any character `s[k]` where `first_idx < k < last_idx` can serve as the middle character ('char2') to form the palindrome `c + s[k] + c`. To count unique palindromes, we need to find all unique characters present in the substring `s[first_idx + 1 : last_idx]`. We collect these unique middle characters into a set. The size of this set gives us the number of unique palindromes that start and end with 'c'. We sum these counts for all possible 'c' to get the final answer.
+Count the distinct middle characters for each possible outer letter and sum those counts. Each palindrome is counted once because its outer and middle characters uniquely identify it.
 
 ### Code
 
 <div class="code-tabs" markdown="0">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-cpp-gemini-2-5-flash" checked>
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-java-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-python-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-python3-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-c-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-csharp-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-javascript-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-typescript-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-php-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-swift-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-kotlin-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-dart-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-go-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-ruby-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-scala-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-rust-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-racket-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-erlang-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-elixir-gemini-2-5-flash">
+  <input type="radio" name="code-lang" id="lang-cpp" checked>
+  <input type="radio" name="code-lang" id="lang-java">
+  <input type="radio" name="code-lang" id="lang-python">
+  <input type="radio" name="code-lang" id="lang-python3">
+  <input type="radio" name="code-lang" id="lang-c">
+  <input type="radio" name="code-lang" id="lang-csharp">
+  <input type="radio" name="code-lang" id="lang-javascript">
+  <input type="radio" name="code-lang" id="lang-typescript">
+  <input type="radio" name="code-lang" id="lang-php">
+  <input type="radio" name="code-lang" id="lang-swift">
+  <input type="radio" name="code-lang" id="lang-kotlin">
+  <input type="radio" name="code-lang" id="lang-dart">
+  <input type="radio" name="code-lang" id="lang-go">
+  <input type="radio" name="code-lang" id="lang-ruby">
+  <input type="radio" name="code-lang" id="lang-scala">
+  <input type="radio" name="code-lang" id="lang-rust">
+  <input type="radio" name="code-lang" id="lang-racket">
+  <input type="radio" name="code-lang" id="lang-erlang">
+  <input type="radio" name="code-lang" id="lang-elixir">
   <div class="tab-labels">
-    <label for="lang-cpp-gemini-2-5-flash">C++</label>
-    <label for="lang-java-gemini-2-5-flash">Java</label>
-    <label for="lang-python-gemini-2-5-flash">Python</label>
-    <label for="lang-python3-gemini-2-5-flash">Python3</label>
-    <label for="lang-c-gemini-2-5-flash">C</label>
-    <label for="lang-csharp-gemini-2-5-flash">C#</label>
-    <label for="lang-javascript-gemini-2-5-flash">JavaScript</label>
-    <label for="lang-typescript-gemini-2-5-flash">TypeScript</label>
-    <label for="lang-php-gemini-2-5-flash">PHP</label>
-    <label for="lang-swift-gemini-2-5-flash">Swift</label>
-    <label for="lang-kotlin-gemini-2-5-flash">Kotlin</label>
-    <label for="lang-dart-gemini-2-5-flash">Dart</label>
-    <label for="lang-go-gemini-2-5-flash">Go</label>
-    <label for="lang-ruby-gemini-2-5-flash">Ruby</label>
-    <label for="lang-scala-gemini-2-5-flash">Scala</label>
-    <label for="lang-rust-gemini-2-5-flash">Rust</label>
-    <label for="lang-racket-gemini-2-5-flash">Racket</label>
-    <label for="lang-erlang-gemini-2-5-flash">Erlang</label>
-    <label for="lang-elixir-gemini-2-5-flash">Elixir</label>
+    <label for="lang-cpp">C++</label>
+    <label for="lang-java">Java</label>
+    <label for="lang-python">Python</label>
+    <label for="lang-python3">Python3</label>
+    <label for="lang-c">C</label>
+    <label for="lang-csharp">C#</label>
+    <label for="lang-javascript">JavaScript</label>
+    <label for="lang-typescript">TypeScript</label>
+    <label for="lang-php">PHP</label>
+    <label for="lang-swift">Swift</label>
+    <label for="lang-kotlin">Kotlin</label>
+    <label for="lang-dart">Dart</label>
+    <label for="lang-go">Go</label>
+    <label for="lang-ruby">Ruby</label>
+    <label for="lang-scala">Scala</label>
+    <label for="lang-rust">Rust</label>
+    <label for="lang-racket">Racket</label>
+    <label for="lang-erlang">Erlang</label>
+    <label for="lang-elixir">Elixir</label>
   </div>
 
   <div class="tab-panel" data-lang="cpp">
@@ -146,33 +314,28 @@ Once we have `first_idx` and `last_idx` for a character 'c', any character `s[k]
 {% raw %}
 class Solution {
 public:
-    int countPalindromicSubsequence(std::string s) {
-        std::vector<int> first_occurrence(26, -1);
-        std::vector<int> last_occurrence(26, -1);
-
-        for (int i = 0; i < s.length(); ++i) {
-            int char_idx = s[i] - 'a';
-            if (first_occurrence[char_idx] == -1) {
-                first_occurrence[char_idx] = i;
-            }
-            last_occurrence[char_idx] = i;
-        }
-
-        int total_unique_palindromes = 0;
-        for (int i = 0; i < 26; ++i) {
-            int f_idx = first_occurrence[i];
-            int l_idx = last_occurrence[i];
-
-            if (f_idx != -1 && f_idx < l_idx) {
-                std::set<char> unique_middle_chars;
-                for (int j = f_idx + 1; j < l_idx; ++j) {
-                    unique_middle_chars.insert(s[j]);
+    int countPalindromicSubsequence(string s) {
+        int n = s.size();
+        int answer = 0;
+        for (char outer = 'a'; outer <= 'z'; ++outer) {
+            int first = -1;
+            int last = -1;
+            for (int i = 0; i < n; ++i) {
+                if (s[i] == outer) {
+                    if (first == -1) first = i;
+                    last = i;
                 }
-                total_unique_palindromes += unique_middle_chars.size();
+            }
+            if (last - first <= 1) continue;
+            bool seen[26] = {};
+            for (int i = first + 1; i < last; ++i) {
+                seen[s[i] - 'a'] = true;
+            }
+            for (bool present : seen) {
+                if (present) ++answer;
             }
         }
-
-        return total_unique_palindromes;
+        return answer;
     }
 };
 {% endraw %}
@@ -184,40 +347,29 @@ public:
 
 {% highlight java %}
 {% raw %}
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 class Solution {
     public int countPalindromicSubsequence(String s) {
-        int[] firstOccurrence = new int[26];
-        Arrays.fill(firstOccurrence, -1);
-        int[] lastOccurrence = new int[26];
-        Arrays.fill(lastOccurrence, -1);
-
-        for (int i = 0; i < s.length(); ++i) {
-            int charIdx = s.charAt(i) - 'a';
-            if (firstOccurrence[charIdx] == -1) {
-                firstOccurrence[charIdx] = i;
-            }
-            lastOccurrence[charIdx] = i;
-        }
-
-        int totalUniquePalindromes = 0;
-        for (int i = 0; i < 26; ++i) {
-            int fIdx = firstOccurrence[i];
-            int lIdx = lastOccurrence[i];
-
-            if (fIdx != -1 && fIdx < lIdx) {
-                Set<Character> uniqueMiddleChars = new HashSet<>();
-                for (int j = fIdx + 1; j < lIdx; ++j) {
-                    uniqueMiddleChars.add(s.charAt(j));
+        int n = s.length();
+        int answer = 0;
+        for (char outer = 'a'; outer <= 'z'; outer++) {
+            int first = -1;
+            int last = -1;
+            for (int i = 0; i < n; i++) {
+                if (s.charAt(i) == outer) {
+                    if (first == -1) first = i;
+                    last = i;
                 }
-                totalUniquePalindromes += uniqueMiddleChars.size();
+            }
+            if (last - first <= 1) continue;
+            boolean[] seen = new boolean[26];
+            for (int i = first + 1; i < last; i++) {
+                seen[s.charAt(i) - 'a'] = true;
+            }
+            for (boolean present : seen) {
+                if (present) answer++;
             }
         }
-
-        return totalUniquePalindromes;
+        return answer;
     }
 }
 {% endraw %}
@@ -229,29 +381,20 @@ class Solution {
 
 {% highlight python %}
 {% raw %}
-class Solution:
-    def countPalindromicSubsequence(self, s: str) -> int:
-        first_occurrence = [-1] * 26
-        last_occurrence = [-1] * 26
-
-        for i, char_code in enumerate(s):
-            char_idx = ord(char_code) - ord('a')
-            if first_occurrence[char_idx] == -1:
-                first_occurrence[char_idx] = i
-            last_occurrence[char_idx] = i
-
-        total_unique_palindromes = 0
-        for i in range(26):
-            f_idx = first_occurrence[i]
-            l_idx = last_occurrence[i]
-
-            if f_idx != -1 and f_idx < l_idx:
-                unique_middle_chars = set()
-                for j in range(f_idx + 1, l_idx):
-                    unique_middle_chars.add(s[j])
-                total_unique_palindromes += len(unique_middle_chars)
-
-        return total_unique_palindromes
+class Solution(object):
+    def countPalindromicSubsequence(self, s):
+        """
+        :type s: str
+        :rtype: int
+        """
+        answer = 0
+        for outer in "abcdefghijklmnopqrstuvwxyz":
+            first = s.find(outer)
+            last = s.rfind(outer)
+            if last - first <= 1:
+                continue
+            answer += len(set(s[first + 1:last]))
+        return answer
 {% endraw %}
 {% endhighlight %}
 
@@ -263,27 +406,14 @@ class Solution:
 {% raw %}
 class Solution:
     def countPalindromicSubsequence(self, s: str) -> int:
-        first_occurrence = [-1] * 26
-        last_occurrence = [-1] * 26
-
-        for i, char_code in enumerate(s):
-            char_idx = ord(char_code) - ord('a')
-            if first_occurrence[char_idx] == -1:
-                first_occurrence[char_idx] = i
-            last_occurrence[char_idx] = i
-
-        total_unique_palindromes = 0
-        for i in range(26):
-            f_idx = first_occurrence[i]
-            l_idx = last_occurrence[i]
-
-            if f_idx != -1 and f_idx < l_idx:
-                unique_middle_chars = set()
-                for j in range(f_idx + 1, l_idx):
-                    unique_middle_chars.add(s[j])
-                total_unique_palindromes += len(unique_middle_chars)
-
-        return total_unique_palindromes
+        answer = 0
+        for outer in "abcdefghijklmnopqrstuvwxyz":
+            first = s.find(outer)
+            last = s.rfind(outer)
+            if last - first <= 1:
+                continue
+            answer += len(set(s[first + 1:last]))
+        return answer
 {% endraw %}
 {% endhighlight %}
 
@@ -293,48 +423,31 @@ class Solution:
 
 {% highlight c %}
 {% raw %}
-#include <string.h>
-#include <stdbool.h>
-#include <stdlib.h>
-
-int countPalindromicSubsequence(char * s) {
-    int first_occurrence[26];
-    int last_occurrence[26];
-
-    for (int i = 0; i < 26; ++i) {
-        first_occurrence[i] = -1;
-        last_occurrence[i] = -1;
+int countPalindromicSubsequence(char* s) {
+    int n = 0;
+    while (s[n] != '\0') {
+        n++;
     }
-
-    int n = strlen(s);
-    for (int i = 0; i < n; ++i) {
-        int char_idx = s[i] - 'a';
-        if (first_occurrence[char_idx] == -1) {
-            first_occurrence[char_idx] = i;
-        }
-        last_occurrence[char_idx] = i;
-    }
-
-    int total_unique_palindromes = 0;
-    for (int i = 0; i < 26; ++i) {
-        int f_idx = first_occurrence[i];
-        int l_idx = last_occurrence[i];
-
-        if (f_idx != -1 && f_idx < l_idx) {
-            bool unique_middle_chars[26] = {false};
-            int count_middle = 0;
-            for (int j = f_idx + 1; j < l_idx; ++j) {
-                int middle_char_idx = s[j] - 'a';
-                if (!unique_middle_chars[middle_char_idx]) {
-                    unique_middle_chars[middle_char_idx] = true;
-                    count_middle++;
-                }
+    int answer = 0;
+    for (char outer = 'a'; outer <= 'z'; outer++) {
+        int first = -1;
+        int last = -1;
+        for (int i = 0; i < n; i++) {
+            if (s[i] == outer) {
+                if (first == -1) first = i;
+                last = i;
             }
-            total_unique_palindromes += count_middle;
+        }
+        if (last - first <= 1) continue;
+        int seen[26] = {0};
+        for (int i = first + 1; i < last; i++) {
+            seen[s[i] - 'a'] = 1;
+        }
+        for (int i = 0; i < 26; i++) {
+            answer += seen[i];
         }
     }
-
-    return total_unique_palindromes;
+    return answer;
 }
 {% endraw %}
 {% endhighlight %}
@@ -345,39 +458,23 @@ int countPalindromicSubsequence(char * s) {
 
 {% highlight csharp %}
 {% raw %}
-using System;
-using System.Collections.Generic;
-
 public class Solution {
     public int CountPalindromicSubsequence(string s) {
-        int[] firstOccurrence = new int[26];
-        Array.Fill(firstOccurrence, -1);
-        int[] lastOccurrence = new int[26];
-        Array.Fill(lastOccurrence, -1);
-
-        for (int i = 0; i < s.Length; ++i) {
-            int charIdx = s[i] - 'a';
-            if (firstOccurrence[charIdx] == -1) {
-                firstOccurrence[charIdx] = i;
+        int answer = 0;
+        for (char outer = 'a'; outer <= 'z'; outer++) {
+            int first = s.IndexOf(outer);
+            int last = s.LastIndexOf(outer);
+            if (last - first <= 1) {
+                continue;
             }
-            lastOccurrence[charIdx] = i;
-        }
 
-        int totalUniquePalindromes = 0;
-        for (int i = 0; i < 26; ++i) {
-            int fIdx = firstOccurrence[i];
-            int lIdx = lastOccurrence[i];
-
-            if (fIdx != -1 && fIdx < lIdx) {
-                HashSet<char> uniqueMiddleChars = new HashSet<char>();
-                for (int j = fIdx + 1; j < lIdx; ++j) {
-                    uniqueMiddleChars.Add(s[j]);
-                }
-                totalUniquePalindromes += uniqueMiddleChars.Count;
+            var middleCharacters = new HashSet<char>();
+            for (int i = first + 1; i < last; i++) {
+                middleCharacters.Add(s[i]);
             }
+            answer += middleCharacters.Count;
         }
-
-        return totalUniquePalindromes;
+        return answer;
     }
 }
 {% endraw %}
@@ -394,32 +491,19 @@ public class Solution {
  * @return {number}
  */
 var countPalindromicSubsequence = function(s) {
-    const firstOccurrence = new Array(26).fill(-1);
-    const lastOccurrence = new Array(26).fill(-1);
-
-    for (let i = 0; i < s.length; ++i) {
-        const charIdx = s.charCodeAt(i) - 'a'.charCodeAt(0);
-        if (firstOccurrence[charIdx] === -1) {
-            firstOccurrence[charIdx] = i;
+    let answer = 0;
+    for (let code = 97; code <= 122; code++) {
+        const outer = String.fromCharCode(code);
+        const first = s.indexOf(outer);
+        const last = s.lastIndexOf(outer);
+        if (last - first <= 1) {
+            continue;
         }
-        lastOccurrence[charIdx] = i;
+
+        const middleCharacters = new Set(s.slice(first + 1, last));
+        answer += middleCharacters.size;
     }
-
-    let totalUniquePalindromes = 0;
-    for (let i = 0; i < 26; ++i) {
-        const fIdx = firstOccurrence[i];
-        const lIdx = lastOccurrence[i];
-
-        if (fIdx !== -1 && fIdx < lIdx) {
-            const uniqueMiddleChars = new Set();
-            for (let j = fIdx + 1; j < lIdx; ++j) {
-                uniqueMiddleChars.add(s[j]);
-            }
-            totalUniquePalindromes += uniqueMiddleChars.size;
-        }
-    }
-
-    return totalUniquePalindromes;
+    return answer;
 };
 {% endraw %}
 {% endhighlight %}
@@ -431,32 +515,19 @@ var countPalindromicSubsequence = function(s) {
 {% highlight typescript %}
 {% raw %}
 function countPalindromicSubsequence(s: string): number {
-    const firstOccurrence: number[] = new Array(26).fill(-1);
-    const lastOccurrence: number[] = new Array(26).fill(-1);
-
-    for (let i = 0; i < s.length; ++i) {
-        const charIdx = s.charCodeAt(i) - 'a'.charCodeAt(0);
-        if (firstOccurrence[charIdx] === -1) {
-            firstOccurrence[charIdx] = i;
+    let answer = 0;
+    for (let code = 97; code <= 122; code++) {
+        const outer = String.fromCharCode(code);
+        const first = s.indexOf(outer);
+        const last = s.lastIndexOf(outer);
+        if (last - first <= 1) {
+            continue;
         }
-        lastOccurrence[charIdx] = i;
+
+        const middleCharacters = new Set(s.slice(first + 1, last));
+        answer += middleCharacters.size;
     }
-
-    let totalUniquePalindromes = 0;
-    for (let i = 0; i < 26; ++i) {
-        const fIdx = firstOccurrence[i];
-        const lIdx = lastOccurrence[i];
-
-        if (fIdx !== -1 && fIdx < lIdx) {
-            const uniqueMiddleChars: Set<string> = new Set();
-            for (let j = fIdx + 1; j < lIdx; ++j) {
-                uniqueMiddleChars.add(s[j]);
-            }
-            totalUniquePalindromes += uniqueMiddleChars.size;
-        }
-    }
-
-    return totalUniquePalindromes;
+    return answer;
 };
 {% endraw %}
 {% endhighlight %}
@@ -467,40 +538,29 @@ function countPalindromicSubsequence(s: string): number {
 
 {% highlight php %}
 {% raw %}
-<?php
 class Solution {
+
     /**
      * @param String $s
      * @return Integer
      */
     function countPalindromicSubsequence($s) {
-        $firstOccurrence = array_fill(0, 26, -1);
-        $lastOccurrence = array_fill(0, 26, -1);
-
-        $n = strlen($s);
-        for ($i = 0; $i < $n; ++$i) {
-            $charIdx = ord($s[$i]) - ord('a');
-            if ($firstOccurrence[$charIdx] == -1) {
-                $firstOccurrence[$charIdx] = $i;
+        $answer = 0;
+        for ($code = 97; $code <= 122; $code++) {
+            $outer = chr($code);
+            $first = strpos($s, $outer);
+            $last = strrpos($s, $outer);
+            if ($last - $first <= 1) {
+                continue;
             }
-            $lastOccurrence[$charIdx] = $i;
-        }
 
-        $totalUniquePalindromes = 0;
-        for ($i = 0; $i < 26; ++$i) {
-            $fIdx = $firstOccurrence[$i];
-            $lIdx = $lastOccurrence[$i];
-
-            if ($fIdx != -1 && $fIdx < $lIdx) {
-                $uniqueMiddleChars = [];
-                for ($j = $fIdx + 1; $j < $lIdx; ++$j) {
-                    $uniqueMiddleChars[$s[$j]] = true;
-                }
-                $totalUniquePalindromes += count($uniqueMiddleChars);
+            $middleCharacters = [];
+            for ($i = $first + 1; $i < $last; $i++) {
+                $middleCharacters[$s[$i]] = true;
             }
+            $answer += count($middleCharacters);
         }
-
-        return $totalUniquePalindromes;
+        return $answer;
     }
 }
 {% endraw %}
@@ -512,37 +572,25 @@ class Solution {
 
 {% highlight swift %}
 {% raw %}
-import Foundation
-
 class Solution {
     func countPalindromicSubsequence(_ s: String) -> Int {
-        var firstOccurrence = Array(repeating: -1, count: 26)
-        var lastOccurrence = Array(repeating: -1, count: 26)
-
-        for (i, char) in s.enumerated() {
-            let charIdx = Int(char.asciiValue! - Character("a").asciiValue!)
-            if firstOccurrence[charIdx] == -1 {
-                firstOccurrence[charIdx] = i
+        let characters = Array(s)
+        var answer = 0
+        for code in 97...122 {
+            let outer = Character(UnicodeScalar(code)!)
+            guard let first = characters.firstIndex(of: outer),
+                  let last = characters.lastIndex(of: outer),
+                  last - first > 1 else {
+                continue
             }
-            lastOccurrence[charIdx] = i
-        }
 
-        var totalUniquePalindromes = 0
-        let sChars = Array(s)
-        for i in 0..<26 {
-            let fIdx = firstOccurrence[i]
-            let lIdx = lastOccurrence[i]
-
-            if fIdx != -1 && fIdx < lIdx {
-                var uniqueMiddleChars = Set<Character>()
-                for j in (fIdx + 1)..<lIdx {
-                    uniqueMiddleChars.insert(sChars[j])
-                }
-                totalUniquePalindromes += uniqueMiddleChars.count
+            var middleCharacters = Set<Character>()
+            for index in (first + 1)..<last {
+                middleCharacters.insert(characters[index])
             }
+            answer += middleCharacters.count
         }
-
-        return totalUniquePalindromes
+        return answer
     }
 }
 {% endraw %}
@@ -556,32 +604,18 @@ class Solution {
 {% raw %}
 class Solution {
     fun countPalindromicSubsequence(s: String): Int {
-        val firstOccurrence = IntArray(26) { -1 }
-        val lastOccurrence = IntArray(26) { -1 }
-
-        s.forEachIndexed { i, char ->
-            val charIdx = char - 'a'
-            if (firstOccurrence[charIdx] == -1) {
-                firstOccurrence[charIdx] = i
+        var answer = 0
+        for (outer in 'a'..'z') {
+            val first = s.indexOf(outer)
+            val last = s.lastIndexOf(outer)
+            if (last - first <= 1) continue
+            val middleCharacters = mutableSetOf<Char>()
+            for (i in first + 1 until last) {
+                middleCharacters.add(s[i])
             }
-            lastOccurrence[charIdx] = i
+            answer += middleCharacters.size
         }
-
-        var totalUniquePalindromes = 0
-        for (i in 0 until 26) {
-            val fIdx = firstOccurrence[i]
-            val lIdx = lastOccurrence[i]
-
-            if (fIdx != -1 && fIdx < lIdx) {
-                val uniqueMiddleChars = HashSet<Char>()
-                for (j in fIdx + 1 until lIdx) {
-                    uniqueMiddleChars.add(s[j])
-                }
-                totalUniquePalindromes += uniqueMiddleChars.size
-            }
-        }
-
-        return totalUniquePalindromes
+        return answer
     }
 }
 {% endraw %}
@@ -593,36 +627,21 @@ class Solution {
 
 {% highlight dart %}
 {% raw %}
-import 'dart:collection';
-
 class Solution {
   int countPalindromicSubsequence(String s) {
-    List<int> firstOccurrence = List.filled(26, -1);
-    List<int> lastOccurrence = List.filled(26, -1);
-
-    for (int i = 0; i < s.length; ++i) {
-      int charIdx = s.codeUnitAt(i) - 'a'.codeUnitAt(0);
-      if (firstOccurrence[charIdx] == -1) {
-        firstOccurrence[charIdx] = i;
+    var answer = 0;
+    for (var code = 'a'.codeUnitAt(0); code <= 'z'.codeUnitAt(0); code++) {
+      final outer = String.fromCharCode(code);
+      final first = s.indexOf(outer);
+      final last = s.lastIndexOf(outer);
+      if (last - first <= 1) continue;
+      final middleCharacters = <String>{};
+      for (var i = first + 1; i < last; i++) {
+        middleCharacters.add(s[i]);
       }
-      lastOccurrence[charIdx] = i;
+      answer += middleCharacters.length;
     }
-
-    int totalUniquePalindromes = 0;
-    for (int i = 0; i < 26; ++i) {
-      int fIdx = firstOccurrence[i];
-      int lIdx = lastOccurrence[i];
-
-      if (fIdx != -1 && fIdx < lIdx) {
-        Set<String> uniqueMiddleChars = HashSet<String>();
-        for (int j = fIdx + 1; j < lIdx; ++j) {
-          uniqueMiddleChars.add(s[j]);
-        }
-        totalUniquePalindromes += uniqueMiddleChars.length;
-      }
-    }
-
-    return totalUniquePalindromes;
+    return answer;
   }
 }
 {% endraw %}
@@ -634,42 +653,34 @@ class Solution {
 
 {% highlight go %}
 {% raw %}
-import (
-	"strings"
-)
-
 func countPalindromicSubsequence(s string) int {
-    firstOccurrence := make([]int, 26)
-    lastOccurrence := make([]int, 26)
-
-    for i := 0; i < 26; i++ {
-        firstOccurrence[i] = -1
-        lastOccurrence[i] = -1
-    }
-
-    for i, char := range s {
-        charIdx := int(char - 'a')
-        if firstOccurrence[charIdx] == -1 {
-            firstOccurrence[charIdx] = i
-        }
-        lastOccurrence[charIdx] = i
-    }
-
-    totalUniquePalindromes := 0
-    for i := 0; i < 26; i++ {
-        fIdx := firstOccurrence[i]
-        lIdx := lastOccurrence[i]
-
-        if fIdx != -1 && fIdx < lIdx {
-            uniqueMiddleChars := make(map[rune]bool)
-            for j := fIdx + 1; j < lIdx; j++ {
-                uniqueMiddleChars[rune(s[j])] = true
-            }
-            totalUniquePalindromes += len(uniqueMiddleChars)
-        }
-    }
-
-    return totalUniquePalindromes
+	answer := 0
+	for outer := byte('a'); outer <= byte('z'); outer++ {
+		first := -1
+		last := -1
+		for i := 0; i < len(s); i++ {
+			if s[i] == outer {
+				if first == -1 {
+					first = i
+				}
+				last = i
+			}
+		}
+		if last-first <= 1 {
+			continue
+		}
+		var seen [26]bool
+		count := 0
+		for i := first + 1; i < last; i++ {
+			index := s[i] - 'a'
+			if !seen[index] {
+				seen[index] = true
+				count++
+			}
+		}
+		answer += count
+	}
+	return answer
 }
 {% endraw %}
 {% endhighlight %}
@@ -680,37 +691,18 @@ func countPalindromicSubsequence(s string) int {
 
 {% highlight ruby %}
 {% raw %}
-require 'set'
+# @param {String} s
+# @return {Integer}
+def count_palindromic_subsequence(s)
+  answer = 0
+  ('a'..'z').each do |outer|
+    first = s.index(outer)
+    last = s.rindex(outer)
+    next if last - first <= 1
 
-class Solution
-    def countPalindromicSubsequence(s)
-        first_occurrence = Array.new(26, -1)
-        last_occurrence = Array.new(26, -1)
-
-        s.each_char.with_index do |char, i|
-            char_idx = char.ord - 'a'.ord
-            if first_occurrence[char_idx] == -1
-                first_occurrence[char_idx] = i
-            end
-            last_occurrence[char_idx] = i
-        end
-
-        total_unique_palindromes = 0
-        (0...26).each do |i|
-            f_idx = first_occurrence[i]
-            l_idx = last_occurrence[i]
-
-            if f_idx != -1 && f_idx < l_idx
-                unique_middle_chars = Set.new
-                (f_idx + 1...l_idx).each do |j|
-                    unique_middle_chars.add(s[j])
-                end
-                total_unique_palindromes += unique_middle_chars.size
-            end
-        end
-
-        total_unique_palindromes
-    end
+    answer += s[(first + 1)...last].chars.uniq.length
+  end
+  answer
 end
 {% endraw %}
 {% endhighlight %}
@@ -721,36 +713,17 @@ end
 
 {% highlight scala %}
 {% raw %}
-import scala.collection.mutable
-
 object Solution {
     def countPalindromicSubsequence(s: String): Int = {
-        val firstOccurrence = Array.fill(26)(-1)
-        val lastOccurrence = Array.fill(26)(-1)
-
-        s.zipWithIndex.foreach { case (char, i) =>
-            val charIdx = char - 'a'
-            if (firstOccurrence(charIdx) == -1) {
-                firstOccurrence(charIdx) = i
-            }
-            lastOccurrence(charIdx) = i
-        }
-
-        var totalUniquePalindromes = 0
-        for (i <- 0 until 26) {
-            val fIdx = firstOccurrence(i)
-            val lIdx = lastOccurrence(i)
-
-            if (fIdx != -1 && fIdx < lIdx) {
-                val uniqueMiddleChars = mutable.Set[Char]()
-                for (j <- fIdx + 1 until lIdx) {
-                    uniqueMiddleChars.add(s(j))
-                }
-                totalUniquePalindromes += uniqueMiddleChars.size
+        var answer = 0
+        for (outer <- 'a' to 'z') {
+            val first = s.indexOf(outer)
+            val last = s.lastIndexOf(outer)
+            if (last - first > 1) {
+                answer += s.substring(first + 1, last).distinct.length
             }
         }
-
-        totalUniquePalindromes
+        answer
     }
 }
 {% endraw %}
@@ -762,38 +735,27 @@ object Solution {
 
 {% highlight rust %}
 {% raw %}
-use std::collections::HashSet;
-
 impl Solution {
     pub fn count_palindromic_subsequence(s: String) -> i32 {
-        let mut first_occurrence = vec![-1; 26];
-        let mut last_occurrence = vec![-1; 26];
+        let bytes = s.as_bytes();
+        let mut answer = 0;
 
-        for (i, char) in s.chars().enumerate() {
-            let char_idx = (char as u8 - b'a') as usize;
-            if first_occurrence[char_idx] == -1 {
-                first_occurrence[char_idx] = i as i32;
-            }
-            last_occurrence[char_idx] = i as i32;
-        }
+        for outer in b'a'..=b'z' {
+            let first = bytes.iter().position(|&c| c == outer);
+            let last = bytes.iter().rposition(|&c| c == outer);
 
-        let mut total_unique_palindromes = 0;
-        let s_bytes = s.as_bytes();
-
-        for i in 0..26 {
-            let f_idx = first_occurrence[i];
-            let l_idx = last_occurrence[i];
-
-            if f_idx != -1 && f_idx < l_idx {
-                let mut unique_middle_chars = HashSet::new();
-                for j in (f_idx + 1) as usize .. l_idx as usize {
-                    unique_middle_chars.insert(s_bytes[j]);
+            if let (Some(first), Some(last)) = (first, last) {
+                if last > first + 1 {
+                    let mut seen = [false; 26];
+                    for &middle in &bytes[first + 1..last] {
+                        seen[(middle - b'a') as usize] = true;
+                    }
+                    answer += seen.iter().filter(|&&present| present).count() as i32;
                 }
-                total_unique_palindromes += unique_middle_chars.len() as i32;
             }
         }
 
-        total_unique_palindromes
+        answer
     }
 }
 {% endraw %}
@@ -805,30 +767,28 @@ impl Solution {
 
 {% highlight racket %}
 {% raw %}
-#lang racket
-
-(define (count-palindromic-subsequence s)
-  (define first-occurrence (make-vector 26 -1))
-  (define last-occurrence (make-vector 26 -1))
-
-  (for ([i (in-range (string-length s))])
-    (define char-idx (- (char->integer (string-ref s i)) (char->integer #\a)))
-    (when (= (vector-ref first-occurrence char-idx) -1)
-      (vector-set! first-occurrence char-idx i))
-    (vector-set! last-occurrence char-idx i))
-
-  (define total-unique-palindromes 0)
-  (for ([i (in-range 26)])
-    (define f-idx (vector-ref first-occurrence i))
-    (define l-idx (vector-ref last-occurrence i))
-
-    (when (and (!= f-idx -1) (< f-idx l-idx))
-      (define unique-middle-chars (make-hash))
-      (for ([j (in-range (+ f-idx 1) l-idx)])
-        (hash-set! unique-middle-chars (string-ref s j) #t))
-      (set! total-unique-palindromes (+ total-unique-palindromes (hash-count unique-middle-chars)))))
-
-  total-unique-palindromes)
+(define/contract (count-palindromic-subsequence s)
+  (-> string? exact-integer?)
+  (define chars (list->vector (string->list s)))
+  (define n (vector-length chars))
+  (for/sum ([outer (in-range 26)])
+    (define letter (integer->char (+ (char->integer #\a) outer)))
+    (define first
+      (for/first ([i (in-range n)]
+                  #:when (char=? (vector-ref chars i) letter))
+        i))
+    (define last
+      (for/first ([i (in-range (sub1 n) -1 -1)]
+                  #:when (char=? (vector-ref chars i) letter))
+        i))
+    (if (and first last (> (- last first) 1))
+        (let ([seen (make-vector 26 #f)])
+          (for ([i (in-range (add1 first) last)])
+            (define middle (vector-ref chars i))
+            (vector-set! seen (- (char->integer middle) (char->integer #\a)) #t))
+          (for/sum ([present (in-vector seen)])
+            (if present 1 0)))
+        0)))
 {% endraw %}
 {% endhighlight %}
 
@@ -838,54 +798,33 @@ impl Solution {
 
 {% highlight erlang %}
 {% raw %}
--module(solution).
--export([count_palindromic_subsequence/1]).
-
+-spec count_palindromic_subsequence(S :: unicode:unicode_binary()) -> integer().
 count_palindromic_subsequence(S) ->
-    N = length(S),
-    FirstOccurrence = array:new([{size, 26}, {default, -1}]),
-    LastOccurrence = array:new([{size, 26}, {default, -1}]),
+  Chars = unicode:characters_to_list(S),
+  lists:sum([
+    case find_bounds(Chars, $a + Offset) of
+      {First, Last} when Last > First + 1 ->
+        length(lists:usort(lists:sublist(Chars, First + 2, Last - First - 1)));
+      _ ->
+        0
+    end
+    || Offset <- lists:seq(0, 25)
+  ]).
 
-    {F_occ, L_occ} = lists:foldl(
-        fun({Char, I}, {AccF, AccL}) ->
-            CharIdx = Char - $a,
-            CurrentF = array:get(CharIdx, AccF),
-            NewF = if CurrentF == -1 -> array:set(CharIdx, I, AccF); true -> AccF end,
-            NewL = array:set(CharIdx, I, AccL),
-            {NewF, NewL}
-        end,
-        {FirstOccurrence, LastOccurrence},
-        lists:zip(string:to_list(S), lists:seq(0, N - 1))
-    ),
+find_bounds(Chars, Letter) ->
+  find_bounds(Chars, Letter, 1, none, none).
 
-    TotalUniquePalindromes = lists:foldl(
-        fun(I, Acc) ->
-            F_idx = array:get(I, F_occ),
-            L_idx = array:get(I, L_occ),
-
-            if F_idx /= -1 andalso F_idx < L_idx ->
-                UniqueMiddleChars = sets:new(),
-                % Erlang sublist is 1-indexed, length based
-                % String.to_list converts to charlist
-                SubStringList = lists:sublist(string:to_list(S), F_idx + 2, L_idx - F_idx - 1),
-
-                MiddleCount = lists:foldl(
-                    fun(MiddleChar, MiddleSet) ->
-                        sets:add_element(MiddleChar, MiddleSet)
-                    end,
-                    UniqueMiddleChars,
-                    SubStringList
-                ),
-                Acc + sets:size(MiddleCount);
-            true ->
-                Acc
-            end
-        end,
-        0,
-        lists:seq(0, 25)
-    ),
-
-    TotalUniquePalindromes.
+find_bounds([], _Letter, _Index, First, Last) ->
+  case {First, Last} of
+    {none, _} -> none;
+    {F, L} -> {F, L}
+  end;
+find_bounds([Letter | Rest], Letter, Index, none, _Last) ->
+  find_bounds(Rest, Letter, Index + 1, Index, Index);
+find_bounds([Letter | Rest], Letter, Index, First, _Last) ->
+  find_bounds(Rest, Letter, Index + 1, First, Index);
+find_bounds([_ | Rest], Letter, Index, First, Last) ->
+  find_bounds(Rest, Letter, Index + 1, First, Last).
 {% endraw %}
 {% endhighlight %}
 
@@ -898,694 +837,35 @@ count_palindromic_subsequence(S) ->
 defmodule Solution do
   @spec count_palindromic_subsequence(s :: String.t) :: integer
   def count_palindromic_subsequence(s) do
-    first_occurrence = :array.new(size: 26, default: -1)
-    last_occurrence = :array.new(size: 26, default: -1)
-
-    {first_occurrence, last_occurrence} = 
-      s
-      |> String.to_charlist()
-      |> Enum.with_index()
-      |> Enum.reduce({first_occurrence, last_occurrence}, fn {char, i}, {acc_f, acc_l} ->
-        char_idx = char - ?a
-        current_f = :array.get(char_idx, acc_f)
-        new_f = if current_f == -1, do: :array.set(char_idx, i, acc_f), else: acc_f
-        new_l = :array.set(char_idx, i, acc_l)
-        {new_f, new_l}
-      end)
-
-    total_unique_palindromes = 
-      0..25
-      |> Enum.reduce(0, fn i, acc ->
-        f_idx = :array.get(i, first_occurrence)
-        l_idx = :array.get(i, last_occurrence)
-
-        if f_idx != -1 && f_idx < l_idx do
-          unique_middle_chars = MapSet.new()
-
-          # Elixir string slicing is 0-indexed, length based
-          # Substring from f_idx + 1 up to (but not including) l_idx
-          sub_string = String.slice(s, f_idx + 1, l_idx - (f_idx + 1))
-
-          middle_count = 
-            sub_string
-            |> String.to_charlist()
-            |> Enum.reduce(unique_middle_chars, fn middle_char, middle_set ->
-              MapSet.put(middle_set, middle_char)
-            end)
-
-          acc + MapSet.size(middle_count)
-        else
-          acc
-        end
-      end)
-
-    total_unique_palindromes
-  end
-end
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-</div>
-
-### Complexity Analysis
-
-- **Time Complexity:** O(N)
-
-- **Space Complexity:** O(1)
-
-</div>
-</details>
-
-
-<details class="ai-solution-card" markdown="1">
-<summary class="ai-solution-header">
-  <span class="ai-model-badge">⚡ Solution from <strong>llama-3.3-70b-versatile</strong></span>
-  <small class="solution-timestamp">(2025-11-24 15:41:41 UTC)</small>
-</summary>
-
-<div class="ai-solution-content">
-
-### Approach
-
-To solve this problem, we can use a brute force approach by iterating over all possible subsequences of length 3 in the given string and checking if they are palindromes. However, this approach would be inefficient due to its high time complexity. A more efficient approach is to use a hashmap to store the indices of each character in the string. Then, for each character, we can find all pairs of characters that are equal to the first and last characters of the potential palindrome and are separated by at least one character. This approach ensures that we only consider valid palindromic subsequences of length 3. We can then use a set to keep track of unique palindromic subsequences and return the size of the set as the result.
-
-### Code
-
-<div class="code-tabs" markdown="0">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-cpp-llama-3-3-70b-versatile" checked>
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-java-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-python-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-python3-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-c-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-csharp-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-javascript-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-typescript-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-php-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-swift-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-kotlin-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-dart-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-go-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-ruby-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-scala-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-rust-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-racket-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-erlang-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-elixir-llama-3-3-70b-versatile">
-  <div class="tab-labels">
-    <label for="lang-cpp-llama-3-3-70b-versatile">C++</label>
-    <label for="lang-java-llama-3-3-70b-versatile">Java</label>
-    <label for="lang-python-llama-3-3-70b-versatile">Python</label>
-    <label for="lang-python3-llama-3-3-70b-versatile">Python3</label>
-    <label for="lang-c-llama-3-3-70b-versatile">C</label>
-    <label for="lang-csharp-llama-3-3-70b-versatile">C#</label>
-    <label for="lang-javascript-llama-3-3-70b-versatile">JavaScript</label>
-    <label for="lang-typescript-llama-3-3-70b-versatile">TypeScript</label>
-    <label for="lang-php-llama-3-3-70b-versatile">PHP</label>
-    <label for="lang-swift-llama-3-3-70b-versatile">Swift</label>
-    <label for="lang-kotlin-llama-3-3-70b-versatile">Kotlin</label>
-    <label for="lang-dart-llama-3-3-70b-versatile">Dart</label>
-    <label for="lang-go-llama-3-3-70b-versatile">Go</label>
-    <label for="lang-ruby-llama-3-3-70b-versatile">Ruby</label>
-    <label for="lang-scala-llama-3-3-70b-versatile">Scala</label>
-    <label for="lang-rust-llama-3-3-70b-versatile">Rust</label>
-    <label for="lang-racket-llama-3-3-70b-versatile">Racket</label>
-    <label for="lang-erlang-llama-3-3-70b-versatile">Erlang</label>
-    <label for="lang-elixir-llama-3-3-70b-versatile">Elixir</label>
-  </div>
-
-  <div class="tab-panel" data-lang="cpp">
-
-{% highlight cpp %}
-{% raw %}
-#include <iostream>
-#include <string>
-#include <unordered_set>
-using namespace std;
-
-class Solution {
-public:
-    int countPalindromicSubsequence(string s) {
-        int count = 0;
-        unordered_set<string> unique;
-        for (int i = 0; i < s.size(); i++) {
-            for (int j = i + 1; j < s.size(); j++) {
-                for (int k = j + 1; k < s.size(); k++) {
-                    if (s[i] == s[k]) {
-                        string sub = s.substr(i, 1) + s.substr(j, 1) + s.substr(k, 1);
-                        if (unique.find(sub) == unique.end()) {
-                            unique.insert(sub);
-                            count++;
-                        }
-                    }
-                }
-            }
-        }
-        return count;
-    }
-};
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="java">
-
-{% highlight java %}
-{% raw %}
-import java.util.*;
-
-public class Solution {
-    public int countPalindromicSubsequence(String s) {
-        int count = 0;
-        Set<String> unique = new HashSet<>();
-        for (int i = 0; i < s.length(); i++) {
-            for (int j = i + 1; j < s.length(); j++) {
-                for (int k = j + 1; k < s.length(); k++) {
-                    if (s.charAt(i) == s.charAt(k)) {
-                        String sub = s.substring(i, i + 1) + s.substring(j, j + 1) + s.substring(k, k + 1);
-                        if (!unique.contains(sub)) {
-                            unique.add(sub);
-                            count++;
-                        }
-                    }
-                }
-            }
-        }
-        return count;
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="python">
-
-{% highlight python %}
-{% raw %}
-class Solution:
-    def countPalindromicSubsequence(self, s: str) -> int:
-        count = 0
-        unique = set()
-        for i in range(len(s)):
-            for j in range(i + 1, len(s)):
-                for k in range(j + 1, len(s)):
-                    if s[i] == s[k]:
-                        sub = s[i] + s[j] + s[k]
-                        if sub not in unique:
-                            unique.add(sub)
-                            count += 1
-        return count
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="python3">
-
-{% highlight python %}
-{% raw %}
-class Solution:
-    def countPalindromicSubsequence(self, s: str) -> int:
-        count = 0
-        unique = set()
-        for i in range(len(s)):
-            for j in range(i + 1, len(s)):
-                for k in range(j + 1, len(s)):
-                    if s[i] == s[k]:
-                        sub = s[i] + s[j] + s[k]
-                        if sub not in unique:
-                            unique.add(sub)
-                            count += 1
-        return count
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="c">
-
-{% highlight c %}
-{% raw %}
-#include <stdio.h>
-#include <string.h>
-
-int countPalindromicSubsequence(char * s){
-    int count = 0;
-    int len = strlen(s);
-    for (int i = 0; i < len; i++) {
-        for (int j = i + 1; j < len; j++) {
-            for (int k = j + 1; k < len; k++) {
-                if (s[i] == s[k]) {
-                    char sub[4];
-                    sub[0] = s[i];
-                    sub[1] = s[j];
-                    sub[2] = s[k];
-                    sub[3] = '\0';
-                    // check if sub is in unique
-                    // for simplicity, we assume we have a function to check if a string is in a set
-                    // if (!isInSet(sub)) {
-                    //     addToStringSet(sub);
-                    //     count++;
-                    // }
-                }
-            }
-        }
-    }
-    return count;
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="csharp">
-
-{% highlight csharp %}
-{% raw %}
-using System;
-using System.Collections.Generic;
-
-public class Solution {
-    public int CountPalindromicSubsequence(string s) {
-        int count = 0;
-        HashSet<string> unique = new HashSet<string>();
-        for (int i = 0; i < s.Length; i++) {
-            for (int j = i + 1; j < s.Length; j++) {
-                for (int k = j + 1; k < s.Length; k++) {
-                    if (s[i] == s[k]) {
-                        string sub = s[i].ToString() + s[j].ToString() + s[k].ToString();
-                        if (!unique.Contains(sub)) {
-                            unique.Add(sub);
-                            count++;
-                        }
-                    }
-                }
-            }
-        }
-        return count;
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="javascript">
-
-{% highlight javascript %}
-{% raw %}
-var countPalindromicSubsequence = function(s) {
-    let count = 0;
-    let unique = new Set();
-    for (let i = 0; i < s.length; i++) {
-        for (let j = i + 1; j < s.length; j++) {
-            for (let k = j + 1; k < s.length; k++) {
-                if (s[i] == s[k]) {
-                    let sub = s[i] + s[j] + s[k];
-                    if (!unique.has(sub)) {
-                        unique.add(sub);
-                        count++;
-                    }
-                }
-            }
-        }
-    }
-    return count;
-};
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="typescript">
-
-{% highlight typescript %}
-{% raw %}
-function countPalindromicSubsequence(s: string): number {
-    let count: number = 0;
-    let unique: Set<string> = new Set();
-    for (let i: number = 0; i < s.length; i++) {
-        for (let j: number = i + 1; j < s.length; j++) {
-            for (let k: number = j + 1; k < s.length; k++) {
-                if (s[i] == s[k]) {
-                    let sub: string = s[i] + s[j] + s[k];
-                    if (!unique.has(sub)) {
-                        unique.add(sub);
-                        count++;
-                    }
-                }
-            }
-        }
-    }
-    return count;
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="php">
-
-{% highlight php %}
-{% raw %}
-class Solution {
-    function countPalindromicSubsequence($s) {
-        $count = 0;
-        $unique = array();
-        for ($i = 0; $i < strlen($s); $i++) {
-            for ($j = $i + 1; $j < strlen($s); $j++) {
-                for ($k = $j + 1; $k < strlen($s); $k++) {
-                    if ($s[$i] == $s[$k]) {
-                        $sub = $s[$i] . $s[$j] . $s[$k];
-                        if (!in_array($sub, $unique)) {
-                            $unique[] = $sub;
-                            $count++;
-                        }
-                    }
-                }
-            }
-        }
-        return $count;
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="swift">
-
-{% highlight swift %}
-{% raw %}
-class Solution {
-    func countPalindromicSubsequence(_ s: String) -> Int {
-        var count = 0
-        var unique: Set<String> = []
-        for i in s.indices {
-            for j in s.indices {
-                for k in s.indices {
-                    if i < j && j < k && s[i] == s[k] {
-                        let sub = String(s[i]) + String(s[j]) + String(s[k])
-                        if !unique.contains(sub) {
-                            unique.insert(sub)
-                            count += 1
-                        }
-                    }
-                }
-            }
-        }
-        return count
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="kotlin">
-
-{% highlight kotlin %}
-{% raw %}
-class Solution {
-    fun countPalindromicSubsequence(s: String): Int {
-        var count = 0
-        val unique: MutableSet<String> = mutableSetOf()
-        for (i in s.indices) {
-            for (j in i + 1 until s.length) {
-                for (k in j + 1 until s.length) {
-                    if (s[i] == s[k]) {
-                        val sub = s[i].toString() + s[j].toString() + s[k].toString()
-                        if (!unique.contains(sub)) {
-                            unique.add(sub)
-                            count++
-                        }
-                    }
-                }
-            }
-        }
-        return count
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="dart">
-
-{% highlight dart %}
-{% raw %}
-class Solution {
-  int countPalindromicSubsequence(String s) {
-      int count = 0;
-      Set<String> unique = {};
-      for (int i = 0; i < s.length; i++) {
-          for (int j = i + 1; j < s.length; j++) {
-              for (int k = j + 1; k < s.length; k++) {
-                  if (s[i] == s[k]) {
-                      String sub = s[i] + s[j] + s[k];
-                      if (!unique.contains(sub)) {
-                          unique.add(sub);
-                          count++;
-                      }
-                  }
-              }
-          }
-      }
-      return count;
-  }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="go">
-
-{% highlight go %}
-{% raw %}
-package main
-
-import (
-    "fmt"
-)
-
-func countPalindromicSubsequence(s string) int {
-    count := 0
-    unique := make(map[string]bool)
-    for i := 0; i < len(s); i++ {
-        for j := i + 1; j < len(s); j++ {
-            for k := j + 1; k < len(s); k++ {
-                if s[i] == s[k] {
-                    sub := string(s[i]) + string(s[j]) + string(s[k])
-                    if !unique[sub] {
-                        unique[sub] = true
-                        count++
-                    }
-                }
-            }
-        }
-    }
-    return count
-}
-
-func main() {
-    fmt.Println(countPalindromicSubsequence("aabca"))
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="ruby">
-
-{% highlight ruby %}
-{% raw %}
-class Solution
-def count_palindromic_subsequence(s)
-    count = 0
-    unique = Set.new
-    (0...s.length).each do |i|
-        (i + 1...s.length).each do |j|
-            (j + 1...s.length).each do |k|
-                if s[i] == s[k]
-                    sub = s[i].to_s + s[j].to_s + s[k].to_s
-                    if !unique.include?(sub)
-                        unique.add(sub)
-                        count += 1
-                    end
-                end
-            end
-        end
-    end
-    count
-end
-end
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="scala">
-
-{% highlight scala %}
-{% raw %}
-object Solution {
-    def countPalindromicSubsequence(s: String): Int = {
-        var count = 0
-        val unique = scala.collection.mutable.Set[String]()
-        for (i <- 0 until s.length) {
-            for (j <- i + 1 until s.length) {
-                for (k <- j + 1 until s.length) {
-                    if (s(i) == s(k)) {
-                        val sub = s(i).toString + s(j).toString + s(k).toString
-                        if (!unique.contains(sub)) {
-                            unique.add(sub)
-                            count += 1
-                        }
-                    }
-                }
-            }
-        }
-        count
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="rust">
-
-{% highlight rust %}
-{% raw %}
-use std::collections::HashSet;
-
-struct Solution;
-
-impl Solution {
-    pub fn count_palindromic_subsequence(s: String) -> i32 {
-        let mut count = 0;
-        let mut unique: HashSet<String> = HashSet::new();
-        for i in 0..s.len() {
-            for j in i + 1..s.len() {
-                for k in j + 1..s.len() {
-                    if s.as_bytes()[i] == s.as_bytes()[k] {
-                        let sub = format!("{}{}{}", s.as_bytes()[i] as char, s.as_bytes()[j] as char, s.as_bytes()[k] as char);
-                        if !unique.contains(&sub) {
-                            unique.insert(sub);
-                            count += 1;
-                        }
-                    }
-                }
-            }
-        }
-        count
-    }
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="racket">
-
-{% highlight racket %}
-{% raw %}
-#lang racket
-
-(define (count-palindromic-subsequence s)
-    (let ((count 0)
-          (unique (make-hash)))
-        (for ((i (range (string-length s))))
-          (for ((j (range (+ i 1) (string-length s))))
-            (for ((k (range (+ j 1) (string-length s))))
-              (if (eq? (string-ref s i) (string-ref s k))
-                  (let ((sub (string (string-ref s i) (string-ref s j) (string-ref s k))))
-                    (if (not (hash-ref unique sub #f))
-                        (begin
-                          (hash-set! unique sub #t)
-                          (set! count (+ count 1))))))))
-        count))
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="erlang">
-
-{% highlight erlang %}
-{% raw %}
--module(solution).
-
--export([count_palindromic_subsequence/1]).
-
-count_palindromic_subsequence(S) ->
-    Count = count(S, 0, [], []),
-    Count.
-
-count([], Count, _, _) ->
-    Count;
-count([H|T], Count, Unique, S) ->
-    {NewCount, NewUnique} = count_sub(T, H, Count, Unique, S),
-    count(T, NewCount, NewUnique, [H|S]).
-
-count_sub([], Count, Unique, _) ->
-    {Count, Unique};
-count_sub([H|T], C, Unique, [CH|S]) ->
-    case C == CH of
-        true ->
-            Sub = [C, H, CH],
-            case lists:member(Sub, Unique) of
-                true ->
-                    count_sub(T, Count, Unique, [CH|S]);
-                false ->
-                    NewUnique = [Sub|Unique],
-                    count_sub(T, Count + 1, NewUnique, [CH|S])
-            end;
-        false ->
-            count_sub(T, Count, Unique, [CH|S])
-    end.
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="elixir">
-
-{% highlight elixir %}
-{% raw %}
-defmodule Solution do
-  def count_palindromic_subsequence(s) do
-      count = 0
-      unique = MapSet.new()
-      count_palindromic_subsequence(s, count, unique)
-  end
-
-  defp count_palindromic_subsequence([], count, _), do: count
-
-  defp count_palindromic_subsequence([h|t], count, unique) do
-      {new_count, new_unique} = count_sub(t, h, count, unique, [h])
-      count_palindromic_subsequence(t, new_count, new_unique)
-  end
-
-  defp count_sub([], count, _, _), do: {count, []}
-
-  defp count_sub([h|t], c, count, unique, [ch|s]) do
-      case c == ch do
-          true ->
-              sub = [c, h, ch]
-              case Enum.member?(unique, sub) do
-                  true -> count_sub(t, count, unique, [ch|s])
-                  false ->
-                      new_unique = MapSet.put(unique, sub)
-                      count_sub(t, count + 1, new_unique, [ch|s])
-              end
-          false -> count_sub(t, count, unique, [ch|s])
+    chars = String.to_charlist(s)
+
+    Enum.reduce(?a..?z, 0, fn outer, answer ->
+      first = Enum.find_index(chars, &(&1 == outer))
+      last = Enum.find_index(Enum.reverse(chars), &(&1 == outer))
+
+      case {first, last} do
+        {nil, _} ->
+          answer
+
+        {_, nil} ->
+          answer
+
+        {first, reversed_last} ->
+          last = length(chars) - 1 - reversed_last
+
+          if last > first + 1 do
+            middle_count =
+              chars
+              |> Enum.slice((first + 1)..(last - 1))
+              |> Enum.uniq()
+              |> length()
+
+            answer + middle_count
+          else
+            answer
+          end
       end
+    end)
   end
 end
 {% endraw %}
@@ -1597,9 +877,5 @@ end
 
 ### Complexity Analysis
 
-- **Time Complexity:** O(n^2) where n is the length of the string, because we are iterating over the string and for each character, we are iterating over the rest of the string to find pairs of equal characters.
-
-- **Space Complexity:** O(n) where n is the length of the string, because in the worst case, we might need to store all characters in the hashmap and the set of unique palindromic subsequences.
-
-</div>
-</details>
+- **Time Complexity:** O(26n), which is O(n) for the fixed lowercase English alphabet, to scan the interval for each possible outer character.
+- **Space Complexity:** O(1), using a fixed-size array to track the 26 lowercase letters.

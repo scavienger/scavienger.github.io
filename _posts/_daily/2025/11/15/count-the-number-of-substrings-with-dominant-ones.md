@@ -6,6 +6,347 @@ categories: [LeetCode, Medium]
 tags: ["String", "Enumeration"]
 difficulty: Medium
 leetcode_url: https://leetcode.com/problems/count-the-number-of-substrings-with-dominant-ones/
+ai_solutions:
+  - solutions:
+      cpp: "class Solution {\npublic:\n    int numberOfSubstrings(string s) {\n    \
+        \    int n = static_cast<int>(s.size());\n        vector<int> zeros;\n     \
+        \   for (int i = 0; i < n; ++i) {\n            if (s[i] == '0') {\n        \
+        \        zeros.push_back(i);\n            }\n        }\n\n        long long\
+        \ answer = 0;\n        int zeroCount = static_cast<int>(zeros.size());\n   \
+        \     for (int left = 0; left < n; ++left) {\n            int first = lower_bound(zeros.begin(),\
+        \ zeros.end(), left) - zeros.begin();\n            int onesBeforeFirstZero =\
+        \ (first < zeroCount ? zeros[first] : n) - left;\n            answer += onesBeforeFirstZero;\n\
+        \n            for (int k = first; k < zeroCount; ++k) {\n                int\
+        \ countZeros = k - first + 1;\n                long long minLength = 1LL * countZeros\
+        \ * countZeros + countZeros;\n                int nextZero = (k + 1 < zeroCount\
+        \ ? zeros[k + 1] : n);\n                int maxLength = nextZero - left;\n \
+        \               if (minLength <= maxLength) {\n                    int minEnd\
+        \ = left + static_cast<int>(minLength) - 1;\n                    answer += nextZero\
+        \ - max(minEnd, zeros[k]);\n                }\n                if (minLength\
+        \ > n - left) break;\n            }\n        }\n        return static_cast<int>(answer);\n\
+        \    }\n};"
+      java: "class Solution {\n    public int numberOfSubstrings(String s) {\n     \
+        \   int n = s.length();\n        int[] zeros = new int[n];\n        int zeroCount\
+        \ = 0;\n        for (int i = 0; i < n; i++) {\n            if (s.charAt(i) ==\
+        \ '0') {\n                zeros[zeroCount++] = i;\n            }\n        }\n\
+        \n        long answer = 0;\n        for (int left = 0; left < n; left++) {\n\
+        \            int first = 0;\n            while (first < zeroCount && zeros[first]\
+        \ < left) {\n                first++;\n            }\n            int firstZeroPosition\
+        \ = first < zeroCount ? zeros[first] : n;\n            answer += firstZeroPosition\
+        \ - left;\n\n            for (int k = first; k < zeroCount; k++) {\n       \
+        \         int countZeros = k - first + 1;\n                long minLength =\
+        \ (long) countZeros * countZeros + countZeros;\n                int nextZero\
+        \ = k + 1 < zeroCount ? zeros[k + 1] : n;\n                int maxLength = nextZero\
+        \ - left;\n                if (minLength <= maxLength) {\n                 \
+        \   int minEnd = left + (int) minLength - 1;\n                    answer +=\
+        \ nextZero - Math.max(minEnd, zeros[k]);\n                }\n              \
+        \  if (minLength > n - left) {\n                    break;\n               \
+        \ }\n            }\n        }\n        return (int) answer;\n    }\n}"
+      python: "class Solution(object):\n    def numberOfSubstrings(self, s):\n     \
+        \   \"\"\"\n        :type s: str\n        :rtype: int\n        \"\"\"\n    \
+        \    n = len(s)\n        zeros = [i for i, char in enumerate(s) if char == '0']\n\
+        \        answer = 0\n        zero_count = len(zeros)\n\n        for left in\
+        \ range(n):\n            first = 0\n            while first < zero_count and\
+        \ zeros[first] < left:\n                first += 1\n            first_zero_position\
+        \ = zeros[first] if first < zero_count else n\n            answer += first_zero_position\
+        \ - left\n\n            for k in range(first, zero_count):\n               \
+        \ count_zeros = k - first + 1\n                min_length = count_zeros * count_zeros\
+        \ + count_zeros\n                next_zero = zeros[k + 1] if k + 1 < zero_count\
+        \ else n\n                max_length = next_zero - left\n                if\
+        \ min_length <= max_length:\n                    min_end = left + min_length\
+        \ - 1\n                    answer += next_zero - max(min_end, zeros[k])\n  \
+        \              if min_length > n - left:\n                    break\n      \
+        \  return answer"
+      python3: "class Solution:\n    def numberOfSubstrings(self, s: str) -> int:\n\
+        \        n = len(s)\n        zeros = [i for i, char in enumerate(s) if char\
+        \ == '0']\n        answer = 0\n        zero_count = len(zeros)\n\n        for\
+        \ left in range(n):\n            first = 0\n            while first < zero_count\
+        \ and zeros[first] < left:\n                first += 1\n            first_zero_position\
+        \ = zeros[first] if first < zero_count else n\n            answer += first_zero_position\
+        \ - left\n\n            for k in range(first, zero_count):\n               \
+        \ count_zeros = k - first + 1\n                min_length = count_zeros * count_zeros\
+        \ + count_zeros\n                next_zero = zeros[k + 1] if k + 1 < zero_count\
+        \ else n\n                max_length = next_zero - left\n                if\
+        \ min_length <= max_length:\n                    min_end = left + min_length\
+        \ - 1\n                    answer += next_zero - max(min_end, zeros[k])\n  \
+        \              if min_length > n - left:\n                    break\n      \
+        \  return answer"
+      c: "int numberOfSubstrings(char* s) {\n    int n = 0;\n    while (s[n] != '\\\
+        0') {\n        n++;\n    }\n\n    int* zeros = (int*)malloc((size_t)n * sizeof(int));\n\
+        \    int zeroCount = 0;\n    for (int i = 0; i < n; i++) {\n        if (s[i]\
+        \ == '0') {\n            zeros[zeroCount++] = i;\n        }\n    }\n\n    long\
+        \ long answer = 0;\n    for (int left = 0; left < n; left++) {\n        int\
+        \ first = 0;\n        while (first < zeroCount && zeros[first] < left) {\n \
+        \           first++;\n        }\n        int firstZeroPosition = first < zeroCount\
+        \ ? zeros[first] : n;\n        answer += firstZeroPosition - left;\n\n     \
+        \   for (int k = first; k < zeroCount; k++) {\n            int countZeros =\
+        \ k - first + 1;\n            long long minLength = (long long)countZeros *\
+        \ countZeros + countZeros;\n            int nextZero = k + 1 < zeroCount ? zeros[k\
+        \ + 1] : n;\n            int maxLength = nextZero - left;\n            if (minLength\
+        \ <= maxLength) {\n                int minEnd = left + (int)minLength - 1;\n\
+        \                int startEnd = minEnd > zeros[k] ? minEnd : zeros[k];\n   \
+        \             answer += nextZero - startEnd;\n            }\n            if\
+        \ (minLength > n - left) {\n                break;\n            }\n        }\n\
+        \    }\n\n    free(zeros);\n    return (int)answer;\n}"
+      csharp: "public class Solution {\n    public int NumberOfSubstrings(string s)\
+        \ {\n        int n = s.Length;\n        List<int> zeros = new List<int>();\n\
+        \        for (int i = 0; i < n; i++) {\n            if (s[i] == '0') {\n   \
+        \             zeros.Add(i);\n            }\n        }\n\n        long answer\
+        \ = 0;\n        int zeroCount = zeros.Count;\n        int first = 0;\n\n   \
+        \     for (int left = 0; left < n; left++) {\n            while (first < zeroCount\
+        \ && zeros[first] < left) {\n                first++;\n            }\n\n   \
+        \         int firstZeroPosition = first < zeroCount ? zeros[first] : n;\n  \
+        \          answer += firstZeroPosition - left;\n\n            for (int k = first;\
+        \ k < zeroCount; k++) {\n                int countZeros = k - first + 1;\n \
+        \               int minLength = countZeros * countZeros + countZeros;\n    \
+        \            int nextZero = k + 1 < zeroCount ? zeros[k + 1] : n;\n        \
+        \        int maxLength = nextZero - left;\n                if (minLength <=\
+        \ maxLength) {\n                    int minEnd = left + minLength - 1;\n   \
+        \                 answer += nextZero - Math.Max(minEnd, zeros[k]);\n       \
+        \         }\n                if (minLength > n - left) {\n                 \
+        \   break;\n                }\n            }\n        }\n\n        return (int)answer;\n\
+        \    }\n}"
+      javascript: "/**\n * @param {string} s\n * @return {number}\n */\nvar numberOfSubstrings\
+        \ = function(s) {\n    const n = s.length;\n    const zeros = [];\n    for (let\
+        \ i = 0; i < n; i++) {\n        if (s[i] === '0') {\n            zeros.push(i);\n\
+        \        }\n    }\n\n    let answer = 0;\n    let first = 0;\n\n    for (let\
+        \ left = 0; left < n; left++) {\n        while (first < zeros.length && zeros[first]\
+        \ < left) {\n            first++;\n        }\n\n        const firstZeroPosition\
+        \ = first < zeros.length ? zeros[first] : n;\n        answer += firstZeroPosition\
+        \ - left;\n\n        for (let k = first; k < zeros.length; k++) {\n        \
+        \    const countZeros = k - first + 1;\n            const minLength = countZeros\
+        \ * countZeros + countZeros;\n            const nextZero = k + 1 < zeros.length\
+        \ ? zeros[k + 1] : n;\n            const maxLength = nextZero - left;\n    \
+        \        if (minLength <= maxLength) {\n                const minEnd = left\
+        \ + minLength - 1;\n                answer += nextZero - Math.max(minEnd, zeros[k]);\n\
+        \            }\n            if (minLength > n - left) {\n                break;\n\
+        \            }\n        }\n    }\n\n    return answer;\n};"
+      typescript: "function numberOfSubstrings(s: string): number {\n    const n = s.length;\n\
+        \    const zeros: number[] = [];\n    for (let i = 0; i < n; i++) {\n      \
+        \  if (s[i] === '0') {\n            zeros.push(i);\n        }\n    }\n\n   \
+        \ let answer = 0;\n    let first = 0;\n\n    for (let left = 0; left < n; left++)\
+        \ {\n        while (first < zeros.length && zeros[first] < left) {\n       \
+        \     first++;\n        }\n\n        const firstZeroPosition = first < zeros.length\
+        \ ? zeros[first] : n;\n        answer += firstZeroPosition - left;\n\n     \
+        \   for (let k = first; k < zeros.length; k++) {\n            const countZeros\
+        \ = k - first + 1;\n            const minLength = countZeros * countZeros +\
+        \ countZeros;\n            const nextZero = k + 1 < zeros.length ? zeros[k +\
+        \ 1] : n;\n            const maxLength = nextZero - left;\n            if (minLength\
+        \ <= maxLength) {\n                const minEnd = left + minLength - 1;\n  \
+        \              answer += nextZero - Math.max(minEnd, zeros[k]);\n          \
+        \  }\n            if (minLength > n - left) {\n                break;\n    \
+        \        }\n        }\n    }\n\n    return answer;\n};"
+      php: "class Solution {\n\n    /**\n     * @param String $s\n     * @return Integer\n\
+        \     */\n    function numberOfSubstrings($s) {\n        $n = strlen($s);\n\
+        \        $zeros = [];\n        for ($i = 0; $i < $n; $i++) {\n            if\
+        \ ($s[$i] === '0') {\n                $zeros[] = $i;\n            }\n      \
+        \  }\n\n        $answer = 0;\n        $zeroCount = count($zeros);\n        $first\
+        \ = 0;\n\n        for ($left = 0; $left < $n; $left++) {\n            while\
+        \ ($first < $zeroCount && $zeros[$first] < $left) {\n                $first++;\n\
+        \            }\n\n            $firstZeroPosition = $first < $zeroCount ? $zeros[$first]\
+        \ : $n;\n            $answer += $firstZeroPosition - $left;\n\n            for\
+        \ ($k = $first; $k < $zeroCount; $k++) {\n                $countZeros = $k -\
+        \ $first + 1;\n                $minLength = $countZeros * $countZeros + $countZeros;\n\
+        \                $nextZero = $k + 1 < $zeroCount ? $zeros[$k + 1] : $n;\n  \
+        \              $maxLength = $nextZero - $left;\n                if ($minLength\
+        \ <= $maxLength) {\n                    $minEnd = $left + $minLength - 1;\n\
+        \                    $answer += $nextZero - max($minEnd, $zeros[$k]);\n    \
+        \            }\n                if ($minLength > $n - $left) {\n           \
+        \         break;\n                }\n            }\n        }\n\n        return\
+        \ $answer;\n    }\n}"
+      swift: "class Solution {\n    func numberOfSubstrings(_ s: String) -> Int {\n\
+        \        let chars = Array(s)\n        let n = chars.count\n        var zeros:\
+        \ [Int] = []\n        for i in 0..<n {\n            if chars[i] == \"0\" {\n\
+        \                zeros.append(i)\n            }\n        }\n\n        var answer\
+        \ = 0\n        var first = 0\n\n        for left in 0..<n {\n            while\
+        \ first < zeros.count && zeros[first] < left {\n                first += 1\n\
+        \            }\n\n            let firstZeroPosition = first < zeros.count ?\
+        \ zeros[first] : n\n            answer += firstZeroPosition - left\n\n     \
+        \       for k in first..<zeros.count {\n                let countZeros = k -\
+        \ first + 1\n                let minLength = countZeros * countZeros + countZeros\n\
+        \                let nextZero = k + 1 < zeros.count ? zeros[k + 1] : n\n   \
+        \             let maxLength = nextZero - left\n                if minLength\
+        \ <= maxLength {\n                    let minEnd = left + minLength - 1\n  \
+        \                  answer += nextZero - max(minEnd, zeros[k])\n            \
+        \    }\n                if minLength > n - left {\n                    break\n\
+        \                }\n            }\n        }\n\n        return answer\n    }\n\
+        }"
+      kotlin: "class Solution {\n    fun numberOfSubstrings(s: String): Int {\n    \
+        \    val n = s.length\n        val zeros = mutableListOf<Int>()\n        for\
+        \ (i in s.indices) {\n            if (s[i] == '0') zeros.add(i)\n        }\n\
+        \        var answer = 0\n        var first = 0\n\n        for (left in 0 until\
+        \ n) {\n            while (first < zeros.size && zeros[first] < left) first++\n\
+        \            val firstZeroPosition = if (first < zeros.size) zeros[first] else\
+        \ n\n            answer += firstZeroPosition - left\n\n            for (k in\
+        \ first until zeros.size) {\n                val countZeros = k - first + 1\n\
+        \                val minLength = countZeros * countZeros + countZeros\n    \
+        \            val nextZero = if (k + 1 < zeros.size) zeros[k + 1] else n\n  \
+        \              val maxLength = nextZero - left\n                if (minLength\
+        \ <= maxLength) {\n                    val minEnd = left + minLength - 1\n \
+        \                   answer += nextZero - maxOf(minEnd, zeros[k])\n         \
+        \       }\n                if (minLength > n - left) break\n            }\n\
+        \        }\n        return answer\n    }\n}"
+      dart: "class Solution {\n  int numberOfSubstrings(String s) {\n    final n = s.length;\n\
+        \    final zeros = <int>[];\n    for (var i = 0; i < n; i++) {\n      if (s[i]\
+        \ == '0') zeros.add(i);\n    }\n\n    var answer = 0;\n    var first = 0;\n\
+        \    for (var left = 0; left < n; left++) {\n      while (first < zeros.length\
+        \ && zeros[first] < left) {\n        first++;\n      }\n      final firstZeroPosition\
+        \ = first < zeros.length ? zeros[first] : n;\n      answer += firstZeroPosition\
+        \ - left;\n\n      for (var k = first; k < zeros.length; k++) {\n        final\
+        \ countZeros = k - first + 1;\n        final minLength = countZeros * countZeros\
+        \ + countZeros;\n        final nextZero = k + 1 < zeros.length ? zeros[k + 1]\
+        \ : n;\n        final maxLength = nextZero - left;\n        if (minLength <=\
+        \ maxLength) {\n          final minEnd = left + minLength - 1;\n          answer\
+        \ += nextZero - (minEnd > zeros[k] ? minEnd : zeros[k]);\n        }\n      \
+        \  if (minLength > n - left) break;\n      }\n    }\n    return answer;\n  }\n\
+        }"
+      go: "func numberOfSubstrings(s string) int {\n\tn := len(s)\n\tzeros := make([]int,\
+        \ 0)\n\tfor i := 0; i < n; i++ {\n\t\tif s[i] == '0' {\n\t\t\tzeros = append(zeros,\
+        \ i)\n\t\t}\n\t}\n\n\tanswer := 0\n\tfirst := 0\n\tfor left := 0; left < n;\
+        \ left++ {\n\t\tfor first < len(zeros) && zeros[first] < left {\n\t\t\tfirst++\n\
+        \t\t}\n\t\tfirstZeroPosition := n\n\t\tif first < len(zeros) {\n\t\t\tfirstZeroPosition\
+        \ = zeros[first]\n\t\t}\n\t\tanswer += firstZeroPosition - left\n\n\t\tfor k\
+        \ := first; k < len(zeros); k++ {\n\t\t\tcountZeros := k - first + 1\n\t\t\t\
+        minLength := countZeros*countZeros + countZeros\n\t\t\tnextZero := n\n\t\t\t\
+        if k+1 < len(zeros) {\n\t\t\t\tnextZero = zeros[k+1]\n\t\t\t}\n\t\t\tmaxLength\
+        \ := nextZero - left\n\t\t\tif minLength <= maxLength {\n\t\t\t\tminEnd := left\
+        \ + minLength - 1\n\t\t\t\tif zeros[k] > minEnd {\n\t\t\t\t\tminEnd = zeros[k]\n\
+        \t\t\t\t}\n\t\t\t\tanswer += nextZero - minEnd\n\t\t\t}\n\t\t\tif minLength\
+        \ > n-left {\n\t\t\t\tbreak\n\t\t\t}\n\t\t}\n\t}\n\treturn answer\n}"
+      ruby: "# @param {String} s\n# @return {Integer}\ndef number_of_substrings(s)\n\
+        \  n = s.length\n  zeros = []\n  s.each_char.with_index do |char, i|\n    zeros\
+        \ << i if char == '0'\n  end\n\n  answer = 0\n  first = 0\n  (0...n).each do\
+        \ |left|\n    first += 1 while first < zeros.length && zeros[first] < left\n\
+        \    first_zero_position = first < zeros.length ? zeros[first] : n\n    answer\
+        \ += first_zero_position - left\n\n    (first...zeros.length).each do |k|\n\
+        \      count_zeros = k - first + 1\n      min_length = count_zeros * count_zeros\
+        \ + count_zeros\n      next_zero = k + 1 < zeros.length ? zeros[k + 1] : n\n\
+        \      max_length = next_zero - left\n      if min_length <= max_length\n  \
+        \      min_end = left + min_length - 1\n        min_end = [min_end, zeros[k]].max\n\
+        \        answer += next_zero - min_end\n      end\n      break if min_length\
+        \ > n - left\n    end\n  end\n  answer\nend"
+      scala: "object Solution {\n    def numberOfSubstrings(s: String): Int = {\n  \
+        \      val n = s.length\n        val zeros = s.indices.filter(i => s(i) == '0').toArray\n\
+        \        var answer = 0\n        var first = 0\n\n        for (left <- 0 until\
+        \ n) {\n            while (first < zeros.length && zeros(first) < left) {\n\
+        \                first += 1\n            }\n            val firstZeroPosition\
+        \ = if (first < zeros.length) zeros(first) else n\n            answer += firstZeroPosition\
+        \ - left\n\n            var k = first\n            while (k < zeros.length)\
+        \ {\n                val countZeros = k - first + 1\n                val minLength\
+        \ = countZeros * countZeros + countZeros\n                val nextZero = if\
+        \ (k + 1 < zeros.length) zeros(k + 1) else n\n                val maxLength\
+        \ = nextZero - left\n                if (minLength <= maxLength) {\n       \
+        \             val minEnd = left + minLength - 1\n                    answer\
+        \ += nextZero - math.max(minEnd, zeros(k))\n                }\n            \
+        \    if (minLength > n - left) {\n                    k = zeros.length\n   \
+        \             } else {\n                    k += 1\n                }\n    \
+        \        }\n        }\n        answer\n    }\n}"
+      rust: "impl Solution {\n    pub fn number_of_substrings(s: String) -> i32 {\n\
+        \        let bytes = s.as_bytes();\n        let n = bytes.len();\n        let\
+        \ zeros: Vec<usize> = bytes\n            .iter()\n            .enumerate()\n\
+        \            .filter_map(|(i, &byte)| if byte == b'0' { Some(i) } else { None\
+        \ })\n            .collect();\n        let mut answer: i64 = 0;\n\n        for\
+        \ left in 0..n {\n            let first = zeros.partition_point(|&position|\
+        \ position < left);\n            let first_zero_position = zeros.get(first).copied().unwrap_or(n);\n\
+        \            answer += (first_zero_position - left) as i64;\n\n            for\
+        \ k in first..zeros.len() {\n                let count_zeros = k - first + 1;\n\
+        \                let min_length = count_zeros * count_zeros + count_zeros;\n\
+        \                if min_length > n - left {\n                    break;\n  \
+        \              }\n                let next_zero = zeros.get(k + 1).copied().unwrap_or(n);\n\
+        \                let max_length = next_zero - left;\n                if min_length\
+        \ <= max_length {\n                    let min_end = left + min_length - 1;\n\
+        \                    answer += (next_zero - min_end.max(zeros[k])) as i64;\n\
+        \                }\n            }\n        }\n\n        answer as i32\n    }\n\
+        }"
+      racket: "(define/contract (number-of-substrings s)\n  (-> string? exact-integer?)\n\
+        \  (let* ([n (string-length s)]\n         [zeros (for/list ([i (in-range n)]\
+        \ #:when (char=? (string-ref s i) #\\0)) i)]\n         [zero-vector (list->vector\
+        \ zeros)]\n         [zero-count (vector-length zero-vector)])\n    (for*/sum\
+        \ ([left (in-range n)])\n      (let* ([first (let loop ([lo 0] [hi zero-count])\n\
+        \                      (if (< lo hi)\n                          (let ([mid (quotient\
+        \ (+ lo hi) 2)])\n                            (if (< (vector-ref zero-vector\
+        \ mid) left)\n                                (loop (add1 mid) hi)\n       \
+        \                         (loop lo mid)))\n                          lo))]\n\
+        \             [first-zero-position (if (< first zero-count)\n              \
+        \                        (vector-ref zero-vector first)\n                  \
+        \                    n)])\n        (+ (- first-zero-position left)\n       \
+        \    (let loop ([k first] [total 0])\n             (if (< k zero-count)\n  \
+        \               (let* ([count-zeros (add1 (- k first))]\n                  \
+        \      [min-length (+ (* count-zeros count-zeros) count-zeros)])\n         \
+        \          (if (> min-length (- n left))\n                       total\n   \
+        \                    (let* ([next-zero (if (< (add1 k) zero-count)\n       \
+        \                                      (vector-ref zero-vector (add1 k))\n \
+        \                                            n)]\n                         \
+        \     [min-end (+ left min-length -1)]\n                              [contribution\
+        \ (if (<= min-length (- next-zero left))\n                                 \
+        \               (- next-zero (max min-end (vector-ref zero-vector k)))\n   \
+        \                                             0)])\n                       \
+        \  (loop (add1 k) (+ total contribution)))))\n                 total))))))"
+      erlang: "-spec number_of_substrings(S :: unicode:unicode_binary()) -> integer().\n\
+        number_of_substrings(S) ->\n  N = byte_size(S),\n  Zeros = [I || I <- lists:seq(0,\
+        \ N - 1), binary:at(S, I) =:= $0],\n  Count = length(Zeros),\n  ZeroTuple =\
+        \ list_to_tuple(Zeros),\n  number_of_substrings_left(0, N, Count, ZeroTuple,\
+        \ 0).\n\nnumber_of_substrings_left(Left, N, _Count, _Zeros, Answer) when Left\
+        \ >= N ->\n  Answer;\nnumber_of_substrings_left(Left, N, Count, Zeros, Answer)\
+        \ ->\n  First = first_zero_at_least(1, Count, Left, Zeros),\n  FirstPosition\
+        \ = if First =< Count -> element(First, Zeros); true -> N end,\n  NoZeroCount\
+        \ = FirstPosition - Left,\n  Added = count_zero_groups(First, Count, Left, N,\
+        \ Zeros, 0),\n  number_of_substrings_left(Left + 1, N, Count, Zeros, Answer\
+        \ + NoZeroCount + Added).\n\nfirst_zero_at_least(Index, Count, _Left, _Zeros)\
+        \ when Index > Count ->\n  Index;\nfirst_zero_at_least(Index, Count, Left, Zeros)\
+        \ ->\n  case element(Index, Zeros) < Left of\n    true -> first_zero_at_least(Index\
+        \ + 1, Count, Left, Zeros);\n    false -> Index\n  end.\n\ncount_zero_groups(K,\
+        \ Count, _Left, _N, _Zeros, Total) when K > Count ->\n  Total;\ncount_zero_groups(K,\
+        \ Count, Left, N, Zeros, Total) ->\n  CountZeros = K - first_zero_at_least(1,\
+        \ Count, Left, Zeros) + 1,\n  MinLength = CountZeros * CountZeros + CountZeros,\n\
+        \  case MinLength > N - Left of\n    true -> Total;\n    false ->\n      NextZero\
+        \ = if K < Count -> element(K + 1, Zeros); true -> N end,\n      MaxLength =\
+        \ NextZero - Left,\n      Contribution = if MinLength =< MaxLength ->\n    \
+        \                     MinEnd = Left + MinLength - 1,\n                     \
+        \    ZeroPosition = element(K, Zeros),\n                         NextZero -\
+        \ max(MinEnd, ZeroPosition);\n                     true -> 0\n             \
+        \        end,\n      count_zero_groups(K + 1, Count, Left, N, Zeros, Total +\
+        \ Contribution)\n  end."
+      elixir: "defmodule Solution do\n  @spec number_of_substrings(s :: String.t) ::\
+        \ integer\n  def number_of_substrings(s) do\n    n = byte_size(s)\n    zeros\
+        \ = for i <- 0..(n - 1), :binary.at(s, i) == ?0, do: i\n    zero_count = length(zeros)\n\
+        \    zero_tuple = List.to_tuple(zeros)\n\n    Enum.reduce(0..(n - 1), 0, fn\
+        \ left, answer ->\n      first = first_zero_at_least(zero_tuple, zero_count,\
+        \ left, 0, zero_count)\n      first_zero_position = if first < zero_count, do:\
+        \ elem(zero_tuple, first), else: n\n      no_zero_count = first_zero_position\
+        \ - left\n      added = count_zero_groups(first, zero_count, left, n, zero_tuple,\
+        \ 0)\n      answer + no_zero_count + added\n    end)\n  end\n\n  defp first_zero_at_least(_zeros,\
+        \ _count, _left, lo, hi) when lo >= hi, do: lo\n\n  defp first_zero_at_least(zeros,\
+        \ count, left, lo, hi) do\n    mid = div(lo + hi, 2)\n\n    if mid < count and\
+        \ elem(zeros, mid) < left do\n      first_zero_at_least(zeros, count, left,\
+        \ mid + 1, hi)\n    else\n      first_zero_at_least(zeros, count, left, lo,\
+        \ mid)\n    end\n  end\n\n  defp count_zero_groups(k, count, _left, _n, _zeros,\
+        \ total) when k >= count, do: total\n\n  defp count_zero_groups(k, count, left,\
+        \ n, zeros, total) do\n    count_zeros = k - first_zero_at_least(zeros, count,\
+        \ left, 0, count) + 1\n    min_length = count_zeros * count_zeros + count_zeros\n\
+        \n    if min_length > n - left do\n      total\n    else\n      next_zero =\
+        \ if k + 1 < count, do: elem(zeros, k + 1), else: n\n      max_length = next_zero\
+        \ - left\n\n      contribution =\n        if min_length <= max_length do\n \
+        \         min_end = left + min_length - 1\n          next_zero - max(min_end,\
+        \ elem(zeros, k))\n        else\n          0\n        end\n\n      count_zero_groups(k\
+        \ + 1, count, left, n, zeros, total + contribution)\n    end\n  end\nend"
+    approach: 'For each starting index, count substrings by their number of zeros. Substrings
+      with no zeros are all valid, so count the consecutive ones beginning at that index
+      directly. A substring with z zeros can be dominant only if its length is at least
+      z squared plus z, which means z is at most about the square root of the string
+      length.
+
+
+      Precompute the positions of all zeros, then for each start, visit each feasible
+      number of zeros and use the next zero positions to determine the range of ends
+      containing exactly that many zeros. The minimum valid end follows from the condition
+      ones >= zeros squared; count the valid ends in the range and add them to the answer.'
+    time_complexity: O(n sqrt(n)), where n is the string length; each start considers
+      at most O(sqrt(n)) zero counts.
+    space_complexity: O(n) for storing zero positions.
+    elapsed_time: 138.9407877922058
+    model: gpt-6-luna
+    generated_at: '2026-11-13 00:02:23 '
 ---
 
 ## Problem #3234: Count the Number of Substrings With Dominant Ones
@@ -164,69 +505,56 @@ leetcode_url: https://leetcode.com/problems/count-the-number-of-substrings-with-
 
 3. We cannot iterate over every `r` and check if the  `s[l..r]` has dominant ones. Instead, we iterate over the next `sqrt(n)` zeros to the left of `l` and count the number of substrings with dominant ones where the current zero is the rightmost zero of the substring.
 
-## 🤖 AI-Generated Solutions
-
-We've generated solutions using multiple AI models. Click to expand each solution:
-
-
-<details class="ai-solution-card" open markdown="1">
-<summary class="ai-solution-header">
-  <span class="ai-model-badge">✨ Solution from <strong>gemini-2.5-flash</strong></span>
-  <small class="solution-timestamp">(2025-11-25 04:07:31 UTC)</small>
-</summary>
-
-<div class="ai-solution-content">
+## 🤖 AI-Generated Solution (gpt-6-luna)
 
 ### Approach
 
-The problem asks us to count substrings with 'dominant ones', meaning the number of ones is greater than or equal to the square of the number of zeros. The string length `N` can be up to `4 * 10^4`. A brute-force approach of iterating through all `O(N^2)` substrings and for each, counting zeros and ones (`O(N)` or `O(1)` with prefix sums) would be `O(N^3)` or `O(N^2)`, which is too slow for `N = 4 * 10^4`.
+For each starting index, count substrings by their number of zeros. Substrings with no zeros are all valid, so count the consecutive ones beginning at that index directly. A substring with z zeros can be dominant only if its length is at least z squared plus z, which means z is at most about the square root of the string length.
 
-The key observation comes from the constraint `ones >= zeros^2`. Let `Z` be the number of zeros and `O` be the number of ones. The total length of the substring is `L = Z + O`. Since `O <= L <= N`, we have `N >= O`. If `Z > sqrt(N)`, then `Z^2 > N`. In this case, it's impossible for `O >= Z^2` because `O <= N < Z^2`. Therefore, any substring with dominant ones must have `Z <= sqrt(N)` zeros. For `N = 4 * 10^4`, `sqrt(N) = 200`. This means the number of zeros in any valid substring is at most 200.
-
-This crucial observation allows us to optimize the counting. We iterate through all possible starting positions `i` (from `0` to `N-1`). For each `i`, we iterate through possible ending positions `j` (from `i` to `N-1`). As we extend `j`, we maintain the current count of zeros (`current_zeros`) and ones (`current_ones`) for the substring `s[i..j]`. If `current_zeros` exceeds `sqrt(N)`, we can immediately break the inner loop for `j`. This is because any further extension of the substring `s[i..j']` (where `j' > j`) will only increase `current_zeros` or `current_ones`, but `current_zeros` will remain greater than `sqrt(N)`, making the condition `ones >= zeros^2` impossible to satisfy. If `current_zeros <= sqrt(N)`, we check if `current_ones >= current_zeros^2` and increment our total count if it is.
+Precompute the positions of all zeros, then for each start, visit each feasible number of zeros and use the next zero positions to determine the range of ends containing exactly that many zeros. The minimum valid end follows from the condition ones >= zeros squared; count the valid ends in the range and add them to the answer.
 
 ### Code
 
 <div class="code-tabs" markdown="0">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-cpp-gemini-2-5-flash" checked>
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-java-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-python-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-python3-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-c-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-csharp-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-javascript-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-typescript-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-php-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-swift-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-kotlin-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-dart-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-go-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-ruby-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-scala-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-rust-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-racket-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-erlang-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-elixir-gemini-2-5-flash">
+  <input type="radio" name="code-lang" id="lang-cpp" checked>
+  <input type="radio" name="code-lang" id="lang-java">
+  <input type="radio" name="code-lang" id="lang-python">
+  <input type="radio" name="code-lang" id="lang-python3">
+  <input type="radio" name="code-lang" id="lang-c">
+  <input type="radio" name="code-lang" id="lang-csharp">
+  <input type="radio" name="code-lang" id="lang-javascript">
+  <input type="radio" name="code-lang" id="lang-typescript">
+  <input type="radio" name="code-lang" id="lang-php">
+  <input type="radio" name="code-lang" id="lang-swift">
+  <input type="radio" name="code-lang" id="lang-kotlin">
+  <input type="radio" name="code-lang" id="lang-dart">
+  <input type="radio" name="code-lang" id="lang-go">
+  <input type="radio" name="code-lang" id="lang-ruby">
+  <input type="radio" name="code-lang" id="lang-scala">
+  <input type="radio" name="code-lang" id="lang-rust">
+  <input type="radio" name="code-lang" id="lang-racket">
+  <input type="radio" name="code-lang" id="lang-erlang">
+  <input type="radio" name="code-lang" id="lang-elixir">
   <div class="tab-labels">
-    <label for="lang-cpp-gemini-2-5-flash">C++</label>
-    <label for="lang-java-gemini-2-5-flash">Java</label>
-    <label for="lang-python-gemini-2-5-flash">Python</label>
-    <label for="lang-python3-gemini-2-5-flash">Python3</label>
-    <label for="lang-c-gemini-2-5-flash">C</label>
-    <label for="lang-csharp-gemini-2-5-flash">C#</label>
-    <label for="lang-javascript-gemini-2-5-flash">JavaScript</label>
-    <label for="lang-typescript-gemini-2-5-flash">TypeScript</label>
-    <label for="lang-php-gemini-2-5-flash">PHP</label>
-    <label for="lang-swift-gemini-2-5-flash">Swift</label>
-    <label for="lang-kotlin-gemini-2-5-flash">Kotlin</label>
-    <label for="lang-dart-gemini-2-5-flash">Dart</label>
-    <label for="lang-go-gemini-2-5-flash">Go</label>
-    <label for="lang-ruby-gemini-2-5-flash">Ruby</label>
-    <label for="lang-scala-gemini-2-5-flash">Scala</label>
-    <label for="lang-rust-gemini-2-5-flash">Rust</label>
-    <label for="lang-racket-gemini-2-5-flash">Racket</label>
-    <label for="lang-erlang-gemini-2-5-flash">Erlang</label>
-    <label for="lang-elixir-gemini-2-5-flash">Elixir</label>
+    <label for="lang-cpp">C++</label>
+    <label for="lang-java">Java</label>
+    <label for="lang-python">Python</label>
+    <label for="lang-python3">Python3</label>
+    <label for="lang-c">C</label>
+    <label for="lang-csharp">C#</label>
+    <label for="lang-javascript">JavaScript</label>
+    <label for="lang-typescript">TypeScript</label>
+    <label for="lang-php">PHP</label>
+    <label for="lang-swift">Swift</label>
+    <label for="lang-kotlin">Kotlin</label>
+    <label for="lang-dart">Dart</label>
+    <label for="lang-go">Go</label>
+    <label for="lang-ruby">Ruby</label>
+    <label for="lang-scala">Scala</label>
+    <label for="lang-rust">Rust</label>
+    <label for="lang-racket">Racket</label>
+    <label for="lang-erlang">Erlang</label>
+    <label for="lang-elixir">Elixir</label>
   </div>
 
   <div class="tab-panel" data-lang="cpp">
@@ -235,38 +563,35 @@ This crucial observation allows us to optimize the counting. We iterate through 
 {% raw %}
 class Solution {
 public:
-    long long numberOfSubstrings(std::string s) {
-        int n = s.length();
-        long long count = 0;
-        int max_zeros_limit = 0;
-        if (n > 0) {
-            max_zeros_limit = static_cast<int>(std::sqrt(n));
-        }
-
+    int numberOfSubstrings(string s) {
+        int n = static_cast<int>(s.size());
+        vector<int> zeros;
         for (int i = 0; i < n; ++i) {
-            int current_zeros = 0;
-            int current_ones = 0;
-            for (int j = i; j < n; ++j) {
-                if (s[j] == '0') {
-                    current_zeros++;
-                } else {
-                    current_ones++;
-                }
-
-                // Optimization: If current_zeros exceeds the limit, 
-                // any further extension of this substring will also have 
-                // current_zeros > max_zeros_limit, making the condition impossible.
-                if (current_zeros > max_zeros_limit) {
-                    break;
-                }
-
-                // Check the dominant ones condition
-                if (static_cast<long long>(current_ones) >= static_cast<long long>(current_zeros) * current_zeros) {
-                    count++;
-                }
+            if (s[i] == '0') {
+                zeros.push_back(i);
             }
         }
-        return count;
+
+        long long answer = 0;
+        int zeroCount = static_cast<int>(zeros.size());
+        for (int left = 0; left < n; ++left) {
+            int first = lower_bound(zeros.begin(), zeros.end(), left) - zeros.begin();
+            int onesBeforeFirstZero = (first < zeroCount ? zeros[first] : n) - left;
+            answer += onesBeforeFirstZero;
+
+            for (int k = first; k < zeroCount; ++k) {
+                int countZeros = k - first + 1;
+                long long minLength = 1LL * countZeros * countZeros + countZeros;
+                int nextZero = (k + 1 < zeroCount ? zeros[k + 1] : n);
+                int maxLength = nextZero - left;
+                if (minLength <= maxLength) {
+                    int minEnd = left + static_cast<int>(minLength) - 1;
+                    answer += nextZero - max(minEnd, zeros[k]);
+                }
+                if (minLength > n - left) break;
+            }
+        }
+        return static_cast<int>(answer);
     }
 };
 {% endraw %}
@@ -279,38 +604,40 @@ public:
 {% highlight java %}
 {% raw %}
 class Solution {
-    public long numberOfSubstrings(String s) {
+    public int numberOfSubstrings(String s) {
         int n = s.length();
-        long count = 0;
-        int maxZerosLimit = 0;
-        if (n > 0) {
-            maxZerosLimit = (int) Math.sqrt(n);
+        int[] zeros = new int[n];
+        int zeroCount = 0;
+        for (int i = 0; i < n; i++) {
+            if (s.charAt(i) == '0') {
+                zeros[zeroCount++] = i;
+            }
         }
 
-        for (int i = 0; i < n; ++i) {
-            int currentZeros = 0;
-            int currentOnes = 0;
-            for (int j = i; j < n; ++j) {
-                if (s.charAt(j) == '0') {
-                    currentZeros++;
-                } else {
-                    currentOnes++;
-                }
+        long answer = 0;
+        for (int left = 0; left < n; left++) {
+            int first = 0;
+            while (first < zeroCount && zeros[first] < left) {
+                first++;
+            }
+            int firstZeroPosition = first < zeroCount ? zeros[first] : n;
+            answer += firstZeroPosition - left;
 
-                // Optimization: If currentZeros exceeds the limit, 
-                // any further extension of this substring will also have 
-                // currentZeros > maxZerosLimit, making the condition impossible.
-                if (currentZeros > maxZerosLimit) {
+            for (int k = first; k < zeroCount; k++) {
+                int countZeros = k - first + 1;
+                long minLength = (long) countZeros * countZeros + countZeros;
+                int nextZero = k + 1 < zeroCount ? zeros[k + 1] : n;
+                int maxLength = nextZero - left;
+                if (minLength <= maxLength) {
+                    int minEnd = left + (int) minLength - 1;
+                    answer += nextZero - Math.max(minEnd, zeros[k]);
+                }
+                if (minLength > n - left) {
                     break;
-                }
-
-                // Check the dominant ones condition
-                if ((long) currentOnes >= (long) currentZeros * currentZeros) {
-                    count++;
                 }
             }
         }
-        return count;
+        return (int) answer;
     }
 }
 {% endraw %}
@@ -322,36 +649,35 @@ class Solution {
 
 {% highlight python %}
 {% raw %}
-import math
-
-class Solution:
-    def numberOfSubstrings(self, s: str) -> int:
+class Solution(object):
+    def numberOfSubstrings(self, s):
+        """
+        :type s: str
+        :rtype: int
+        """
         n = len(s)
-        count = 0
-        max_zeros_limit = 0
-        if n > 0:
-            max_zeros_limit = int(math.sqrt(n))
+        zeros = [i for i, char in enumerate(s) if char == '0']
+        answer = 0
+        zero_count = len(zeros)
 
-        for i in range(n):
-            current_zeros = 0
-            current_ones = 0
-            for j in range(i, n):
-                if s[j] == '0':
-                    current_zeros += 1
-                else:
-                    current_ones += 1
+        for left in range(n):
+            first = 0
+            while first < zero_count and zeros[first] < left:
+                first += 1
+            first_zero_position = zeros[first] if first < zero_count else n
+            answer += first_zero_position - left
 
-                # Optimization: If current_zeros exceeds the limit, 
-                # any further extension of this substring will also have 
-                # current_zeros > max_zeros_limit, making the condition impossible.
-                if current_zeros > max_zeros_limit:
+            for k in range(first, zero_count):
+                count_zeros = k - first + 1
+                min_length = count_zeros * count_zeros + count_zeros
+                next_zero = zeros[k + 1] if k + 1 < zero_count else n
+                max_length = next_zero - left
+                if min_length <= max_length:
+                    min_end = left + min_length - 1
+                    answer += next_zero - max(min_end, zeros[k])
+                if min_length > n - left:
                     break
-
-                # Check the dominant ones condition
-                if current_ones >= current_zeros * current_zeros:
-                    count += 1
-
-        return count
+        return answer
 {% endraw %}
 {% endhighlight %}
 
@@ -361,36 +687,31 @@ class Solution:
 
 {% highlight python %}
 {% raw %}
-import math
-
 class Solution:
     def numberOfSubstrings(self, s: str) -> int:
         n = len(s)
-        count = 0
-        max_zeros_limit = 0
-        if n > 0:
-            max_zeros_limit = int(math.sqrt(n))
+        zeros = [i for i, char in enumerate(s) if char == '0']
+        answer = 0
+        zero_count = len(zeros)
 
-        for i in range(n):
-            current_zeros = 0
-            current_ones = 0
-            for j in range(i, n):
-                if s[j] == '0':
-                    current_zeros += 1
-                else:
-                    current_ones += 1
+        for left in range(n):
+            first = 0
+            while first < zero_count and zeros[first] < left:
+                first += 1
+            first_zero_position = zeros[first] if first < zero_count else n
+            answer += first_zero_position - left
 
-                # Optimization: If current_zeros exceeds the limit, 
-                # any further extension of this substring will also have 
-                # current_zeros > max_zeros_limit, making the condition impossible.
-                if current_zeros > max_zeros_limit:
+            for k in range(first, zero_count):
+                count_zeros = k - first + 1
+                min_length = count_zeros * count_zeros + count_zeros
+                next_zero = zeros[k + 1] if k + 1 < zero_count else n
+                max_length = next_zero - left
+                if min_length <= max_length:
+                    min_end = left + min_length - 1
+                    answer += next_zero - max(min_end, zeros[k])
+                if min_length > n - left:
                     break
-
-                # Check the dominant ones condition
-                if current_ones >= current_zeros * current_zeros:
-                    count += 1
-
-        return count
+        return answer
 {% endraw %}
 {% endhighlight %}
 
@@ -400,42 +721,47 @@ class Solution:
 
 {% highlight c %}
 {% raw %}
-#include <string.h>
-#include <math.h>
-#include <stdlib.h>
-
-long long numberOfSubstrings(char * s){
-    int n = strlen(s);
-    long long count = 0;
-    int max_zeros_limit = 0;
-    if (n > 0) {
-        max_zeros_limit = (int)sqrt(n);
+int numberOfSubstrings(char* s) {
+    int n = 0;
+    while (s[n] != '\0') {
+        n++;
     }
 
-    for (int i = 0; i < n; ++i) {
-        int current_zeros = 0;
-        int current_ones = 0;
-        for (int j = i; j < n; ++j) {
-            if (s[j] == '0') {
-                current_zeros++;
-            } else {
-                current_ones++;
-            }
+    int* zeros = (int*)malloc((size_t)n * sizeof(int));
+    int zeroCount = 0;
+    for (int i = 0; i < n; i++) {
+        if (s[i] == '0') {
+            zeros[zeroCount++] = i;
+        }
+    }
 
-            // Optimization: If current_zeros exceeds the limit, 
-            // any further extension of this substring will also have 
-            // current_zeros > max_zeros_limit, making the condition impossible.
-            if (current_zeros > max_zeros_limit) {
+    long long answer = 0;
+    for (int left = 0; left < n; left++) {
+        int first = 0;
+        while (first < zeroCount && zeros[first] < left) {
+            first++;
+        }
+        int firstZeroPosition = first < zeroCount ? zeros[first] : n;
+        answer += firstZeroPosition - left;
+
+        for (int k = first; k < zeroCount; k++) {
+            int countZeros = k - first + 1;
+            long long minLength = (long long)countZeros * countZeros + countZeros;
+            int nextZero = k + 1 < zeroCount ? zeros[k + 1] : n;
+            int maxLength = nextZero - left;
+            if (minLength <= maxLength) {
+                int minEnd = left + (int)minLength - 1;
+                int startEnd = minEnd > zeros[k] ? minEnd : zeros[k];
+                answer += nextZero - startEnd;
+            }
+            if (minLength > n - left) {
                 break;
-            }
-
-            // Check the dominant ones condition
-            if ((long long)current_ones >= (long long)current_zeros * current_zeros) {
-                count++;
             }
         }
     }
-    return count;
+
+    free(zeros);
+    return (int)answer;
 }
 {% endraw %}
 {% endhighlight %}
@@ -446,41 +772,44 @@ long long numberOfSubstrings(char * s){
 
 {% highlight csharp %}
 {% raw %}
-using System;
-
 public class Solution {
-    public long NumberOfSubstrings(string s) {
+    public int NumberOfSubstrings(string s) {
         int n = s.Length;
-        long count = 0;
-        int maxZerosLimit = 0;
-        if (n > 0) {
-            maxZerosLimit = (int)Math.Sqrt(n);
+        List<int> zeros = new List<int>();
+        for (int i = 0; i < n; i++) {
+            if (s[i] == '0') {
+                zeros.Add(i);
+            }
         }
 
-        for (int i = 0; i < n; ++i) {
-            int currentZeros = 0;
-            int currentOnes = 0;
-            for (int j = i; j < n; ++j) {
-                if (s[j] == '0') {
-                    currentZeros++;
-                } else {
-                    currentOnes++;
-                }
+        long answer = 0;
+        int zeroCount = zeros.Count;
+        int first = 0;
 
-                // Optimization: If currentZeros exceeds the limit, 
-                // any further extension of this substring will also have 
-                // currentZeros > maxZerosLimit, making the condition impossible.
-                if (currentZeros > maxZerosLimit) {
+        for (int left = 0; left < n; left++) {
+            while (first < zeroCount && zeros[first] < left) {
+                first++;
+            }
+
+            int firstZeroPosition = first < zeroCount ? zeros[first] : n;
+            answer += firstZeroPosition - left;
+
+            for (int k = first; k < zeroCount; k++) {
+                int countZeros = k - first + 1;
+                int minLength = countZeros * countZeros + countZeros;
+                int nextZero = k + 1 < zeroCount ? zeros[k + 1] : n;
+                int maxLength = nextZero - left;
+                if (minLength <= maxLength) {
+                    int minEnd = left + minLength - 1;
+                    answer += nextZero - Math.Max(minEnd, zeros[k]);
+                }
+                if (minLength > n - left) {
                     break;
-                }
-
-                // Check the dominant ones condition
-                if ((long)currentOnes >= (long)currentZeros * currentZeros) {
-                    count++;
                 }
             }
         }
-        return count;
+
+        return (int)answer;
     }
 }
 {% endraw %}
@@ -498,36 +827,40 @@ public class Solution {
  */
 var numberOfSubstrings = function(s) {
     const n = s.length;
-    let count = 0;
-    let maxZerosLimit = 0;
-    if (n > 0) {
-        maxZerosLimit = Math.floor(Math.sqrt(n));
+    const zeros = [];
+    for (let i = 0; i < n; i++) {
+        if (s[i] === '0') {
+            zeros.push(i);
+        }
     }
 
-    for (let i = 0; i < n; ++i) {
-        let currentZeros = 0;
-        let currentOnes = 0;
-        for (let j = i; j < n; ++j) {
-            if (s[j] === '0') {
-                currentZeros++;
-            } else {
-                currentOnes++;
-            }
+    let answer = 0;
+    let first = 0;
 
-            // Optimization: If currentZeros exceeds the limit, 
-            // any further extension of this substring will also have 
-            // currentZeros > maxZerosLimit, making the condition impossible.
-            if (currentZeros > maxZerosLimit) {
+    for (let left = 0; left < n; left++) {
+        while (first < zeros.length && zeros[first] < left) {
+            first++;
+        }
+
+        const firstZeroPosition = first < zeros.length ? zeros[first] : n;
+        answer += firstZeroPosition - left;
+
+        for (let k = first; k < zeros.length; k++) {
+            const countZeros = k - first + 1;
+            const minLength = countZeros * countZeros + countZeros;
+            const nextZero = k + 1 < zeros.length ? zeros[k + 1] : n;
+            const maxLength = nextZero - left;
+            if (minLength <= maxLength) {
+                const minEnd = left + minLength - 1;
+                answer += nextZero - Math.max(minEnd, zeros[k]);
+            }
+            if (minLength > n - left) {
                 break;
-            }
-
-            // Check the dominant ones condition
-            if (currentOnes >= currentZeros * currentZeros) {
-                count++;
             }
         }
     }
-    return count;
+
+    return answer;
 };
 {% endraw %}
 {% endhighlight %}
@@ -540,37 +873,41 @@ var numberOfSubstrings = function(s) {
 {% raw %}
 function numberOfSubstrings(s: string): number {
     const n = s.length;
-    let count: number = 0;
-    let maxZerosLimit: number = 0;
-    if (n > 0) {
-        maxZerosLimit = Math.floor(Math.sqrt(n));
+    const zeros: number[] = [];
+    for (let i = 0; i < n; i++) {
+        if (s[i] === '0') {
+            zeros.push(i);
+        }
     }
 
-    for (let i = 0; i < n; ++i) {
-        let currentZeros: number = 0;
-        let currentOnes: number = 0;
-        for (let j = i; j < n; ++j) {
-            if (s[j] === '0') {
-                currentZeros++;
-            } else {
-                currentOnes++;
-            }
+    let answer = 0;
+    let first = 0;
 
-            // Optimization: If currentZeros exceeds the limit, 
-            // any further extension of this substring will also have 
-            // currentZeros > maxZerosLimit, making the condition impossible.
-            if (currentZeros > maxZerosLimit) {
+    for (let left = 0; left < n; left++) {
+        while (first < zeros.length && zeros[first] < left) {
+            first++;
+        }
+
+        const firstZeroPosition = first < zeros.length ? zeros[first] : n;
+        answer += firstZeroPosition - left;
+
+        for (let k = first; k < zeros.length; k++) {
+            const countZeros = k - first + 1;
+            const minLength = countZeros * countZeros + countZeros;
+            const nextZero = k + 1 < zeros.length ? zeros[k + 1] : n;
+            const maxLength = nextZero - left;
+            if (minLength <= maxLength) {
+                const minEnd = left + minLength - 1;
+                answer += nextZero - Math.max(minEnd, zeros[k]);
+            }
+            if (minLength > n - left) {
                 break;
-            }
-
-            // Check the dominant ones condition
-            if (currentOnes >= currentZeros * currentZeros) {
-                count++;
             }
         }
     }
-    return count;
-}
+
+    return answer;
+};
 {% endraw %}
 {% endhighlight %}
 
@@ -580,44 +917,49 @@ function numberOfSubstrings(s: string): number {
 
 {% highlight php %}
 {% raw %}
-<?php
 class Solution {
+
     /**
      * @param String $s
      * @return Integer
      */
     function numberOfSubstrings($s) {
         $n = strlen($s);
-        $count = 0;
-        $maxZerosLimit = 0;
-        if ($n > 0) {
-            $maxZerosLimit = (int)floor(sqrt($n));
+        $zeros = [];
+        for ($i = 0; $i < $n; $i++) {
+            if ($s[$i] === '0') {
+                $zeros[] = $i;
+            }
         }
 
-        for ($i = 0; $i < $n; ++$i) {
-            $currentZeros = 0;
-            $currentOnes = 0;
-            for ($j = $i; $j < $n; ++$j) {
-                if ($s[$j] == '0') {
-                    $currentZeros++;
-                } else {
-                    $currentOnes++;
-                }
+        $answer = 0;
+        $zeroCount = count($zeros);
+        $first = 0;
 
-                // Optimization: If currentZeros exceeds the limit, 
-                // any further extension of this substring will also have 
-                // currentZeros > maxZerosLimit, making the condition impossible.
-                if ($currentZeros > $maxZerosLimit) {
+        for ($left = 0; $left < $n; $left++) {
+            while ($first < $zeroCount && $zeros[$first] < $left) {
+                $first++;
+            }
+
+            $firstZeroPosition = $first < $zeroCount ? $zeros[$first] : $n;
+            $answer += $firstZeroPosition - $left;
+
+            for ($k = $first; $k < $zeroCount; $k++) {
+                $countZeros = $k - $first + 1;
+                $minLength = $countZeros * $countZeros + $countZeros;
+                $nextZero = $k + 1 < $zeroCount ? $zeros[$k + 1] : $n;
+                $maxLength = $nextZero - $left;
+                if ($minLength <= $maxLength) {
+                    $minEnd = $left + $minLength - 1;
+                    $answer += $nextZero - max($minEnd, $zeros[$k]);
+                }
+                if ($minLength > $n - $left) {
                     break;
-                }
-
-                // Check the dominant ones condition
-                if ($currentOnes >= $currentZeros * $currentZeros) {
-                    $count++;
                 }
             }
         }
-        return $count;
+
+        return $answer;
     }
 }
 {% endraw %}
@@ -629,42 +971,44 @@ class Solution {
 
 {% highlight swift %}
 {% raw %}
-import Foundation
-
 class Solution {
     func numberOfSubstrings(_ s: String) -> Int {
-        let n = s.count
-        var count: Int = 0
         let chars = Array(s)
-        var maxZerosLimit: Int = 0
-        if n > 0 {
-            maxZerosLimit = Int(sqrt(Double(n)))
+        let n = chars.count
+        var zeros: [Int] = []
+        for i in 0..<n {
+            if chars[i] == "0" {
+                zeros.append(i)
+            }
         }
 
-        for i in 0..<n {
-            var currentZeros: Int = 0
-            var currentOnes: Int = 0
-            for j in i..<n {
-                if chars[j] == "0" {
-                    currentZeros += 1
-                } else {
-                    currentOnes += 1
-                }
+        var answer = 0
+        var first = 0
 
-                // Optimization: If currentZeros exceeds the limit, 
-                // any further extension of this substring will also have 
-                // currentZeros > maxZerosLimit, making the condition impossible.
-                if currentZeros > maxZerosLimit {
+        for left in 0..<n {
+            while first < zeros.count && zeros[first] < left {
+                first += 1
+            }
+
+            let firstZeroPosition = first < zeros.count ? zeros[first] : n
+            answer += firstZeroPosition - left
+
+            for k in first..<zeros.count {
+                let countZeros = k - first + 1
+                let minLength = countZeros * countZeros + countZeros
+                let nextZero = k + 1 < zeros.count ? zeros[k + 1] : n
+                let maxLength = nextZero - left
+                if minLength <= maxLength {
+                    let minEnd = left + minLength - 1
+                    answer += nextZero - max(minEnd, zeros[k])
+                }
+                if minLength > n - left {
                     break
-                }
-
-                // Check the dominant ones condition
-                if currentOnes >= currentZeros * currentZeros {
-                    count += 1
                 }
             }
         }
-        return count
+
+        return answer
     }
 }
 {% endraw %}
@@ -676,41 +1020,34 @@ class Solution {
 
 {% highlight kotlin %}
 {% raw %}
-import kotlin.math.sqrt
-
 class Solution {
-    fun numberOfSubstrings(s: String): Long {
+    fun numberOfSubstrings(s: String): Int {
         val n = s.length
-        var count: Long = 0
-        var maxZerosLimit = 0
-        if (n > 0) {
-            maxZerosLimit = sqrt(n.toDouble()).toInt()
+        val zeros = mutableListOf<Int>()
+        for (i in s.indices) {
+            if (s[i] == '0') zeros.add(i)
         }
+        var answer = 0
+        var first = 0
 
-        for (i in 0 until n) {
-            var currentZeros = 0
-            var currentOnes = 0
-            for (j in i until n) {
-                if (s[j] == '0') {
-                    currentZeros++
-                } else {
-                    currentOnes++
-                }
+        for (left in 0 until n) {
+            while (first < zeros.size && zeros[first] < left) first++
+            val firstZeroPosition = if (first < zeros.size) zeros[first] else n
+            answer += firstZeroPosition - left
 
-                // Optimization: If currentZeros exceeds the limit, 
-                // any further extension of this substring will also have 
-                // currentZeros > maxZerosLimit, making the condition impossible.
-                if (currentZeros > maxZerosLimit) {
-                    break
+            for (k in first until zeros.size) {
+                val countZeros = k - first + 1
+                val minLength = countZeros * countZeros + countZeros
+                val nextZero = if (k + 1 < zeros.size) zeros[k + 1] else n
+                val maxLength = nextZero - left
+                if (minLength <= maxLength) {
+                    val minEnd = left + minLength - 1
+                    answer += nextZero - maxOf(minEnd, zeros[k])
                 }
-
-                // Check the dominant ones condition
-                if (currentOnes.toLong() >= currentZeros.toLong() * currentZeros) {
-                    count++
-                }
+                if (minLength > n - left) break
             }
         }
-        return count
+        return answer
     }
 }
 {% endraw %}
@@ -722,41 +1059,36 @@ class Solution {
 
 {% highlight dart %}
 {% raw %}
-import 'dart:math';
-
 class Solution {
   int numberOfSubstrings(String s) {
-    int n = s.length;
-    int count = 0;
-    int maxZerosLimit = 0;
-    if (n > 0) {
-      maxZerosLimit = sqrt(n).floor();
+    final n = s.length;
+    final zeros = <int>[];
+    for (var i = 0; i < n; i++) {
+      if (s[i] == '0') zeros.add(i);
     }
 
-    for (int i = 0; i < n; ++i) {
-      int currentZeros = 0;
-      int currentOnes = 0;
-      for (int j = i; j < n; ++j) {
-        if (s[j] == '0') {
-          currentZeros++;
-        } else {
-          currentOnes++;
-        }
+    var answer = 0;
+    var first = 0;
+    for (var left = 0; left < n; left++) {
+      while (first < zeros.length && zeros[first] < left) {
+        first++;
+      }
+      final firstZeroPosition = first < zeros.length ? zeros[first] : n;
+      answer += firstZeroPosition - left;
 
-        // Optimization: If currentZeros exceeds the limit, 
-        // any further extension of this substring will also have 
-        // currentZeros > maxZerosLimit, making the condition impossible.
-        if (currentZeros > maxZerosLimit) {
-          break;
+      for (var k = first; k < zeros.length; k++) {
+        final countZeros = k - first + 1;
+        final minLength = countZeros * countZeros + countZeros;
+        final nextZero = k + 1 < zeros.length ? zeros[k + 1] : n;
+        final maxLength = nextZero - left;
+        if (minLength <= maxLength) {
+          final minEnd = left + minLength - 1;
+          answer += nextZero - (minEnd > zeros[k] ? minEnd : zeros[k]);
         }
-
-        // Check the dominant ones condition
-        if (currentOnes >= currentZeros * currentZeros) {
-          count++;
-        }
+        if (minLength > n - left) break;
       }
     }
-    return count;
+    return answer;
   }
 }
 {% endraw %}
@@ -768,42 +1100,48 @@ class Solution {
 
 {% highlight go %}
 {% raw %}
-import (
-	"math"
-)
+func numberOfSubstrings(s string) int {
+	n := len(s)
+	zeros := make([]int, 0)
+	for i := 0; i < n; i++ {
+		if s[i] == '0' {
+			zeros = append(zeros, i)
+		}
+	}
 
-func numberOfSubstrings(s string) int64 {
-    n := len(s)
-    var count int64 = 0
-    maxZerosLimit := 0
-    if n > 0 {
-        maxZerosLimit = int(math.Sqrt(float64(n)))
-    }
+	answer := 0
+	first := 0
+	for left := 0; left < n; left++ {
+		for first < len(zeros) && zeros[first] < left {
+			first++
+		}
+		firstZeroPosition := n
+		if first < len(zeros) {
+			firstZeroPosition = zeros[first]
+		}
+		answer += firstZeroPosition - left
 
-    for i := 0; i < n; i++ {
-        currentZeros := 0
-        currentOnes := 0
-        for j := i; j < n; j++ {
-            if s[j] == '0' {
-                currentZeros++
-            } else {
-                currentOnes++
-            }
-
-            // Optimization: If currentZeros exceeds the limit, 
-            // any further extension of this substring will also have 
-            // currentZeros > maxZerosLimit, making the condition impossible.
-            if currentZeros > maxZerosLimit {
-                break
-            }
-
-            // Check the dominant ones condition
-            if int64(currentOnes) >= int64(currentZeros)*int64(currentZeros) {
-                count++
-            }
-        }
-    }
-    return count
+		for k := first; k < len(zeros); k++ {
+			countZeros := k - first + 1
+			minLength := countZeros*countZeros + countZeros
+			nextZero := n
+			if k+1 < len(zeros) {
+				nextZero = zeros[k+1]
+			}
+			maxLength := nextZero - left
+			if minLength <= maxLength {
+				minEnd := left + minLength - 1
+				if zeros[k] > minEnd {
+					minEnd = zeros[k]
+				}
+				answer += nextZero - minEnd
+			}
+			if minLength > n-left {
+				break
+			}
+		}
+	}
+	return answer
 }
 {% endraw %}
 {% endhighlight %}
@@ -814,44 +1152,36 @@ func numberOfSubstrings(s string) int64 {
 
 {% highlight ruby %}
 {% raw %}
-class Solution
-    /**
-     * @param {String} s
-     * @return {Number}
-     */
-    def number_of_substrings(s)
-        n = s.length
-        count = 0
-        max_zeros_limit = 0
-        if n > 0
-            max_zeros_limit = Math.sqrt(n).floor.to_i
-        end
+# @param {String} s
+# @return {Integer}
+def number_of_substrings(s)
+  n = s.length
+  zeros = []
+  s.each_char.with_index do |char, i|
+    zeros << i if char == '0'
+  end
 
-        (0...n).each do |i|
-            current_zeros = 0
-            current_ones = 0
-            (i...n).each do |j|
-                if s[j] == '0'
-                    current_zeros += 1
-                else
-                    current_ones += 1
-                end
+  answer = 0
+  first = 0
+  (0...n).each do |left|
+    first += 1 while first < zeros.length && zeros[first] < left
+    first_zero_position = first < zeros.length ? zeros[first] : n
+    answer += first_zero_position - left
 
-                # Optimization: If current_zeros exceeds the limit, 
-                # any further extension of this substring will also have 
-                # current_zeros > max_zeros_limit, making the condition impossible.
-                if current_zeros > max_zeros_limit
-                    break
-                end
-
-                # Check the dominant ones condition
-                if current_ones >= current_zeros * current_zeros
-                    count += 1
-                end
-            end
-        end
-        count
+    (first...zeros.length).each do |k|
+      count_zeros = k - first + 1
+      min_length = count_zeros * count_zeros + count_zeros
+      next_zero = k + 1 < zeros.length ? zeros[k + 1] : n
+      max_length = next_zero - left
+      if min_length <= max_length
+        min_end = left + min_length - 1
+        min_end = [min_end, zeros[k]].max
+        answer += next_zero - min_end
+      end
+      break if min_length > n - left
     end
+  end
+  answer
 end
 {% endraw %}
 {% endhighlight %}
@@ -862,41 +1192,38 @@ end
 
 {% highlight scala %}
 {% raw %}
-import scala.math
-
 object Solution {
-    def numberOfSubstrings(s: String): Long = {
+    def numberOfSubstrings(s: String): Int = {
         val n = s.length
-        var count: Long = 0
-        var maxZerosLimit: Int = 0
-        if (n > 0) {
-            maxZerosLimit = math.sqrt(n.toDouble).toInt
-        }
+        val zeros = s.indices.filter(i => s(i) == '0').toArray
+        var answer = 0
+        var first = 0
 
-        for (i <- 0 until n) {
-            var currentZeros: Int = 0
-            var currentOnes: Int = 0
-            for (j <- i until n) {
-                if (s(j) == '0') {
-                    currentZeros += 1
+        for (left <- 0 until n) {
+            while (first < zeros.length && zeros(first) < left) {
+                first += 1
+            }
+            val firstZeroPosition = if (first < zeros.length) zeros(first) else n
+            answer += firstZeroPosition - left
+
+            var k = first
+            while (k < zeros.length) {
+                val countZeros = k - first + 1
+                val minLength = countZeros * countZeros + countZeros
+                val nextZero = if (k + 1 < zeros.length) zeros(k + 1) else n
+                val maxLength = nextZero - left
+                if (minLength <= maxLength) {
+                    val minEnd = left + minLength - 1
+                    answer += nextZero - math.max(minEnd, zeros(k))
+                }
+                if (minLength > n - left) {
+                    k = zeros.length
                 } else {
-                    currentOnes += 1
-                }
-
-                // Optimization: If currentZeros exceeds the limit, 
-                // any further extension of this substring will also have 
-                // currentZeros > maxZerosLimit, making the condition impossible.
-                if (currentZeros > maxZerosLimit) {
-                    break
-                }
-
-                // Check the dominant ones condition
-                if (currentOnes.toLong >= currentZeros.toLong * currentZeros) {
-                    count += 1
+                    k += 1
                 }
             }
         }
-        count
+        answer
     }
 }
 {% endraw %}
@@ -909,39 +1236,37 @@ object Solution {
 {% highlight rust %}
 {% raw %}
 impl Solution {
-    pub fn number_of_substrings(s: String) -> i64 {
-        let n = s.len();
-        let mut count: i64 = 0;
-        let chars: Vec<char> = s.chars().collect();
-        let mut max_zeros_limit: usize = 0;
-        if n > 0 {
-            max_zeros_limit = (n as f64).sqrt() as usize;
-        }
+    pub fn number_of_substrings(s: String) -> i32 {
+        let bytes = s.as_bytes();
+        let n = bytes.len();
+        let zeros: Vec<usize> = bytes
+            .iter()
+            .enumerate()
+            .filter_map(|(i, &byte)| if byte == b'0' { Some(i) } else { None })
+            .collect();
+        let mut answer: i64 = 0;
 
-        for i in 0..n {
-            let mut current_zeros: usize = 0;
-            let mut current_ones: usize = 0;
-            for j in i..n {
-                if chars[j] == '0' {
-                    current_zeros += 1;
-                } else {
-                    current_ones += 1;
-                }
+        for left in 0..n {
+            let first = zeros.partition_point(|&position| position < left);
+            let first_zero_position = zeros.get(first).copied().unwrap_or(n);
+            answer += (first_zero_position - left) as i64;
 
-                // Optimization: If current_zeros exceeds the limit, 
-                // any further extension of this substring will also have 
-                // current_zeros > max_zeros_limit, making the condition impossible.
-                if current_zeros > max_zeros_limit {
+            for k in first..zeros.len() {
+                let count_zeros = k - first + 1;
+                let min_length = count_zeros * count_zeros + count_zeros;
+                if min_length > n - left {
                     break;
                 }
-
-                // Check the dominant ones condition
-                if (current_ones as i64) >= (current_zeros as i64) * (current_zeros as i64) {
-                    count += 1;
+                let next_zero = zeros.get(k + 1).copied().unwrap_or(n);
+                let max_length = next_zero - left;
+                if min_length <= max_length {
+                    let min_end = left + min_length - 1;
+                    answer += (next_zero - min_end.max(zeros[k])) as i64;
                 }
             }
         }
-        count
+
+        answer as i32
     }
 }
 {% endraw %}
@@ -953,31 +1278,39 @@ impl Solution {
 
 {% highlight racket %}
 {% raw %}
-#lang racket
-
-(define (number-of-substrings s)
-  (define n (string-length s))
-  (define count (make-box 0))
-  (define max-zeros-limit (if (> n 0) (floor (sqrt n)) 0))
-
-  (for ([i (in-range n)])
-    (define current-zeros (make-box 0))
-    (define current-ones (make-box 0))
-    (for ([j (in-range i n)])
-      (if (char=? (string-ref s j) #\0)
-          (set-box! current-zeros (+ (unbox current-zeros) 1))
-          (set-box! current-ones (+ (unbox current-ones) 1)))
-
-      ;; Optimization: If current-zeros exceeds the limit, 
-      ;; any further extension of this substring will also have 
-      ;; current-zeros > max-zeros-limit, making the condition impossible.
-      (when (> (unbox current-zeros) max-zeros-limit)
-        (break))
-
-      ;; Check the dominant ones condition
-      (when (>= (unbox current-ones) (* (unbox current-zeros) (unbox current-zeros)))
-        (set-box! count (+ (unbox count) 1)))))
-  (unbox count))
+(define/contract (number-of-substrings s)
+  (-> string? exact-integer?)
+  (let* ([n (string-length s)]
+         [zeros (for/list ([i (in-range n)] #:when (char=? (string-ref s i) #\0)) i)]
+         [zero-vector (list->vector zeros)]
+         [zero-count (vector-length zero-vector)])
+    (for*/sum ([left (in-range n)])
+      (let* ([first (let loop ([lo 0] [hi zero-count])
+                      (if (< lo hi)
+                          (let ([mid (quotient (+ lo hi) 2)])
+                            (if (< (vector-ref zero-vector mid) left)
+                                (loop (add1 mid) hi)
+                                (loop lo mid)))
+                          lo))]
+             [first-zero-position (if (< first zero-count)
+                                      (vector-ref zero-vector first)
+                                      n)])
+        (+ (- first-zero-position left)
+           (let loop ([k first] [total 0])
+             (if (< k zero-count)
+                 (let* ([count-zeros (add1 (- k first))]
+                        [min-length (+ (* count-zeros count-zeros) count-zeros)])
+                   (if (> min-length (- n left))
+                       total
+                       (let* ([next-zero (if (< (add1 k) zero-count)
+                                             (vector-ref zero-vector (add1 k))
+                                             n)]
+                              [min-end (+ left min-length -1)]
+                              [contribution (if (<= min-length (- next-zero left))
+                                                (- next-zero (max min-end (vector-ref zero-vector k)))
+                                                0)])
+                         (loop (add1 k) (+ total contribution)))))
+                 total))))))
 {% endraw %}
 {% endhighlight %}
 
@@ -987,45 +1320,49 @@ impl Solution {
 
 {% highlight erlang %}
 {% raw %}
--module(solution).
--export([number_of_substrings/1]).
-
+-spec number_of_substrings(S :: unicode:unicode_binary()) -> integer().
 number_of_substrings(S) ->
-    N = length(S),
-    MaxZerosLimit = if N > 0 -> floor(math:sqrt(N)); true -> 0 end,
-    number_of_substrings_recursive(S, N, MaxZerosLimit, 0, 0).
+  N = byte_size(S),
+  Zeros = [I || I <- lists:seq(0, N - 1), binary:at(S, I) =:= $0],
+  Count = length(Zeros),
+  ZeroTuple = list_to_tuple(Zeros),
+  number_of_substrings_left(0, N, Count, ZeroTuple, 0).
 
-number_of_substrings_recursive(_S, N, _MaxZerosLimit, I, Acc) when I >= N ->
-    Acc;
-number_of_substrings_recursive(S, N, MaxZerosLimit, I, Acc) ->
-    CurrentZeros = 0,
-    CurrentOnes = 0,
-    NewAcc = inner_loop(S, N, MaxZerosLimit, I, I, CurrentZeros, CurrentOnes, Acc),
-    number_of_substrings_recursive(S, N, MaxZerosLimit, I + 1, NewAcc).
+number_of_substrings_left(Left, N, _Count, _Zeros, Answer) when Left >= N ->
+  Answer;
+number_of_substrings_left(Left, N, Count, Zeros, Answer) ->
+  First = first_zero_at_least(1, Count, Left, Zeros),
+  FirstPosition = if First =< Count -> element(First, Zeros); true -> N end,
+  NoZeroCount = FirstPosition - Left,
+  Added = count_zero_groups(First, Count, Left, N, Zeros, 0),
+  number_of_substrings_left(Left + 1, N, Count, Zeros, Answer + NoZeroCount + Added).
 
-inner_loop(_S, N, _MaxZerosLimit, _I, J, _CurrentZeros, _CurrentOnes, Acc) when J >= N ->
-    Acc;
-inner_loop(S, N, MaxZerosLimit, I, J, CurrentZeros, CurrentOnes, Acc) ->
-    Char = lists:nth(J + 1, S), % Erlang lists are 1-indexed
-    {NewCurrentZeros, NewCurrentOnes} = 
-        if Char == $0 -> {CurrentZeros + 1, CurrentOnes};
-           Char == $1 -> {CurrentZeros, CurrentOnes + 1}
-        end,
+first_zero_at_least(Index, Count, _Left, _Zeros) when Index > Count ->
+  Index;
+first_zero_at_least(Index, Count, Left, Zeros) ->
+  case element(Index, Zeros) < Left of
+    true -> first_zero_at_least(Index + 1, Count, Left, Zeros);
+    false -> Index
+  end.
 
-    % Optimization: If NewCurrentZeros exceeds the limit, 
-    % any further extension of this substring will also have 
-    % NewCurrentZeros > MaxZerosLimit, making the condition impossible.
-    if NewCurrentZeros > MaxZerosLimit ->
-        Acc; % Break the inner loop
-    true ->
-        NewAcc = 
-            if NewCurrentOnes >= NewCurrentZeros * NewCurrentZeros ->
-                Acc + 1;
-            true ->
-                Acc
-            end,
-        inner_loop(S, N, MaxZerosLimit, I, J + 1, NewCurrentZeros, NewCurrentOnes, NewAcc)
-    end.
+count_zero_groups(K, Count, _Left, _N, _Zeros, Total) when K > Count ->
+  Total;
+count_zero_groups(K, Count, Left, N, Zeros, Total) ->
+  CountZeros = K - first_zero_at_least(1, Count, Left, Zeros) + 1,
+  MinLength = CountZeros * CountZeros + CountZeros,
+  case MinLength > N - Left of
+    true -> Total;
+    false ->
+      NextZero = if K < Count -> element(K + 1, Zeros); true -> N end,
+      MaxLength = NextZero - Left,
+      Contribution = if MinLength =< MaxLength ->
+                         MinEnd = Left + MinLength - 1,
+                         ZeroPosition = element(K, Zeros),
+                         NextZero - max(MinEnd, ZeroPosition);
+                     true -> 0
+                     end,
+      count_zero_groups(K + 1, Count, Left, N, Zeros, Total + Contribution)
+  end.
 {% endraw %}
 {% endhighlight %}
 
@@ -1038,50 +1375,54 @@ inner_loop(S, N, MaxZerosLimit, I, J, CurrentZeros, CurrentOnes, Acc) ->
 defmodule Solution do
   @spec number_of_substrings(s :: String.t) :: integer
   def number_of_substrings(s) do
-    n = String.length(s)
-    count = 0
-    max_zeros_limit = if n > 0, do: floor(:math.sqrt(n)), else: 0
+    n = byte_size(s)
+    zeros = for i <- 0..(n - 1), :binary.at(s, i) == ?0, do: i
+    zero_count = length(zeros)
+    zero_tuple = List.to_tuple(zeros)
 
-    0..(n - 1)
-    |> Enum.reduce(count, fn i, acc ->
-      current_zeros = 0
-      current_ones = 0
-
-      {new_acc, _} = 0..(n - 1 - i)
-      |> Enum.reduce({acc, {current_zeros, current_ones}}, fn k, {current_total_count, {cz, co}} ->
-        j = i + k
-        char = String.at(s, j)
-
-        {new_cz, new_co} = 
-          case char do
-            "0" -> {cz + 1, co}
-            "1" -> {cz, co + 1}
-          end
-
-        # Optimization: If new_cz exceeds the limit, 
-        # any further extension of this substring will also have 
-        # new_cz > max_zeros_limit, making the condition impossible.
-        if new_cz > max_zeros_limit do
-          # To break out of Enum.reduce, we return a value that signals termination.
-          # In Elixir, there's no direct 'break'. We can return the current accumulator
-          # and a flag, and check the flag in the outer reduce. Or, more simply,
-          # just return the current accumulator and let the loop continue, knowing
-          # subsequent iterations won't add to the count. For a true 'break',
-          # a recursive approach is often better.
-          # For now, we'll just return the current state, effectively stopping additions.
-          {current_total_count, {new_cz, new_co}}
-        else
-          new_total_count = 
-            if new_co >= new_cz * new_cz do
-              current_total_count + 1
-            else
-              current_total_count
-            end
-          {new_total_count, {new_cz, new_co}}
-        end
-      end)
-      new_acc
+    Enum.reduce(0..(n - 1), 0, fn left, answer ->
+      first = first_zero_at_least(zero_tuple, zero_count, left, 0, zero_count)
+      first_zero_position = if first < zero_count, do: elem(zero_tuple, first), else: n
+      no_zero_count = first_zero_position - left
+      added = count_zero_groups(first, zero_count, left, n, zero_tuple, 0)
+      answer + no_zero_count + added
     end)
+  end
+
+  defp first_zero_at_least(_zeros, _count, _left, lo, hi) when lo >= hi, do: lo
+
+  defp first_zero_at_least(zeros, count, left, lo, hi) do
+    mid = div(lo + hi, 2)
+
+    if mid < count and elem(zeros, mid) < left do
+      first_zero_at_least(zeros, count, left, mid + 1, hi)
+    else
+      first_zero_at_least(zeros, count, left, lo, mid)
+    end
+  end
+
+  defp count_zero_groups(k, count, _left, _n, _zeros, total) when k >= count, do: total
+
+  defp count_zero_groups(k, count, left, n, zeros, total) do
+    count_zeros = k - first_zero_at_least(zeros, count, left, 0, count) + 1
+    min_length = count_zeros * count_zeros + count_zeros
+
+    if min_length > n - left do
+      total
+    else
+      next_zero = if k + 1 < count, do: elem(zeros, k + 1), else: n
+      max_length = next_zero - left
+
+      contribution =
+        if min_length <= max_length do
+          min_end = left + min_length - 1
+          next_zero - max(min_end, elem(zeros, k))
+        else
+          0
+        end
+
+      count_zero_groups(k + 1, count, left, n, zeros, total + contribution)
+    end
   end
 end
 {% endraw %}
@@ -1093,672 +1434,5 @@ end
 
 ### Complexity Analysis
 
-- **Time Complexity:** O(N * sqrt(N)) with detailed explanation
-
-- **Space Complexity:** O(1) with detailed explanation
-
-</div>
-</details>
-
-
-<details class="ai-solution-card" markdown="1">
-<summary class="ai-solution-header">
-  <span class="ai-model-badge">⚡ Solution from <strong>llama-3.3-70b-versatile</strong></span>
-  <small class="solution-timestamp">(2025-11-25 04:07:38 UTC)</small>
-</summary>
-
-<div class="ai-solution-content">
-
-### Approach
-
-To solve this problem, we can use a brute force approach by generating all possible substrings of the given string and then checking each substring to see if it has dominant ones. A string has dominant ones if the number of ones in the string is greater than or equal to the square of the number of zeros in the string. We can count the number of ones and zeros in each substring and then compare these counts to determine if the substring has dominant ones. We will keep track of the total count of substrings with dominant ones and return this count at the end. 
-  The time complexity of this approach will be O(n^3) because we are generating all possible substrings (O(n^2)) and then counting the number of ones and zeros in each substring (O(n)). The space complexity will be O(1) because we are not using any additional space that scales with the input size.
-  However, we can optimize this approach by using a sliding window technique to count the number of ones and zeros in each substring. This will reduce the time complexity to O(n^2) because we can count the number of ones and zeros in each substring in O(1) time using the sliding window technique.
-
-### Code
-
-<div class="code-tabs" markdown="0">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-cpp-llama-3-3-70b-versatile" checked>
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-java-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-python-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-python3-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-c-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-csharp-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-javascript-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-typescript-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-php-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-swift-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-kotlin-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-dart-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-go-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-ruby-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-scala-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-rust-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-racket-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-erlang-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-elixir-llama-3-3-70b-versatile">
-  <div class="tab-labels">
-    <label for="lang-cpp-llama-3-3-70b-versatile">C++</label>
-    <label for="lang-java-llama-3-3-70b-versatile">Java</label>
-    <label for="lang-python-llama-3-3-70b-versatile">Python</label>
-    <label for="lang-python3-llama-3-3-70b-versatile">Python3</label>
-    <label for="lang-c-llama-3-3-70b-versatile">C</label>
-    <label for="lang-csharp-llama-3-3-70b-versatile">C#</label>
-    <label for="lang-javascript-llama-3-3-70b-versatile">JavaScript</label>
-    <label for="lang-typescript-llama-3-3-70b-versatile">TypeScript</label>
-    <label for="lang-php-llama-3-3-70b-versatile">PHP</label>
-    <label for="lang-swift-llama-3-3-70b-versatile">Swift</label>
-    <label for="lang-kotlin-llama-3-3-70b-versatile">Kotlin</label>
-    <label for="lang-dart-llama-3-3-70b-versatile">Dart</label>
-    <label for="lang-go-llama-3-3-70b-versatile">Go</label>
-    <label for="lang-ruby-llama-3-3-70b-versatile">Ruby</label>
-    <label for="lang-scala-llama-3-3-70b-versatile">Scala</label>
-    <label for="lang-rust-llama-3-3-70b-versatile">Rust</label>
-    <label for="lang-racket-llama-3-3-70b-versatile">Racket</label>
-    <label for="lang-erlang-llama-3-3-70b-versatile">Erlang</label>
-    <label for="lang-elixir-llama-3-3-70b-versatile">Elixir</label>
-  </div>
-
-  <div class="tab-panel" data-lang="cpp">
-
-{% highlight cpp %}
-{% raw %}
-class Solution {
-    public:
-        int numberOfSubstrings(string s) {
-            int n = s.length();
-            int count = 0;
-            for (int i = 0; i < n; i++) {
-                for (int j = i; j < n; j++) {
-                    int ones = 0;
-                    int zeros = 0;
-                    for (int k = i; k <= j; k++) {
-                        if (s[k] == '1') {
-                            ones++;
-                        } else {
-                            zeros++;
-                        }
-                    }
-                    if (ones >= zeros * zeros) {
-                        count++;
-                    }
-                }
-            }
-            return count;
-        }
-    };
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="java">
-
-{% highlight java %}
-{% raw %}
-class Solution {
-public int numberOfSubstrings(String s) {
-    int n = s.length();
-    int count = 0;
-    for (int i = 0; i < n; i++) {
-        for (int j = i; j < n; j++) {
-            int ones = 0;
-            int zeros = 0;
-            for (int k = i; k <= j; k++) {
-                if (s.charAt(k) == '1') {
-                    ones++;
-                } else {
-                    zeros++;
-                }
-            }
-            if (ones >= zeros * zeros) {
-                count++;
-            }
-        }
-    }
-    return count;
-}
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="python">
-
-{% highlight python %}
-{% raw %}
-class Solution:
-def numberOfSubstrings(self, s: str) -> int:
-    n = len(s)
-    count = 0
-    for i in range(n):
-        for j in range(i, n):
-            ones = 0
-            zeros = 0
-            for k in range(i, j + 1):
-                if s[k] == '1':
-                    ones += 1
-                else:
-                    zeros += 1
-            if ones >= zeros * zeros:
-                count += 1
-    return count
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="python3">
-
-{% highlight python %}
-{% raw %}
-class Solution:
-def numberOfSubstrings(self, s: str) -> int:
-    n = len(s)
-    count = 0
-    for i in range(n):
-        for j in range(i, n):
-            ones = 0
-            zeros = 0
-            for k in range(i, j + 1):
-                if s[k] == '1':
-                    ones += 1
-                else:
-                    zeros += 1
-            if ones >= zeros * zeros:
-                count += 1
-    return count
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="c">
-
-{% highlight c %}
-{% raw %}
-#include <stdio.h>
-    #include <string.h>
-
-    int numberOfSubstrings(char* s) {
-        int n = strlen(s);
-        int count = 0;
-        for (int i = 0; i < n; i++) {
-            for (int j = i; j < n; j++) {
-                int ones = 0;
-                int zeros = 0;
-                for (int k = i; k <= j; k++) {
-                    if (s[k] == '1') {
-                        ones++;
-                    } else {
-                        zeros++;
-                    }
-                }
-                if (ones >= zeros * zeros) {
-                    count++;
-                }
-            }
-        }
-        return count;
-    }
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="csharp">
-
-{% highlight csharp %}
-{% raw %}
-public class Solution {
-public int NumberOfSubstrings(string s) {
-    int n = s.Length;
-    int count = 0;
-    for (int i = 0; i < n; i++) {
-        for (int j = i; j < n; j++) {
-            int ones = 0;
-            int zeros = 0;
-            for (int k = i; k <= j; k++) {
-                if (s[k] == '1') {
-                    ones++;
-                } else {
-                    zeros++;
-                }
-            }
-            if (ones >= zeros * zeros) {
-                count++;
-            }
-        }
-    }
-    return count;
-}
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="javascript">
-
-{% highlight javascript %}
-{% raw %}
-var numberOfSubstrings = function(s) {
-let n = s.length;
-let count = 0;
-for (let i = 0; i < n; i++) {
-    for (let j = i; j < n; j++) {
-        let ones = 0;
-        let zeros = 0;
-        for (let k = i; k <= j; k++) {
-            if (s[k] === '1') {
-                ones++;
-            } else {
-                zeros++;
-            }
-        }
-        if (ones >= zeros * zeros) {
-            count++;
-        }
-    }
-}
-return count;
-};
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="typescript">
-
-{% highlight typescript %}
-{% raw %}
-function numberOfSubstrings(s: string): number {
-let n: number = s.length;
-let count: number = 0;
-for (let i: number = 0; i < n; i++) {
-    for (let j: number = i; j < n; j++) {
-        let ones: number = 0;
-        let zeros: number = 0;
-        for (let k: number = i; k <= j; k++) {
-            if (s[k] === '1') {
-                ones++;
-            } else {
-                zeros++;
-            }
-        }
-        if (ones >= zeros * zeros) {
-            count++;
-        }
-    }
-}
-return count;
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="php">
-
-{% highlight php %}
-{% raw %}
-class Solution {
-function numberOfSubstrings($s) {
-    $n = strlen($s);
-    $count = 0;
-    for ($i = 0; $i < $n; $i++) {
-        for ($j = $i; $j < $n; $j++) {
-            $ones = 0;
-            $zeros = 0;
-            for ($k = $i; $k <= $j; $k++) {
-                if ($s[$k] == '1') {
-                    $ones++;
-                } else {
-                    $zeros++;
-                }
-            }
-            if ($ones >= $zeros * $zeros) {
-                $count++;
-            }
-        }
-    }
-    return $count;
-}
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="swift">
-
-{% highlight swift %}
-{% raw %}
-class Solution {
-func numberOfSubstrings(_ s: String) -> Int {
-    let n = s.count
-    var count = 0
-    for i in 0..<n {
-        for j in i..<n {
-            var ones = 0
-            var zeros = 0
-            for k in i...j {
-                if s[s.index(s.startIndex, offsetBy: k)] == "1" {
-                    ones += 1
-                } else {
-                    zeros += 1
-                }
-            }
-            if ones >= zeros * zeros {
-                count += 1
-            }
-        }
-    }
-    return count
-}
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="kotlin">
-
-{% highlight kotlin %}
-{% raw %}
-class Solution {
-fun numberOfSubstrings(s: String): Int {
-    val n = s.length
-    var count = 0
-    for (i in 0 until n) {
-        for (j in i until n) {
-            var ones = 0
-            var zeros = 0
-            for (k in i..j) {
-                if (s[k] == '1') {
-                    ones++
-                } else {
-                    zeros++
-                }
-            }
-            if (ones >= zeros * zeros) {
-                count++
-            }
-        }
-    }
-    return count
-}
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="dart">
-
-{% highlight dart %}
-{% raw %}
-class Solution {
-int numberOfSubstrings(String s) {
-    int n = s.length;
-    int count = 0;
-    for (int i = 0; i < n; i++) {
-        for (int j = i; j < n; j++) {
-            int ones = 0;
-            int zeros = 0;
-            for (int k = i; k <= j; k++) {
-                if (s[k] == '1') {
-                    ones++;
-                } else {
-                    zeros++;
-                }
-            }
-            if (ones >= zeros * zeros) {
-                count++;
-            }
-        }
-    }
-    return count;
-}
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="go">
-
-{% highlight go %}
-{% raw %}
-package main
-
-    import (
-        "fmt"
-    )
-
-    func numberOfSubstrings(s string) int {
-        n := len(s)
-        count := 0
-        for i := 0; i < n; i++ {
-            for j := i; j < n; j++ {
-                ones := 0
-                zeros := 0
-                for k := i; k <= j; k++ {
-                    if s[k] == '1' {
-                        ones++
-                    } else {
-                        zeros++
-                    }
-                }
-                if ones >= zeros * zeros {
-                    count++
-                }
-            }
-        }
-        return count
-    }
-
-    func main() {
-        fmt.Println(numberOfSubstrings("00011")) // Output: 5
-    }
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="ruby">
-
-{% highlight ruby %}
-{% raw %}
-class Solution
-def initialize()
-end
-
-def number_of_substrings(s)
-    n = s.length
-    count = 0
-    for i in 0...n
-        for j in i...n
-            ones = 0
-            zeros = 0
-            for k in i..j
-                if s[k] == '1'
-                    ones += 1
-                else
-                    zeros += 1
-                end
-            end
-            if ones >= zeros * zeros
-                count += 1
-            end
-        end
-    end
-    count
-end
-end
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="scala">
-
-{% highlight scala %}
-{% raw %}
-object Solution {
-def numberOfSubstrings(s: String): Int = {
-    val n = s.length
-    var count = 0
-    for (i <- 0 until n) {
-        for (j <- i until n) {
-            var ones = 0
-            var zeros = 0
-            for (k <- i to j) {
-                if (s(k) == '1') {
-                    ones += 1
-                } else {
-                    zeros += 1
-                }
-            }
-            if (ones >= zeros * zeros) {
-                count += 1
-            }
-        }
-    }
-    count
-}
-}
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="rust">
-
-{% highlight rust %}
-{% raw %}
-struct Solution;
-
-    impl Solution {
-        pub fn number_of_substrings(s: String) -> i32 {
-            let n = s.len();
-            let mut count = 0;
-            for i in 0..n {
-                for j in i..n {
-                    let mut ones = 0;
-                    let mut zeros = 0;
-                    for k in i..=j {
-                        if s.as_bytes()[k] == b'1' {
-                            ones += 1;
-                        } else {
-                            zeros += 1;
-                        }
-                    }
-                    if ones >= zeros * zeros {
-                        count += 1;
-                    }
-                }
-            }
-            count
-        }
-    }
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="racket">
-
-{% highlight racket %}
-{% raw %}
-#lang racket
-
-    (define (number-of-substrings s)
-        (let* ((n (string-length s))
-               (count 0))
-            (for ((i (range n)))
-                (for ((j (range i n)))
-                    (let* ((ones 0)
-                           (zeros 0))
-                        (for ((k (range i (add1 j))))
-                            (if (eq? (string-ref s k) #\1)
-                                (set! ones (add1 ones))
-                                (set! zeros (add1 zeros))))
-                        (when (>= ones (* zeros zeros))
-                            (set! count (add1 count))))))
-            count))
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="erlang">
-
-{% highlight erlang %}
-{% raw %}
--module(solution).
-    -export([number_of_substrings/1]).
-
-    number_of_substrings(S) ->
-        N = length(S),
-        Count = lists:foldl(
-            fun(I, Count0) ->
-                lists:foldl(
-                    fun(J, Count1) ->
-                        Ones = lists:foldl(
-                            fun(X, Ones0) when X == $1 -> Ones0 + 1;
-                                (_, Ones0) -> Ones0
-                            end, 0, lists:sublist(S, I, J - I + 1)),
-                        Zeros = length(lists:sublist(S, I, J - I + 1)) - Ones,
-                        if Ones >= Zeros * Zeros -> Count1 + 1;
-                            true -> Count1
-                    end, Count0, lists:seq(I, N - 1))
-            end, 0, lists:seq(0, N - 1)).
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="elixir">
-
-{% highlight elixir %}
-{% raw %}
-defmodule Solution do
-def number_of_substrings(s) do
-    n = String.length(s)
-    count = 0
-    for i <- 0..n-1 do
-        for j <- i..n-1 do
-            ones = 0
-            zeros = 0
-            for k <- i..j do
-                if String.at(s, k) == "1" do
-                    ones = ones + 1
-                else
-                    zeros = zeros + 1
-                end
-            end
-            if ones >= zeros * zeros do
-                count = count + 1
-            end
-        end
-    end
-    count
-end
-end
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-</div>
-
-### Complexity Analysis
-
-- **Time Complexity:** O(n^2) where n is the length of the string, because we are generating all possible substrings and counting the number of ones and zeros in each substring using a sliding window technique.
-
-- **Space Complexity:** O(1) because we are not using any additional space that scales with the input size.
-
-</div>
-</details>
+- **Time Complexity:** O(n sqrt(n)), where n is the string length; each start considers at most O(sqrt(n)) zero counts.
+- **Space Complexity:** O(n) for storing zero positions.

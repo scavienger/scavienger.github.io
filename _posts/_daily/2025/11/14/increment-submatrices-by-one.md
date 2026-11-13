@@ -6,6 +6,222 @@ categories: [LeetCode, Medium]
 tags: ["Array", "Matrix", "Prefix Sum"]
 difficulty: Medium
 leetcode_url: https://leetcode.com/problems/increment-submatrices-by-one/
+ai_solutions:
+  - solutions:
+      cpp: "class Solution {\npublic:\n    vector<vector<int>> rangeAddQueries(int n,\
+        \ vector<vector<int>>& queries) {\n        vector<vector<int>> mat(n, vector<int>(n\
+        \ + 1, 0));\n        for (const auto& query : queries) {\n            int row1\
+        \ = query[0];\n            int col1 = query[1];\n            int row2 = query[2];\n\
+        \            int col2 = query[3];\n            for (int row = row1; row <= row2;\
+        \ ++row) {\n                ++mat[row][col1];\n                --mat[row][col2\
+        \ + 1];\n            }\n        }\n        for (int row = 0; row < n; ++row)\
+        \ {\n            for (int col = 1; col < n; ++col) {\n                mat[row][col]\
+        \ += mat[row][col - 1];\n            }\n            mat[row].resize(n);\n  \
+        \      }\n        return mat;\n    }\n};"
+      java: "class Solution {\n    public int[][] rangeAddQueries(int n, int[][] queries)\
+        \ {\n        int[][] mat = new int[n][n + 1];\n        for (int[] query : queries)\
+        \ {\n            int row1 = query[0];\n            int col1 = query[1];\n  \
+        \          int row2 = query[2];\n            int col2 = query[3];\n        \
+        \    for (int row = row1; row <= row2; row++) {\n                mat[row][col1]++;\n\
+        \                mat[row][col2 + 1]--;\n            }\n        }\n        int[][]\
+        \ result = new int[n][n];\n        for (int row = 0; row < n; row++) {\n   \
+        \         int running = 0;\n            for (int col = 0; col < n; col++) {\n\
+        \                running += mat[row][col];\n                result[row][col]\
+        \ = running;\n            }\n        }\n        return result;\n    }\n}"
+      python: "class Solution(object):\n    def rangeAddQueries(self, n, queries):\n\
+        \        \"\"\"\n        :type n: int\n        :type queries: List[List[int]]\n\
+        \        :rtype: List[List[int]]\n        \"\"\"\n        mat = [[0] * (n +\
+        \ 1) for _ in range(n)]\n        for row1, col1, row2, col2 in queries:\n  \
+        \          for row in range(row1, row2 + 1):\n                mat[row][col1]\
+        \ += 1\n                mat[row][col2 + 1] -= 1\n        result = [[0] * n for\
+        \ _ in range(n)]\n        for row in range(n):\n            running = 0\n  \
+        \          for col in range(n):\n                running += mat[row][col]\n\
+        \                result[row][col] = running\n        return result"
+      python3: "class Solution:\n    def rangeAddQueries(self, n: int, queries: list[list[int]])\
+        \ -> list[list[int]]:\n        mat = [[0] * (n + 1) for _ in range(n)]\n   \
+        \     for row1, col1, row2, col2 in queries:\n            for row in range(row1,\
+        \ row2 + 1):\n                mat[row][col1] += 1\n                mat[row][col2\
+        \ + 1] -= 1\n        result = [[0] * n for _ in range(n)]\n        for row in\
+        \ range(n):\n            running = 0\n            for col in range(n):\n   \
+        \             running += mat[row][col]\n                result[row][col] = running\n\
+        \        return result"
+      c: "#include <stdlib.h>\n\nint** rangeAddQueries(int n, int** queries, int queriesSize,\
+        \ int* queriesColSize, int* returnSize, int** returnColumnSizes) {\n    int**\
+        \ mat = (int**)calloc(n, sizeof(int*));\n    for (int row = 0; row < n; row++)\
+        \ {\n        mat[row] = (int*)calloc(n + 1, sizeof(int));\n    }\n    for (int\
+        \ i = 0; i < queriesSize; i++) {\n        int row1 = queries[i][0];\n      \
+        \  int col1 = queries[i][1];\n        int row2 = queries[i][2];\n        int\
+        \ col2 = queries[i][3];\n        for (int row = row1; row <= row2; row++) {\n\
+        \            mat[row][col1]++;\n            mat[row][col2 + 1]--;\n        }\n\
+        \    }\n    int** result = (int**)malloc(n * sizeof(int*));\n    *returnColumnSizes\
+        \ = (int*)malloc(n * sizeof(int));\n    for (int row = 0; row < n; row++) {\n\
+        \        result[row] = (int*)malloc(n * sizeof(int));\n        (*returnColumnSizes)[row]\
+        \ = n;\n        int running = 0;\n        for (int col = 0; col < n; col++)\
+        \ {\n            running += mat[row][col];\n            result[row][col] = running;\n\
+        \        }\n        free(mat[row]);\n    }\n    free(mat);\n    *returnSize\
+        \ = n;\n    return result;\n}"
+      csharp: "public class Solution {\n    public int[][] RangeAddQueries(int n, int[][]\
+        \ queries) {\n        int[][] mat = new int[n][];\n        for (int row = 0;\
+        \ row < n; row++) {\n            mat[row] = new int[n + 1];\n        }\n\n \
+        \       foreach (int[] query in queries) {\n            int row1 = query[0];\n\
+        \            int col1 = query[1];\n            int row2 = query[2];\n      \
+        \      int col2 = query[3];\n\n            for (int row = row1; row <= row2;\
+        \ row++) {\n                mat[row][col1]++;\n                mat[row][col2\
+        \ + 1]--;\n            }\n        }\n\n        int[][] result = new int[n][];\n\
+        \        for (int row = 0; row < n; row++) {\n            result[row] = new\
+        \ int[n];\n            int running = 0;\n            for (int col = 0; col <\
+        \ n; col++) {\n                running += mat[row][col];\n                result[row][col]\
+        \ = running;\n            }\n        }\n\n        return result;\n    }\n}"
+      javascript: "/**\n * @param {number} n\n * @param {number[][]} queries\n * @return\
+        \ {number[][]}\n */\nvar rangeAddQueries = function(n, queries) {\n    const\
+        \ mat = Array.from({ length: n }, () => Array(n + 1).fill(0));\n\n    for (const\
+        \ [row1, col1, row2, col2] of queries) {\n        for (let row = row1; row <=\
+        \ row2; row++) {\n            mat[row][col1]++;\n            mat[row][col2 +\
+        \ 1]--;\n        }\n    }\n\n    const result = Array.from({ length: n }, ()\
+        \ => Array(n).fill(0));\n    for (let row = 0; row < n; row++) {\n        let\
+        \ running = 0;\n        for (let col = 0; col < n; col++) {\n            running\
+        \ += mat[row][col];\n            result[row][col] = running;\n        }\n  \
+        \  }\n\n    return result;\n};"
+      typescript: "function rangeAddQueries(n: number, queries: number[][]): number[][]\
+        \ {\n    const mat: number[][] = Array.from({ length: n }, () => Array(n + 1).fill(0));\n\
+        \n    for (const [row1, col1, row2, col2] of queries) {\n        for (let row\
+        \ = row1; row <= row2; row++) {\n            mat[row][col1]++;\n           \
+        \ mat[row][col2 + 1]--;\n        }\n    }\n\n    const result: number[][] =\
+        \ Array.from({ length: n }, () => Array(n).fill(0));\n    for (let row = 0;\
+        \ row < n; row++) {\n        let running = 0;\n        for (let col = 0; col\
+        \ < n; col++) {\n            running += mat[row][col];\n            result[row][col]\
+        \ = running;\n        }\n    }\n\n    return result;\n};"
+      php: "class Solution {\n\n    /**\n     * @param Integer $n\n     * @param Integer[][]\
+        \ $queries\n     * @return Integer[][]\n     */\n    function rangeAddQueries($n,\
+        \ $queries) {\n        $mat = array_fill(0, $n, array_fill(0, $n + 1, 0));\n\
+        \n        foreach ($queries as $query) {\n            [$row1, $col1, $row2,\
+        \ $col2] = $query;\n            for ($row = $row1; $row <= $row2; $row++) {\n\
+        \                $mat[$row][$col1]++;\n                $mat[$row][$col2 + 1]--;\n\
+        \            }\n        }\n\n        $result = array_fill(0, $n, array_fill(0,\
+        \ $n, 0));\n        for ($row = 0; $row < $n; $row++) {\n            $running\
+        \ = 0;\n            for ($col = 0; $col < $n; $col++) {\n                $running\
+        \ += $mat[$row][$col];\n                $result[$row][$col] = $running;\n  \
+        \          }\n        }\n\n        return $result;\n    }\n}"
+      swift: "class Solution {\n    func rangeAddQueries(_ n: Int, _ queries: [[Int]])\
+        \ -> [[Int]] {\n        var mat = Array(repeating: Array(repeating: 0, count:\
+        \ n + 1), count: n)\n\n        for query in queries {\n            let row1\
+        \ = query[0]\n            let col1 = query[1]\n            let row2 = query[2]\n\
+        \            let col2 = query[3]\n\n            for row in row1...row2 {\n \
+        \               mat[row][col1] += 1\n                mat[row][col2 + 1] -= 1\n\
+        \            }\n        }\n\n        var result = Array(repeating: Array(repeating:\
+        \ 0, count: n), count: n)\n        for row in 0..<n {\n            var running\
+        \ = 0\n            for col in 0..<n {\n                running += mat[row][col]\n\
+        \                result[row][col] = running\n            }\n        }\n\n  \
+        \      return result\n    }\n}"
+      kotlin: "class Solution {\n    fun rangeAddQueries(n: Int, queries: Array<IntArray>):\
+        \ Array<IntArray> {\n        val diff = Array(n) { IntArray(n + 1) }\n     \
+        \   for (query in queries) {\n            val row1 = query[0]\n            val\
+        \ col1 = query[1]\n            val row2 = query[2]\n            val col2 = query[3]\n\
+        \            for (row in row1..row2) {\n                diff[row][col1] += 1\n\
+        \                diff[row][col2 + 1] -= 1\n            }\n        }\n      \
+        \  val result = Array(n) { IntArray(n) }\n        for (row in 0 until n) {\n\
+        \            var running = 0\n            for (col in 0 until n) {\n       \
+        \         running += diff[row][col]\n                result[row][col] = running\n\
+        \            }\n        }\n        return result\n    }\n}"
+      dart: "class Solution {\n  List<List<int>> rangeAddQueries(int n, List<List<int>>\
+        \ queries) {\n    final diff = List.generate(n, (_) => List<int>.filled(n +\
+        \ 1, 0));\n    for (final query in queries) {\n      final row1 = query[0];\n\
+        \      final col1 = query[1];\n      final row2 = query[2];\n      final col2\
+        \ = query[3];\n      for (var row = row1; row <= row2; row++) {\n        diff[row][col1]\
+        \ += 1;\n        diff[row][col2 + 1] -= 1;\n      }\n    }\n    final result\
+        \ = List.generate(n, (_) => List<int>.filled(n, 0));\n    for (var row = 0;\
+        \ row < n; row++) {\n      var running = 0;\n      for (var col = 0; col < n;\
+        \ col++) {\n        running += diff[row][col];\n        result[row][col] = running;\n\
+        \      }\n    }\n    return result;\n  }\n}"
+      go: "func rangeAddQueries(n int, queries [][]int) [][]int {\n\tdiff := make([][]int,\
+        \ n)\n\tfor row := range diff {\n\t\tdiff[row] = make([]int, n+1)\n\t}\n\tfor\
+        \ _, query := range queries {\n\t\trow1, col1, row2, col2 := query[0], query[1],\
+        \ query[2], query[3]\n\t\tfor row := row1; row <= row2; row++ {\n\t\t\tdiff[row][col1]++\n\
+        \t\t\tdiff[row][col2+1]--\n\t\t}\n\t}\n\tresult := make([][]int, n)\n\tfor row\
+        \ := 0; row < n; row++ {\n\t\tresult[row] = make([]int, n)\n\t\trunning := 0\n\
+        \t\tfor col := 0; col < n; col++ {\n\t\t\trunning += diff[row][col]\n\t\t\t\
+        result[row][col] = running\n\t\t}\n\t}\n\treturn result\n}"
+      ruby: "# @param {Integer} n\n# @param {Integer[][]} queries\n# @return {Integer[][]}\n\
+        def range_add_queries(n, queries)\n    diff = Array.new(n) { Array.new(n + 1,\
+        \ 0) }\n    queries.each do |query|\n        row1, col1, row2, col2 = query\n\
+        \        (row1..row2).each do |row|\n            diff[row][col1] += 1\n    \
+        \        diff[row][col2 + 1] -= 1\n        end\n    end\n    result = Array.new(n)\
+        \ { Array.new(n, 0) }\n    n.times do |row|\n        running = 0\n        n.times\
+        \ do |col|\n            running += diff[row][col]\n            result[row][col]\
+        \ = running\n        end\n    end\n    result\nend"
+      scala: "object Solution {\n    def rangeAddQueries(n: Int, queries: Array[Array[Int]]):\
+        \ Array[Array[Int]] = {\n        val diff = Array.fill(n, n + 1)(0)\n      \
+        \  for (query <- queries) {\n            val row1 = query(0)\n            val\
+        \ col1 = query(1)\n            val row2 = query(2)\n            val col2 = query(3)\n\
+        \            for (row <- row1 to row2) {\n                diff(row)(col1) +=\
+        \ 1\n                diff(row)(col2 + 1) -= 1\n            }\n        }\n  \
+        \      val result = Array.fill(n, n)(0)\n        for (row <- 0 until n) {\n\
+        \            var running = 0\n            for (col <- 0 until n) {\n       \
+        \         running += diff(row)(col)\n                result(row)(col) = running\n\
+        \            }\n        }\n        result\n    }\n}"
+      rust: "impl Solution {\n    pub fn range_add_queries(n: i32, queries: Vec<Vec<i32>>)\
+        \ -> Vec<Vec<i32>> {\n        let n = n as usize;\n        let mut diff = vec![vec![0;\
+        \ n + 1]; n];\n\n        for query in queries {\n            let row1 = query[0]\
+        \ as usize;\n            let col1 = query[1] as usize;\n            let row2\
+        \ = query[2] as usize;\n            let col2 = query[3] as usize;\n\n      \
+        \      for row in row1..=row2 {\n                diff[row][col1] += 1;\n   \
+        \             diff[row][col2 + 1] -= 1;\n            }\n        }\n\n      \
+        \  let mut result = vec![vec![0; n]; n];\n        for row in 0..n {\n      \
+        \      let mut running = 0;\n            for col in 0..n {\n               \
+        \ running += diff[row][col];\n                result[row][col] = running;\n\
+        \            }\n        }\n\n        result\n    }\n}"
+      racket: "(define/contract (range-add-queries n queries)\n  (-> exact-integer?\
+        \ (listof (listof exact-integer?)) (listof (listof exact-integer?)))\n  (let\
+        \ ([diff (build-vector n (lambda (_) (make-vector (add1 n) 0)))])\n    (for\
+        \ ([query queries])\n      (define row1 (list-ref query 0))\n      (define col1\
+        \ (list-ref query 1))\n      (define row2 (list-ref query 2))\n      (define\
+        \ col2 (list-ref query 3))\n      (for ([row (in-range row1 (add1 row2))])\n\
+        \        (vector-set! (vector-ref diff row) col1\n                     (add1\
+        \ (vector-ref (vector-ref diff row) col1)))\n        (vector-set! (vector-ref\
+        \ diff row) (add1 col2)\n                     (sub1 (vector-ref (vector-ref\
+        \ diff row) (add1 col2)))))\n    (for/list ([row (in-range n)])\n      (define\
+        \ running 0)\n      (for/list ([col (in-range n)])\n        (set! running (+\
+        \ running (vector-ref (vector-ref diff row) col)))\n        running))))"
+      erlang: "-spec range_add_queries(N :: integer(), Queries :: [[integer()]]) ->\
+        \ [[integer()]].\nrange_add_queries(N, Queries) ->\n  Diff0 = [lists:duplicate(N\
+        \ + 1, 0) || _ <- lists:seq(1, N)],\n  Diff = lists:foldl(\n    fun([Row1, Col1,\
+        \ Row2, Col2], Acc) ->\n      lists:foldl(\n        fun(Row, Rows) ->\n    \
+        \      Current = lists:nth(Row + 1, Rows),\n          Updated = update_at(Col2\
+        \ + 2,\n            update_at(Col1 + 1, lists:nth(Col1 + 1, Current) + 1, Current),\n\
+        \            lists:sublist(Current, Col2 + 1) ++ [lists:nth(Col2 + 2, Current)\
+        \ - 1 | lists:nthtail(Col2 + 2, Current)]),\n          replace_at(Row + 1, Updated,\
+        \ Rows)\n        end,\n        Acc,\n        lists:seq(Row1, Row2))\n    end,\n\
+        \    Diff0,\n    Queries),\n  [row_prefix(lists:sublist(Row, N), 0, []) || Row\
+        \ <- Diff].\n\nupdate_at(1, Value, [_ | Tail]) -> [Value | Tail];\nupdate_at(Index,\
+        \ Value, [Head | Tail]) -> [Head | update_at(Index - 1, Value, Tail)].\n\nreplace_at(1,\
+        \ Value, [_ | Tail]) -> [Value | Tail];\nreplace_at(Index, Value, [Head | Tail])\
+        \ -> [Head | replace_at(Index - 1, Value, Tail)].\n\nrow_prefix([], _Running,\
+        \ Acc) -> lists:reverse(Acc);\nrow_prefix([Value | Rest], Running, Acc) ->\n\
+        \  Next = Running + Value,\n  row_prefix(Rest, Next, [Next | Acc])."
+      elixir: "defmodule Solution do\n  @spec range_add_queries(n :: integer, queries\
+        \ :: [[integer]]) :: [[integer]]\n  def range_add_queries(n, queries) do\n \
+        \   diff = for _ <- 1..n, do: List.duplicate(0, n + 1)\n\n    diff =\n     \
+        \ Enum.reduce(queries, diff, fn [row1, col1, row2, col2], rows ->\n        Enum.reduce(row1..row2,\
+        \ rows, fn row, acc ->\n          current = Enum.at(acc, row)\n          current\
+        \ = List.update_at(current, col1, &(&1 + 1))\n          current = List.update_at(current,\
+        \ col2 + 1, &(&1 - 1))\n          List.replace_at(acc, row, current)\n     \
+        \   end)\n      end)\n\n    Enum.map(diff, fn row ->\n      row\n      |> Enum.take(n)\n\
+        \      |> Enum.scan(0, &(&1 + &2))\n    end)\n  end\nend"
+    approach: 'Create an n by n difference matrix. For each query, add 1 at the left
+      column and subtract 1 just after the right column for every affected row, so each
+      query takes time proportional to its height. The extra column at index n records
+      boundary updates safely.
+
+
+      Then compute prefix sums across each row. The running sum at each cell gives the
+      total number of queries that cover it, producing the final matrix.'
+    time_complexity: O(n^2 + qn), where q is the number of queries. Each query updates
+      at most n rows, and the final row-wise prefix sums visit all n^2 cells.
+    space_complexity: O(n^2) for the difference matrix, which is also used to store
+      the result.
+    elapsed_time: 103.56173944473267
+    model: gpt-6-luna
+    generated_at: '2026-11-12 23:59:59 '
 ---
 
 ## Problem #2536: Increment Submatrices by One
@@ -65,82 +281,56 @@ leetcode_url: https://leetcode.com/problems/increment-submatrices-by-one/
 
 3. After doing this operation for all the queries, update each row separately with S[i][j] = S[i][j] + S[i][j - 1].
 
-## 🤖 AI-Generated Solutions
-
-We've generated solutions using multiple AI models. Click to expand each solution:
-
-
-<details class="ai-solution-card" open markdown="1">
-<summary class="ai-solution-header">
-  <span class="ai-model-badge">✨ Solution from <strong>gemini-2.5-flash</strong></span>
-  <small class="solution-timestamp">(2025-11-20 19:58:40 UTC)</small>
-</summary>
-
-<div class="ai-solution-content">
-
-{% raw %}
+## 🤖 AI-Generated Solution (gpt-6-luna)
 
 ### Approach
 
-The problem asks us to perform a series of range updates on an `n x n` matrix initialized with zeros. For each query `[row1, col1, row2, col2]`, we need to add 1 to every element within the submatrix defined by the top-left corner `(row1, col1)` and the bottom-right corner `(row2, col2)`. After all queries, we must return the final matrix.
+Create an n by n difference matrix. For each query, add 1 at the left column and subtract 1 just after the right column for every affected row, so each query takes time proportional to its height. The extra column at index n records boundary updates safely.
 
-A naive approach would be to iterate through the specified submatrix for each query and increment every cell directly. If there are `Q` queries and the maximum submatrix size is `n x n`, this approach would have a time complexity of `O(Q * n^2)`. Given `n` up to 500 and `Q` up to 10^4, `500^2 * 10^4 = 25 * 10^4 * 10^4 = 2.5 * 10^9`, which is too slow for typical time limits (usually around `10^8` operations per second).
-
-To optimize this, we can use a technique based on difference arrays, specifically adapted for 2D range updates. Instead of directly updating all cells in a submatrix, we leverage the property that a range update can be represented by only a few point updates in a 'difference' matrix. When calculating prefix sums on this difference matrix, the range updates propagate correctly. The specific approach suggested by the hints is to treat each row independently for horizontal range updates, and then compute the prefix sums for each row. This avoids the more complex 2D difference array setup (which involves four corners `(r1, c1), (r1, c2+1), (r2+1, c1), (r2+1, c2+1)`).
-
-The algorithm works in two main steps:
-
-1.  **Difference Accumulation**: We initialize an `n x n` matrix `mat` with all zeros. For each query `[row1, col1, row2, col2]`, we iterate through each row `r` from `row1` to `row2`. For each such row `r`, we perform two operations:
-    *   `mat[r][col1] += 1`: This marks the beginning of an increment for the current row `r` starting at `col1`.
-    *   `mat[r][col2 + 1] -= 1`: If `col2 + 1` is within the matrix bounds (`col2 + 1 < n`), this operation effectively cancels out the increment from column `col2 + 1` onwards in row `r`. This ensures that the increment only applies to columns from `col1` to `col2`.
-    This step essentially applies a 1D difference array logic to each individual row affected by the query.
-
-2.  **Prefix Sum Calculation**: After processing all queries, the `mat` matrix stores these difference values. To transform these differences into the actual accumulated sums, we perform a row-wise prefix sum calculation. For each row `r` from `0` to `n-1`, and for each column `c` from `1` to `n-1`, we update `mat[r][c] = mat[r][c] + mat[r][c-1]`. This propagates the increments horizontally across each row, resulting in `mat[r][c]` holding the total sum of increments for cell `(r, c)`. The final `mat` matrix is then the required answer.
-
-{% endraw %}
+Then compute prefix sums across each row. The running sum at each cell gives the total number of queries that cover it, producing the final matrix.
 
 ### Code
 
 <div class="code-tabs" markdown="0">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-cpp-gemini-2-5-flash" checked>
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-java-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-python-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-python3-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-c-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-csharp-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-javascript-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-typescript-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-php-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-swift-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-kotlin-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-dart-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-go-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-ruby-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-scala-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-rust-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-racket-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-erlang-gemini-2-5-flash">
-  <input type="radio" name="code-lang-gemini-2-5-flash" id="lang-elixir-gemini-2-5-flash">
+  <input type="radio" name="code-lang" id="lang-cpp" checked>
+  <input type="radio" name="code-lang" id="lang-java">
+  <input type="radio" name="code-lang" id="lang-python">
+  <input type="radio" name="code-lang" id="lang-python3">
+  <input type="radio" name="code-lang" id="lang-c">
+  <input type="radio" name="code-lang" id="lang-csharp">
+  <input type="radio" name="code-lang" id="lang-javascript">
+  <input type="radio" name="code-lang" id="lang-typescript">
+  <input type="radio" name="code-lang" id="lang-php">
+  <input type="radio" name="code-lang" id="lang-swift">
+  <input type="radio" name="code-lang" id="lang-kotlin">
+  <input type="radio" name="code-lang" id="lang-dart">
+  <input type="radio" name="code-lang" id="lang-go">
+  <input type="radio" name="code-lang" id="lang-ruby">
+  <input type="radio" name="code-lang" id="lang-scala">
+  <input type="radio" name="code-lang" id="lang-rust">
+  <input type="radio" name="code-lang" id="lang-racket">
+  <input type="radio" name="code-lang" id="lang-erlang">
+  <input type="radio" name="code-lang" id="lang-elixir">
   <div class="tab-labels">
-    <label for="lang-cpp-gemini-2-5-flash">C++</label>
-    <label for="lang-java-gemini-2-5-flash">Java</label>
-    <label for="lang-python-gemini-2-5-flash">Python</label>
-    <label for="lang-python3-gemini-2-5-flash">Python3</label>
-    <label for="lang-c-gemini-2-5-flash">C</label>
-    <label for="lang-csharp-gemini-2-5-flash">C#</label>
-    <label for="lang-javascript-gemini-2-5-flash">JavaScript</label>
-    <label for="lang-typescript-gemini-2-5-flash">TypeScript</label>
-    <label for="lang-php-gemini-2-5-flash">PHP</label>
-    <label for="lang-swift-gemini-2-5-flash">Swift</label>
-    <label for="lang-kotlin-gemini-2-5-flash">Kotlin</label>
-    <label for="lang-dart-gemini-2-5-flash">Dart</label>
-    <label for="lang-go-gemini-2-5-flash">Go</label>
-    <label for="lang-ruby-gemini-2-5-flash">Ruby</label>
-    <label for="lang-scala-gemini-2-5-flash">Scala</label>
-    <label for="lang-rust-gemini-2-5-flash">Rust</label>
-    <label for="lang-racket-gemini-2-5-flash">Racket</label>
-    <label for="lang-erlang-gemini-2-5-flash">Erlang</label>
-    <label for="lang-elixir-gemini-2-5-flash">Elixir</label>
+    <label for="lang-cpp">C++</label>
+    <label for="lang-java">Java</label>
+    <label for="lang-python">Python</label>
+    <label for="lang-python3">Python3</label>
+    <label for="lang-c">C</label>
+    <label for="lang-csharp">C#</label>
+    <label for="lang-javascript">JavaScript</label>
+    <label for="lang-typescript">TypeScript</label>
+    <label for="lang-php">PHP</label>
+    <label for="lang-swift">Swift</label>
+    <label for="lang-kotlin">Kotlin</label>
+    <label for="lang-dart">Dart</label>
+    <label for="lang-go">Go</label>
+    <label for="lang-ruby">Ruby</label>
+    <label for="lang-scala">Scala</label>
+    <label for="lang-rust">Rust</label>
+    <label for="lang-racket">Racket</label>
+    <label for="lang-erlang">Erlang</label>
+    <label for="lang-elixir">Elixir</label>
   </div>
 
   <div class="tab-panel" data-lang="cpp">
@@ -149,39 +339,24 @@ The algorithm works in two main steps:
 {% raw %}
 class Solution {
 public:
-    std::vector<std::vector<int>> rangeAddQueries(int n, std::vector<std::vector<int>>& queries) {
-        // Initialize an n x n matrix with zeros
-        std::vector<std::vector<int>> mat(n, std::vector<int>(n, 0));
-
-        // Step 2: Process Queries (Difference Accumulation)
+    vector<vector<int>> rangeAddQueries(int n, vector<vector<int>>& queries) {
+        vector<vector<int>> mat(n, vector<int>(n + 1, 0));
         for (const auto& query : queries) {
-            int r1 = query[0];
-            int c1 = query[1];
-            int r2 = query[2];
-            int c2 = query[3];
-
-            // For each row affected by the query
-            for (int r = r1; r <= r2; ++r) {
-                // Add 1 at the starting column
-                mat[r][c1] += 1;
-                // If the increment range ends before the matrix boundary,
-                // subtract 1 at the column after the ending column to cancel out
-                if (c2 + 1 < n) {
-                    mat[r][c2 + 1] -= 1;
-                }
+            int row1 = query[0];
+            int col1 = query[1];
+            int row2 = query[2];
+            int col2 = query[3];
+            for (int row = row1; row <= row2; ++row) {
+                ++mat[row][col1];
+                --mat[row][col2 + 1];
             }
         }
-
-        // Step 3: Compute Final Matrix (Prefix Sum Calculation)
-        // Iterate through each row
-        for (int r = 0; r < n; ++r) {
-            // For each column starting from the second one
-            for (int c = 1; c < n; ++c) {
-                // Add the value from the previous column to accumulate the sum
-                mat[r][c] += mat[r][c-1];
+        for (int row = 0; row < n; ++row) {
+            for (int col = 1; col < n; ++col) {
+                mat[row][col] += mat[row][col - 1];
             }
+            mat[row].resize(n);
         }
-
         return mat;
     }
 };
@@ -194,43 +369,28 @@ public:
 
 {% highlight java %}
 {% raw %}
-import java.util.List;
-
 class Solution {
     public int[][] rangeAddQueries(int n, int[][] queries) {
-        // Initialize an n x n matrix with zeros
-        int[][] mat = new int[n][n]; // int arrays are initialized to 0 by default
-
-        // Step 2: Process Queries (Difference Accumulation)
+        int[][] mat = new int[n][n + 1];
         for (int[] query : queries) {
-            int r1 = query[0];
-            int c1 = query[1];
-            int r2 = query[2];
-            int c2 = query[3];
-
-            // For each row affected by the query
-            for (int r = r1; r <= r2; ++r) {
-                // Add 1 at the starting column
-                mat[r][c1] += 1;
-                // If the increment range ends before the matrix boundary,
-                // subtract 1 at the column after the ending column to cancel out
-                if (c2 + 1 < n) {
-                    mat[r][c2 + 1] -= 1;
-                }
+            int row1 = query[0];
+            int col1 = query[1];
+            int row2 = query[2];
+            int col2 = query[3];
+            for (int row = row1; row <= row2; row++) {
+                mat[row][col1]++;
+                mat[row][col2 + 1]--;
             }
         }
-
-        // Step 3: Compute Final Matrix (Prefix Sum Calculation)
-        // Iterate through each row
-        for (int r = 0; r < n; ++r) {
-            // For each column starting from the second one
-            for (int c = 1; c < n; ++c) {
-                // Add the value from the previous column to accumulate the sum
-                mat[r][c] += mat[r][c-1];
+        int[][] result = new int[n][n];
+        for (int row = 0; row < n; row++) {
+            int running = 0;
+            for (int col = 0; col < n; col++) {
+                running += mat[row][col];
+                result[row][col] = running;
             }
         }
-
-        return mat;
+        return result;
     }
 }
 {% endraw %}
@@ -242,31 +402,25 @@ class Solution {
 
 {% highlight python %}
 {% raw %}
-class Solution:
-    def rangeAddQueries(self, n: int, queries: List[List[int]]) -> List[List[int]]:
-        # Initialize an n x n matrix with zeros
-        mat = [[0] * n for _ in range(n)]
-
-        # Step 2: Process Queries (Difference Accumulation)
-        for r1, c1, r2, c2 in queries:
-            # For each row affected by the query
-            for r in range(r1, r2 + 1):
-                # Add 1 at the starting column
-                mat[r][c1] += 1
-                # If the increment range ends before the matrix boundary,
-                # subtract 1 at the column after the ending column to cancel out
-                if c2 + 1 < n:
-                    mat[r][c2 + 1] -= 1
-
-        # Step 3: Compute Final Matrix (Prefix Sum Calculation)
-        # Iterate through each row
-        for r in range(n):
-            # For each column starting from the second one
-            for c in range(1, n):
-                # Add the value from the previous column to accumulate the sum
-                mat[r][c] += mat[r][c-1]
-
-        return mat
+class Solution(object):
+    def rangeAddQueries(self, n, queries):
+        """
+        :type n: int
+        :type queries: List[List[int]]
+        :rtype: List[List[int]]
+        """
+        mat = [[0] * (n + 1) for _ in range(n)]
+        for row1, col1, row2, col2 in queries:
+            for row in range(row1, row2 + 1):
+                mat[row][col1] += 1
+                mat[row][col2 + 1] -= 1
+        result = [[0] * n for _ in range(n)]
+        for row in range(n):
+            running = 0
+            for col in range(n):
+                running += mat[row][col]
+                result[row][col] = running
+        return result
 {% endraw %}
 {% endhighlight %}
 
@@ -277,30 +431,19 @@ class Solution:
 {% highlight python %}
 {% raw %}
 class Solution:
-    def rangeAddQueries(self, n: int, queries: List[List[int]]) -> List[List[int]]:
-        # Initialize an n x n matrix with zeros
-        mat = [[0] * n for _ in range(n)]
-
-        # Step 2: Process Queries (Difference Accumulation)
-        for r1, c1, r2, c2 in queries:
-            # For each row affected by the query
-            for r in range(r1, r2 + 1):
-                # Add 1 at the starting column
-                mat[r][c1] += 1
-                # If the increment range ends before the matrix boundary,
-                # subtract 1 at the column after the ending column to cancel out
-                if c2 + 1 < n:
-                    mat[r][c2 + 1] -= 1
-
-        # Step 3: Compute Final Matrix (Prefix Sum Calculation)
-        # Iterate through each row
-        for r in range(n):
-            # For each column starting from the second one
-            for c in range(1, n):
-                # Add the value from the previous column to accumulate the sum
-                mat[r][c] += mat[r][c-1]
-
-        return mat
+    def rangeAddQueries(self, n: int, queries: list[list[int]]) -> list[list[int]]:
+        mat = [[0] * (n + 1) for _ in range(n)]
+        for row1, col1, row2, col2 in queries:
+            for row in range(row1, row2 + 1):
+                mat[row][col1] += 1
+                mat[row][col2 + 1] -= 1
+        result = [[0] * n for _ in range(n)]
+        for row in range(n):
+            running = 0
+            for col in range(n):
+                running += mat[row][col]
+                result[row][col] = running
+        return result
 {% endraw %}
 {% endhighlight %}
 
@@ -310,57 +453,38 @@ class Solution:
 
 {% highlight c %}
 {% raw %}
-#include <stdlib.h> // For malloc and calloc
+#include <stdlib.h>
 
-/**
- * Return an array of arrays of size *returnSize.
- * The sizes of the arrays are returned as *returnColumnSizes array.
- * Note: Both functions malloc and free need to be used to manage memory.
- */
-int** rangeAddQueries(int n, int** queries, int queriesSize, int* queriesColSize, int** returnSize, int** returnColumnSizes) {
-    // Initialize an n x n matrix with zeros
-    int** mat = (int**)malloc(n * sizeof(int*));
-    for (int i = 0; i < n; i++) {
-        mat[i] = (int*)calloc(n, sizeof(int)); // calloc initializes memory to zero
+int** rangeAddQueries(int n, int** queries, int queriesSize, int* queriesColSize, int* returnSize, int** returnColumnSizes) {
+    int** mat = (int**)calloc(n, sizeof(int*));
+    for (int row = 0; row < n; row++) {
+        mat[row] = (int*)calloc(n + 1, sizeof(int));
     }
-
-    // Step 2: Process Queries (Difference Accumulation)
     for (int i = 0; i < queriesSize; i++) {
-        int r1 = queries[i][0];
-        int c1 = queries[i][1];
-        int r2 = queries[i][2];
-        int c2 = queries[i][3];
-
-        // For each row affected by the query
-        for (int r = r1; r <= r2; ++r) {
-            // Add 1 at the starting column
-            mat[r][c1] += 1;
-            // If the increment range ends before the matrix boundary,
-            // subtract 1 at the column after the ending column to cancel out
-            if (c2 + 1 < n) {
-                mat[r][c2 + 1] -= 1;
-            }
+        int row1 = queries[i][0];
+        int col1 = queries[i][1];
+        int row2 = queries[i][2];
+        int col2 = queries[i][3];
+        for (int row = row1; row <= row2; row++) {
+            mat[row][col1]++;
+            mat[row][col2 + 1]--;
         }
     }
-
-    // Step 3: Compute Final Matrix (Prefix Sum Calculation)
-    // Iterate through each row
-    for (int r = 0; r < n; ++r) {
-        // For each column starting from the second one
-        for (int c = 1; c < n; ++c) {
-            // Add the value from the previous column to accumulate the sum
-            mat[r][c] += mat[r][c-1];
-        }
-    }
-
-    // Set return size and column sizes as required by LeetCode C signature
-    *returnSize = n;
+    int** result = (int**)malloc(n * sizeof(int*));
     *returnColumnSizes = (int*)malloc(n * sizeof(int));
-    for (int i = 0; i < n; i++) {
-        (*returnColumnSizes)[i] = n;
+    for (int row = 0; row < n; row++) {
+        result[row] = (int*)malloc(n * sizeof(int));
+        (*returnColumnSizes)[row] = n;
+        int running = 0;
+        for (int col = 0; col < n; col++) {
+            running += mat[row][col];
+            result[row][col] = running;
+        }
+        free(mat[row]);
     }
-
-    return mat;
+    free(mat);
+    *returnSize = n;
+    return result;
 }
 {% endraw %}
 {% endhighlight %}
@@ -371,46 +495,36 @@ int** rangeAddQueries(int n, int** queries, int queriesSize, int* queriesColSize
 
 {% highlight csharp %}
 {% raw %}
-using System;
-
 public class Solution {
     public int[][] RangeAddQueries(int n, int[][] queries) {
-        // Initialize an n x n matrix with zeros
         int[][] mat = new int[n][];
-        for (int i = 0; i < n; i++) {
-            mat[i] = new int[n]; // Elements are initialized to 0 by default
+        for (int row = 0; row < n; row++) {
+            mat[row] = new int[n + 1];
         }
 
-        // Step 2: Process Queries (Difference Accumulation)
-        foreach (var query in queries) {
-            int r1 = query[0];
-            int c1 = query[1];
-            int r2 = query[2];
-            int c2 = query[3];
+        foreach (int[] query in queries) {
+            int row1 = query[0];
+            int col1 = query[1];
+            int row2 = query[2];
+            int col2 = query[3];
 
-            // For each row affected by the query
-            for (int r = r1; r <= r2; ++r) {
-                // Add 1 at the starting column
-                mat[r][c1] += 1;
-                // If the increment range ends before the matrix boundary,
-                // subtract 1 at the column after the ending column to cancel out
-                if (c2 + 1 < n) {
-                    mat[r][c2 + 1] -= 1;
-                }
+            for (int row = row1; row <= row2; row++) {
+                mat[row][col1]++;
+                mat[row][col2 + 1]--;
             }
         }
 
-        // Step 3: Compute Final Matrix (Prefix Sum Calculation)
-        // Iterate through each row
-        for (int r = 0; r < n; ++r) {
-            // For each column starting from the second one
-            for (int c = 1; c < n; ++c) {
-                // Add the value from the previous column to accumulate the sum
-                mat[r][c] += mat[r][c-1];
+        int[][] result = new int[n][];
+        for (int row = 0; row < n; row++) {
+            result[row] = new int[n];
+            int running = 0;
+            for (int col = 0; col < n; col++) {
+                running += mat[row][col];
+                result[row][col] = running;
             }
         }
 
-        return mat;
+        return result;
     }
 }
 {% endraw %}
@@ -428,39 +542,25 @@ public class Solution {
  * @return {number[][]}
  */
 var rangeAddQueries = function(n, queries) {
-    // Initialize an n x n matrix with zeros
-    const mat = Array(n).fill(0).map(() => Array(n).fill(0));
+    const mat = Array.from({ length: n }, () => Array(n + 1).fill(0));
 
-    // Step 2: Process Queries (Difference Accumulation)
-    for (const query of queries) {
-        const r1 = query[0];
-        const c1 = query[1];
-        const r2 = query[2];
-        const c2 = query[3];
-
-        // For each row affected by the query
-        for (let r = r1; r <= r2; ++r) {
-            // Add 1 at the starting column
-            mat[r][c1] += 1;
-            // If the increment range ends before the matrix boundary,
-            // subtract 1 at the column after the ending column to cancel out
-            if (c2 + 1 < n) {
-                mat[r][c2 + 1] -= 1;
-            }
+    for (const [row1, col1, row2, col2] of queries) {
+        for (let row = row1; row <= row2; row++) {
+            mat[row][col1]++;
+            mat[row][col2 + 1]--;
         }
     }
 
-    // Step 3: Compute Final Matrix (Prefix Sum Calculation)
-    // Iterate through each row
-    for (let r = 0; r < n; ++r) {
-        // For each column starting from the second one
-        for (let c = 1; c < n; ++c) {
-            // Add the value from the previous column to accumulate the sum
-            mat[r][c] += mat[r][c-1];
+    const result = Array.from({ length: n }, () => Array(n).fill(0));
+    for (let row = 0; row < n; row++) {
+        let running = 0;
+        for (let col = 0; col < n; col++) {
+            running += mat[row][col];
+            result[row][col] = running;
         }
     }
 
-    return mat;
+    return result;
 };
 {% endraw %}
 {% endhighlight %}
@@ -472,39 +572,25 @@ var rangeAddQueries = function(n, queries) {
 {% highlight typescript %}
 {% raw %}
 function rangeAddQueries(n: number, queries: number[][]): number[][] {
-    // Initialize an n x n matrix with zeros
-    const mat: number[][] = Array(n).fill(0).map(() => Array(n).fill(0));
+    const mat: number[][] = Array.from({ length: n }, () => Array(n + 1).fill(0));
 
-    // Step 2: Process Queries (Difference Accumulation)
-    for (const query of queries) {
-        const r1 = query[0];
-        const c1 = query[1];
-        const r2 = query[2];
-        const c2 = query[3];
-
-        // For each row affected by the query
-        for (let r = r1; r <= r2; ++r) {
-            // Add 1 at the starting column
-            mat[r][c1] += 1;
-            // If the increment range ends before the matrix boundary,
-            // subtract 1 at the column after the ending column to cancel out
-            if (c2 + 1 < n) {
-                mat[r][c2 + 1] -= 1;
-            }
+    for (const [row1, col1, row2, col2] of queries) {
+        for (let row = row1; row <= row2; row++) {
+            mat[row][col1]++;
+            mat[row][col2 + 1]--;
         }
     }
 
-    // Step 3: Compute Final Matrix (Prefix Sum Calculation)
-    // Iterate through each row
-    for (let r = 0; r < n; ++r) {
-        // For each column starting from the second one
-        for (let c = 1; c < n; ++c) {
-            // Add the value from the previous column to accumulate the sum
-            mat[r][c] += mat[r][c-1];
+    const result: number[][] = Array.from({ length: n }, () => Array(n).fill(0));
+    for (let row = 0; row < n; row++) {
+        let running = 0;
+        for (let col = 0; col < n; col++) {
+            running += mat[row][col];
+            result[row][col] = running;
         }
     }
 
-    return mat;
+    return result;
 };
 {% endraw %}
 {% endhighlight %}
@@ -515,7 +601,6 @@ function rangeAddQueries(n: number, queries: number[][]): number[][] {
 
 {% highlight php %}
 {% raw %}
-<?php
 class Solution {
 
     /**
@@ -524,42 +609,28 @@ class Solution {
      * @return Integer[][]
      */
     function rangeAddQueries($n, $queries) {
-        // Initialize an n x n matrix with zeros
-        $mat = array_fill(0, $n, array_fill(0, $n, 0));
+        $mat = array_fill(0, $n, array_fill(0, $n + 1, 0));
 
-        // Step 2: Process Queries (Difference Accumulation)
         foreach ($queries as $query) {
-            $r1 = $query[0];
-            $c1 = $query[1];
-            $r2 = $query[2];
-            $c2 = $query[3];
-
-            // For each row affected by the query
-            for ($r = $r1; $r <= $r2; ++$r) {
-                // Add 1 at the starting column
-                $mat[$r][$c1] += 1;
-                // If the increment range ends before the matrix boundary,
-                // subtract 1 at the column after the ending column to cancel out
-                if ($c2 + 1 < $n) {
-                    $mat[$r][$c2 + 1] -= 1;
-                }
+            [$row1, $col1, $row2, $col2] = $query;
+            for ($row = $row1; $row <= $row2; $row++) {
+                $mat[$row][$col1]++;
+                $mat[$row][$col2 + 1]--;
             }
         }
 
-        // Step 3: Compute Final Matrix (Prefix Sum Calculation)
-        // Iterate through each row
-        for ($r = 0; $r < $n; ++$r) {
-            // For each column starting from the second one
-            for ($c = 1; $c < $n; ++$c) {
-                // Add the value from the previous column to accumulate the sum
-                $mat[$r][$c] += $mat[$r][$c-1];
+        $result = array_fill(0, $n, array_fill(0, $n, 0));
+        for ($row = 0; $row < $n; $row++) {
+            $running = 0;
+            for ($col = 0; $col < $n; $col++) {
+                $running += $mat[$row][$col];
+                $result[$row][$col] = $running;
             }
         }
 
-        return $mat;
+        return $result;
     }
 }
-?>
 {% endraw %}
 {% endhighlight %}
 
@@ -571,39 +642,30 @@ class Solution {
 {% raw %}
 class Solution {
     func rangeAddQueries(_ n: Int, _ queries: [[Int]]) -> [[Int]] {
-        // Initialize an n x n matrix with zeros
-        var mat = Array(repeating: Array(repeating: 0, count: n), count: n)
+        var mat = Array(repeating: Array(repeating: 0, count: n + 1), count: n)
 
-        // Step 2: Process Queries (Difference Accumulation)
         for query in queries {
-            let r1 = query[0]
-            let c1 = query[1]
-            let r2 = query[2]
-            let c2 = query[3]
+            let row1 = query[0]
+            let col1 = query[1]
+            let row2 = query[2]
+            let col2 = query[3]
 
-            // For each row affected by the query
-            for r in r1...r2 { // Swift range operator
-                // Add 1 at the starting column
-                mat[r][c1] += 1
-                // If the increment range ends before the matrix boundary,
-                // subtract 1 at the column after the ending column to cancel out
-                if c2 + 1 < n {
-                    mat[r][c2 + 1] -= 1
-                }
+            for row in row1...row2 {
+                mat[row][col1] += 1
+                mat[row][col2 + 1] -= 1
             }
         }
 
-        // Step 3: Compute Final Matrix (Prefix Sum Calculation)
-        // Iterate through each row
-        for r in 0..<n {
-            // For each column starting from the second one
-            for c in 1..<n {
-                // Add the value from the previous column to accumulate the sum
-                mat[r][c] += mat[r][c-1]
+        var result = Array(repeating: Array(repeating: 0, count: n), count: n)
+        for row in 0..<n {
+            var running = 0
+            for col in 0..<n {
+                running += mat[row][col]
+                result[row][col] = running
             }
         }
 
-        return mat
+        return result
     }
 }
 {% endraw %}
@@ -617,39 +679,26 @@ class Solution {
 {% raw %}
 class Solution {
     fun rangeAddQueries(n: Int, queries: Array<IntArray>): Array<IntArray> {
-        // Initialize an n x n matrix with zeros
-        val mat = Array(n) { IntArray(n) { 0 } }
-
-        // Step 2: Process Queries (Difference Accumulation)
+        val diff = Array(n) { IntArray(n + 1) }
         for (query in queries) {
-            val r1 = query[0]
-            val c1 = query[1]
-            val r2 = query[2]
-            val c2 = query[3]
-
-            // For each row affected by the query
-            for (r in r1..r2) {
-                // Add 1 at the starting column
-                mat[r][c1] += 1
-                // If the increment range ends before the matrix boundary,
-                // subtract 1 at the column after the ending column to cancel out
-                if (c2 + 1 < n) {
-                    mat[r][c2 + 1] -= 1
-                }
+            val row1 = query[0]
+            val col1 = query[1]
+            val row2 = query[2]
+            val col2 = query[3]
+            for (row in row1..row2) {
+                diff[row][col1] += 1
+                diff[row][col2 + 1] -= 1
             }
         }
-
-        // Step 3: Compute Final Matrix (Prefix Sum Calculation)
-        // Iterate through each row
-        for (r in 0 until n) {
-            // For each column starting from the second one
-            for (c in 1 until n) {
-                // Add the value from the previous column to accumulate the sum
-                mat[r][c] += mat[r][c-1]
+        val result = Array(n) { IntArray(n) }
+        for (row in 0 until n) {
+            var running = 0
+            for (col in 0 until n) {
+                running += diff[row][col]
+                result[row][col] = running
             }
         }
-
-        return mat
+        return result
     }
 }
 {% endraw %}
@@ -663,39 +712,26 @@ class Solution {
 {% raw %}
 class Solution {
   List<List<int>> rangeAddQueries(int n, List<List<int>> queries) {
-    // Initialize an n x n matrix with zeros
-    List<List<int>> mat = List.generate(n, (_) => List.filled(n, 0));
-
-    // Step 2: Process Queries (Difference Accumulation)
+    final diff = List.generate(n, (_) => List<int>.filled(n + 1, 0));
     for (final query in queries) {
-      int r1 = query[0];
-      int c1 = query[1];
-      int r2 = query[2];
-      int c2 = query[3];
-
-      // For each row affected by the query
-      for (int r = r1; r <= r2; ++r) {
-        // Add 1 at the starting column
-        mat[r][c1] += 1;
-        // If the increment range ends before the matrix boundary,
-        // subtract 1 at the column after the ending column to cancel out
-        if (c2 + 1 < n) {
-          mat[r][c2 + 1] -= 1;
-        }
+      final row1 = query[0];
+      final col1 = query[1];
+      final row2 = query[2];
+      final col2 = query[3];
+      for (var row = row1; row <= row2; row++) {
+        diff[row][col1] += 1;
+        diff[row][col2 + 1] -= 1;
       }
     }
-
-    // Step 3: Compute Final Matrix (Prefix Sum Calculation)
-    // Iterate through each row
-    for (int r = 0; r < n; ++r) {
-      // For each column starting from the second one
-      for (int c = 1; c < n; ++c) {
-        // Add the value from the previous column to accumulate the sum
-        mat[r][c] += mat[r][c-1];
+    final result = List.generate(n, (_) => List<int>.filled(n, 0));
+    for (var row = 0; row < n; row++) {
+      var running = 0;
+      for (var col = 0; col < n; col++) {
+        running += diff[row][col];
+        result[row][col] = running;
       }
     }
-
-    return mat;
+    return result;
   }
 }
 {% endraw %}
@@ -707,42 +743,28 @@ class Solution {
 
 {% highlight go %}
 {% raw %}
-package main
-
 func rangeAddQueries(n int, queries [][]int) [][]int {
-    // Initialize an n x n matrix with zeros
-    mat := make([][]int, n)
-    for i := range mat {
-        mat[i] = make([]int, n) // Elements are initialized to 0 by default
-    }
-
-    // Step 2: Process Queries (Difference Accumulation)
-    for _, query := range queries {
-        r1, c1, r2, c2 := query[0], query[1], query[2], query[3]
-
-        // For each row affected by the query
-        for r := r1; r <= r2; r++ {
-            // Add 1 at the starting column
-            mat[r][c1] += 1
-            // If the increment range ends before the matrix boundary,
-            // subtract 1 at the column after the ending column to cancel out
-            if c2 + 1 < n {
-                mat[r][c2 + 1] -= 1
-            }
-        }
-    }
-
-    // Step 3: Compute Final Matrix (Prefix Sum Calculation)
-    // Iterate through each row
-    for r := 0; r < n; r++ {
-        // For each column starting from the second one
-        for c := 1; c < n; c++ {
-            // Add the value from the previous column to accumulate the sum
-            mat[r][c] += mat[r][c-1]
-        }
-    }
-
-    return mat
+	diff := make([][]int, n)
+	for row := range diff {
+		diff[row] = make([]int, n+1)
+	}
+	for _, query := range queries {
+		row1, col1, row2, col2 := query[0], query[1], query[2], query[3]
+		for row := row1; row <= row2; row++ {
+			diff[row][col1]++
+			diff[row][col2+1]--
+		}
+	}
+	result := make([][]int, n)
+	for row := 0; row < n; row++ {
+		result[row] = make([]int, n)
+		running := 0
+		for col := 0; col < n; col++ {
+			running += diff[row][col]
+			result[row][col] = running
+		}
+	}
+	return result
 }
 {% endraw %}
 {% endhighlight %}
@@ -757,36 +779,23 @@ func rangeAddQueries(n int, queries [][]int) [][]int {
 # @param {Integer[][]} queries
 # @return {Integer[][]}
 def range_add_queries(n, queries)
-    # Initialize an n x n matrix with zeros
-    mat = Array.new(n) { Array.new(n, 0) }
-
-    # Step 2: Process Queries (Difference Accumulation)
+    diff = Array.new(n) { Array.new(n + 1, 0) }
     queries.each do |query|
-        r1, c1, r2, c2 = query[0], query[1], query[2], query[3]
-
-        # For each row affected by the query
-        (r1..r2).each do |r|
-            # Add 1 at the starting column
-            mat[r][c1] += 1
-            # If the increment range ends before the matrix boundary,
-            # subtract 1 at the column after the ending column to cancel out
-            if c2 + 1 < n
-                mat[r][c2 + 1] -= 1
-            end
+        row1, col1, row2, col2 = query
+        (row1..row2).each do |row|
+            diff[row][col1] += 1
+            diff[row][col2 + 1] -= 1
         end
     end
-
-    # Step 3: Compute Final Matrix (Prefix Sum Calculation)
-    # Iterate through each row
-    (0...n).each do |r|
-        # For each column starting from the second one
-        (1...n).each do |c|
-            # Add the value from the previous column to accumulate the sum
-            mat[r][c] += mat[r][c-1]
+    result = Array.new(n) { Array.new(n, 0) }
+    n.times do |row|
+        running = 0
+        n.times do |col|
+            running += diff[row][col]
+            result[row][col] = running
         end
     end
-
-    return mat
+    result
 end
 {% endraw %}
 {% endhighlight %}
@@ -799,39 +808,26 @@ end
 {% raw %}
 object Solution {
     def rangeAddQueries(n: Int, queries: Array[Array[Int]]): Array[Array[Int]] = {
-        // Initialize an n x n matrix with zeros
-        val mat: Array[Array[Int]] = Array.ofDim[Int](n, n) // Elements are initialized to 0
-
-        // Step 2: Process Queries (Difference Accumulation)
+        val diff = Array.fill(n, n + 1)(0)
         for (query <- queries) {
-            val r1 = query(0)
-            val c1 = query(1)
-            val r2 = query(2)
-            val c2 = query(3)
-
-            // For each row affected by the query
-            for (r <- r1 to r2) {
-                // Add 1 at the starting column
-                mat(r)(c1) += 1
-                // If the increment range ends before the matrix boundary,
-                // subtract 1 at the column after the ending column to cancel out
-                if (c2 + 1 < n) {
-                    mat(r)(c2 + 1) -= 1
-                }
+            val row1 = query(0)
+            val col1 = query(1)
+            val row2 = query(2)
+            val col2 = query(3)
+            for (row <- row1 to row2) {
+                diff(row)(col1) += 1
+                diff(row)(col2 + 1) -= 1
             }
         }
-
-        // Step 3: Compute Final Matrix (Prefix Sum Calculation)
-        // Iterate through each row
-        for (r <- 0 until n) {
-            // For each column starting from the second one
-            for (c <- 1 until n) {
-                // Add the value from the previous column to accumulate the sum
-                mat(r)(c) += mat(r)(c-1)
+        val result = Array.fill(n, n)(0)
+        for (row <- 0 until n) {
+            var running = 0
+            for (col <- 0 until n) {
+                running += diff(row)(col)
+                result(row)(col) = running
             }
         }
-
-        mat
+        result
     }
 }
 {% endraw %}
@@ -845,40 +841,31 @@ object Solution {
 {% raw %}
 impl Solution {
     pub fn range_add_queries(n: i32, queries: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
-        let n_usize = n as usize;
-        // Initialize an n x n matrix with zeros
-        let mut mat: Vec<Vec<i32>> = vec![vec![0; n_usize]; n_usize];
+        let n = n as usize;
+        let mut diff = vec![vec![0; n + 1]; n];
 
-        // Step 2: Process Queries (Difference Accumulation)
         for query in queries {
-            let r1 = query[0] as usize;
-            let c1 = query[1] as usize;
-            let r2 = query[2] as usize;
-            let c2 = query[3] as usize;
+            let row1 = query[0] as usize;
+            let col1 = query[1] as usize;
+            let row2 = query[2] as usize;
+            let col2 = query[3] as usize;
 
-            // For each row affected by the query
-            for r in r1..=r2 {
-                // Add 1 at the starting column
-                mat[r][c1] += 1;
-                // If the increment range ends before the matrix boundary,
-                // subtract 1 at the column after the ending column to cancel out
-                if c2 + 1 < n_usize {
-                    mat[r][c2 + 1] -= 1;
-                }
+            for row in row1..=row2 {
+                diff[row][col1] += 1;
+                diff[row][col2 + 1] -= 1;
             }
         }
 
-        // Step 3: Compute Final Matrix (Prefix Sum Calculation)
-        // Iterate through each row
-        for r in 0..n_usize {
-            // For each column starting from the second one
-            for c in 1..n_usize {
-                // Add the value from the previous column to accumulate the sum
-                mat[r][c] += mat[r][c-1];
+        let mut result = vec![vec![0; n]; n];
+        for row in 0..n {
+            let mut running = 0;
+            for col in 0..n {
+                running += diff[row][col];
+                result[row][col] = running;
             }
         }
 
-        mat
+        result
     }
 }
 {% endraw %}
@@ -890,46 +877,24 @@ impl Solution {
 
 {% highlight racket %}
 {% raw %}
-#lang racket
-
-(define (range-add-queries n queries)
-  ;; Initialize an n x n matrix with zeros using vectors for efficiency
-  (define mat (build-vector n (lambda (r) (make-vector n 0))))
-
-  ;; Step 2: Process Queries (Difference Accumulation)
-  (for-each
-   (lambda (query)
-     (define r1 (list-ref query 0))
-     (define c1 (list-ref query 1))
-     (define r2 (list-ref query 2))
-     (define c2 (list-ref query 3))
-
-     ;; For each row affected by the query
-     (for ([r (range r1 (+ r2 1))])
-       (define current-row (vector-ref mat r))
-       ;; Add 1 at the starting column
-       (vector-set! current-row c1 (+ (vector-ref current-row c1) 1))
-       ;; If the increment range ends before the matrix boundary,
-       ;; subtract 1 at the column after the ending column to cancel out
-       (when (< (+ c2 1) n)
-         (vector-set! current-row (+ c2 1) (- (vector-ref current-row (+ c2 1)) 1))))
-     )
-   queries)
-
-  ;; Step 3: Compute Final Matrix (Prefix Sum Calculation)
-  ;; Iterate through each row
-  (for ([r (range 0 n)])
-    (define current-row (vector-ref mat r))
-    ;; For each column starting from the second one
-    (for ([c (range 1 n)])
-      ;; Add the value from the previous column to accumulate the sum
-      (vector-set! current-row c (+ (vector-ref current-row c) (vector-ref current-row (- c 1)))))
-    )
-
-  ;; Convert vector of vectors back to list of lists as output format implies
-  (for/list ([v (in-vector mat)])
-    (vector->list v))
-)
+(define/contract (range-add-queries n queries)
+  (-> exact-integer? (listof (listof exact-integer?)) (listof (listof exact-integer?)))
+  (let ([diff (build-vector n (lambda (_) (make-vector (add1 n) 0)))])
+    (for ([query queries])
+      (define row1 (list-ref query 0))
+      (define col1 (list-ref query 1))
+      (define row2 (list-ref query 2))
+      (define col2 (list-ref query 3))
+      (for ([row (in-range row1 (add1 row2))])
+        (vector-set! (vector-ref diff row) col1
+                     (add1 (vector-ref (vector-ref diff row) col1)))
+        (vector-set! (vector-ref diff row) (add1 col2)
+                     (sub1 (vector-ref (vector-ref diff row) (add1 col2)))))
+    (for/list ([row (in-range n)])
+      (define running 0)
+      (for/list ([col (in-range n)])
+        (set! running (+ running (vector-ref (vector-ref diff row) col)))
+        running))))
 {% endraw %}
 {% endhighlight %}
 
@@ -939,65 +904,36 @@ impl Solution {
 
 {% highlight erlang %}
 {% raw %}
--module(solution).
--export([range_add_queries/2]).
--include_lib("kernel/include/array.hrl").
-
+-spec range_add_queries(N :: integer(), Queries :: [[integer()]]) -> [[integer()]].
 range_add_queries(N, Queries) ->
-    % Initialize an N x N matrix with zeros using Erlang's array module for efficient access/update
-    ZeroArray = array:new([{size, N}, {fixed, true}, {default, 0}]),
-    Mat = lists:duplicate(N, ZeroArray),
-
-    % Step 2: Process Queries (Difference Accumulation)
-    FinalMatWithDiffs = lists:foldl(
-        fun(Query, CurrentMat) ->
-            [R1, C1, R2, C2] = Query,
-            lists:mapi(
-                fun(RIdx, RowArray) ->
-                    if
-                        RIdx >= R1, RIdx =< R2 ->
-                            % Add 1 at the starting column
-                            ValC1 = array:get(C1, RowArray),
-                            UpdatedRowArray1 = array:set(C1, ValC1 + 1, RowArray),
-                            if
-                                C2 + 1 < N ->
-                                    % Subtract 1 at the column after the ending column to cancel out
-                                    ValC2Plus1 = array:get(C2 + 1, UpdatedRowArray1),
-                                    array:set(C2 + 1, ValC2Plus1 - 1, UpdatedRowArray1);
-                                true ->
-                                    UpdatedRowArray1
-                            end;
-                        true ->
-                            RowArray
-                    end
-                end,
-                CurrentMat
-            )
+  Diff0 = [lists:duplicate(N + 1, 0) || _ <- lists:seq(1, N)],
+  Diff = lists:foldl(
+    fun([Row1, Col1, Row2, Col2], Acc) ->
+      lists:foldl(
+        fun(Row, Rows) ->
+          Current = lists:nth(Row + 1, Rows),
+          Updated = update_at(Col2 + 2,
+            update_at(Col1 + 1, lists:nth(Col1 + 1, Current) + 1, Current),
+            lists:sublist(Current, Col2 + 1) ++ [lists:nth(Col2 + 2, Current) - 1 | lists:nthtail(Col2 + 2, Current)]),
+          replace_at(Row + 1, Updated, Rows)
         end,
-        Mat,
-        Queries
-    ),
+        Acc,
+        lists:seq(Row1, Row2))
+    end,
+    Diff0,
+    Queries),
+  [row_prefix(lists:sublist(Row, N), 0, []) || Row <- Diff].
 
-    % Step 3: Compute Final Matrix (Prefix Sum Calculation)
-    % Iterate through each row and compute prefix sum
-    lists:map(
-        fun(RowArray) ->
-            RowList = array:to_list(RowArray), % Convert to list to build prefix sum functionally
-            lists:foldl(
-                fun(CurrentVal, Acc) ->
-                    case Acc of
-                        [] ->
-                            [CurrentVal];
-                        [PrevSum | _] ->
-                            [CurrentVal + PrevSum | Acc]
-                    end
-                end,
-                [],
-                RowList
-            ) |> lists:reverse % Prefix sum accumulates from left to right, foldl builds in reverse
-        end,
-        FinalMatWithDiffs
-    ).
+update_at(1, Value, [_ | Tail]) -> [Value | Tail];
+update_at(Index, Value, [Head | Tail]) -> [Head | update_at(Index - 1, Value, Tail)].
+
+replace_at(1, Value, [_ | Tail]) -> [Value | Tail];
+replace_at(Index, Value, [Head | Tail]) -> [Head | replace_at(Index - 1, Value, Tail)].
+
+row_prefix([], _Running, Acc) -> lists:reverse(Acc);
+row_prefix([Value | Rest], Running, Acc) ->
+  Next = Running + Value,
+  row_prefix(Rest, Next, [Next | Acc]).
 {% endraw %}
 {% endhighlight %}
 
@@ -1010,37 +946,22 @@ range_add_queries(N, Queries) ->
 defmodule Solution do
   @spec range_add_queries(n :: integer, queries :: [[integer]]) :: [[integer]]
   def range_add_queries(n, queries) do
-    # Initialize an n x n matrix with zeros using Erlang's :array module
-    zero_array = :array.new(size: n, fixed: true, default: 0)
-    mat = for _ <- 0..(n-1), do: zero_array
+    diff = for _ <- 1..n, do: List.duplicate(0, n + 1)
 
-    # Step 2: Process Queries (Difference Accumulation)
-    final_mat_with_diffs = Enum.reduce(queries, mat, fn [r1, c1, r2, c2], current_mat ->
-      Enum.mapi(current_mat, fn r_idx, row_array ->
-        if r_idx >= r1 and r_idx <= r2 do
-          # Add 1 at the starting column
-          val_c1 = :array.get(c1, row_array)
-          updated_row_array1 = :array.set(c1, val_c1 + 1, row_array)
-          # If the increment range ends before the matrix boundary,
-          # subtract 1 at the column after the ending column to cancel out
-          if c2 + 1 < n do
-            val_c2_plus_1 = :array.get(c2 + 1, updated_row_array1)
-            :array.set(c2 + 1, val_c2_plus_1 - 1, updated_row_array1)
-          else
-            updated_row_array1
-          end
-        else
-          row_array
-        end
+    diff =
+      Enum.reduce(queries, diff, fn [row1, col1, row2, col2], rows ->
+        Enum.reduce(row1..row2, rows, fn row, acc ->
+          current = Enum.at(acc, row)
+          current = List.update_at(current, col1, &(&1 + 1))
+          current = List.update_at(current, col2 + 1, &(&1 - 1))
+          List.replace_at(acc, row, current)
+        end)
       end)
-    end)
 
-    # Step 3: Compute Final Matrix (Prefix Sum Calculation)
-    # Iterate through each row and compute prefix sum
-    Enum.map(final_mat_with_diffs, fn row_array ->
-      # Convert array to list for `Enum.scan`
-      row_list = :array.to_list(row_array)
-      Enum.scan(row_list, fn val, acc -> val + acc end)
+    Enum.map(diff, fn row ->
+      row
+      |> Enum.take(n)
+      |> Enum.scan(0, &(&1 + &2))
     end)
   end
 end
@@ -1053,690 +974,5 @@ end
 
 ### Complexity Analysis
 
-- **Time Complexity:** O(Q * n + n^2)
-
-- **Space Complexity:** O(n^2)
-
-</div>
-</details>
-
-
-<hr class="ai-solution-separator">
-
-
-<details class="ai-solution-card" markdown="1">
-<summary class="ai-solution-header">
-  <span class="ai-model-badge">⚡ Solution from <strong>llama-3.3-70b-versatile</strong></span>
-  <small class="solution-timestamp">(2025-11-20 19:58:51 UTC)</small>
-</summary>
-
-<div class="ai-solution-content">
-
-{% raw %}
-
-### Approach
-
-The approach to solve this problem involves using a prefix sum array to efficiently update the submatrices. 
-We start by initializing a 2D array of size n x n with all elements as 0. 
-Then, for each query, we iterate over the rows in the range [row1, row2] and add 1 to the prefix sum at column col1, 
-and subtract 1 from the prefix sum at column col2 + 1. 
-After processing all queries, we update each row separately by calculating the prefix sum for each column.
-
-The problem-solving strategy involves the following steps:
-1. Initialize a 2D array of size n x n with all elements as 0.
-2. Process each query by updating the prefix sum array.
-3. Update each row separately by calculating the prefix sum for each column.
-
-The algorithm logic can be described as follows:
-1. For each query, iterate over the rows in the range [row1, row2].
-2. For each row, add 1 to the prefix sum at column col1, and subtract 1 from the prefix sum at column col2 + 1.
-3. After processing all queries, update each row separately by calculating the prefix sum for each column.
-
-The time complexity of this approach is O(n * m * q), where n is the size of the matrix, m is the number of columns, 
-and q is the number of queries. The space complexity is O(n * m), which is used to store the prefix sum array.
-
-The approach can be illustrated with an example. Suppose we have a 3x3 matrix and two queries: 
-[[1,1,2,2],[0,0,1,1]]. We start by initializing the prefix sum array with all elements as 0. 
-Then, we process each query by updating the prefix sum array. 
-After processing all queries, we update each row separately by calculating the prefix sum for each column.
-
-{% endraw %}
-
-### Code
-
-<div class="code-tabs" markdown="0">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-cpp-llama-3-3-70b-versatile" checked>
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-java-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-python-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-python3-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-c-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-csharp-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-javascript-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-typescript-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-php-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-swift-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-kotlin-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-dart-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-go-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-ruby-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-scala-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-rust-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-racket-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-erlang-llama-3-3-70b-versatile">
-  <input type="radio" name="code-lang-llama-3-3-70b-versatile" id="lang-elixir-llama-3-3-70b-versatile">
-  <div class="tab-labels">
-    <label for="lang-cpp-llama-3-3-70b-versatile">C++</label>
-    <label for="lang-java-llama-3-3-70b-versatile">Java</label>
-    <label for="lang-python-llama-3-3-70b-versatile">Python</label>
-    <label for="lang-python3-llama-3-3-70b-versatile">Python3</label>
-    <label for="lang-c-llama-3-3-70b-versatile">C</label>
-    <label for="lang-csharp-llama-3-3-70b-versatile">C#</label>
-    <label for="lang-javascript-llama-3-3-70b-versatile">JavaScript</label>
-    <label for="lang-typescript-llama-3-3-70b-versatile">TypeScript</label>
-    <label for="lang-php-llama-3-3-70b-versatile">PHP</label>
-    <label for="lang-swift-llama-3-3-70b-versatile">Swift</label>
-    <label for="lang-kotlin-llama-3-3-70b-versatile">Kotlin</label>
-    <label for="lang-dart-llama-3-3-70b-versatile">Dart</label>
-    <label for="lang-go-llama-3-3-70b-versatile">Go</label>
-    <label for="lang-ruby-llama-3-3-70b-versatile">Ruby</label>
-    <label for="lang-scala-llama-3-3-70b-versatile">Scala</label>
-    <label for="lang-rust-llama-3-3-70b-versatile">Rust</label>
-    <label for="lang-racket-llama-3-3-70b-versatile">Racket</label>
-    <label for="lang-erlang-llama-3-3-70b-versatile">Erlang</label>
-    <label for="lang-elixir-llama-3-3-70b-versatile">Elixir</label>
-  </div>
-
-  <div class="tab-panel" data-lang="cpp">
-
-{% highlight cpp %}
-{% raw %}
-#include <vector>
-         #include <iostream>
-
-         using namespace std;
-
-         class Solution {
-         public:
-             vector<vector<int>> rangeAddQueries(int n, vector<vector<int>>& queries) {
-                 vector<vector<int>> res(n, vector<int>(n, 0));
-                 for (auto& query : queries) {
-                     int row1 = query[0], col1 = query[1], row2 = query[2], col2 = query[3];
-                     for (int i = row1; i <= row2; i++) {
-                         res[i][col1]++;
-                         if (col2 + 1 < n) {
-                             res[i][col2 + 1]--;
-                         }
-                     }
-                 }
-                 for (int i = 0; i < n; i++) {
-                     for (int j = 1; j < n; j++) {
-                         res[i][j] += res[i][j - 1];
-                     }
-                 }
-                 return res;
-             }
-         };
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="java">
-
-{% highlight java %}
-{% raw %}
-import java.util.*;
-
-         public class Solution {
-             public int[][] rangeAddQueries(int n, int[][] queries) {
-                 int[][] res = new int[n][n];
-                 for (int[] query : queries) {
-                     int row1 = query[0], col1 = query[1], row2 = query[2], col2 = query[3];
-                     for (int i = row1; i <= row2; i++) {
-                         res[i][col1]++;
-                         if (col2 + 1 < n) {
-                             res[i][col2 + 1]--;
-                         }
-                     }
-                 }
-                 for (int i = 0; i < n; i++) {
-                     for (int j = 1; j < n; j++) {
-                         res[i][j] += res[i][j - 1];
-                     }
-                 }
-                 return res;
-             }
-         }
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="python">
-
-{% highlight python %}
-{% raw %}
-class Solution:
-             def rangeAddQueries(self, n: int, queries: list[list[int]]) -> list[list[int]]:
-                 res = [[0] * n for _ in range(n)]
-                 for query in queries:
-                     row1, col1, row2, col2 = query
-                     for i in range(row1, row2 + 1):
-                         res[i][col1] += 1
-                         if col2 + 1 < n:
-                             res[i][col2 + 1] -= 1
-                 for i in range(n):
-                     for j in range(1, n):
-                         res[i][j] += res[i][j - 1]
-                 return res
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="python3">
-
-{% highlight python %}
-{% raw %}
-class Solution:
-             def rangeAddQueries(self, n: int, queries: list[list[int]]) -> list[list[int]]:
-                 res = [[0] * n for _ in range(n)]
-                 for query in queries:
-                     row1, col1, row2, col2 = query
-                     for i in range(row1, row2 + 1):
-                         res[i][col1] += 1
-                         if col2 + 1 < n:
-                             res[i][col2 + 1] -= 1
-                 for i in range(n):
-                     for j in range(1, n):
-                         res[i][j] += res[i][j - 1]
-                 return res
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="c">
-
-{% highlight c %}
-{% raw %}
-#include <stdio.h>
-         #include <stdlib.h>
-
-         int** rangeAddQueries(int n, int** queries, int queriesSize, int* queriesColSize, int** columnSizes, int* returnSize) {
-             int** res = (int**)malloc(n * sizeof(int*));
-             for (int i = 0; i < n; i++) {
-                 res[i] = (int*)malloc(n * sizeof(int));
-                 for (int j = 0; j < n; j++) {
-                     res[i][j] = 0;
-                 }
-             }
-             for (int i = 0; i < queriesSize; i++) {
-                 int row1 = queries[i][0], col1 = queries[i][1], row2 = queries[i][2], col2 = queries[i][3];
-                 for (int j = row1; j <= row2; j++) {
-                     res[j][col1]++;
-                     if (col2 + 1 < n) {
-                         res[j][col2 + 1]--;
-                     }
-                 }
-             }
-             for (int i = 0; i < n; i++) {
-                 for (int j = 1; j < n; j++) {
-                     res[i][j] += res[i][j - 1];
-                 }
-             }
-             *returnSize = n;
-             *columnSizes = (int*)malloc(n * sizeof(int));
-             for (int i = 0; i < n; i++) {
-                 (*columnSizes)[i] = n;
-             }
-             return res;
-         }
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="csharp">
-
-{% highlight csharp %}
-{% raw %}
-public class Solution {
-             public int[][] RangeAddQueries(int n, int[][] queries) {
-                 int[][] res = new int[n][];
-                 for (int i = 0; i < n; i++) {
-                     res[i] = new int[n];
-                 }
-                 foreach (var query in queries) {
-                     int row1 = query[0], col1 = query[1], row2 = query[2], col2 = query[3];
-                     for (int i = row1; i <= row2; i++) {
-                         res[i][col1]++;
-                         if (col2 + 1 < n) {
-                             res[i][col2 + 1]--;
-                         }
-                     }
-                 }
-                 for (int i = 0; i < n; i++) {
-                     for (int j = 1; j < n; j++) {
-                         res[i][j] += res[i][j - 1];
-                     }
-                 }
-                 return res;
-             }
-         }
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="javascript">
-
-{% highlight javascript %}
-{% raw %}
-var rangeAddQueries = function(n, queries) {
-             let res = Array(n).fill(0).map(() => Array(n).fill(0));
-             for (let query of queries) {
-                 let row1 = query[0], col1 = query[1], row2 = query[2], col2 = query[3];
-                 for (let i = row1; i <= row2; i++) {
-                     res[i][col1]++;
-                     if (col2 + 1 < n) {
-                         res[i][col2 + 1]--;
-                     }
-                 }
-             }
-             for (let i = 0; i < n; i++) {
-                 for (let j = 1; j < n; j++) {
-                     res[i][j] += res[i][j - 1];
-                 }
-             }
-             return res;
-         };
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="typescript">
-
-{% highlight typescript %}
-{% raw %}
-function rangeAddQueries(n: number, queries: number[][]): number[][] {
-             let res: number[][] = Array(n).fill(0).map(() => Array(n).fill(0));
-             for (let query of queries) {
-                 let row1: number = query[0], col1: number = query[1], row2: number = query[2], col2: number = query[3];
-                 for (let i: number = row1; i <= row2; i++) {
-                     res[i][col1]++;
-                     if (col2 + 1 < n) {
-                         res[i][col2 + 1]--;
-                     }
-                 }
-             }
-             for (let i: number = 0; i < n; i++) {
-                 for (let j: number = 1; j < n; j++) {
-                     res[i][j] += res[i][j - 1];
-                 }
-             }
-             return res;
-         }
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="php">
-
-{% highlight php %}
-{% raw %}
-class Solution {
-             function rangeAddQueries($n, $queries) {
-                 $res = array_fill(0, $n, array_fill(0, $n, 0));
-                 foreach ($queries as $query) {
-                     $row1 = $query[0]; $col1 = $query[1]; $row2 = $query[2]; $col2 = $query[3];
-                     for ($i = $row1; $i <= $row2; $i++) {
-                         $res[$i][$col1]++;
-                         if ($col2 + 1 < $n) {
-                             $res[$i][$col2 + 1]--;
-                         }
-                     }
-                 }
-                 for ($i = 0; $i < $n; $i++) {
-                     for ($j = 1; $j < $n; $j++) {
-                         $res[$i][$j] += $res[$i][$j - 1];
-                     }
-                 }
-                 return $res;
-             }
-         }
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="swift">
-
-{% highlight swift %}
-{% raw %}
-class Solution {
-             func rangeAddQueries(_ n: Int, _ queries: [[Int]]) -> [[Int]] {
-                 var res = Array(repeating: Array(repeating: 0, count: n), count: n)
-                 for query in queries {
-                     let row1 = query[0], col1 = query[1], row2 = query[2], col2 = query[3]
-                     for i in row1...row2 {
-                         res[i][col1] += 1
-                         if col2 + 1 < n {
-                             res[i][col2 + 1] -= 1
-                         }
-                     }
-                 }
-                 for i in 0..<n {
-                     for j in 1..<n {
-                         res[i][j] += res[i][j - 1]
-                     }
-                 }
-                 return res
-             }
-         }
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="kotlin">
-
-{% highlight kotlin %}
-{% raw %}
-class Solution {
-             fun rangeAddQueries(n: Int, queries: Array<IntArray>): Array<IntArray> {
-                 val res = Array(n) { IntArray(n) }
-                 for (query in queries) {
-                     val row1 = query[0]
-                     val col1 = query[1]
-                     val row2 = query[2]
-                     val col2 = query[3]
-                     for (i in row1..row2) {
-                         res[i][col1]++
-                         if (col2 + 1 < n) {
-                             res[i][col2 + 1]--
-                         }
-                     }
-                 }
-                 for (i in 0 until n) {
-                     for (j in 1 until n) {
-                         res[i][j] += res[i][j - 1]
-                     }
-                 }
-                 return res
-             }
-         }
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="dart">
-
-{% highlight dart %}
-{% raw %}
-class Solution {
-           List<List<int>> rangeAddQueries(int n, List<List<int>> queries) {
-             List<List<int>> res = List.generate(n, (i) => List.generate(n, (j) => 0));
-             for (var query in queries) {
-               int row1 = query[0], col1 = query[1], row2 = query[2], col2 = query[3];
-               for (int i = row1; i <= row2; i++) {
-                 res[i][col1]++;
-                 if (col2 + 1 < n) {
-                   res[i][col2 + 1]--;
-                 }
-               }
-             }
-             for (int i = 0; i < n; i++) {
-               for (int j = 1; j < n; j++) {
-                 res[i][j] += res[i][j - 1];
-               }
-             }
-             return res;
-           }
-         }
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="go">
-
-{% highlight go %}
-{% raw %}
-func rangeAddQueries(n int, queries [][]int) [][]int {
-             res := make([][]int, n)
-             for i := range res {
-                 res[i] = make([]int, n)
-             }
-             for _, query := range queries {
-                 row1, col1, row2, col2 := query[0], query[1], query[2], query[3]
-                 for i := row1; i <= row2; i++ {
-                     res[i][col1]++
-                     if col2+1 < n {
-                         res[i][col2+1]--
-                     }
-                 }
-             }
-             for i := 0; i < n; i++ {
-                 for j := 1; j < n; j++ {
-                     res[i][j] += res[i][j-1]
-                 }
-             }
-             return res
-         }
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="ruby">
-
-{% highlight ruby %}
-{% raw %}
-# @param {Integer} n
-         # @param {Integer[][]} queries
-         # @return {Integer[][]}
-         def range_add_queries(n, queries)
-           res = Array.new(n) { Array.new(n, 0) }
-           queries.each do |query|
-             row1, col1, row2, col2 = query
-             (row1..row2).each do |i|
-               res[i][col1] += 1
-               res[i][col2 + 1] -= 1 if col2 + 1 < n
-             end
-           end
-           (0...n).each do |i|
-             (1...n).each do |j|
-               res[i][j] += res[i][j - 1]
-             end
-           end
-           res
-         end
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="scala">
-
-{% highlight scala %}
-{% raw %}
-object Solution {
-           def rangeAddQueries(n: Int, queries: Array[Array[Int]]): Array[Array[Int]] = {
-             val res = Array.fill(n)(new Array[Int](n))
-             queries.foreach { query =>
-               val row1 = query(0)
-               val col1 = query(1)
-               val row2 = query(2)
-               val col2 = query(3)
-               (row1 to row2).foreach { i =>
-                 res(i)(col1) += 1
-                 if (col2 + 1 < n) {
-                   res(i)(col2 + 1) -= 1
-                 }
-               }
-             }
-             (0 until n).foreach { i =>
-               (1 until n).foreach { j =>
-                 res(i)(j) += res(i)(j - 1)
-               }
-             }
-             res
-           }
-         }
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="rust">
-
-{% highlight rust %}
-{% raw %}
-impl Solution {
-             pub fn range_add_queries(n: i32, queries: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
-                 let n = n as usize;
-                 let mut res: Vec<Vec<i32>> = vec![vec![0; n]; n];
-                 for query in queries {
-                     let row1 = query[0] as usize;
-                     let col1 = query[1] as usize;
-                     let row2 = query[2] as usize;
-                     let col2 = query[3] as usize;
-                     for i in row1..=row2 {
-                         res[i][col1] += 1;
-                         if col2 + 1 < n {
-                             res[i][col2 + 1] -= 1;
-                         }
-                     }
-                 }
-                 for i in 0..n {
-                     for j in 1..n {
-                         res[i][j] += res[i][j - 1];
-                     }
-                 }
-                 res
-             }
-         }
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="racket">
-
-{% highlight racket %}
-{% raw %}
-#lang racket
-         (define (range-add-queries n queries)
-           (define res (make-vector n (make-vector n 0)))
-           (for-each
-             (lambda (query)
-               (define row1 (vector-ref query 0))
-               (define col1 (vector-ref query 1))
-               (define row2 (vector-ref query 2))
-               (define col2 (vector-ref query 3))
-               (for ([i (in-range row1 (add1 row2))])
-                 (vector-set! (vector-ref res i) col1 (add1 (vector-ref (vector-ref res i) col1)))
-                 (when (< (add1 col2) n)
-                   (vector-set! (vector-ref res i) (add1 col2) (sub1 (vector-ref (vector-ref res i) (add1 col2)))))))
-             queries)
-           (for ([i (in-range n)])
-             (for ([j (in-range 1 n)])
-               (vector-set! (vector-ref res i) j (+ (vector-ref (vector-ref res i) j) (vector-ref (vector-ref res i) (sub1 j))))))
-           res)
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="erlang">
-
-{% highlight erlang %}
-{% raw %}
--module(solution).
-         -export([range_add_queries/2]).
-
-         range_add_queries(N, Queries) ->
-             Res = array:new(N, {default, 0}),
-             lists:foldl(
-               fun(Query, Res0) ->
-                   [Row1, Col1, Row2, Col2] = Query,
-                   lists:foldl(
-                     fun(I, Res1) ->
-                       array:set(I, Col1, array:get(I, Col1) + 1, Res1),
-                       if Col2 + 1 < N ->
-                           array:set(I, Col2 + 1, array:get(I, Col2 + 1) - 1, Res1);
-                          true -> Res1
-                       end
-                     end,
-                     Res0,
-                     lists:seq(Row1, Row2)
-                   )
-               end,
-               Res,
-               Queries
-             ),
-             lists:foldl(
-               fun(I, Res0) ->
-                 lists:foldl(
-                   fun(J, Res1) ->
-                     array:set(I, J, array:get(I, J) + array:get(I, J - 1), Res1)
-                   end,
-                   Res0,
-                   lists:seq(1, N - 1)
-                 )
-               end,
-               Res,
-               lists:seq(0, N - 1)
-             ).
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-  <div class="tab-panel" data-lang="elixir">
-
-{% highlight elixir %}
-{% raw %}
-defmodule Solution do
-           def range_add_queries(n, queries) do
-             res = Array.new(n, fn -> Array.new(n, 0) end)
-             Enum.reduce(queries, res, fn query, res ->
-               [row1, col1, row2, col2] = query
-               Enum.reduce(row1..row2, res, fn i, res ->
-                 res
-                 |> Array.put(i, Array.put(Enum.at(res, i), col1, Enum.at(Enum.at(res, i), col1) + 1))
-                 |> if col2 + 1 < n do
-                       Array.put(i, Array.put(Enum.at(res, i), col2 + 1, Enum.at(Enum.at(res, i), col2 + 1) - 1))
-                     else
-                       &1
-                   end)
-             end)
-             |> Enum.reduce(0..n-1, fn i, res ->
-               Enum.reduce(1..n-1, res, fn j, res ->
-                 Array.put(i, Array.put(Enum.at(res, i), j, Enum.at(Enum.at(res, i), j) + Enum.at(Enum.at(res, i), j - 1)), res)
-               end)
-             end)
-           end
-         end
-{% endraw %}
-{% endhighlight %}
-
-  </div>
-
-</div>
-
-### Complexity Analysis
-
-- **Time Complexity:** O(n * m * q) where n is the size of the matrix, m is the number of columns, and q is the number of queries. 
-      The time complexity is O(n * m * q) because we need to process each query, which involves iterating over the rows in the range [row1, row2] 
-      and updating the prefix sum array. We also need to update each row separately by calculating the prefix sum for each column.
-
-- **Space Complexity:** O(n * m) which is used to store the prefix sum array. 
-      The space complexity is O(n * m) because we need to store the prefix sum array, which has a size of n x m.
-
-</div>
-</details>
+- **Time Complexity:** O(n^2 + qn), where q is the number of queries. Each query updates at most n rows, and the final row-wise prefix sums visit all n^2 cells.
+- **Space Complexity:** O(n^2) for the difference matrix, which is also used to store the result.
