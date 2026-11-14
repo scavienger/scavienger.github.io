@@ -20,11 +20,12 @@ permalink: /calendar/
     {% endfor %}
   </div>
 
-  <div class="calendar-legend" aria-label="Difficulty legend">
-    <span class="legend-item"><span class="cal-cell level-none"></span>None</span>
-    <span class="legend-item"><span class="cal-cell level-easy"></span>Easy</span>
-    <span class="legend-item"><span class="cal-cell level-medium"></span>Medium</span>
-    <span class="legend-item"><span class="cal-cell level-hard"></span>Hard</span>
+  <div class="calendar-legend" aria-label="Difficulty and status legend">
+    <span class="legend-item"><span class="cal-cell level-none"></span>No post</span>
+    <span class="legend-item"><span class="cal-cell level-easy is-unsolved"></span>Unsolved</span>
+    <span class="legend-item"><span class="cal-cell level-easy is-solved"></span>Easy</span>
+    <span class="legend-item"><span class="cal-cell level-medium is-solved"></span>Medium</span>
+    <span class="legend-item"><span class="cal-cell level-hard is-solved"></span>Hard</span>
   </div>
 </div>
 
@@ -86,7 +87,10 @@ permalink: /calendar/
     return dt.getUTCFullYear() + '-' + pad2(dt.getUTCMonth() + 1) + '-' + pad2(dt.getUTCDate());
   }
 
+  var activeYear = null;
+
   function renderYear(yearNum) {
+    activeYear = yearNum;
     var jan1 = new Date(Date.UTC(yearNum, 0, 1));
     var dec31 = new Date(Date.UTC(yearNum, 11, 31));
     var start = new Date(jan1.getTime());
@@ -95,12 +99,16 @@ permalink: /calendar/
     var end = new Date(dec31.getTime());
     end.setUTCDate(end.getUTCDate() + (6 - end.getUTCDay()));
 
+    var todayIso = formatDateUTC(new Date());
+    var solvedSet = window.LeetCodeBookmarks ? window.LeetCodeBookmarks.getSolvedSet() : new Set();
+
     var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     var weeksHtml = [];
     var monthLabels = [];
     var lastMonth = -1;
 
     var totalYear = 0;
+    var personalSolvedCount = 0;
     var easyCount = 0;
     var medCount = 0;
     var hardCount = 0;
@@ -126,12 +134,17 @@ permalink: /calendar/
             if (diff === 'easy') easyCount++;
             else if (diff === 'medium') medCount++;
             else if (diff === 'hard') hardCount++;
+            var isSolved = solvedSet.has(post.url);
+            if (isSolved) personalSolvedCount++;
             var levelClass = diff ? 'level-' + diff : 'level-easy';
+            var statusClass = isSolved ? 'is-solved' : 'is-unsolved';
             cellsHtml.push(
-              '<a class="cal-cell ' + levelClass + '" href="' + post.url + '" ' +
-              'data-date="' + iso + '" data-title="' + post.title.replace(/"/g, '&quot;') + '" data-diff="' + (post.difficulty || '') + '" ' +
+              '<a class="cal-cell ' + levelClass + ' ' + statusClass + '" href="' + post.url + '" ' +
+              'data-date="' + iso + '" data-title="' + post.title.replace(/"/g, '&quot;') + '" data-diff="' + (post.difficulty || '') + '" data-solved="' + (isSolved ? '1' : '0') + '" ' +
               'aria-label="' + iso + ': ' + post.title.replace(/"/g, '&quot;') + '"></a>'
             );
+          } else if (iso > todayIso) {
+            cellsHtml.push('<span class="cal-cell level-future" data-date="' + iso + '" data-future="1"></span>');
           } else {
             cellsHtml.push('<span class="cal-cell level-none" data-date="' + iso + '"></span>');
           }
@@ -160,7 +173,9 @@ permalink: /calendar/
     });
 
     statsEl.innerHTML =
-      '<span><strong>' + totalYear + '</strong> solved in ' + yearNum + '</span>' +
+      '<span><strong>' + totalYear + '</strong> challenges in ' + yearNum + '</span>' +
+      '<span class="stat-divider">·</span>' +
+      '<span><strong>' + personalSolvedCount + '</strong> solved by you</span>' +
       '<span class="stat-divider">·</span>' +
       '<span class="stat-easy-txt">' + easyCount + ' Easy</span>' +
       '<span class="stat-divider">·</span>' +
@@ -175,12 +190,20 @@ permalink: /calendar/
     var date = cell.getAttribute('data-date');
     var title = cell.getAttribute('data-title');
     var diff = cell.getAttribute('data-diff');
+    var isSolved = cell.getAttribute('data-solved') === '1';
+    var isFuture = cell.getAttribute('data-future') === '1';
     if (!date) return;
 
-    tooltipEl.textContent = title ? (date + ' · ' + title + (diff ? ' (' + diff + ')' : '')) : (date + ' · No post');
+    if (title) {
+      tooltipEl.textContent = date + ' · ' + title + (diff ? ' (' + diff + ')' : '') + (isSolved ? ' · ✓ Solved' : ' · Unsolved');
+    } else if (isFuture) {
+      tooltipEl.textContent = date + ' · Upcoming';
+    } else {
+      tooltipEl.textContent = date + ' · No post';
+    }
     tooltipEl.style.display = 'block';
     var rect = cell.getBoundingClientRect();
-    tooltipEl.style.left = Math.min(window.innerWidth - 260, Math.max(12, rect.left)) + 'px';
+    tooltipEl.style.left = Math.min(window.innerWidth - 320, Math.max(12, rect.left)) + 'px';
     tooltipEl.style.top = (rect.top - 36) + 'px';
   });
 
@@ -196,6 +219,10 @@ permalink: /calendar/
       btn.classList.add('active');
       renderYear(parseInt(btn.getAttribute('data-year'), 10));
     });
+  });
+
+  document.addEventListener('leetcode:bookmarks-changed', function () {
+    if (activeYear !== null) renderYear(activeYear);
   });
 
   if (yearTabs.length > 0) {

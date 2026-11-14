@@ -1725,13 +1725,13 @@ body.search-palette-open {
   }
 
   &[data-solved-btn].is-active {
-    color: var(--easy-text);
+    color: var(--easy-color);
     background: var(--easy-bg);
     border-color: var(--easy-border);
   }
 
   &[data-bookmark-btn].is-active {
-    color: var(--medium-text);
+    color: var(--medium-color);
     background: var(--medium-bg);
     border-color: var(--medium-border);
   }
@@ -1776,13 +1776,13 @@ body.search-palette-open {
   }
 
   &[data-solved-btn].is-active {
-    color: var(--easy-text);
+    color: var(--easy-color);
     background: var(--easy-bg);
     border-color: var(--easy-border);
   }
 
   &[data-bookmark-btn].is-active {
-    color: var(--medium-text);
+    color: var(--medium-color);
     background: var(--medium-bg);
     border-color: var(--medium-border);
   }
@@ -1834,17 +1834,17 @@ body.search-palette-open {
   }
 
   .stat-easy-txt {
-    color: var(--easy-text);
+    color: var(--easy-color);
     font-weight: 500;
   }
 
   .stat-medium-txt {
-    color: var(--medium-text);
+    color: var(--medium-color);
     font-weight: 500;
   }
 
   .stat-hard-txt {
-    color: var(--hard-text);
+    color: var(--hard-color);
     font-weight: 500;
   }
 }
@@ -1915,23 +1915,51 @@ body.search-palette-open {
   }
 
   &.level-none {
-    background: var(--surface-hover);
-    border: 1px solid var(--border-color);
+    background: transparent;
+    border: 1px dashed var(--border-color);
+    opacity: 0.65;
+  }
+
+  &.level-future {
+    background: transparent;
+    border: 1px dotted var(--border-color);
+    opacity: 0.22;
   }
 
   &.level-easy {
-    background: var(--easy-text);
-    opacity: 0.85;
+    background: var(--easy-color);
+    border: 1px solid var(--easy-color);
+    opacity: 0.9;
+
+    &.is-unsolved {
+      background: var(--easy-bg);
+      border: 1.5px solid var(--easy-color);
+      opacity: 0.95;
+    }
   }
 
   &.level-medium {
-    background: var(--medium-text);
-    opacity: 0.88;
+    background: var(--medium-color);
+    border: 1px solid var(--medium-color);
+    opacity: 0.9;
+
+    &.is-unsolved {
+      background: var(--medium-bg);
+      border: 1.5px solid var(--medium-color);
+      opacity: 0.95;
+    }
   }
 
   &.level-hard {
-    background: var(--hard-text);
-    opacity: 0.9;
+    background: var(--hard-color);
+    border: 1px solid var(--hard-color);
+    opacity: 0.92;
+
+    &.is-unsolved {
+      background: var(--hard-bg);
+      border: 1.5px solid var(--hard-color);
+      opacity: 0.95;
+    }
   }
 }
 
