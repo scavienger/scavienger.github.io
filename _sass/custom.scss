@@ -748,16 +748,19 @@ body.light-mode .dark-mode-toggle .moon-icon {
 }
 
 .editorial-tag-chip {
+  appearance: none;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 11px;
+  padding: 5px 12px;
   background: var(--surface-elevated);
   border: 1px solid var(--border-color);
   border-radius: 9999px;
   color: var(--text-secondary);
+  font-family: var(--font-sans);
   font-size: 0.82rem;
   font-weight: 500;
+  cursor: pointer;
   transition: var(--transition);
 }
 
@@ -767,10 +770,91 @@ body.light-mode .dark-mode-toggle .moon-icon {
   text-decoration: none;
 }
 
+.editorial-tag-chip.active {
+  background: var(--text-color);
+  border-color: var(--text-color);
+  color: var(--bg-color);
+}
+
 .editorial-tag-chip .tag-count {
   font-family: var(--font-mono);
   font-size: 0.72rem;
   color: var(--text-muted);
+}
+
+.editorial-tag-chip.active .tag-count {
+  color: var(--bg-color);
+  opacity: 0.75;
+}
+
+.topic-empty-state {
+  padding: 2.5rem 1rem;
+  text-align: center;
+  border: 1px dashed var(--border-color);
+  border-radius: 10px;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.topic-summary-card {
+  margin-bottom: 1.25rem;
+  padding: 1.15rem 1.25rem;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+}
+
+.topic-summary-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 0.75rem;
+}
+
+.topic-summary-title {
+  font-family: var(--font-serif);
+  font-size: 1.65rem;
+  font-weight: 500;
+  margin: 0;
+  color: var(--text-color);
+}
+
+.topic-summary-metrics {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+}
+
+.topic-ratio-pill {
+  padding: 3px 10px;
+  border-radius: 9999px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.topic-percent-text {
+  color: var(--text-muted);
+}
+
+.topic-progress-track {
+  width: 100%;
+  height: 5px;
+  border-radius: 9999px;
+  background: var(--border-color);
+  overflow: hidden;
+}
+
+.topic-progress-fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--accent-color);
+  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ===========================
