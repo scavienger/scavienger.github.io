@@ -34,8 +34,18 @@
           </nav>
         {%- endif -%}
 
+        <button type="button" id="search-palette-trigger" class="search-trigger-btn" aria-label="Search challenges (Cmd+K)" title="Search challenges (Cmd+K / /)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <kbd>⌘K</kbd>
+        </button>
+
         {% include dark-mode-toggle.html %}
       </div>
     </div>
   </div>
 </header>
+
+{% include search-palette.html %}

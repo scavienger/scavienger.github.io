@@ -1470,3 +1470,493 @@ details .code-tabs {
     font-size: 0.7rem;
   }
 }
+
+/* ============================================
+   Header Quick Search Trigger & Command Palette
+   ============================================ */
+.search-trigger-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--surface-color);
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+
+  &:hover {
+    color: var(--text-color);
+    border-color: var(--border-strong);
+    background: var(--surface-hover);
+  }
+
+  kbd {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+    padding: 0;
+  }
+}
+
+body.search-palette-open {
+  overflow: hidden;
+}
+
+.search-palette-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 10vh 16px 24px;
+
+  &.is-open {
+    display: flex;
+  }
+}
+
+.search-palette-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+}
+
+.search-palette-dialog {
+  position: relative;
+  width: 100%;
+  max-width: 620px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.32);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 75vh;
+}
+
+.search-palette-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.search-palette-icon {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.search-palette-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-color);
+  font-size: 0.95rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  outline: none;
+
+  &::placeholder {
+    color: var(--text-muted);
+  }
+}
+
+.search-palette-esc {
+  border: 1px solid var(--border-color);
+  background: var(--surface-color);
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  padding: 3px 7px;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--text-color);
+    border-color: var(--border-strong);
+  }
+}
+
+.search-palette-results {
+  overflow-y: auto;
+  padding: 8px;
+  flex: 1;
+}
+
+.search-palette-empty {
+  padding: 28px 16px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+.search-palette-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-color);
+  transition: background-color 0.12s ease;
+
+  &:hover,
+  &.is-selected {
+    background: var(--surface-hover);
+    text-decoration: none;
+  }
+}
+
+.search-result-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.search-result-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.search-result-title {
+  font-weight: 500;
+  font-size: 0.92rem;
+  color: var(--text-color);
+}
+
+.search-result-tags {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.search-result-right {
+  flex-shrink: 0;
+}
+
+.search-palette-footer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 16px;
+  border-top: 1px solid var(--border-color);
+  background: var(--surface-color);
+  font-size: 0.74rem;
+  color: var(--text-muted);
+
+  kbd {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    padding: 1px 5px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    background: var(--surface-elevated);
+    color: var(--text-secondary);
+    margin-right: 4px;
+  }
+}
+
+/* ============================================
+   Personal Solved & Bookmark Controls
+   ============================================ */
+.status-filter-pills {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-filter-pill {
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--border-color);
+  background: var(--surface-color);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    color: var(--text-color);
+    border-color: var(--border-strong);
+  }
+
+  &.active {
+    background: var(--accent-color);
+    color: #fff;
+    border-color: var(--accent-color);
+  }
+}
+
+.row-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: var(--surface-hover);
+    border-color: var(--border-color);
+    color: var(--text-color);
+  }
+
+  &[data-solved-btn].is-active {
+    color: var(--easy-text);
+    background: var(--easy-bg);
+    border-color: var(--easy-border);
+  }
+
+  &[data-bookmark-btn].is-active {
+    color: var(--medium-text);
+    background: var(--medium-bg);
+    border-color: var(--medium-border);
+  }
+}
+
+.post-actions-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+
+  .problem-link-header {
+    margin-top: 0;
+  }
+}
+
+.post-personal-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.post-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 13px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--surface-color);
+  color: var(--text-secondary);
+  font-size: 0.84rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    color: var(--text-color);
+    border-color: var(--border-strong);
+    background: var(--surface-hover);
+  }
+
+  &[data-solved-btn].is-active {
+    color: var(--easy-text);
+    background: var(--easy-bg);
+    border-color: var(--easy-border);
+  }
+
+  &[data-bookmark-btn].is-active {
+    color: var(--medium-text);
+    background: var(--medium-bg);
+    border-color: var(--medium-border);
+  }
+}
+
+/* ============================================
+   Calendar 52-Week Heatmap Page
+   ============================================ */
+.calendar-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.calendar-year-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.calendar-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+}
+
+.calendar-stats-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+
+  .stat-divider {
+    color: var(--text-muted);
+  }
+
+  .stat-easy-txt {
+    color: var(--easy-text);
+    font-weight: 500;
+  }
+
+  .stat-medium-txt {
+    color: var(--medium-text);
+    font-weight: 500;
+  }
+
+  .stat-hard-txt {
+    color: var(--hard-text);
+    font-weight: 500;
+  }
+}
+
+.calendar-heatmap-card {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  overflow-x: auto;
+}
+
+.calendar-months-row {
+  position: relative;
+  height: 20px;
+  margin-bottom: 6px;
+  min-width: 820px;
+}
+
+.calendar-month-label {
+  position: absolute;
+  top: 0;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.calendar-grid-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  min-width: 820px;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-rows: repeat(7, 12px);
+  gap: 3px;
+  width: 30px;
+  flex-shrink: 0;
+  font-size: 0.68rem;
+  line-height: 12px;
+  color: var(--text-muted);
+}
+
+.calendar-grid {
+  display: flex;
+  gap: 3px;
+}
+
+.calendar-week {
+  display: grid;
+  grid-template-rows: repeat(7, 12px);
+  gap: 3px;
+  width: 12px;
+  flex-shrink: 0;
+}
+
+.cal-cell {
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-radius: 2.5px;
+  box-sizing: border-box;
+
+  &.is-outside {
+    background: transparent;
+  }
+
+  &.level-none {
+    background: var(--surface-hover);
+    border: 1px solid var(--border-color);
+  }
+
+  &.level-easy {
+    background: var(--easy-text);
+    opacity: 0.85;
+  }
+
+  &.level-medium {
+    background: var(--medium-text);
+    opacity: 0.88;
+  }
+
+  &.level-hard {
+    background: var(--hard-text);
+    opacity: 0.9;
+  }
+}
+
+a.cal-cell {
+  cursor: pointer;
+  transition: transform 0.1s ease, opacity 0.15s ease;
+
+  &:hover {
+    transform: scale(1.25);
+    opacity: 1;
+    outline: 1.5px solid var(--text-color);
+    outline-offset: 1px;
+  }
+}
+
+.calendar-tooltip {
+  position: fixed;
+  z-index: 1500;
+  pointer-events: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  font-size: 0.78rem;
+  color: var(--text-color);
+  white-space: nowrap;
+}

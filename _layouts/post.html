@@ -6,8 +6,6 @@ layout: default
     <div class="post-breadcrumb">
       <a href="{{ '/' | relative_url }}">Home</a>
       <span class="separator">›</span>
-      <a href="{{ '/archive/' | relative_url }}">Archive</a>
-      <span class="separator">›</span>
       <span>{{ page.title }}</span>
     </div>
 
@@ -41,14 +39,27 @@ layout: default
       {% endif %}
     </div>
 
-    {% if page.leetcode_url %}
-    <div class="problem-link-header">
-      <a href="{{ page.leetcode_url }}" target="_blank" rel="noopener noreferrer" class="leetcode-button">
-        View on LeetCode
-        <span class="arrow-icon" aria-hidden="true">↗</span>
-      </a>
+    <div class="post-actions-bar">
+      {% if page.leetcode_url %}
+      <div class="problem-link-header">
+        <a href="{{ page.leetcode_url }}" target="_blank" rel="noopener noreferrer" class="leetcode-button">
+          View on LeetCode
+          <span class="arrow-icon" aria-hidden="true">↗</span>
+        </a>
+      </div>
+      {% endif %}
+
+      <div class="post-personal-actions">
+        <button type="button" class="post-action-btn" data-solved-btn data-url="{{ page.url | relative_url }}" aria-pressed="false">
+          <span class="btn-icon" aria-hidden="true">✓</span>
+          <span class="btn-label">Mark Solved</span>
+        </button>
+        <button type="button" class="post-action-btn" data-bookmark-btn data-url="{{ page.url | relative_url }}" aria-pressed="false">
+          <span class="btn-icon" aria-hidden="true">☆</span>
+          <span class="btn-label">Bookmark</span>
+        </button>
+      </div>
     </div>
-    {% endif %}
   </header>
 
   <!-- AdSense Top Ad - Add your AdSense code here after approval -->

@@ -68,8 +68,9 @@ scavienger.github.io/
 │   └── generate-post-by-date.yml  # 특정 날짜(또는 기간) 포스트 수동 생성 워크플로우
 ├── _includes/
 │   ├── head.html                  # 기본 <head> 템플릿
-│   ├── custom-head.html           # 다크모드, 코드 탭, 코드 복사 JS 및 AdSense 로드
-│   ├── dark-mode-toggle.html      # 우측 하단 다크모드 토글 버튼
+│   ├── custom-head.html           # 다크모드, 코드 탭, 코드 복사, 북마크, 검색 팔레트 JS 및 AdSense 로드
+│   ├── dark-mode-toggle.html      # 우측 상단 다크모드 토글 버튼
+│   ├── search-palette.html        # Cmd+K / Ctrl+K 글로벌 검색 모달 컴포넌트
 │   └── toc.html                   # 스크롤 스파이 지원 목차(TOC) 컴포넌트
 ├── _layouts/
 │   ├── home.html                  # 홈 화면 (히어로, 문제 통계 대시보드, 최근 문제 그리드)
@@ -87,7 +88,9 @@ scavienger.github.io/
 │   └── js/
 │       ├── dark-mode.js           # 다크모드 상태 관리 및 localStorage 연동
 │       ├── code-tabs.js           # 선호 언어 탭 localStorage 저장/복원
-│       └── code-copy.js           # 코드 블록 원클릭 복사 버튼
+│       ├── code-copy.js           # 코드 블록 원클릭 복사 버튼
+│       ├── bookmarks.js           # 개인 Solved/Bookmark 체크리스트 (localStorage)
+│       └── search-palette.js      # Cmd+K / Ctrl+K 빠른 검색 팔레트 로직
 ├── data/
 │   └── daily_challenges.json      # 날짜별 LeetCode 문제 매핑 캐시 (date -> link, titleSlug)
 ├── scripts/
@@ -103,7 +106,8 @@ scavienger.github.io/
 │   ├── test_solve_with_ai.py      # 프롬프트, 들여쓰기 보정, JSON 파싱, 429 폴백 단위 테스트
 │   └── test_generate_posts_cli.py # CLI 인자 및 날짜 범위 처리 테스트
 ├── index.md                       # 메인 홈 페이지
-├── archive.md                     # 연도/월·난이도별 아카이브 페이지 (`/archive/`)
+├── calendar.md                    # 연도별 52주 잔디 히트맵 캘린더 페이지 (`/calendar/`)
+├── search.json                    # 글로벌 빠른 검색용 JSON 인덱스 (`/search.json`)
 ├── tags.md                        # 토픽/태그별 분류 페이지 (`/topics/`)
 ├── _config.yml                    # Jekyll 설정 파일 (`collections_dir: _posts`)
 ├── Gemfile                        # Ruby/Jekyll 의존성

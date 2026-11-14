@@ -43,11 +43,6 @@ layout: default
         <span class="stat-num">{{ hard_posts }}</span>
         <span class="stat-txt">Hard</span>
       </div>
-
-      <div class="editorial-hero-links">
-        <a href="{{ '/archive/' | relative_url }}" class="editorial-pill-link">Archive</a>
-        <a href="{{ '/topics/' | relative_url }}" class="editorial-pill-link">Topics</a>
-      </div>
     </div>
   </section>
 
@@ -70,6 +65,11 @@ layout: default
         <button type="button" class="filter-pill" data-difficulty="easy">Easy</button>
         <button type="button" class="filter-pill" data-difficulty="medium">Medium</button>
         <button type="button" class="filter-pill" data-difficulty="hard">Hard</button>
+      </div>
+
+      <div class="status-filter-pills" role="group" aria-label="Filter by personal status">
+        <button type="button" id="filter-saved-toggle" class="status-filter-pill" aria-pressed="false" title="Show only bookmarked challenges">★ Saved</button>
+        <button type="button" id="filter-solved-toggle" class="status-filter-pill" aria-pressed="false" title="Show only solved challenges">✓ Solved</button>
       </div>
     </div>
 
@@ -98,6 +98,7 @@ layout: default
           {%- assign tags_joined = post.tags | join: ',' | downcase -%}
           <li
             class="editorial-post-row"
+            data-url="{{ post.url | relative_url }}"
             data-month="{{ post_month }}"
             data-difficulty="{{ diff_lower }}"
             data-title="{{ post.title | downcase | escape }}"
@@ -121,6 +122,8 @@ layout: default
               </div>
 
               <div class="row-meta-right">
+                <button type="button" class="row-action-btn" data-solved-btn data-url="{{ post.url | relative_url }}" aria-pressed="false" title="Mark as solved">✓</button>
+                <button type="button" class="row-action-btn" data-bookmark-btn data-url="{{ post.url | relative_url }}" aria-pressed="false" title="Bookmark problem"><span class="btn-icon">☆</span></button>
                 {%- if post.difficulty -%}
                   <span class="difficulty difficulty-{{ diff_lower }}">
                     {{ post.difficulty }}
@@ -136,14 +139,6 @@ layout: default
       <div id="no-filter-results" class="no-results-message" style="display: none;">
         No matching challenges found.
       </div>
-
-      {%- if all_posts.size > 0 -%}
-        <div class="editorial-list-footer" id="home-list-footer">
-          <a href="{{ '/archive/' | relative_url }}" class="editorial-view-all">
-            Browse all {{ total_posts }} challenges in Archive <span aria-hidden="true">→</span>
-          </a>
-        </div>
-      {%- endif -%}
     {%- else -%}
       <div class="no-posts">
         <p>No posts yet. Check back soon for daily LeetCode challenges!</p>
@@ -157,26 +152,36 @@ layout: default
 (function () {
   var monthSelect = document.getElementById('month-filter');
   var filterBtns = document.querySelectorAll('.filter-pill');
+  var savedToggle = document.getElementById('filter-saved-toggle');
+  var solvedToggle = document.getElementById('filter-solved-toggle');
   var searchInput = document.getElementById('problem-search');
   var rows = Array.prototype.slice.call(document.querySelectorAll('#home-post-list .editorial-post-row'));
   var emptyState = document.getElementById('no-filter-results');
   if (!rows.length) return;
 
   var activeDiff = 'all';
+  var onlySaved = false;
+  var onlySolved = false;
 
   function applyFilters() {
     var selectedMonth = monthSelect ? monthSelect.value : 'all';
     var query = (searchInput && searchInput.value || '').trim().toLowerCase();
+    var bookmarks = window.LeetCodeBookmarks;
+    var savedSet = bookmarks ? bookmarks.getBookmarkedSet() : new Set();
+    var solvedSet = bookmarks ? bookmarks.getSolvedSet() : new Set();
     var visibleCount = 0;
 
     rows.forEach(function (row) {
+      var url = row.getAttribute('data-url') || '';
       var monthMatch = selectedMonth === 'all' || row.getAttribute('data-month') === selectedMonth;
       var diffMatch = activeDiff === 'all' || row.getAttribute('data-difficulty') === activeDiff;
       var title = row.getAttribute('data-title') || '';
       var tags = row.getAttribute('data-tags') || '';
       var queryMatch = !query || title.indexOf(query) !== -1 || tags.indexOf(query) !== -1;
+      var savedMatch = !onlySaved || savedSet.has(url);
+      var solvedMatch = !onlySolved || solvedSet.has(url);
 
-      var shouldShow = monthMatch && diffMatch && queryMatch;
+      var shouldShow = monthMatch && diffMatch && queryMatch && savedMatch && solvedMatch;
       row.style.display = shouldShow ? '' : 'none';
       if (shouldShow) visibleCount++;
     });
@@ -199,9 +204,29 @@ layout: default
     });
   });
 
+  if (savedToggle) {
+    savedToggle.addEventListener('click', function () {
+      onlySaved = !onlySaved;
+      savedToggle.classList.toggle('active', onlySaved);
+      savedToggle.setAttribute('aria-pressed', onlySaved ? 'true' : 'false');
+      applyFilters();
+    });
+  }
+
+  if (solvedToggle) {
+    solvedToggle.addEventListener('click', function () {
+      onlySolved = !onlySolved;
+      solvedToggle.classList.toggle('active', onlySolved);
+      solvedToggle.setAttribute('aria-pressed', onlySolved ? 'true' : 'false');
+      applyFilters();
+    });
+  }
+
   if (searchInput) {
     searchInput.addEventListener('input', applyFilters);
   }
+
+  document.addEventListener('leetcode:bookmarks-changed', applyFilters);
 
   applyFilters();
 })();
