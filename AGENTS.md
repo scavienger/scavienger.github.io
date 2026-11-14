@@ -103,8 +103,7 @@ scavienger.github.io/
 │   ├── test_solve_with_ai.py      # 프롬프트, 들여쓰기 보정, JSON 파싱, 429 폴백 단위 테스트
 │   └── test_generate_posts_cli.py # CLI 인자 및 날짜 범위 처리 테스트
 ├── index.md                       # 메인 홈 페이지
-├── archive.md                     # 연도/월별 아카이브 페이지 (`/archive/`)
-├── difficulties.md                # 난이도별 분류 페이지 (`/difficulties/`)
+├── archive.md                     # 연도/월·난이도별 아카이브 페이지 (`/archive/`)
 ├── tags.md                        # 토픽/태그별 분류 페이지 (`/topics/`)
 ├── _config.yml                    # Jekyll 설정 파일 (`collections_dir: _posts`)
 ├── Gemfile                        # Ruby/Jekyll 의존성

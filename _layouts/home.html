@@ -9,6 +9,8 @@ layout: default
   {% assign easy_posts = all_posts | where_exp: "post", "post.difficulty == 'Easy'" | size %}
   {% assign medium_posts = all_posts | where_exp: "post", "post.difficulty == 'Medium'" | size %}
   {% assign hard_posts = all_posts | where_exp: "post", "post.difficulty == 'Hard'" | size %}
+  {% assign posts_by_month = all_posts | group_by_exp: "post", "post.date | date: '%Y-%m'" %}
+  {% assign default_month = posts_by_month.first.name %}
 
   <!-- Editorial Hero -->
   <section class="editorial-hero">
@@ -49,13 +51,26 @@ layout: default
     </div>
   </section>
 
-  <!-- Inline Search & Difficulty Filter -->
+  <!-- Inline Month + Difficulty Filter & Search -->
   <section class="editorial-controls">
-    <div class="filter-pills" role="group" aria-label="Filter by difficulty">
-      <button type="button" class="filter-pill active" data-difficulty="all">All</button>
-      <button type="button" class="filter-pill" data-difficulty="easy">Easy</button>
-      <button type="button" class="filter-pill" data-difficulty="medium">Medium</button>
-      <button type="button" class="filter-pill" data-difficulty="hard">Hard</button>
+    <div class="controls-left">
+      <div class="month-select-wrap">
+        <select id="month-filter" class="month-select" aria-label="Select year and month">
+          {%- for m in posts_by_month -%}
+            <option value="{{ m.name }}"{% if m.name == default_month %} selected{% endif %}>
+              {{ m.name }} ({{ m.items | size }})
+            </option>
+          {%- endfor -%}
+          <option value="all">All Months ({{ total_posts }})</option>
+        </select>
+      </div>
+
+      <div class="filter-pills" role="group" aria-label="Filter by difficulty">
+        <button type="button" class="filter-pill active" data-difficulty="all">All</button>
+        <button type="button" class="filter-pill" data-difficulty="easy">Easy</button>
+        <button type="button" class="filter-pill" data-difficulty="medium">Medium</button>
+        <button type="button" class="filter-pill" data-difficulty="hard">Hard</button>
+      </div>
     </div>
 
     <div class="search-box">
@@ -78,13 +93,16 @@ layout: default
     {%- if all_posts.size > 0 -%}
       <ul class="editorial-post-list" id="home-post-list">
         {%- for post in all_posts -%}
+          {%- assign post_month = post.date | date: "%Y-%m" -%}
           {%- assign diff_lower = post.difficulty | default: 'unknown' | downcase -%}
           {%- assign tags_joined = post.tags | join: ',' | downcase -%}
           <li
-            class="editorial-post-row{% if forloop.index > 20 %} is-hidden-default{% endif %}"
+            class="editorial-post-row"
+            data-month="{{ post_month }}"
             data-difficulty="{{ diff_lower }}"
             data-title="{{ post.title | downcase | escape }}"
             data-tags="{{ tags_joined | escape }}"
+            {% unless post_month == default_month %}style="display: none;"{% endunless %}
           >
             <a href="{{ post.url | relative_url }}" class="editorial-row-link">
               <time class="row-date" datetime="{{ post.date | date_to_xmlschema }}">
@@ -119,7 +137,7 @@ layout: default
         No matching challenges found.
       </div>
 
-      {%- if all_posts.size > 20 -%}
+      {%- if all_posts.size > 0 -%}
         <div class="editorial-list-footer" id="home-list-footer">
           <a href="{{ '/archive/' | relative_url }}" class="editorial-view-all">
             Browse all {{ total_posts }} challenges in Archive <span aria-hidden="true">→</span>
@@ -137,31 +155,28 @@ layout: default
 
 <script>
 (function () {
+  var monthSelect = document.getElementById('month-filter');
   var filterBtns = document.querySelectorAll('.filter-pill');
   var searchInput = document.getElementById('problem-search');
   var rows = Array.prototype.slice.call(document.querySelectorAll('#home-post-list .editorial-post-row'));
   var emptyState = document.getElementById('no-filter-results');
-  var footer = document.getElementById('home-list-footer');
   if (!rows.length) return;
 
   var activeDiff = 'all';
 
   function applyFilters() {
+    var selectedMonth = monthSelect ? monthSelect.value : 'all';
     var query = (searchInput && searchInput.value || '').trim().toLowerCase();
-    var isDefault = (activeDiff === 'all' && query === '');
     var visibleCount = 0;
 
-    rows.forEach(function (row, idx) {
+    rows.forEach(function (row) {
+      var monthMatch = selectedMonth === 'all' || row.getAttribute('data-month') === selectedMonth;
       var diffMatch = activeDiff === 'all' || row.getAttribute('data-difficulty') === activeDiff;
       var title = row.getAttribute('data-title') || '';
       var tags = row.getAttribute('data-tags') || '';
       var queryMatch = !query || title.indexOf(query) !== -1 || tags.indexOf(query) !== -1;
 
-      var shouldShow = diffMatch && queryMatch && (!isDefault || idx < 20);
-      if (!isDefault && diffMatch && queryMatch && visibleCount >= 40) {
-        shouldShow = false;
-      }
-
+      var shouldShow = monthMatch && diffMatch && queryMatch;
       row.style.display = shouldShow ? '' : 'none';
       if (shouldShow) visibleCount++;
     });
@@ -169,9 +184,10 @@ layout: default
     if (emptyState) {
       emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
     }
-    if (footer) {
-      footer.style.display = isDefault ? '' : 'none';
-    }
+  }
+
+  if (monthSelect) {
+    monthSelect.addEventListener('change', applyFilters);
   }
 
   filterBtns.forEach(function (btn) {
@@ -186,7 +202,7 @@ layout: default
   if (searchInput) {
     searchInput.addEventListener('input', applyFilters);
   }
+
+  applyFilters();
 })();
 </script>
-
-{% include dark-mode-toggle.html %}

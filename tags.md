@@ -57,5 +57,3 @@ permalink: /topics/
   </ul>
 </section>
 {% endfor %}
-
-{% include dark-mode-toggle.html %}
