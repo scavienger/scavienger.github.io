@@ -4,6 +4,7 @@ title: Archive
 permalink: /archive/
 ---
 
+{::nomarkdown}
 {% assign all_posts = site.posts | concat: site.daily | sort: 'date' | reverse %}
 {% assign posts_by_month = all_posts | group_by_exp: "post", "post.date | date: '%Y-%m'" %}
 {% assign default_month = posts_by_month.first.name %}
@@ -139,3 +140,4 @@ permalink: /archive/
   applyFilters();
 })();
 </script>
+{:/nomarkdown}
