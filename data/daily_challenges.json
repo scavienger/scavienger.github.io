@@ -1510,5 +1510,9 @@
   "2026-11-13": {
     "link": "/problems/count-non-decreasing-subarrays-after-k-operations/",
     "titleSlug": "count-non-decreasing-subarrays-after-k-operations"
+  },
+  "2026-11-14": {
+    "link": "/problems/minimum-positive-sum-subarray/",
+    "titleSlug": "minimum-positive-sum-subarray"
   }
 }
