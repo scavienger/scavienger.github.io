@@ -1530,5 +1530,9 @@
   "2026-11-18": {
     "link": "/problems/minimum-number-of-changes-to-make-binary-string-beautiful/",
     "titleSlug": "minimum-number-of-changes-to-make-binary-string-beautiful"
+  },
+  "2026-11-19": {
+    "link": "/problems/minimum-score-by-changing-two-elements/",
+    "titleSlug": "minimum-score-by-changing-two-elements"
   }
 }
