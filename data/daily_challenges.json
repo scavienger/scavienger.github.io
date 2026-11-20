@@ -1534,5 +1534,9 @@
   "2026-11-19": {
     "link": "/problems/minimum-score-by-changing-two-elements/",
     "titleSlug": "minimum-score-by-changing-two-elements"
+  },
+  "2026-11-20": {
+    "link": "/problems/maximize-consecutive-elements-in-an-array-after-modification/",
+    "titleSlug": "maximize-consecutive-elements-in-an-array-after-modification"
   }
 }
