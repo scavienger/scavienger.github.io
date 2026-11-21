@@ -1538,5 +1538,9 @@
   "2026-11-20": {
     "link": "/problems/maximize-consecutive-elements-in-an-array-after-modification/",
     "titleSlug": "maximize-consecutive-elements-in-an-array-after-modification"
+  },
+  "2026-11-21": {
+    "link": "/problems/find-subtree-sizes-after-changes/",
+    "titleSlug": "find-subtree-sizes-after-changes"
   }
 }
