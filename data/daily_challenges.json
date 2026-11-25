@@ -1554,5 +1554,9 @@
   "2026-11-24": {
     "link": "/problems/maximum-subarray-with-equal-products/",
     "titleSlug": "maximum-subarray-with-equal-products"
+  },
+  "2026-11-25": {
+    "link": "/problems/smallest-unique-subarray/",
+    "titleSlug": "smallest-unique-subarray"
   }
 }
