@@ -1558,5 +1558,9 @@
   "2026-11-25": {
     "link": "/problems/smallest-unique-subarray/",
     "titleSlug": "smallest-unique-subarray"
+  },
+  "2026-11-26": {
+    "link": "/problems/stone-removal-game/",
+    "titleSlug": "stone-removal-game"
   }
 }
