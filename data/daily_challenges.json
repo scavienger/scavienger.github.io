@@ -1566,5 +1566,9 @@
   "2026-11-27": {
     "link": "/problems/maximum-number-of-items-from-sale-i/",
     "titleSlug": "maximum-number-of-items-from-sale-i"
+  },
+  "2026-11-28": {
+    "link": "/problems/maximum-number-of-items-from-sale-ii/",
+    "titleSlug": "maximum-number-of-items-from-sale-ii"
   }
 }
